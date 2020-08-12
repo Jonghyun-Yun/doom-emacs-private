@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# contributor : Mads D. Kristensen <madsdk@gmail.com>
+# key: table
+# group: environments
+# name : \begin{table} ... \end{table}
+# --
+%% Use [H] with float package
+%%\begin{table}[H]
+\begin{table}[htbp!]
+  \centering
+  \begin{tabular}{${1:format}}
+  $0 & `(concat "\\" "\\")`
+  \hline
+  \end{tabular}
+  \caption{
+  \label{${2:"waiting for reftex-label call..."$(unless yas-modified-p (reftex-label nil 'dont-insert))}}
+  ${3:caption}}
+\end{table}

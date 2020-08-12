@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: caption
+# key: capt
+# binding: direct-keybinding
+# --
+\caption{\label{$1} $0}

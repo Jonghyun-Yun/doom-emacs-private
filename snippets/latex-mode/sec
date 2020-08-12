@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: section
+# key: sec
+# uuid: sec
+# group: sections
+# --
+\section{${1:name}}
+\label{${2:"waiting for reftex-label call..."$(unless yas-modified-p (reftex-label nil 'dont-insert))}}
+
+$0

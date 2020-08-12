@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# key : sol
+# group: environments
+# name : \begin{solution} ... \end{solution}
+# --
+\begin{solution}
+  $0
+\end{solution}

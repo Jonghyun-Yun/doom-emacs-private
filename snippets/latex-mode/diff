@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: diff
+# key: diff
+# binding: direct-keybinding
+# ref: https://tex.stackexchange.com/questions/225523/how-to-write-partial-differential-equation-ex-dq-dt-ds-dt-with-real-partial-d
+# --
+\dv{$1}{$2}$0

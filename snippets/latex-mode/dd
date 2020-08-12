@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: \dd
+# key: d
+# group: math
+# binding: direct-keybinding
+# ref: https://tex.stackexchange.com/questions/60545/should-i-mathrm-the-d-in-my-integrals
+# --
+\dd{$0}

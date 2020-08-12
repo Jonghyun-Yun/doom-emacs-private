@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: bmatrix
+# key: bmat
+# binding: direct-keybinding
+# --
+\begin{bmatrix}
+  1 & 0 `(concat "\\" "\\")`
+  0 & 1 `(concat "\\" "\\")`$0
+\end{bmatrix}

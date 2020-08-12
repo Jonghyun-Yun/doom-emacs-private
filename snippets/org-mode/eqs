@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: equation
+# key: eqs
+# # binding: C-c y e
+# condition: (or (= (current-column) 3) (= (current-column) 0))
+# contributor: Rafael Villarroel (rvf0068@gmail.com)
+# --
+# <<$2>>
+\begin{${1:$$(yas-choose-value '("equation" "align" "multline" "gather" "subequations"))}}
+\label{${2:"waiting for reftex-label call..."$(unless yas-modified-p (reftex-label nil 'dont-insert))}}
+$0
+\end{$1}

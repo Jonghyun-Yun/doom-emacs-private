@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: absolute
+# key: abs
+# binding: direct-keybinding
+# --
+|$0|

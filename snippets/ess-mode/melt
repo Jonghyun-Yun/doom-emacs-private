@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: melt
+# key: melt 
+# --
+$1melt <- reshape2::melt(data          = $1,
+                         id.vars       = c(),
+                         measure.vars  = c(),
+                         variable.name = "variable",
+                         value.name    = "value")$0

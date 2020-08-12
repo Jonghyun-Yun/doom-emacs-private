@@ -1,0 +1,6 @@
+ -*- mode: snippet -*-
+# key: cref
+# group: references
+# name : \cref{...}
+# --
+\cref{${1:label$(unless yas-modified-p (reftex-reference " " 'dont-insert))}}$0

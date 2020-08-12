@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: columns
+# key: col
+# --
+*** @@latex:@@                                                        :BMCOL:
+    :PROPERTIES:
+    :BEAMER_col: 0.50
+    :END:
+    body1
+
+*** @@latex:@@                                                        :BMCOL:
+    :PROPERTIES:
+    :BEAMER_col: 0.50
+    :END:
+    body2
+

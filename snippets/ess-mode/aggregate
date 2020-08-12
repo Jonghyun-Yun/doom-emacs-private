@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: aggregate
+# key: aggregate
+# --
+ <- aggregate(formula = $0,
+              data = ,
+              FUN =
+              )

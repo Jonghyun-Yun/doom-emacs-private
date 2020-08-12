@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: \begin{center} ... \end{center}
+# key: <C
+# uuid: <C
+# --
+\begin{center}
+`%`$0
+\end{center}

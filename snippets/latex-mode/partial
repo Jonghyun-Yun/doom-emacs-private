@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: partial
+# key: partial
+# binding: direct-keybinding
+# ref: https://ctan.math.illinois.edu/macros/latex/contrib/physics/physics.pdf
+# --
+\pdv{$1}{$2}$0

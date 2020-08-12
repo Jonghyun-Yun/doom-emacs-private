@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: bool_arg
+# key: bool_
+# --
+// command-line argument: $3 or $4
+bool ${1:VAR};
+if (sarg[$2] == "${3:true}") {
+  $1 = true;
+} else if (sarg[$2] == "${4:false}") {
+  $1 = false;
+} else {
+  std::cout << "invalid arguemnt for $1.\n";
+  return 0;
+}
+$0

@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: etal
+# key: et
+# binding: direct-keybinding
+# --
+\textit{et al} $0

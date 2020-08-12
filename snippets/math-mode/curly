@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: curly
+# key: curly
+# --
+\left`(concat "\\" "{")`
+  \begin{aligned}
+    $0
+  \end{aligned}
+\right .`(concat "\\" "\\")`

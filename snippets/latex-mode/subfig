@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# key: subfig
+# group: environments
+# name : \begin{subfigure} ... \end{subfigure}
+# --
+\begin{subfigure}[${1:htbp!}]{${2:0.49\textwidth}}
+    \includegraphics[width=${3:0.95\columnwidth}]{figure/${4:Filename}}
+    \caption{${5:caption}}
+    \label{${6
+    :"waiting for reftex-label call..."$(unless yas-modified-p (reftex-label nil 'dont-insert))}}
+\end{subfigure}

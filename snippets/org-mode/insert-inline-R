@@ -1,0 +1,37 @@
+  /Users/yunj/Dropbox/Portable/Emacs/dotspacemacs.d/snippets/org-mode:
+  total used in directory 124K available 12918179
+  drwxr-xr-x 35 yunj staff 1.2K May 12 17:45 ./
+  drwxr-xr-x  8 yunj staff  272 May 10 01:58 ../
+  -rwxr-xr-x  1 yunj staff    0 Oct 20  2016 .yas-ignore-filenames-as-triggers*
+  -rwxr-xr-x  1 yunj staff    0 Oct 20  2016 .yas-make-groups*
+  -rwxr-xr-x  1 yunj staff   10 Oct 20  2016 .yas-parents*
+  -rwxr-xr-x  1 yunj staff  471 Oct 20  2016 appendTOC*
+  -rwxr-xr-x  1 yunj staff  194 Oct 20  2016 attr_html*
+  -rwxr-xr-x  1 yunj staff  163 Oct 20  2016 attr_latex*
+  -rwxr-xr-x  1 yunj staff  201 Oct 20  2016 attr_latex_img*
+  -rwxr-xr-x  1 yunj staff  255 Oct 20  2016 author*
+  -rwxr-xr-x  1 yunj staff  227 Oct 20  2016 block*
+  -rwxr-xr-x  1 yunj staff  336 Oct 20  2016 corollary*
+  -rwxr-xr-x  1 yunj staff  340 Oct 20  2016 definition*
+  -rwxr-xr-x  1 yunj staff  266 Oct 20  2016 ditaa*
+  -rwxr-xr-x  1 yunj staff  145 Oct 20  2016 el*
+  -rwxr-xr-x  1 yunj staff  262 Oct 20  2016 email*
+  -rwxr-xr-x  1 yunj staff  342 Oct 20  2016 equation*
+  -rwxr-xr-x  1 yunj staff  291 Oct 20  2016 figure*
+  -rw-r--r--  1 yunj staff   94 May 12 17:13 insert-inline-R-message
+  -rwxr-xr-x  1 yunj staff  191 Oct 20  2016 kbd*
+  -rwxr-xr-x  1 yunj staff  252 Oct 20  2016 language*
+  -rwxr-xr-x  1 yunj staff  219 Oct 20  2016 latexclass*
+  -rwxr-xr-x  1 yunj staff  187 Oct 20  2016 latexheader*
+  -rwxr-xr-x  1 yunj staff  320 Oct 20  2016 lemma*
+  -rwxr-xr-x  1 yunj staff  263 Oct 20  2016 options*
+  -rwxr-xr-x  1 yunj staff  199 Oct 20  2016 proof*
+  -rwxr-xr-x  1 yunj staff  232 Oct 20  2016 propertiesfolded*
+  -rwxr-xr-x  1 yunj staff  320 Oct 20  2016 proposition*
+  -rwxr-xr-x  1 yunj staff 1.8K Oct 20  2016 readtheorg-preamble*
+  -rwxr-xr-x  1 yunj staff  226 Oct 20  2016 sourceblock*
+  -rwxr-xr-x  1 yunj staff  252 Oct 20  2016 startup*
+  -rwxr-xr-x  1 yunj staff  243 Oct 20  2016 text*
+  -rwxr-xr-x  1 yunj staff  328 Oct 20  2016 theorem*
+  -rwxr-xr-x  1 yunj staff  639 Oct 20  2016 tikz-figure*
+  -rwxr-xr-x  1 yunj staff  220 Oct 20  2016 title*

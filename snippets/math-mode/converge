@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: converge
+# key: conv
+# binding: direct-keybinding
+# --
+\overset{$1}{\rightarrow} $0

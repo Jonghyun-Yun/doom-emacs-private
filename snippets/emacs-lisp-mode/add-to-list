@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: add-to-list
+# uuid: add-to-list
+# key: add-to-list
+# condition: t
+# --
+(add-to-list '${1:list} '($2))

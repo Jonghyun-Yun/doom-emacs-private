@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Xordered
+# key: Xord
+# binding: direct-keybinding
+# --
+X_{($1)}$0

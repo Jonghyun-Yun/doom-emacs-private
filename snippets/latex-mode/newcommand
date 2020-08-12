@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: \newcommand
+# uuid: newcommand
+# key: newc
+# condition: t
+# --
+\newcommand{${1:\name}}$2{${3:code}}$0

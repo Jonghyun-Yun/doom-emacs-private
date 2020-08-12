@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: eval_at
+# key: eval
+# binding: direct-keybinding
+# --
+`(concat "\\")`big|_{$0}
