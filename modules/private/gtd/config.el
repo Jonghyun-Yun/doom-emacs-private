@@ -1,7 +1,7 @@
 ;;; private/gtd/config.el -*- lexical-binding: t; -*-
 
 (use-package! org-super-agenda
-  :after org
+  :after org-agenda
   :init
   ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
   ;; (require 'org-habit)

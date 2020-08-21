@@ -78,13 +78,14 @@
 ;; (package! org-pdftools)
 ;; (package! org-noter-pdftools)
 
- (package! ox-ravel
-   :recipe (:host github
-            :repo "jonghyun-yun/ox-ravel"
-            ;;          :branch "org-plus-9"
-            :files ("ox-ravel.el"))
-   :pin "f6410c256b5d14f5257252698e08785e5670b92a"
-   )
+;; Rmd export doesn't work. Load it localy
+;; (package! ox-ravel
+;;   :recipe (:host github
+;;            :repo "jonghyun-yun/ox-ravel"
+;;            ;;          :branch "org-plus-9"
+;;            :files ("ox-ravel.el"))
+;;   :pin "f6410c256b5d14f5257252698e08785e5670b92a"
+;;   )
 
 (package! ox-hugo
   :recipe (:host github :repo "jonghyun-yun/ox-hugo" :nonrecursive t))

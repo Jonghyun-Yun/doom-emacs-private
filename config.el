@@ -29,7 +29,7 @@
 
 ;; "Iosevka SS08" ;; Monospace, Pragmata Pro Style
 ;; "Iosevka SS09" ;; Monospace, Source Code Pro Style
-(setq doom-font (font-spec :family "Iosevka SS08" :size 20 :weight 'light)
+(setq doom-font (font-spec :family "Iosevka SS08" :size 22 :weight 'light)
       doom-variable-pitch-font (font-spec :family "Iosevka Sparkle" :weight 'light)
       ;; doom-unicode-font (font-spec :family "Iosevka SS08" :weight 'light)
       doom-big-font (font-spec :family "Iosevka SS08" :size 26 :weight 'light)
@@ -92,8 +92,8 @@
   )
 
 ;; (when (featurep! :ui treemacs)
-  ;; (add-hook 'dired-mode-hook #'treemacs-icons-dired-mode)
-  ;; )
+;;   (add-hook 'dired-mode-hook #'treemacs-icons-dired-mode)
+;;   )
 
 ;; disable flycheck by default
 (after! flycheck
@@ -112,7 +112,7 @@
   (projectile-add-known-project "~/OneDrive/research/s.ham/RAS")
   )
 
-(load! "+bindings")
+(load! "bindings")
 
 (after! mu4e
   (load! "lisp/mu4e-plus"))
@@ -123,6 +123,10 @@
 (after! ess
   (load! "lisp/ess-plus")
   (evil-set-initial-state 'inferior-ess-mode 'emacs)
+  )
+(after! ess-mode
+  (setq ess-r-smart-operators t
+        ess-use-ido t) ;; what is this?
   )
 
 (load! "lisp/org-plus")
@@ -163,12 +167,14 @@
 ;; (setq trash-directory "~/.Trash/")
 
 (after! org
-  ;; (remove-hook 'org-mode-hook #'org-superstar-mode)
+  ;; background color for org-latex
+  ;; (+org-refresh-latex-background-h)
   (setq
    org-fontify-quote-and-verse-blocks nil
    org-fontify-whole-heading-line nil
    org-ellipsis " ▼ "
    org-journal-encrypt-journal t
+   ;; (remove-hook 'org-mode-hook #'org-superstar-mode)
    ;; (when (featurep! :lang org +pretty)
    ;; org-superstar-headline-bullets-list '("♠" "♥" "♦" "♣" "◉" "▶" "✚" "✸"))
    ;; org-hide-leading-stars t
@@ -186,8 +192,20 @@
    org-log-done 'time
    )
   ;; (setq org-insert-heading-respect-content nil)
-)
-  ;; (add-to-list 'org-modules 'org-habit t)
+
+  ;; (setq org-preview-latex-image-directory "ltximg/"
+        ;; org-archive-location ".archive/%s::")
+  ;; default attach folder
+  ;; (after! org-attach
+  ;;   (setq
+  ;;    org-attach-id-dir "data/"))
+
+  ;; visual-mode tab binds back to org-cycle
+  (remove-hook 'org-tab-first-hook #'+org-yas-expand-maybe-h)
+
+  ;; insert-mode tab binds back to org-cycle
+  (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h)
+   )
 
 ;; https://gitlab.com/oer/org-re-reveal-ref/-/blob/master/org-re-reveal-ref.el
 ;; it changes some of org-ref custom variables
@@ -196,24 +214,29 @@
   )
 
 ;; Set LaTeX preview image size for Org and LaTeX buffers.
-;; latex-preview size
-(set 'preview-scale-function 1.5)
-;; org-latex-preview size
-(setq org-format-latex-options
-      (quote
-       (:foreground default :background default :scale 1.5 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
-        ("begin" "$1" "$" "$$" "\\(" "\\["))
-       ))
-
-(after! ess-mode
-  (setq ess-r-smart-operators t
-        ess-use-ido t) ;; what is this?
+(after! preview
+  ;; latex-preview size
+  (setq preview-scale 1.5)
+  ;; (set 'preview-scale-function 1.75)
   )
+
+;; (after! org
+  ;; org-latex-preview size
+  ;; (setq org-format-latex-options
+  ;;       (list :foreground 'default
+  ;;             :background 'default
+  ;;             :scale 1.5
+  ;;             :html-foreground "Black"
+  ;;             :html-background "Transparent"
+  ;;             :html-scale 1.0
+  ;;             :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
+  ;; (plist-put org-format-latex-options :scale 1.5) ; larger previews
+  ;; )
 
 (use-package! mathpix.el
   :commands (mathpix-screenshot)
-  :init
-  (map! "C-c n m" #'mathpix-screenshot)
+  ;; :init
+  ;; (map! "C-c n m" #'mathpix-screenshot)
   :custom
   (mathpix-screenshot-method "screencapture -i %s")
   (mathpix-app-id (password-store-get "mathpix/app-id"))
@@ -235,28 +258,26 @@
 ;; maximize frame at startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+
+;; Backups
+;; (setq make-backup-files t
+;;       backup-by-copying t
+;;       delete-old-versions t
+;;       kept-new-versions 6
+;;       kept-old-versions 2
+;;       version-control t)
+
+(setq garbage-collection-messages nil)
 ;;; Fewer garbage collection
 ;; Number of bytes of consing between garbage collections.
 ;; (defun set-gc-cons-threshold-normal (mb)
 ;;   "Set gc-cons-threshold in MB"
 ;;   (setq gc-cons-threshold (round (* mb 1000 1000))))
-
-(setq garbage-collection-messages nil)
 ;; (add-hook 'after-init-hook #'(lambda () (set-gc-cons-threshold-normal 0.8)))
 
 ;; no need: gcmh: https://github.com/emacsmirror/gcmh
 ;; (add-hook 'focus-out-hook #'garbage-collect)
-
-;; ;;; https://emacs.stackexchange.com/questions/30082/your-python-shell-interpreter-doesn-t-seem-to-support-readline
-;; (with-eval-after-load 'python
-;;   (defun python-shell-completion-native-try ()
-;;     "Return non-nil if can trigger native completion."
-;;     (let ((python-shell-completion-native-enable t)
-;;           (python-shell-completion-native-output-timeout
-;;            python-shell-completion-native-try-output-timeout))
-;;       (python-shell-completion-native-get-completions
-;;        (get-buffer-process (current-buffer))
-;;        nil "_"))))
 
 ;; no key stroke for exiting INSERT mode: doom default jk
 (setq evil-escape-key-sequence "jk"
@@ -284,15 +305,9 @@
   ;; make sure which-key doesn't show normally but refreshes quickly after it is
   ;; triggered.
   (setq which-key-idle-delay 1) ;; with 800kb garbage-collection
-  ;; (setq which-key-idle-delay 10000)
   ;; (setq which-key-idle-secondary-delay 0.05)
   ;; (which-key-mode)
 )
-
-;; (with-eval-after-load 'elpa-mirror
-;;   ;; local-melpa directory
-;;   (setq elpamr-default-output-directory "~/.doom.d/local-melpa/")
-;;   )
 
 ;; (with-eval-after-load 'pdf-tools
 ;;   ;; Pdf tools dark/light theme
@@ -390,13 +405,13 @@
   :config
   ;; matlab
   (setq matlab-return-add-semicolon t
-        matlab-shell-ask-MATLAB-for-completions nil
+        matlab-shell-ask-MATLAB-for-completions t
         matlab-shell-command-switches '("-nodesktop" "-nosplash"))
 
-  ;; set column for matlab m file buffer
-  (add-hook 'matlab-mode-hook
-            (lambda ()
-              (set-fill-column 100)))
+  ;; ;; set column for matlab m file buffer
+  ;; (add-hook 'matlab-mode-hook
+  ;;           (lambda ()
+  ;;             (set-fill-column 100)))
 
   ;; (load! "lisp/matlab-plus")
   ;; (bind-keys :prefix-map matlab-mode-map
@@ -511,9 +526,6 @@
         +notmuch-mail-folder "~/.mail/")
   )
 
-(with-eval-after-load 'wordnut
-  (setq wordnut-cmd "/usr/local/bin/wn"))
-
 ;; The text-scaling level for writeroom-mode
 (after! writeroom-mode
   (setq +zen-text-scale 1.2)
@@ -527,16 +539,25 @@
 ;; OS X ls not working with --quoting-style=literal
 (after! fd-dired
   (when IS-MAC
-    (setq fd-dired-ls-option ("| xargs -0 gls -ld --quoting-style=literal" . "-ld"))
+    (setq fd-dired-ls-option '("| xargs -0 gls -ld --quoting-style=literal" . "-ld"))
     )
   )
 
-(setq cdlatex-math-symbol-alist
-      '((?: ("\\cdots" "\\ldots"))
-        )
+(after! cdlatex
+  (setq cdlatex-math-symbol-alist
+        '((?: ("\\cdots" "\\ldots"))
+          )
       )
+)
 
-;; (use-package scihub)
+(after! ace-window
+  (setq aw-scope 'global))
+
+(custom-set-faces!
+  '(aw-leading-char-face
+    :foreground "white" :background "red"
+    :weight bold :height 2.5 :box (:line-width 10 :color "red")))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

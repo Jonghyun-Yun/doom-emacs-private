@@ -10,11 +10,13 @@
   :commands (wordnut-lookup-current-word
              wordnut-search)
   :hook (wordnut-mode . evil-emacs-state)
-  :init
-  (progn
-    (global-set-key (kbd "C-c C-s l") 'wordnut-lookup-current-word)
-    (global-set-key (kbd "C-c C-s w") 'wordnut-search)
-    )
+  ;; :init
+  ;; (progn
+  ;;   (global-set-key (kbd "C-c C-s l") 'wordnut-lookup-current-word)
+  ;;   (global-set-key (kbd "C-c C-s w") 'wordnut-search)
+  ;;   )
+  :config
+  (setq wordnut-cmd "/usr/local/bin/wn")
   )
 
 ;; (use-package! wordnut
@@ -106,11 +108,11 @@
 (use-package! academic-phrases
   :commands (academic-phrases
              academic-phrases-by-section)
-  :init
-  (progn
-    (global-set-key (kbd "C-c C-s p") 'academic-phrases)
-    (global-set-key (kbd "C-c C-s s") 'academic-phrases-by-section)
-    )
+  ;; :init
+  ;; (progn
+  ;;   (global-set-key (kbd "C-c C-s p") 'academic-phrases)
+  ;;   (global-set-key (kbd "C-c C-s s") 'academic-phrases-by-section)
+  ;;   )
   )
 
 ;; (use-package! wordsmith-mode
@@ -166,10 +168,11 @@
   ;;   )
   ;; :hook (mw-thesaurus-mode . evil-normal-state)
   :commands (mw-thesaurus-lookup-at-point)
-  :custom
-  (mw-thesaurus--api-key (password-store-get "mw-thesaurus/api-key"))
-  :init
-  (global-set-key (kbd "C-c C-s m") 'mw-thesaurus-lookup-at-point)
+  :config
+  (after! pass
+    (setq mw-thesaurus--api-key (password-store-get "mw-thesaurus/api-key")))
+  ;; :init
+  ;; (global-set-key (kbd "C-c C-s m") 'mw-thesaurus-lookup-at-point)
   ;;Key (Thesaurus):
   ;; (define-key mw-thesaurus-mode-map [remap evil-record-macro] #'mw-thesaurus--quit) ;;q
   ;; (define-key mw-thesaurus-mode-map [remap evil-substitute] #'osx-dictionary-search-input) ;;s
@@ -209,12 +212,12 @@
              synosaurus-choose-and-replace)
   ;; :bind ("s-x" . synosaurus-choose-and-replace)
   ;;
-  :init
-  (progn
-    ;; (global-set-key (kbd "C-c C-s l") 'synosaurus-lookup)
-    (global-set-key (kbd "C-c C-s r") 'synosaurus-choose-and-replace)
-    (global-set-key (kbd "C-c C-s i") 'synosaurus-choose-and-insert)
-    )
+  ;; :init
+  ;; (progn
+  ;;   ;; (global-set-key (kbd "C-c C-s l") 'synosaurus-lookup)
+  ;;   (global-set-key (kbd "C-c C-s r") 'synosaurus-choose-and-replace)
+  ;;   (global-set-key (kbd "C-c C-s i") 'synosaurus-choose-and-insert)
+  ;;   )
   )
 
 ;;  (use-package synosaurus-wordnet
