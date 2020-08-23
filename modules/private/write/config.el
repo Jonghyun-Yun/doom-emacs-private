@@ -1,11 +1,5 @@
 ;;; private/write/config.el -*- lexical-binding: t; -*-
 
-;; add Korean dic for hunspell
-(add-to-list 'ispell-hunspell-dict-paths-alist
-             '("korean" "/Users/yunj/Library/Spelling/ko.aff")
-             )
-(add-to-list 'ispell-hunspell-dictionary-alist '("korean"))
-
 (use-package wordnut
   :commands (wordnut-lookup-current-word
              wordnut-search)
@@ -166,7 +160,7 @@
   ;; (spacemacs/set-leader-keys
   ;;   "xwm" 'mw-thesaurus-lookup-at-point
   ;;   )
-  ;; :hook (mw-thesaurus-mode . evil-normal-state)
+  :hook (mw-thesaurus-mode . evil-emacs-state)
   :commands (mw-thesaurus-lookup-at-point)
   :config
   (after! pass
@@ -250,6 +244,36 @@
 ;; http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
 ;; find aspell and hunspell automatically
 ;;
+
+;; add Korean dic for hunspell
+;; (add-to-list 'ispell-hunspell-dict-paths-alist
+             ;; '("ko" "/Users/yunj/Library/Spelling/ko.aff")
+             ;; )
+;; (add-to-list 'ispell-hunspell-dictionary-alist '("ko"))
+
+;; (add-to-list 'ispell-hunspell-dict-paths-alist
+;;              '("en_US" "/Users/yunj/Library/Spelling/en_US.aff")
+;;              )
+;; (add-to-list 'ispell-hunspell-dictionary-alist '("en_US"))
+
+;; (add-to-list 'ispell-hunspell-dict-paths-alist
+;;              '("en_US-med" "/Users/yunj/Library/Spelling/en_US-med.aff")
+;;              )
+;; (add-to-list 'ispell-hunspell-dictionary-alist '("en_US-med"))
+
+;; (with-eval-after-load 'ispell
+  ;; ;; (setq ispell-program-name "hunspell")
+  ;; ;;(setq ispell-dictionary "en_US,en_US-med")
+  ;; ;; (setq ispell-dictionary "en_US")
+  (add-to-list 'ispell-dictionary-alist
+        ;; Please note the list `("-d" "en_US")` contains ACTUAL parameters passed to hunspell
+        ;; You could use `("-d" "en_US,en_US-med")` to check with multiple dictionaries
+        ;; '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8))))
+        '("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US,en_US-med") nil utf-8))
+  ;; ;; (ispell-set-spellchecker-params)
+  ;; ;; (setq ispell-personal-dictionary "/Users/yunj/.hunspell_en_US")
+  ;; ;;(ispell-hunspell-add-multi-dic "en_US,en_US-med")
+  ;; )
 
 ;; (with-eval-after-load 'ispell
 ;;   (cond

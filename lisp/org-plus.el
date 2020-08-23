@@ -282,8 +282,44 @@
   ;; (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
   ;; (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
   ;; (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
-  (add-to-list 'ispell-skip-region-alist '("~" . "~"))
-  (add-to-list 'ispell-skip-region-alist '("=" . "="))
+
+  (after! ispell
+
+    ;; some org elements
+    (pushnew! ispell-skip-region-alist
+              '("~" . "~")
+              '("=" . "=")
+              ;; '(org-property-drawer-re)
+              '(org-ref-cite-re)
+              ;; '(org-ref-ref-re)
+              ;; '(org-ref-label-re)
+              ;; '(org-latex-math-environments-re)
+              )
+
+    ;; latex math
+    (pushnew! ispell-skip-region-alist
+              '("\\$" . "\\$")
+              '("\\\\(" . "\\\\)")
+              '("\\\[" . "\\\]")
+              '("\\\\begin{\\(?:align\\(?:at\\)?\\|d\\(?:array\\|group\\|isplaymath\\|math\\|series\\)\\|e\\(?:mpheq\\|q\\(?:narray\\|uation\\)\\)\\|flalign\\|gather\\|m\\(?:ath\\|ultline\\)\\|subequations\\|x\\(?:x?alignat\\)\\)\\*?}"
+                . "\\\\end{\\(?:align\\(?:at\\)?\\|d\\(?:array\\|group\\|isplaymath\\|math\\|series\\)\\|e\\(?:mpheq\\|q\\(?:narray\\|uation\\)\\)\\|flalign\\|gather\\|m\\(?:ath\\|ultline\\)\\|subequations\\|x\\(?:x?alignat\\)\\)\\*?}")
+              '("\\\\begin\{align\*\}" . "\\\\end\{align\*\}")
+              '("\\\\begin\{equation\*\}" . "\\\\end\{equation\*\}")
+              '("\\\\begin\{eqnarray\*\}" . "\\\\end\{eqnarray\*\}")
+              )
+
+    ;; latex ref
+      (pushnew! ispell-skip-region-alist
+                '("\\\\ref\{" . "\}")
+                '("\\\\cref\{" . "\}")
+                '("\\\\eqref\{" . "\}")
+                '("\\\\label\{" . "\}")
+                '("\\\\printbibliography\\[" . "\\]")
+                )
+
+    )
+
+  (setq org-highlight-latex-and-related '(native))
 
   ;; org-mode and knitr
   ;; (require 'ox-md) ;; required to markdown export
@@ -371,7 +407,7 @@
   ;; Org-mode: Source block doesn't respect parent buffer indentation
   ;; http://emacs.stackexchange.com/questions/9472/org-mode-source-block-doesnt-respect-parent-buffer-indentation
   (setq org-edit-src-content-indentation 0
-        ;; org-src-preserve-indentation nil
+        org-src-preserve-indentation nil
         )
 
   ;; Org-mode

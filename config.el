@@ -112,6 +112,46 @@
   (projectile-add-known-project "~/OneDrive/research/s.ham/RAS")
   )
 
+(after! spell-fu
+  (setq spell-fu-idle-delay 0.5)
+  ;; (global-spell-fu-mode -1)
+  )
+(after! ispell
+  (ispell-set-spellchecker-params) ; Initialize variables and dicts alists
+  (setq ispell-dictionary "en_US")
+  ;; (setq ispell-personal-dictionary "/Users/yunj/.hunspell_en_US")
+  ;; (setq ispell-personal-dictionary "/Users/yunj/.aspell.en.pws")
+  )
+
+(add-hook 'org-mode-hook
+          (lambda ()
+            (setq spell-fu-faces-exclude
+                  '(
+                    org-property-drawer-re
+                    org-ref-cite-re
+                    org-ref-ref-re
+                    org-ref-label-re
+                    org-latex-math-environments-re
+                    "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
+                    ))
+            (spell-fu-mode)))
+
+(add-to-list '+spell-excluded-faces-alist
+             '(latex-mode
+               . (font-lock-function-name-face
+                  font-lock-constant-face
+                  font-lock-variable-name-face
+                  font-lock-comment-face
+                  font-latex-math-face
+                  font-latex-verbatim-face
+                  font-latex-sedate-face
+                  font-latex-warning-face
+                  org-ref-ref-re
+                  org-ref-label-re
+                  org-latex-math-environments-re
+                  )))
+
+
 (load! "bindings")
 
 (after! mu4e
@@ -193,6 +233,8 @@
    )
   ;; (setq org-insert-heading-respect-content nil)
 
+  (setq org-highlight-latex-and-related '(native))
+
   ;; (setq org-preview-latex-image-directory "ltximg/"
         ;; org-archive-location ".archive/%s::")
   ;; default attach folder
@@ -257,8 +299,6 @@
 
 ;; maximize frame at startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-
-(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 
 ;; Backups
 ;; (setq make-backup-files t
