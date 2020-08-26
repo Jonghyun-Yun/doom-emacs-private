@@ -262,20 +262,6 @@
 ;; (add-to-list 'ispell-hunspell-dictionary-alist '("en_US-med"))
 
 ;; (with-eval-after-load 'ispell
-  ;; ;; (setq ispell-program-name "hunspell")
-  ;; ;;(setq ispell-dictionary "en_US,en_US-med")
-  ;; ;; (setq ispell-dictionary "en_US")
-  (add-to-list 'ispell-dictionary-alist
-        ;; Please note the list `("-d" "en_US")` contains ACTUAL parameters passed to hunspell
-        ;; You could use `("-d" "en_US,en_US-med")` to check with multiple dictionaries
-        ;; '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8))))
-        '("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US,en_US-med") nil utf-8))
-  ;; ;; (ispell-set-spellchecker-params)
-  ;; ;; (setq ispell-personal-dictionary "/Users/yunj/.hunspell_en_US")
-  ;; ;;(ispell-hunspell-add-multi-dic "en_US,en_US-med")
-  ;; )
-
-;; (with-eval-after-load 'ispell
 ;;   (cond
 ;;    ;; try hunspell at first
 ;;    ;; if hunspell does NOT exist, use aspell

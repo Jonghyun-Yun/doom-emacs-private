@@ -56,9 +56,9 @@
  :g "C-c l"           #'org-store-link
 )
 
-(when (featurep! :lang org +roam)
-  (global-set-key (kbd "C-c l") #'org-roam-store-link)
-  )
+;; (when (featurep! :lang org +roam)
+;;   (global-set-key (kbd "C-c l") #'org-roam-store-link)
+;;   )
 
 (bind-keys* :prefix-map gtd-map
             :prefix "C-c g"

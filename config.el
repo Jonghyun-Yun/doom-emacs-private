@@ -109,48 +109,82 @@
   (projectile-add-known-project "~/Dropbox/research/lsjm-art")
   (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
   (projectile-add-known-project "~/OneDrive/research/lapf")
-  (projectile-add-known-project "~/OneDrive/research/s.ham/RAS")
+  (projectile-add-known-project "~/research/s.ham/RAS")
   )
+
+(setq ispell-program-name "hunspell")
+(setq ispell-hunspell-dict-paths-alist
+      '(
+        ("en_US" "/Users/yunj/Library/Spelling/en_US.aff")
+        ("ko" "/Users/yunj/Library/Spelling/ko.aff")
+        ("en_US-med" "/Users/yunj/Library/Spelling/en_US-med.aff"))
+      )
+(setq ispell-hunspell-dictionary-alist
+      '(
+        ("ko_KR"
+         "[가-힣]"
+         "[^가-힣]"
+         "[0-9a-zA-Z]" nil
+         ("-d" "ko"))
+        ("en_US"
+         "[[:alpha:]]"
+         "[^[:alpha:]]"
+         "['.0-9’-]" t
+         ;; "[']" t
+         ("-d" "en_US,en_US-med")
+         nil utf-8))
+      )
+(setq ispell-dictionary-alist ispell-hunspell-dictionary-alist)
+
+;; (ispell-set-spellchecker-params) ; Initialize variables and dicts alists
+(setq ispell-local-dictionary "en_US")
+(setq ispell-personal-dictionary "/Users/yunj/.hunspell_en_US")
+;; (setq ispell-personal-dictionary "/Users/yunj/.aspell.en.pws")
 
 (after! spell-fu
   (setq spell-fu-idle-delay 0.5)
   ;; (global-spell-fu-mode -1)
+
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (setq spell-fu-faces-exclude
+                    '(
+                      org-property-drawer-re
+                      org-ref-cite-re
+                      org-ref-ref-re
+                      org-ref-label-re
+                      org-latex-math-environments-re
+                      "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
+                      ))
+              (spell-fu-mode)))
+
+  ;; (add-to-list '+spell-excluded-faces-alist
+  ;;              '(latex-mode
+  ;;                . (
+  ;;                   font-lock-function-name-face
+  ;;                   font-lock-variable-name-face
+  ;;                   font-lock-keyword-face
+  ;;                   font-lock-constant-face
+  ;;                   ;; font-lock-comment-face
+  ;;                   font-latex-math-face
+  ;;                   font-latex-sedate-face
+  ;;                   ;; font-latex-verbatim-face
+  ;;                   ;; font-latex-warning-face
+  ;;                   )))
+
+  (setf (alist-get 'latex-mode +spell-excluded-faces-alist)
+        '(
+          font-lock-function-name-face
+          font-lock-variable-name-face
+          font-lock-keyword-face
+          font-lock-constant-face
+          ;; font-lock-comment-face
+          font-latex-math-face
+          font-latex-sedate-face
+          ;; font-latex-verbatim-face
+          ;; font-latex-warning-face
+          ))
   )
-(after! ispell
-  (ispell-set-spellchecker-params) ; Initialize variables and dicts alists
-  (setq ispell-dictionary "en_US")
-  ;; (setq ispell-personal-dictionary "/Users/yunj/.hunspell_en_US")
-  ;; (setq ispell-personal-dictionary "/Users/yunj/.aspell.en.pws")
-  )
-
-(add-hook 'org-mode-hook
-          (lambda ()
-            (setq spell-fu-faces-exclude
-                  '(
-                    org-property-drawer-re
-                    org-ref-cite-re
-                    org-ref-ref-re
-                    org-ref-label-re
-                    org-latex-math-environments-re
-                    "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
-                    ))
-            (spell-fu-mode)))
-
-(add-to-list '+spell-excluded-faces-alist
-             '(latex-mode
-               . (font-lock-function-name-face
-                  font-lock-constant-face
-                  font-lock-variable-name-face
-                  font-lock-comment-face
-                  font-latex-math-face
-                  font-latex-verbatim-face
-                  font-latex-sedate-face
-                  font-latex-warning-face
-                  org-ref-ref-re
-                  org-ref-label-re
-                  org-latex-math-environments-re
-                  )))
-
 
 (load! "bindings")
 
@@ -235,8 +269,9 @@
 
   (setq org-highlight-latex-and-related '(native))
 
-  ;; (setq org-preview-latex-image-directory "ltximg/"
-        ;; org-archive-location ".archive/%s::")
+  (setq org-preview-latex-image-directory "ltximg/"
+        ;; org-archive-location ".archive/%s::"
+        )
   ;; default attach folder
   ;; (after! org-attach
   ;;   (setq
@@ -291,11 +326,11 @@
   ;; (setq org-roam-graph-extra-config '(("overlap" . "false")))
   )
 
-;; improve slow scrolling?
-(use-package! hl-line+
- :config
- (hl-line-when-idle-interval 0.5)
- (toggle-hl-line-when-idle 1))
+;; ;; improve slow scrolling?
+;; (use-package! hl-line+
+;;  :config
+;;  (hl-line-when-idle-interval 0.5)
+;;  (toggle-hl-line-when-idle 1))
 
 ;; maximize frame at startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
