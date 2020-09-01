@@ -54,7 +54,12 @@
  :g "C-c a"           #'org-agenda
  :g "C-c c"           #'org-capture
  :g "C-c l"           #'org-store-link
-)
+
+ ;; ;; elfeed-score
+ ;; (:map elfeed-search-mode-map
+ ;;  :e "="      #'elfeed-score-map)
+
+ )
 
 ;; (when (featurep! :lang org +roam)
 ;;   (global-set-key (kbd "C-c l") #'org-roam-store-link)

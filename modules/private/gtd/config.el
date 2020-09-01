@@ -1,30 +1,23 @@
 ;;; private/gtd/config.el -*- lexical-binding: t; -*-
 
-(use-package! org-super-agenda
-  :after org-agenda
-  :init
-  ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
-  ;; (require 'org-habit)
-  :config
-  (org-super-agenda-mode)
-  ;; (bind-keys ("C-c r s" . my-org-super-agenda-view))
-  ;; (global-set-key (kbd "C-c r s") 'my-org-super-agenda-view)
-  ;; (global-set-key (kbd "C-c r i") 'my-org-agenda-inbox)
-  ;; (load! "lisp/gtd-plus")
-  )
+;; (use-package! org-super-agenda
+;;   :after org-agenda
+;;   :init
+;;   ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
+;;   ;; (require 'org-habit)
+;;   :config
+;;   (org-super-agenda-mode)
+;;   ;; (bind-keys ("C-c r s" . my-org-super-agenda-view))
+;;   ;; (global-set-key (kbd "C-c r s") 'my-org-super-agenda-view)
+;;   ;; (global-set-key (kbd "C-c r i") 'my-org-agenda-inbox)
+;;   ;; (load! "lisp/gtd-plus")
+;;   )
 
-(after! org-agenda
-  ;; Org agenda files
-  (setq org-agenda-default-appointment-duration 60)
+(use-package org-super-agenda
+  :hook (org-agenda-mode . org-super-agenda-mode)
+)
 
-
-  (setq org-agenda-skip-deadline-prewarning-if-scheduled t
-        org-agenda-skip-scheduled-if-deadline-is-shown 'not-today)
-
-  ;; agenda should be in a full window
-  ;; (add-hook 'org-agenda-finalize-hook (lambda () (delete-other-windows)))
-  (setq org-agenda-window-setup 'current-window)
-
+(after! org
   (add-to-list 'org-global-properties
                '("Effort_ALL" . "0:05 0:30 1:00 1:30 2:00 3:00 4:00"))
 
@@ -63,38 +56,80 @@
            "IDEA(i)" ; maybe someday
            "|"
            "STOP(s@/!)" ; stopped waiting, decided not to work on it
+           ;; "KILL(k@/!)" ; cancel
            )
           (sequence "[ ](T)" "[-](G)" "[?](W)" "|" "[X](D)")
           ;; [-](S) active
           ;; [?](W) onhold
           ))
 
+    (with-no-warnings
+    ;; (custom-declare-face '+org-todo-stop  '((t (:inherit (bold font-lock-constant-face org-todo)))) "")
+    ;; (custom-declare-face '+org-todo-stop  '((t (:inherit (bold font-lock-string-face org-todo)))) "")
+    (custom-declare-face '+org-todo-stop  '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
+    ;; (custom-declare-face '+org-todo-stop  '((t (:inherit (bold font-lock-type-face org-todo)))) "")
+    ;; (custom-declare-face '+org-todo-idea '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
+    (custom-declare-face '+org-todo-next '((t (:inherit (bold org-level-7 org-todo)))) "")
+    (custom-declare-face '+org-todo-idea '((t (:inherit (bold org-level-6 org-todo)))) "")
+    (custom-declare-face '+org-todo-onhold  '((t (:inherit (bold warning org-todo)))) "")
+    )
+
+    ;; font-lock-builtin-face
+    ;; font-lock-comment-delimiter-face
+    ;; font-lock-constant-face
+    ;; font-lock-doc-face
+    ;; font-lock-function-name-face
+    ;; font-lock-keyword-face
+    ;; font-lock-negation-char-face
+    ;; font-lock-preprocessor-face
+    ;; font-lock-regexp-grouping-backslash
+    ;; font-lock-regexp-grouping-construct
+    ;; font-lock-string-face
+    ;; font-lock-type-face
+    ;; font-lock-variable-name-face
+
   (setq org-todo-keyword-faces (quote (
                                        ("[-]" . +org-todo-active)
                                        ("GO" . +org-todo-active)
+                                       ("NEXT" . +org-todo-next)
                                        ("[?]" . +org-todo-onhold)
                                        ("WAIT" . +org-todo-onhold)
                                        ("HOLD" . +org-todo-onhold)
-                                       ;; ("PROJ" . +org-todo-project)
-                                       ;; ("FAIL" :weight bold :foreground "#f2241f")
-                                       ;; ("TODO" :weight bold :foreground "tomato")
-                                       ;; ("NEXT" :weight bold :foreground "SlateGray")
-                                       ("NEXT" :weight bold :foreground "tomato")
-                                       ;; ("GO" :weight bold :foreground "orchid")
-                                       ;; ("GO" :weight bold :foreground "HotPink")
-                                       ;; ("GO" :weight bold :foreground "DarkGoldenrod3")
-                                       ;; ("REVIEW" :weight bold :foreground "gold")
-                                       ;; ("REVIEW" :weight bold :foreground "orange")
-                                       ;; ("REVIEW" :weight bold :foreground "DarkGoldenrod")
-                                       ;; ("WAIT" :weight bold :foreground "DarkOrchid")
-                                       ;; ("WAIT" :weight bold :foreground "pink")
-                                       ;; ("HOLD" :weight bold :foreground "moccasin")
-                                       ;; ("HOLD" :weight bold :foreground "DarkOrchid")
-                                       ;; ("IDEA" :weight bold :foreground "salmon1")
-                                       ("IDEA" :weight bold :foreground "Mocha")
-                                       ("STOP" :weight bold :foreground "SlateGray")
-                                       ;; ("STOP" :weight bold :foreground "turquoise")
+                                       ("IDEA" . +org-todo-idea)
+                                       ("STOP" . +org-todo-stop)
+                                       ;; ;; ("PROJ" . +org-todo-project)
+                                       ;; ;; ("FAIL" :weight bold :foreground "#f2241f")
+                                       ;; ;; ("TODO" :weight bold :foreground "tomato")
+                                       ;; ;; ("NEXT" :weight bold :foreground "SlateGray")
+                                       ;; ("NEXT" :weight bold :foreground "tomato")
+                                       ;; ;; ("GO" :weight bold :foreground "orchid")
+                                       ;; ;; ("GO" :weight bold :foreground "HotPink")
+                                       ;; ;; ("GO" :weight bold :foreground "DarkGoldenrod3")
+                                       ;; ;; ("REVIEW" :weight bold :foreground "gold")
+                                       ;; ;; ("REVIEW" :weight bold :foreground "orange")
+                                       ;; ;; ("REVIEW" :weight bold :foreground "DarkGoldenrod")
+                                       ;; ;; ("WAIT" :weight bold :foreground "DarkOrchid")
+                                       ;; ;; ("WAIT" :weight bold :foreground "pink")
+                                       ;; ;; ("HOLD" :weight bold :foreground "moccasin")
+                                       ;; ;; ("HOLD" :weight bold :foreground "DarkOrchid")
+                                       ;; ;; ("IDEA" :weight bold :foreground "salmon1")
+                                       ;; ("IDEA" :weight bold :foreground "Mocha")
+                                       ;; ("STOP" :weight bold :foreground "SlateGray")
+                                       ;; ;; ("STOP" :weight bold :foreground "turquoise")
                                        )))
+  )
+
+(after! org-agenda
+  ;; Org agenda files
+  (setq org-agenda-default-appointment-duration 60)
+
+
+  (setq org-agenda-skip-deadline-prewarning-if-scheduled t
+        org-agenda-skip-scheduled-if-deadline-is-shown 'not-today)
+
+  ;; agenda should be in a full window
+  ;; (add-hook 'org-agenda-finalize-hook (lambda () (delete-other-windows)))
+  (setq org-agenda-window-setup 'current-window)
 
   (setq org-agenda-custom-commands
         '(

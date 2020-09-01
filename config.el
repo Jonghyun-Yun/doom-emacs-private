@@ -38,7 +38,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
+;; (setq doom-theme 'doom-one)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -73,8 +73,8 @@
   :config
   ;; Global settings (defaults)
   ;; (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-  ;;       doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  ;; (load-theme 'doom-one t)
+        ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-one t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -155,22 +155,9 @@
                       org-ref-label-re
                       org-latex-math-environments-re
                       "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
+                      font-lock-comment-face
                       ))
               (spell-fu-mode)))
-
-  ;; (add-to-list '+spell-excluded-faces-alist
-  ;;              '(latex-mode
-  ;;                . (
-  ;;                   font-lock-function-name-face
-  ;;                   font-lock-variable-name-face
-  ;;                   font-lock-keyword-face
-  ;;                   font-lock-constant-face
-  ;;                   ;; font-lock-comment-face
-  ;;                   font-latex-math-face
-  ;;                   font-latex-sedate-face
-  ;;                   ;; font-latex-verbatim-face
-  ;;                   ;; font-latex-warning-face
-  ;;                   )))
 
   (setf (alist-get 'latex-mode +spell-excluded-faces-alist)
         '(
@@ -178,12 +165,13 @@
           font-lock-variable-name-face
           font-lock-keyword-face
           font-lock-constant-face
-          ;; font-lock-comment-face
+          font-lock-comment-face
           font-latex-math-face
           font-latex-sedate-face
           ;; font-latex-verbatim-face
           ;; font-latex-warning-face
           ))
+
   )
 
 (load! "bindings")
@@ -627,6 +615,19 @@
 
 (after! ace-window
   (setq aw-scope 'global))
+
+(use-package elfeed-score
+  :after elfeed
+  :init
+  ;; (setq elfeed-score-score-file (expand-file-name "elfeed.score" doom-local-dir))
+  (setq elfeed-score-score-file "~/Dropbox/emacs/elfeed/elfeed.score")
+  :config
+  (progn
+    (elfeed-score-enable)
+    (define-key elfeed-search-mode-map "=" elfeed-score-map)
+    ;; scores displayed in the search buffer
+    (setq elfeed-search-print-entry-function #'elfeed-score-print-entry)
+    ))
 
 (custom-set-faces!
   '(aw-leading-char-face

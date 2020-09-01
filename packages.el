@@ -110,3 +110,6 @@
 ;; (when (featurep! :ui treemacs)
   ;;   (package! treemacs-icons-dired)
   ;; )
+
+(package! elfeed-score)
+;; (package! org-ref-elfeed)
