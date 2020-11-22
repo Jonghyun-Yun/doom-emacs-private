@@ -24,8 +24,8 @@
 
 ;; only one of these hooks needs to post an event after capture.
 ;; org-gcal--capture-post throws an error
-(remove-hook 'org-capture-before-finalize-hook 'org-gcal--capture-post)
-(add-hook 'org-capture-after-finalize-hook 'sync-gcal-after-capture)
+(remove-hook 'org-capture-before-finalize-hook #'org-gcal--capture-post)
+(add-hook 'org-capture-after-finalize-hook #'sync-gcal-after-capture)
 
 (run-with-idle-timer 1800 t 'org-gcal-fetch)
 
@@ -36,6 +36,8 @@
 ;; ;; to do org-capture in calendar
 ;; (setq cfw:org-capture-templates org-gcal-capture-templates)
 )
+
+(setq cfw:display-calendar-holidays nil)
 
 ;; (use-package! calfw-ical
 ;;   :defer t

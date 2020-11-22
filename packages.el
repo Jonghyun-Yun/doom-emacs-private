@@ -63,9 +63,6 @@
 (package! latexdiff
   :recipe (:host github :repo "galaunay/latexdiff.el"))
 
-(package! mathpix.el
-  :recipe (:host github :repo "jethrokuan/mathpix.el"))
-
 (package! matlab-mode)
 
 ;; (package! scihub)
@@ -90,12 +87,12 @@
 (package! ox-hugo
   :recipe (:host github :repo "jonghyun-yun/ox-hugo" :nonrecursive t))
 
-(package! org-cv
-  :recipe (:host github
-           :repo "jonghyun-yun/org-cv"
-           :files ("*.el"))
-  ;; :pin "47ee61ce4538fe4406a68b4cfcf606e68e1f7261")
-  :pin "219203e872b2bead5805544f65c9c7294e81e071")
+;; (package! org-cv
+;;   :recipe (:host github
+;;            :repo "jonghyun-yun/org-cv"
+;;            :files ("*.el"))
+;;   ;; :pin "47ee61ce4538fe4406a68b4cfcf606e68e1f7261")
+;;   :pin "219203e872b2bead5805544f65c9c7294e81e071")
 
 ;; (package! doom-snippets
 ;;   :recipe (:host github
@@ -112,4 +109,5 @@
   ;; )
 
 (package! elfeed-score)
-;; (package! org-ref-elfeed)
+
+;; (package! org-projectile)

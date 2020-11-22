@@ -308,4 +308,21 @@
 
 ;; (setq google-translate-default-target-language "ko")
 
+(use-package! mathpix.el
+  :commands (mathpix-screenshot)
+  ;; :init
+  ;; (my-mathpix-password)
+  ;; (require 'pass t)
+  ;; (map! "C-c n m" #'mathpix-screenshot)
+  :custom
+  (mathpix-screenshot-method "screencapture -i %s")
+  (mathpix-app-id (password-store-get "mathpix/app-id"))
+  (mathpix-app-key (password-store-get "mathpix/app-key"))
+  )
+
+;; (eval-after-load "mathpix.el"
+;;   (setq mathpix-app-id (password-store-get "mathpix/app-id")
+;;         mathpix-app-key (password-store-get "mathpix/app-key"))
+;;   )
+
 ;;; packages.el ends here

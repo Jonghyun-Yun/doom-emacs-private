@@ -20,6 +20,7 @@
 ;;; Code:
 
 (use-package org-cv
+  :load-path "~/Dropbox/emacs/packages/org-cv"
   :after ox
   :init
   ;; (require 'ox-moderncv)

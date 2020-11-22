@@ -24,3 +24,12 @@
       (setq buffer-face-mode-face '(:family "Charter" :height 1.2))
       (buffer-face-mode)
       (setq-local line-spacing 0.5))
+
+
+;;;###autoload
+(defun my-mathpix-password ()
+  "load mathpix credentials"
+  (interactive)
+  (setq mathpix-app-id (password-store-get "mathpix/app-id")
+        mathpix-app-key (password-store-get "mathpix/app-key"))
+  )

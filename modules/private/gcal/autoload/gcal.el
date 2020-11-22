@@ -19,16 +19,16 @@ The function can be run automatically with the 'org-capture-after-finalize-hook'
   ) ;; (defun sync-cal-after-capture ()
 
 ;;;###autoload
-(defun cfw:hide-clutter (no-resize)
+(defun cfw:hide-routines (no-resize)
   "Skip DONE agenda items and open calfw calendar view.
    Hide items in routines.org."
   (interactive "P")
   (let ((org-agenda-skip-scheduled-if-done t)
-        (org-agenda-skip-deadline-if-done t))
-    (let
-        ((org-agenda-files (remove "~/org/routines.org" org-agenda-files)))
-
-      (cfw:refresh-calendar-buffer no-resize))))
+        (org-agenda-skip-deadline-if-done t)
+        ;; (org-agenda-files (add-to-list 'org-agenda-files "~/org/routines.org"))
+        (org-agenda-files (remove "~/org/routines.org" org-agenda-files)))
+        (cfw:refresh-calendar-buffer no-resize)
+    ))
 
 ;; ;;;###autoload
 ;; (defun cfw:hide-clutter-v1 ()
@@ -70,32 +70,39 @@ The function can be run automatically with the 'org-capture-after-finalize-hook'
 ;;;###autoload
 (defun my-open-calendar ()
   (interactive)
-    (if (featurep! :ui workspaces)
-      (+workspace-switch +my-cfw-workspace-name t)
-    (setq +my-cfw--old-wconf (current-window-configuration))
-    (delete-other-windows)
-    (switch-to-buffer (doom-fallback-buffer)))
-
-    (cfw:open-calendar-buffer
-   :contents-sources
-   (list
-    (cfw:org-create-source "RoyalBlue")  ; orgmode source
-    (cfw:ical-create-source "family" "https://calendar.google.com/calendar/ical/i05jia4grouhk4q70bgqgg6a5c%40group.calendar.google.com/private-5abbc6ea611688b084fa8d56530bc0cf/basic.ics" "goldenrod2") ;family calendar
-    ;; (cfw:ical-create-source "UTA" "https://outlook.office365.com/owa/calendar/a66ad81c4e1e4d04bf004ff7e3aa85cf@uta.edu/394d55612b0345e3b25351f3e5f91f274369194296398689097/calendar.ics" "Magenta")  ; UTA
-    (cfw:ical-create-source "routines" "https://calendar.google.com/calendar/ical/djlfniaiog40cikg9iqvatinfs%40group.calendar.google.com/private-eefd0edcd4cd4a3b027e10dd604c22ff/basic.ics" "burlywood4") ;routines
-    ;; (cfw:howm-create-source "Blue")  ; howm source
-    ;; (cfw:cal-create-source "Orange") ; diary source
-    )))
-
-;;;###autoload
-(defun my-open-org-calendar ()
-  (interactive)
+  (org-gcal-fetch)
   (if (featurep! :ui workspaces)
       (+workspace-switch +my-cfw-workspace-name t)
     (setq +my-cfw--old-wconf (current-window-configuration))
     (delete-other-windows)
     (switch-to-buffer (doom-fallback-buffer)))
-  (cfw:open-org-calendar)
+  (let
+      ((org-agenda-files (remove "~/org/routines.org" org-agenda-files)))
+    (cfw:open-calendar-buffer
+     :contents-sources
+     (list
+      ;; (cfw:org-create-source "RoyalBlue")  ; orgmode source
+      (cfw:org-create-source cfw:org-face-agenda-item-foreground-color)  ; orgmode source
+      (cfw:ical-create-source "family" "https://calendar.google.com/calendar/ical/i05jia4grouhk4q70bgqgg6a5c%40group.calendar.google.com/private-5abbc6ea611688b084fa8d56530bc0cf/basic.ics" "goldenrod2") ;family calendar
+      ;; (cfw:ical-create-source "UTA" "https://outlook.office365.com/owa/calendar/a66ad81c4e1e4d04bf004ff7e3aa85cf@uta.edu/394d55612b0345e3b25351f3e5f91f274369194296398689097/calendar.ics" "Magenta")  ; UTA
+      (cfw:ical-create-source "routines" "https://calendar.google.com/calendar/ical/djlfniaiog40cikg9iqvatinfs%40group.calendar.google.com/private-eefd0edcd4cd4a3b027e10dd604c22ff/basic.ics" "burlywood4") ;routines
+      ;; (cfw:howm-create-source "Blue")  ; howm source
+      ;; (cfw:cal-create-source "Orange") ; diary source
+      ))))
+
+;;;###autoload
+(defun my-open-org-calendar ()
+  (interactive)
+  (org-gcal-fetch)
+  (if (featurep! :ui workspaces)
+      (+workspace-switch +my-cfw-workspace-name t)
+    (setq +my-cfw--old-wconf (current-window-configuration))
+    (delete-other-windows)
+    (switch-to-buffer (doom-fallback-buffer)))
+    (let
+        ((org-agenda-files (remove "~/org/routines.org" org-agenda-files)))
+      (cfw:open-org-calendar)
+      )
   )
 
 ;;

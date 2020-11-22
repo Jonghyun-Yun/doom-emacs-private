@@ -19,7 +19,7 @@
 
 (after! org
   (add-to-list 'org-global-properties
-               '("Effort_ALL" . "0:05 0:30 1:00 1:30 2:00 3:00 4:00"))
+               '("Effort_ALL" . "0:05 0:15 0:30 1:00 1:30 2:00 3:00 4:00"))
 
   (setq org-columns-default-format
         "%25ITEM(Task) %5TODO(Todo) %3PRIORITY %TAGS %6Effort(Effort){:}")
@@ -123,7 +123,6 @@
   ;; Org agenda files
   (setq org-agenda-default-appointment-duration 60)
 
-
   (setq org-agenda-skip-deadline-prewarning-if-scheduled t
         org-agenda-skip-scheduled-if-deadline-is-shown 'not-today)
 
@@ -144,79 +143,111 @@
                  ((agenda "" (
                               (org-agenda-skip-scheduled-if-done t)
                               (org-agenda-skip-deadline-if-done t)
-                              ;; (org-agenda-span 'day)
-                              ;; (org-agenda-start-day nil)
+                              ;; (org-agenda-span 10)
+                              ;; (org-agenda-start-day "-3d")
                               (org-super-agenda-groups
-                               '((:name "Today"
+                               '(
+                                 (:discard (:and (:tag "routine" :tag ("@errand" "daily" "weekly"))))
+                                 (
+                                  :name none
                                   :time-grid t
                                   :date today
-                                  :todo "TODAY"
+                                  ;; :todo t
                                   :scheduled today
+                                  :deadline today
                                   :order 1)
-                                 (:habit t)))
+                                 (:name none
+                                  :deadline t
+                                  :scheduled t
+                                  :order 2)
+                                 (:habit t)
+                                 (:discard (:anything t))
+                                 ))
                               ))
                   (alltodo "" ((org-agenda-overriding-header "")
                                (org-super-agenda-groups
                                 '(
+                                  (:discard (:and (:tag "routine" :tag ("@errand" "daily" "weekly"))))
                                   (:name "In Progress"
                                    :todo "GO"
                                    :order 10)
                                   (:name "Next action items"
                                    :todo "NEXT"
-                                   :order 15)
-                                  (:name "Needs Review"
-                                   :todo "REVIEW"
                                    :order 20)
+                                  ;; (:name "Needs Review"
+                                  ;;  :todo "REVIEW"
+                                  ;;  :order 20)
                                   (:name "Important"
                                    :tag "important"
                                    :priority "A"
-                                   :order 60)
+                                   :order 30)
                                   (:name "Due Today"
                                    :deadline today
-                                   :order 20)
+                                   :order 40)
                                   (:name "Due Soon"
                                    :deadline future
-                                   :order 80)
+                                   :order 50)
                                   (:name "Overdue"
                                    :deadline past
-                                   :order 70)
+                                   :order 45)
                                   ;; (:name "Assignments"
                                   ;; :tag "Assignment"
                                   ;; :order 10)
                                   ;; (:name "Issues"
                                   ;; :tag "Issue"
                                   ;; :order 12)
-                                  (:name "Projects"
+                                  (:name "Projects in todo-file"
                                    :tag "project"
-                                   :children todo
-                                   :order 140)
+                                   ;; :children todo
+                                   :order 110)
                                   (:name "Emacs"
                                    :tag "emacs"
-                                   :order 130)
+                                   :order 200)
                                   (:name "Research"
                                    :tag "research"
-                                   :order 150)
+                                   :order 110)
                                   (:name "To read"
                                    :tag "literature"
-                                   :order 300)
+                                   :order 150)
                                   (:name "Waiting"
                                    :todo ("WAIT" "HOLD")
-                                   :order 200)
+                                   :order 95)
                                   (:name "Reminder"
-                                   :tag ("reminder")
-                                   :order 300)
-                                  (:name "Routine"
-                                   :discard (:tag ("chore" "daily" "weekly"))
-                                   :tag ("routine")
-                                   :order 500)
+                                   :and (:tag "reminder")
+                                   ;; :scheduled (before ,target-date))
+                                   :order 95)
                                   (:name "Trivial"
                                    :priority<= "C"
                                    :tag ("trivial" "unimportant")
                                    :todo ("IDEA" )
                                    :order 1000)
-                                  (:name "Scheduled earlier"
-                                   :scheduled past)
-                                  (:discard (:tag ("@errand" "chore" "daily" "weekly")))))))))
+                                  (:name "Not today"
+                                   :and (:scheduled future :not (:tag "routine"))
+                                   :order 60)
+                                  ;; (:name "Projects"
+                                  ;; :file-path "projects")
+                                  (:name "Unscheduled"
+                                   :scheduled nil
+                                   :order 100)
+                                  (:discard (:scheduled today))
+                                  (:discard (:scheduled past))
+                                  ;; (:name "Routine"
+                                  ;; :discard (:tag ("chore" "daily" "weekly"))
+                                  ;; :tag ("routine")
+                                  ;; :order 5000)
+                                  (:discard (:tag ("routine")))
+                                  ))))
+                  (alltodo ""
+                           ((org-agenda-files '("~/org/someday.org"))
+                            (org-agenda-overriding-header "")
+                            (org-super-agenda-groups
+                             '(
+                               (:name "Someday / Maybe"  ; Disable super group header
+                                :anything t
+                                )
+                               ))
+                            ))
+                  ))
                )
 
   (setq ;; spacemacs-theme-org-agenda-height t
@@ -231,10 +262,11 @@
 
   (add-to-list 'org-agenda-custom-commands
                '("gP" "Printed agenda"
-                 ((agenda "" ((org-agenda-span 7)                      ;; overview of appointments
-                              (org-agenda-start-on-weekday nil)         ;; calendar begins today
-                              (org-agenda-repeating-timestamp-show-all t)
-                              (org-agenda-entry-types '(:timestamp :sexp))))
+                 (
+                  ;; (agenda "" ((org-agenda-span 7)                      ;; overview of appointments
+                  ;;             (org-agenda-start-on-weekday nil)         ;; calendar begins today
+                  ;;             (org-agenda-repeating-timestamp-show-all t)
+                  ;;             (org-agenda-entry-types '(:timestamp :sexp))))
                   (agenda "" ((org-agenda-span 1)                      ; daily agenda
                               (org-deadline-warning-days 7)            ; 7 day advanced warning for deadlines
                               (org-agenda-todo-keyword-format "[ ]")
@@ -257,17 +289,26 @@
   (add-to-list 'org-agenda-custom-commands
                '("go" "Project View"
                  (
-                  (agenda "" ((org-super-agenda-groups
-                               '((:name "Today"
-                                  :time-grid t)))))
-                  (todo "" ((org-agenda-overriding-header "Projects")
-                               (org-super-agenda-groups
-                                '((
-                                   :name none  ; Disable super group header
-                                   :children todo)
-                                   ;;(:discard (:anything t))
-                                  ))
+                  (alltodo ""
+                           ((org-agenda-files '("~/org/projects.org"))
+                            (org-agenda-overriding-header "Projects")
+                            (org-super-agenda-groups
+                             '(
+                               (:name none  ; Disable super group header
+                                :auto-outline-path t)
+                               (:discard (:anything t))
                                ))
+                            ))
+                  (alltodo ""
+                           ((org-agenda-files '("~/org/todo.org"))
+                            (org-agenda-overriding-header "Projects in todo-file")
+                            (org-super-agenda-groups
+                             '(
+                               (:name none  ; Disable super group header
+                                :tag "project")
+                               (:discard (:anything t))
+                               ))
+                            ))
                   )))
 
   (add-to-list 'org-agenda-custom-commands
@@ -276,7 +317,11 @@
                            ((org-agenda-files '("~/org/inbox.org"))
                             (org-agenda-overriding-header "Inbox")
                             (org-super-agenda-groups
-                             '((:auto-ts t))))))))
+                             '(
+                               ;; (:auto-parent t)
+                               (:auto-ts t)
+                               ;;(:anything t)
+                               )))))))
 
   (add-to-list 'org-agenda-custom-commands
                '("gx" "Get to someday"
@@ -293,42 +338,43 @@
                          (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp 'todo '("DONE" "STOP" "IDEA" "WAIT" "HOLD"))))))) t)
 
   (add-to-list 'org-agenda-custom-commands
-               '("lr" "Recent Open Loops" agenda ""
-                 ((org-agenda-start-day "-2d")
-                  (org-agenda-span 4)
-                  (org-agenda-start-with-log-mode t))))
+               '("gr" "Routines"
+                 ((alltodo ""
+                           ((org-agenda-files '("~/org/routines.org"))
+                            (org-agenda-overriding-header "Routines")
+                            (org-super-agenda-groups
+                             '(
+                               ;; (:auto-parent t)
+                               (:auto-ts t)
+                               ;;(:anything t)
+                               )))))))
 
-  (add-to-list 'org-agenda-custom-commands
-               '("ll" "Longer Open Loops" agenda ""
-                 ((org-agenda-start-day "-14d")
-                  (org-agenda-span 28)
-                  (org-agenda-start-with-log-mode t))))
-
-  (add-to-list 'org-agenda-custom-commands
-               '("Qa" "Archive search" search ""
-                 ((org-agenda-files (file-expand-wildcards "~/org/*.org_archive")))))
-
-  (add-to-list 'org-agenda-custom-commands
-               '("Qw" "Website search" search ""
-                 ((org-agenda-files (file-expand-wildcards "~/website/*.org")))))
-
-  (add-to-list 'org-agenda-custom-commands
-               '("Qb" "Projects and Archive" search ""
-                 ((org-agenda-text-search-extra-files (file-expand-wildcards "~/archive/*.org_archive")))))
-
-  (add-to-list 'org-agenda-custom-commands
-               '("QA" "Archive tags search" org-tags-view ""
-                 ((org-agenda-files (file-expand-wildcards "~/org/*.org_archive"))))
-               )
-
-  (add-to-list 'org-agenda-custom-commands
-               '("pa" "A items" tags-todo "+PRIORITY=\"A\""))
-
-  (add-to-list 'org-agenda-custom-commands
-               '("pb" "B items" tags-todo "+PRIORITY=\"B\""))
-
-  (add-to-list 'org-agenda-custom-commands
-               '("pc" "C items" tags-todo "+PRIORITY=\"C\""))
+  (setq org-agenda-custom-commands
+        (append org-agenda-custom-commands
+                '(
+                  ;; open loops
+                  ("lr" "Recent Open Loops" agenda ""
+                   ((org-agenda-start-day "-2d")
+                    (org-agenda-span 4)
+                    (org-agenda-start-with-log-mode t)))
+                  ("ll" "Longer Open Loops" agenda ""
+                   ((org-agenda-start-day "-14d")
+                    (org-agenda-span 28)
+                    (org-agenda-start-with-log-mode t)))
+                  ;; search
+                  ("Qh" "Archive search" search ""
+                   ((org-agenda-files (file-expand-wildcards "~/org/*.org_archive"))))
+                  ("Qw" "Website search" search ""
+                   ((org-agenda-files (file-expand-wildcards "~/website/*.org"))))
+                  ("Qb" "Projects and Archive" search ""
+                   ((org-agenda-text-search-extra-files (file-expand-wildcards "~/archive/*.org_archive"))))
+                  ("QA" "Archive tags search" org-tags-view ""
+                   ((org-agenda-files (file-expand-wildcards "~/org/*.org_archive"))))
+                  ;; priority
+                  ("pa" "A items" tags-todo "+PRIORITY=\"A\"")
+                  ("pb" "B items" tags-todo "+PRIORITY=\"B\"")
+                  ("pc" "C items" tags-todo "+PRIORITY=\"C\"")
+                  )))
 
   ;; (bind-keys :prefix-map review-map
   ;;            :prefix "C-c r"

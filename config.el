@@ -27,12 +27,14 @@
       ;; doom-serif-font (font-spec :family "Source Serif Pro")
       ;; )
 
+;; "Iosevka SS05" ;; Monospace, Fira Mono Style
 ;; "Iosevka SS08" ;; Monospace, Pragmata Pro Style
 ;; "Iosevka SS09" ;; Monospace, Source Code Pro Style
-(setq doom-font (font-spec :family "Iosevka SS08" :size 22 :weight 'light)
+;; "Iosevka SS13" ;; Monospace, Lucida Style
+(setq doom-font (font-spec :family "Iosevka" :size 22 :weight 'light)
       doom-variable-pitch-font (font-spec :family "Iosevka Sparkle" :weight 'light)
-      ;; doom-unicode-font (font-spec :family "Iosevka SS08" :weight 'light)
-      doom-big-font (font-spec :family "Iosevka SS08" :size 26 :weight 'light)
+      doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
+      doom-big-font (font-spec :family "Iosevka" :size 26 :weight 'light)
       )
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
@@ -112,14 +114,14 @@
   (projectile-add-known-project "~/research/s.ham/RAS")
   )
 
-(setq ispell-program-name "hunspell")
-(setq ispell-hunspell-dict-paths-alist
+(setq ispell-program-name "hunspell"
+      ispell-check-comments nil
+      ispell-hunspell-dict-paths-alist
       '(
         ("en_US" "/Users/yunj/Library/Spelling/en_US.aff")
         ("ko" "/Users/yunj/Library/Spelling/ko.aff")
         ("en_US-med" "/Users/yunj/Library/Spelling/en_US-med.aff"))
-      )
-(setq ispell-hunspell-dictionary-alist
+      ispell-hunspell-dictionary-alist
       '(
         ("ko_KR"
          "[가-힣]"
@@ -133,9 +135,7 @@
          ;; "[']" t
          ("-d" "en_US,en_US-med")
          nil utf-8))
-      )
-(setq ispell-dictionary-alist ispell-hunspell-dictionary-alist)
-
+      ispell-dictionary-alist ispell-hunspell-dictionary-alist)
 ;; (ispell-set-spellchecker-params) ; Initialize variables and dicts alists
 (setq ispell-local-dictionary "en_US")
 (setq ispell-personal-dictionary "/Users/yunj/.hunspell_en_US")
@@ -171,7 +171,6 @@
           ;; font-latex-verbatim-face
           ;; font-latex-warning-face
           ))
-
   )
 
 (load! "bindings")
@@ -180,12 +179,14 @@
   (load! "lisp/mu4e-plus"))
 
 (load! "lisp/latex-plus")
-(setq +latex-viewers '(skim pdf-tools))
+;; (setq +latex-viewers '(skim pdf-tools))
+(setq +latex-viewers '(pdf-tools skim))
 
 (after! ess
   (load! "lisp/ess-plus")
   (evil-set-initial-state 'inferior-ess-mode 'emacs)
   )
+
 (after! ess-mode
   (setq ess-r-smart-operators t
         ess-use-ido t) ;; what is this?
@@ -202,20 +203,20 @@
   (setq plantuml-jar-path "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar"
         org-plantuml-jar-path plantuml-jar-path)
   )
-
-(setq ispell-check-comments nil)
-
-;; spacemacs value of parameters
-(setq scroll-conservatively 0)
-
 ;; prevent some cases of Emacs flickering
 (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
 
-(auto-save-visited-mode +1)
+;; maximize frame at startup
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+
+;; Backups & Autosave
+;; (auto-save-visited-mode +1)
+(setq auto-save-default t
+      create-lockfiles t
+      make-backup-files nil)
+
 ;; no accumulating drafts
 (add-hook 'mu4e-compose-mode-hook #'(lambda () (auto-save-visited-mode -1)))
-
-;; wonder what happedn if I accidently close it
 
 (setq company-idle-delay nil
       company-tooltip-limit 10
@@ -252,10 +253,12 @@
    ;; custom_id -> \label
    ;; org-latex-prefer-user-labels t
    org-log-done 'time
+   ;; latex highlight
+   org-highlight-latex-and-related '(native)
+   ;; don't ask to follow elisp link
+   org-confirm-elisp-link-function nil
    )
   ;; (setq org-insert-heading-respect-content nil)
-
-  (setq org-highlight-latex-and-related '(native))
 
   (setq org-preview-latex-image-directory "ltximg/"
         ;; org-archive-location ".archive/%s::"
@@ -298,38 +301,17 @@
   ;; (plist-put org-format-latex-options :scale 1.5) ; larger previews
   ;; )
 
-(use-package! mathpix.el
-  :commands (mathpix-screenshot)
-  ;; :init
-  ;; (map! "C-c n m" #'mathpix-screenshot)
-  :custom
-  (mathpix-screenshot-method "screencapture -i %s")
-  (mathpix-app-id (password-store-get "mathpix/app-id"))
-  (mathpix-app-key (password-store-get "mathpix/app-key"))
-  )
-
 (with-eval-after-load 'org-roam
   (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox-bin")
   ;; (setq org-roam-graph-executable "neato")
   ;; (setq org-roam-graph-extra-config '(("overlap" . "false")))
   )
 
-;; ;; improve slow scrolling?
-;; (use-package! hl-line+
-;;  :config
-;;  (hl-line-when-idle-interval 0.5)
-;;  (toggle-hl-line-when-idle 1))
-
-;; maximize frame at startup
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
-
-;; Backups
-;; (setq make-backup-files t
-;;       backup-by-copying t
-;;       delete-old-versions t
-;;       kept-new-versions 6
-;;       kept-old-versions 2
-;;       version-control t)
+;; improve slow scrolling?
+(use-package! hl-line+
+  :config
+  (hl-line-when-idle-interval 0.5)
+  (toggle-hl-line-when-idle 1))
 
 (setq garbage-collection-messages nil)
 ;;; Fewer garbage collection
@@ -393,10 +375,6 @@
 ;; (evil-set-initial-state 'elfeed-search-mode 'emacs)
 ;; (evil-set-initial-state 'elfeed-shoe-mode 'emacs)
 
-;; set korean keyboard layout
-;; C-\ to switch input-method
-(setq default-input-method "korean-hangul3f")
-
 ;; ;; savehist-mode history length
 ;; (setq history-length 1000)
 ;; (put 'minibuffer-history 'history-length 50)
@@ -428,19 +406,9 @@
 ;;       large-file-warning-threshold nil
 ;;       line-move-visual nil)
 
-;; Hangout
-(after! jabber
-  (setq jabber-account-list '(("jonghyun.yun@gmail.com/emacs"
-                               (:password. (password-store-get "hangouts/password"))
-                               (:network-server . "talk.google.com")
-                               (:connection-type . starttls)
-                               )))
-  ;; (jabber-connect-all)
-  )
-
-(after! paradox
-  (setq paradox-github-token (password-store-get "paradox/github-token"))
-  )
+;; set korean keyboard layout
+;; C-\ to switch input-method
+(setq default-input-method "korean-hangul3f")
 
 ;; Other options
 ;; replace highlighted text with what I type
@@ -449,6 +417,8 @@
 (setq display-time-24hr-format t
       mouse-autoselect-window nil
       ;; indicate-unused-lines nil
+      ;; spacemacs value of parameters
+      scroll-conservatively 0
       )
 (blink-cursor-mode t)
 ;; (display-time-mode t)
@@ -583,6 +553,20 @@
   (setq doom-modeline-env-version nil)
   )
 
+;; Hangout
+(after! jabber
+  (setq jabber-account-list '(("jonghyun.yun@gmail.com/emacs"
+                               (:password. (password-store-get "hangouts/password"))
+                               (:network-server . "talk.google.com")
+                               (:connection-type . starttls)
+                               )))
+  ;; (jabber-connect-all)
+  )
+
+(after! paradox
+  (setq paradox-github-token (password-store-get "paradox/github-token"))
+  )
+
 (with-eval-after-load 'notmuch
   (setq +notmuch-sync-backend 'mbsync
         +notmuch-sync-command "mbsync -a"
@@ -596,7 +580,7 @@
 
 (after! org-msg
   (setq org-msg-options
-        (concat org-msg-options " num:nil"))
+        (concat org-msg-options " num:nil tex:dvipng"))
   )
 
 ;; OS X ls not working with --quoting-style=literal
@@ -616,11 +600,15 @@
 (after! ace-window
   (setq aw-scope 'global))
 
+(after! elfeed
+  (setq elfeed-search-title-max-width 100
+        elfeed-search-title-min-width 20)
+  )
+
 (use-package elfeed-score
   :after elfeed
   :init
-  ;; (setq elfeed-score-score-file (expand-file-name "elfeed.score" doom-local-dir))
-  (setq elfeed-score-score-file "~/Dropbox/emacs/elfeed/elfeed.score")
+  (setq elfeed-score-score-file (expand-file-name "elfeed.score" doom-private-dir))
   :config
   (progn
     (elfeed-score-enable)
@@ -639,8 +627,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files
-   '("~/Dropbox/research/lsjm-art/lsjm-art.org" "~/org/inbox.org" "~/org/todo.org" "~/org/gcal.org" "~/org/projects.org" "~/org/tickler.org" "~/org/routines.org"))
  '(safe-local-variable-values '((TeX-engine . xetex))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

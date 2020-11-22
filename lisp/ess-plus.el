@@ -59,10 +59,13 @@
 ;; (setq ess-swv-plug-into-AUCTeX-p t)
 ;; (setq ess-swv-processor 'knitr)
 
+;; (setq auto-mode-alist (delete '("\\.Snw\\'" . poly-noweb+r-mode) auto-mode-alist))
+;; (setq auto-mode-alist (delete '("\\.[rR]nw\\'" . poly-noweb+r-mode) auto-mode-alist))
+
 ;; ESS drops the support for Rnw
-(add-to-list 'auto-mode-alist '("\\.[sS]nw" . Sweave-mode))
-(add-to-list 'auto-mode-alist '("\\.[rR]nw" . Sweave-mode))
-(add-to-list 'auto-mode-alist '("\\.[rR]markdown" . ploy-markdown+R-mode))
+(add-to-list 'auto-mode-alist '("\\.[sS]nw\\'" . Sweave-mode))
+(add-to-list 'auto-mode-alist '("\\.[rR]nw\\'" . Sweave-mode))
+(add-to-list 'auto-mode-alist '("\\.[rR]markdown\\'" . ploy-markdown+R-mode))
 
 (defun Sweave-mode ()
   "ESS Sweave mode for Rnw files."

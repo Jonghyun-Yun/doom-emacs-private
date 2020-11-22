@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(org-agenda-files
-   '("~/Dropbox/MobileOrg/refnotes.org" "~/OneDrive/research/s.ham/RAS/aggregate.org" "~/org/inbox.org" "~/org/todo.org" "~/org/gcal.org" "~/org/projects.org" "~/org/tickler.org" "~/org/routines.org"))
+   '("~/org/inbox.org" "~/org/todo.org" "~/org/gcal.org" "~/org/projects.org" "~/org/tickler.org" "~/org/routines.org" "~/Dropbox/research/lsjm-art/lsjm-art.org"))
  '(package-selected-packages '(exwm))
  '(safe-local-variable-values '((TeX-engine . xetex))))
 (custom-set-faces

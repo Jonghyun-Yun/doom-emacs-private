@@ -58,14 +58,16 @@
 (defun my-org-super-agenda-view ()
   (interactive)
   (let (
-        ;;(org-agenda-time-grid '((daily today require-timed) "----------------------" nil))
+        ;; (org-agenda-time-grid '((daily today require-timed) "----------------------" nil))
         (org-agenda-skip-scheduled-if-done t)
         (org-agenda-skip-deadline-if-done t)
-        (org-agenda-include-deadlines nil)
+        (org-agenda-include-deadlines t)
         (org-agenda-include-diary t)
         (org-agenda-block-separator nil)
         (org-agenda-compact-blocks t)
         (org-agenda-start-with-log-mode t)
+        (org-agenda-span 'day)
+        (org-agenda-start-day nil)
         )
     (org-agenda nil "gs")))
 
@@ -73,3 +75,22 @@
 (defun my-org-agenda-inbox ()
   (interactive)
   (org-agenda nil "gi"))
+
+;;;###autoload
+(defun my-org-agenda-routine ()
+  (interactive)
+  (org-agenda nil "gr"))
+
+;;;###autoload
+(defun my-calendar-forward-month (arg)
+  "forward ARG months from today.
+Movement is backward if ARG is negative."
+  (-let* (((sec minute hour day month year dow dst utcoff) (decode-time))
+          (last (progn
+                  (calendar-increment-month month year arg)
+                  (calendar-last-day-of-month month year)))
+          (day (min last day))
+          (target-date
+           (format "%d-%02d-%02d" year month day)))
+    target-date
+    ))

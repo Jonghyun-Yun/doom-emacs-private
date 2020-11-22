@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: read_csv
 # uuid: read_csv
-# key: read_csv
+# key: read
 # condition: t
 # --
 readr::read_csv(file = "${1:filename}.csv", col_names = ${2:T})$0

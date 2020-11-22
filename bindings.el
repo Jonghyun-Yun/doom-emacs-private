@@ -72,19 +72,26 @@
 (bind-keys :map gtd-map
            ("i" . my-org-agenda-inbox)
            ("s" . my-org-super-agenda-view)
+           ("r" . my-org-agenda-routine)
            ;; review
-           ("r d" . my-new-daily-review)
-           ("r w" . my-new-weekly-review)
-           ("r m" . my-new-monthly-review)
+           ("d" . my-new-daily-review)
+           ("w" . my-new-weekly-review)
+           ("m" . my-new-monthly-review)
            ;; calendar
-           ("c c" . my-open-calendar)
-           ("c o" . my-open-org-calendar)
-           ("c f" . org-gcal-fetch)
-           ("c D" . org-gcal-delete-at-point)
-           ("c P" . org-gcal-post-at-point)
+           ("c" . my-open-calendar)
+           ("o" . my-open-org-calendar)
+           ("f" . org-gcal-fetch)
+           ("D" . org-gcal-delete-at-point)
+           ("P" . org-gcal-post-at-point)
            )
 
 (map!
+ (:map cfw:calendar-mode-map
+  :e "R" #'cfw:hide-routines)
+
+ ;; (:map inferior-ess-mode-map
+  ;; "tab" #'completion-at-point)
+
  :n "C-t"   nil
  :n "C-S-t" nil
  :g "M-1"   #'winum-select-window-1
@@ -123,7 +130,9 @@
  :g "s-0"   #'+workspace/switch-to-final
  )
 
-(map! :g "C-c s t" #'+lookup/dictionary-definition)
+(map! :g "C-c s t" #'+lookup/dictionary-definition
+      :leader
+      "i m" #'mathpix-screenshot)
 
 (when (featurep! :private write)
   (map!
@@ -138,5 +147,3 @@
    )
   )
 
-(map! :leader
-      "i m" #'mathpix-screenshot)

@@ -21,8 +21,7 @@
 
        :completion
        (company           ; the ultimate code completion backend
-        +childframe
-        )
+        +childframe)
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        (ivy                ; a search engine for love and life
@@ -36,11 +35,12 @@
        doom              ; what makes DOOM look the way it does
        ;;doom-dashboard    ; a nifty splash screen for Emacs
        ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
+       ;;(emoji +unicode)  ; 🙂
        ;;fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        hydra
        ;;indent-guides     ; highlighted indent columns
-       ;;ligatures         ; ligatures and symbols to make your code pretty again
+       ligatures         ; ligatures and symbols to make your code pretty again
        ;;minimap           ; show a map of the code on the side
        modeline          ; snazzy, Atom-inspired modeline, plus API
        ;;nav-flash         ; blink cursor line after big motions
@@ -141,7 +141,7 @@
        ;;(go +lsp)         ; the hipster dialect
        ;;(haskell +dante)  ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
-       ;;idris             ;
+       ;;idris             ; a language you can depend on
        json              ; At least it ain't XML
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
@@ -149,8 +149,7 @@
        ;;kotlin            ; a better, slicker Java(Script)
        (latex              ; writing papers in Emacs has never been so fun
         +latexmk
-        +cdlatex
-        )
+        +cdlatex)
        ;;lean
        ;;factor
        ledger            ; an accounting system in Emacs
@@ -161,13 +160,13 @@
        ;;ocaml             ; an objective camel
        (org               ; organize your plain life in plain text
         +dragndrop        ; drag & drop files/images into org buffers
-        +hugo
+        +hugo             ; Enables integration with hugo to export from Emacs well-formed
         +journal          ; Enables org-journal integration.
-        +noter
-        +pandoc          ; export-with-pandoc support
-        +pomodoro        ; be fruitful with the tomato technique
-        +present         ; using org-mode for presentations
-        +roam
+        +noter            ; Keeps notes in sync with a document
+        +pandoc           ; export-with-pandoc support
+        +pomodoro         ; be fruitful with the tomato technique
+        +present          ; using org-mode for presentations
+        +roam             ; Enables org-roam integration
         )
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
