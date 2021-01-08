@@ -25,9 +25,11 @@
 
 ")
 
-  (setq org-ref-open-pdf-function 'org-ref-open-pdf-at-point
-        org-ref-notes-function #'org-ref-notes-function-one-file
-        )
+  (setq org-ref-open-pdf-function 'org-ref-open-pdf-at-point)
+  ;; (setq org-ref-notes-function #'org-ref-notes-function-one-file)
+  ;; (setq org-ref-notes-function #'org-ref-notes-function-many-files)
+
+
 
   ;; override functions in org-ref
   (load! "autoload/bibtex-pdf")
@@ -218,6 +220,8 @@
 (after! ivy-bibtex
 
   (setq ivy-bibtex-default-action 'ivy-bibtex-insert-key)
+  ;; (setq ivy-bibtex-default-action 'ivy-bibtex-open-any)
+
   ;; (add-to-list 'ivy-re-builders-alist '(ivy-bibtex . ivy--regex-plus))
   (when IS-MAC
     (ivy-bibtex-ivify-action bibtex-completion-quicklook ivy-bibtex-quicklook)

@@ -21,13 +21,15 @@
 
        :completion
        (company           ; the ultimate code completion backend
-        +childframe)
+        +childframe
+        )
        ;;helm              ; the *other* search engine for love and life
-       ;;ido               ; the other *other* search engine...
+       ;; ido               ; the other *other* search engine...
        (ivy                ; a search engine for love and life
         +fuzzy
         +prescient
-        +childframe
+        ;; +childframe          ; disabled: ~fit-frame-to-buffer~ is very slow
+        +icons
         )
 
        :ui
@@ -35,8 +37,8 @@
        doom              ; what makes DOOM look the way it does
        ;;doom-dashboard    ; a nifty splash screen for Emacs
        ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
-       ;;(emoji +unicode)  ; 🙂
-       ;;fill-column       ; a `fill-column' indicator
+       ;; (emoji +unicode)  ; 🙂
+       ;; fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        hydra
        ;;indent-guides     ; highlighted indent columns
@@ -49,7 +51,7 @@
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
        ;;tabs              ; a tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
-       ;;unicode           ; extended unicode support for various languages
+       unicode           ; extended unicode support for various languages
        ;;vc-gutter         ; vcs diff in the fringe
        ;;vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        (window-select
@@ -61,7 +63,9 @@
        (evil +everywhere); come to the dark side, we have cookies
        file-templates    ; auto-snippets for empty files
        fold              ; (nigh) universal code folding
-       ;;(format +onsave)  ; automated prettiness
+       (format           ; automated prettiness
+        ;; +onsave
+        )
        ;;god               ; run Emacs commands without modifier keys
        ;;lispy             ; vim for lisp, for people who don't like vim
        multiple-cursors  ; editing in many places at once
@@ -72,7 +76,8 @@
        ;;word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
-       dired             ; making dired pretty [functional]
+       (dired             ; making dired pretty [functional]
+        +icons)
        electric          ; smarter, keyword-based electric-indent
        ibuffer           ; interactive buffer management
        undo              ; persistent, smarter undo for your inevitable mistakes
@@ -82,14 +87,15 @@
        eshell            ; the elisp shell that works everywhere
        ;;shell             ; simple shell REPL for Emacs
        ;;term              ; basic terminal emulator for Emacs
-       ;;vterm             ; the best terminal emulation in Emacs
+       ;; vterm             ; the best terminal emulation in Emacs
 
        :checkers
        (syntax              ; tasing you for every semicolon you forget
-        +childframe)
+        +childframe
+        )
        (spell              ; tasing you for misspelling mispelling
         +hunspell)
-       ;;grammar           ; tasing grammar mistake every you make
+       ;; grammar           ; tasing grammar mistake every you make
 
        :tools
        ;;ansible
@@ -205,8 +211,10 @@
        (default +bindings +smartparens)
 
        :private
-       biblio
        reference
+       (biblio
+        +roam-bibtex
+        )
        write
        gcal
        dired-plus

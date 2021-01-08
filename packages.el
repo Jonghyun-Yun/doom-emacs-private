@@ -110,4 +110,9 @@
 
 (package! elfeed-score)
 
-;; (package! org-projectile)
+(package! jabber)
+(package! srv) ;; jabber dependency
+(package! fsm) ;; jabber dependency
+
+;;; disabled packages
+(package! writegood-mode :disable t)

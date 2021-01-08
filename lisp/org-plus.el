@@ -229,7 +229,7 @@
     (setq org-gcal-capture-templates
           '("s" "Scedule an event" entry
             (file "~/org/gcal.org")
-            "* %^{Scheduling...} \n:PROPERTIES: \n:calendar-id: jonghyun.yun@gmail.com \n:LOCATION: %^{Location} \n:END: \n:org-gcal: \n%^T \n:END:\n %i\n %?\n"
+            "* %^{Scheduling...} \n:PROPERTIES: \n:calendar-id: jonghyun.yun@gmail.com \n:LOCATION: %^{Location} \n:END: \n:org-gcal: \n%^T \n%i\n%? \n:END:\n\n"
             :prepend t))
 
     (add-to-list 'org-capture-templates org-gcal-capture-templates)

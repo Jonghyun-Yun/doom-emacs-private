@@ -1,8 +1,9 @@
 ;;; private/gcal/autoload/gcal.el -*- lexical-binding: t; -*-
 ;;;###if (and (featurep! :lang org) (featurep! :app calendar))
+
 ;;;###autoload
 (defun sync-gcal-after-capture ()
-  "Sync calendar after a event was added with org-capture.
+  "Sync calendar after an event was added with org-capture.
 The function can be run automatically with the 'org-capture-after-finalize-hook'."
   ;; (if (not (equal "SA" (org-capture-get :key)))
   (when (equal "s" (org-capture-get :key))
@@ -16,7 +17,7 @@ The function can be run automatically with the 'org-capture-after-finalize-hook'
         (org-capture-goto-last-stored) ;; https://github.com/kidd/org-gcal.el/issues/62
         (org-gcal-post-at-point))
     ) ;; when
-  ) ;; (defun sync-cal-after-capture ()
+  ) ;; (defun sync-gcal-after-capture ()
 
 ;;;###autoload
 (defun cfw:hide-routines (no-resize)

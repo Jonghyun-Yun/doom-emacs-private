@@ -86,12 +86,13 @@ In case of directory the path must end with a slash."
   ;; (setq org-ref-open-pdf-function 'org-ref-open-pdf-at-point)
   ;; orb will define handlers for note taking so not needed to use the
   ;; ones set for bibtex-completion
-  ;; (unless (featurep! +roam-bibtex)
-  ;;   ;; Allow org-ref to use the same template mechanism as {helm,ivy}-bibtex for
-  ;;   ;; multiple files if the user has chosen to spread their notes.
-  ;;   (setq org-ref-notes-function (if (directory-name-p org-ref-notes-directory)
-  ;;                                    #'org-ref-notes-function-many-files
-  ;;                                  #'org-ref-notes-function-one-file)))
+
+  (unless (featurep! +roam-bibtex)
+    ;; Allow org-ref to use the same template mechanism as {helm,ivy}-bibtex for
+    ;; multiple files if the user has chosen to spread their notes.
+    (setq org-ref-notes-function (if (directory-name-p org-ref-notes-directory)
+                                     #'org-ref-notes-function-many-files
+                                   #'org-ref-notes-function-one-file)))
 
   )
 

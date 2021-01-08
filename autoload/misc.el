@@ -33,3 +33,15 @@
   (interactive)
   (ediff-files (expand-file-name "init.el" doom-private-dir)
                (expand-file-name "init.example.el" user-emacs-directory)))
+
+;;;###autoload
+;;; to run jabber.el in emacs 27+
+(defun assoc-ignore-case (KEY LIST)
+  "This function is obsolete since 22.1;
+  use `assoc-string' instead.
+
+  Like `assoc', but ignores differences in case and text representation.
+  KEY must be a string. Upper-case and lower-case letters are treated as equal.
+  Unibyte strings are converted to multibyte for comparison."
+  (assoc-string KEY LIST)
+    )

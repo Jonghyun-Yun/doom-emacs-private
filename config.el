@@ -31,11 +31,12 @@
 ;; "Iosevka SS08" ;; Monospace, Pragmata Pro Style
 ;; "Iosevka SS09" ;; Monospace, Source Code Pro Style
 ;; "Iosevka SS13" ;; Monospace, Lucida Style
-(setq doom-font (font-spec :family "Iosevka" :size 22 :weight 'light)
-      doom-variable-pitch-font (font-spec :family "Iosevka Sparkle" :weight 'light)
-      doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
-      doom-big-font (font-spec :family "Iosevka" :size 26 :weight 'light)
-      )
+(setq
+ doom-font (font-spec :family "Iosevka SS08" :size 22 :weight 'light)
+ doom-variable-pitch-font (font-spec :family "Iosevka Sparkle" :weight 'light)
+ doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
+ doom-big-font (font-spec :family "Iosevka SS08" :size 26 :weight 'light)
+ )
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -97,15 +98,50 @@
 ;;   (add-hook 'dired-mode-hook #'treemacs-icons-dired-mode)
 ;;   )
 
+(after! unicode-fonts
+  ;; fix Hangul fonts for Jamo
+  (dolist (unicode-block '("Hangul Compatibility Jamo"
+                           "Hangul Jamo"
+                           "Hangul Jamo Extended-A"
+                           "Hangul Jamo Extended-B"
+                           "Hangul Syllables"))
+    (push "Sarasa Mono K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+
+  ;; ;; Math unicode
+  ;; (dolist (unicode-block '(
+  ;;                    "Letterlike Symbols"
+  ;;                    "Mathematical Alphanumeric Symbols"
+  ;;                    "Mathematical Operators"
+  ;;                    "Miscellaneous Mathematical Symbols-A"
+  ;;                    "Miscellaneous Mathematical Symbols-B"
+  ;;                    "Miscellaneous Technical"
+  ;;                    "Number Forms"
+  ;;                    "Superscripts and Subscripts"
+  ;;                    "Supplemental Arrows-A"
+  ;;                    "Supplemental Arrows-B"
+  ;;                    "Supplemental Arrows-C"
+  ;;                    "Supplemental Mathematical Operators"))
+  ;;   (push
+  ;;    "XITS Math"
+  ;;    ;; "DejaVu Math TeX Gyre"
+  ;;    (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+  )
+
 ;; disable flycheck by default
 (after! flycheck
   (remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
   )
 
+
 ;; make-frame doesn't create a new persp
 (after! persp-mode
   (remove-hook 'after-make-frame-functions #'persp-init-new-frame)
   )
+
+(setq
+ ;; persp-add-buffer-on-after-change-major-mode 'free
+ ;; persp-add-buffer-on-after-change-major-mode-filter-functions nil
+ persp-nil-name "main")
 
 (after! projectile
   (projectile-add-known-project "~/Dropbox/research/lsjm-art")
@@ -113,6 +149,9 @@
   (projectile-add-known-project "~/OneDrive/research/lapf")
   (projectile-add-known-project "~/research/s.ham/RAS")
   )
+
+;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
+;; (remove-hook 'ivy-mode-hook #'ivy-rich-mode)
 
 (setq ispell-program-name "hunspell"
       ispell-check-comments nil
@@ -145,19 +184,51 @@
   (setq spell-fu-idle-delay 0.5)
   ;; (global-spell-fu-mode -1)
 
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (setq spell-fu-faces-exclude
-                    '(
-                      org-property-drawer-re
-                      org-ref-cite-re
-                      org-ref-ref-re
-                      org-ref-label-re
-                      org-latex-math-environments-re
-                      "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
-                      font-lock-comment-face
-                      ))
-              (spell-fu-mode)))
+  ;; (add-hook 'org-mode-hook
+  ;;           (lambda ()
+  ;;             (setq spell-fu-faces-exclude
+  ;;                   '(
+  ;;                     org-property-drawer-re
+  ;;                     org-ref-cite-re
+  ;;                     org-ref-ref-re
+  ;;                     org-ref-label-re
+  ;;                     org-latex-math-environments-re
+  ;;                     "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
+  ;;                     font-lock-comment-face
+  ;;                     ))
+  ;;             (spell-fu-mode)))
+
+  (setf (alist-get 'org-mode +spell-excluded-faces-alist)
+        '(
+          org-block
+          org-block-begin-line
+          org-block-end-line
+          org-code
+          org-date
+          org-formula
+          org-latex-and-related
+          org-link
+          org-meta-line
+          org-property-value
+          org-ref-cite-face
+          org-special-keyword
+          org-tag
+          org-todo
+          org-todo-keyword-done
+          org-todo-keyword-habt
+          org-todo-keyword-kill
+          org-todo-keyword-outd
+          org-todo-keyword-todo
+          org-todo-keyword-wait
+          org-verbatim
+          org-property-drawer-re
+          org-ref-cite-re
+          org-ref-ref-re
+          org-ref-label-re
+          org-latex-math-environments-re
+          "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
+          font-lock-comment-face
+          ))
 
   (setf (alist-get 'latex-mode +spell-excluded-faces-alist)
         '(
@@ -220,7 +291,7 @@
 
 (setq company-idle-delay nil
       company-tooltip-limit 10
-      company-box-enable-icon nil ;;disable all-the-icons
+      ;; company-box-enable-icon nil ;;disable all-the-icons
       )
 
 ;; Switch to the new window after splitting
@@ -307,6 +378,23 @@
   ;; (setq org-roam-graph-extra-config '(("overlap" . "false")))
   )
 
+;; ad-hoc fixes: hangul in dired-mode
+;; https://www.emacswiki.org/emacs/CarbonEmacsPackage#CarbonEmacs
+;; seems to work for emacs 22 and 23
+;; (require 'utf-8m)
+;; (set-file-name-coding-system 'utf-8m)
+
+;; Dropbox sync changes hangul encoding to NFD, which results in 한글 자소분리 in dired and other modes
+;; https://tt.kollhong.com/79
+;; https://nullprogram.com/blog/2014/06/13/
+(when IS-MAC
+  (use-package! ucs-normalize
+    :config
+    (set-file-name-coding-system 'utf-8-hfs)
+    )
+  )
+
+;;
 ;; improve slow scrolling?
 (use-package! hl-line+
   :config
@@ -408,7 +496,7 @@
 
 ;; set korean keyboard layout
 ;; C-\ to switch input-method
-(setq default-input-method "korean-hangul3f")
+(setq default-input-method "korean-hangul390")
 
 ;; Other options
 ;; replace highlighted text with what I type
@@ -460,22 +548,33 @@
 
 (setq! +biblio-pdf-library-dir "~/Zotero/storage/"
        +biblio-default-bibliography-files '("~/Zotero/myref.bib")
-       +biblio-notes-path "~/org/refnotes.org")
+       +biblio-notes-path "~/org/refnotes.org"
+       ;; org-ref-notes-directory +biblio-notes-path
+       ;; org-ref-notes-directory "~/org/"
+       )
 
-;; open zotero pdf in org-ref
-(after! org-ref
-  (setq org-ref-default-bibliography "~/Zotero/myref.bib"
-        org-ref-pdf-directory "~/Zotero/storage/"
-        org-ref-bibliography-notes "~/org/refnotes.org")
-  )
 
-(after! bibtex-completion
-  (setq bibtex-completion-library-path "~/Zotero/storage/"
-        bibtex-completion-bibliography org-ref-default-bibliography
-        bibtex-completion-notes-path org-ref-bibliography-notes
-        bibtex-completion-pdf-field "file"
-        bibtex-completion-find-additional-pdfs t)
-  )
+;; (setq reftex-default-bibliography '("~/Zotero/myref.bib"))
+
+;; ;; open zotero pdf in org-ref
+;; (after! org-ref
+;;   (setq org-ref-default-bibliography "~/Zotero/myref.bib"
+;;         org-ref-pdf-directory "~/Zotero/storage/"
+;;         org-ref-bibliography-notes "~/org/refnotes.org"
+;;         ;; org-ref-notes-function #'org-ref-notes-function-many-files
+;;         ;; org-ref-notes-function #'org-ref-notes-function-one-file
+;;         )
+;;   )
+
+;; (after! bibtex-completion
+;;   (setq bibtex-completion-library-path "~/Zotero/storage/"
+;;         bibtex-completion-bibliography org-ref-default-bibliography
+;;         bibtex-completion-notes-path org-ref-bibliography-notes
+;;         bibtex-completion-pdf-field "file"
+;;         bibtex-completion-find-additional-pdfs t)
+;;   )
+
+;; (setq bibtex-completion-pdf-open-function 'org-open-file)
 
 ;; for doom-modeline
 (use-package! find-file-in-project
@@ -529,7 +628,7 @@
 
   ;; Whether display icons in the mode-line. Respects `all-the-icons-color-icons'.
   ;; While using the server mode in GUI, should set the value explicitly.
-  (setq doom-modeline-icon nil)
+  (setq doom-modeline-icon t)
 
   ;; Whether display the buffer encoding.
   (setq doom-modeline-buffer-encoding nil)
@@ -553,15 +652,36 @@
   (setq doom-modeline-env-version nil)
   )
 
+;; (add-to-list 'load-path "~/doom-emacs/.local/straight/repos/emacs-jabber/")
+;; (require 'jabber)
+;; (require 'jabber-autoloads)
+
 ;; Hangout
-(after! jabber
-  (setq jabber-account-list '(("jonghyun.yun@gmail.com/emacs"
-                               (:password. (password-store-get "hangouts/password"))
-                               (:network-server . "talk.google.com")
-                               (:connection-type . starttls)
-                               )))
+(use-package jabber
+  :defer t
+  :init
+  (add-hook 'jabber-post-connect-hooks 'spacemacs/jabber-connect-hook)
+  :config
+  ;; password encrypted in ~/.authinfo.gpg
+  ;; https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
+  (setq jabber-account-list '(("jonghyun.yun@gmail.com"
+                             (:network-server . "talk.google.com")
+                             (:connection-type . starttls)
+                             )))
   ;; (jabber-connect-all)
+  ;; (jabber-keepalive-start)
   )
+
+(defun spacemacs/jabber-connect-hook (jc)
+  (jabber-send-presence "" "Online" 10)
+  (jabber-whitespace-ping-start)
+  ;; Disable the minibuffer getting jabber messages when active
+  ;; See http://www.emacswiki.org/JabberEl
+  (define-jabber-alert echo "Show a message in the echo area"
+    (lambda (msg &optional title)
+      (unless (minibuffer-prompt)
+        (message "%s" (or title msg))))))
+
 
 (after! paradox
   (setq paradox-github-token (password-store-get "paradox/github-token"))
@@ -616,6 +736,29 @@
     ;; scores displayed in the search buffer
     (setq elfeed-search-print-entry-function #'elfeed-score-print-entry)
     ))
+
+;; (use-package org-pdftools
+;;   :hook (org-mode . org-pdftools-setup-link))
+
+;; (use-package org-noter-pdftools
+;;   :after org-noter
+;;   :config
+;;   (with-eval-after-load 'pdf-annot
+;;     (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
+
+
+(defun my-persp-add-buffer (orig-fun &rest args)
+  "Apply a function and and add the opened buffer name to the perspective."
+  (progn
+    (apply orig-fun args)
+    (let ((bname (buffer-name)))
+      (persp-add-buffer bname)
+      ))
+  )
+
+;; ibuffer and R buffers need to be manually added
+(advice-add 'ibuffer :around #'my-persp-add-buffer)
+(advice-add 'R :around #'my-persp-add-buffer)
 
 (custom-set-faces!
   '(aw-leading-char-face
