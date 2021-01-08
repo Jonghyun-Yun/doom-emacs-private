@@ -746,16 +746,6 @@
 ;;   (with-eval-after-load 'pdf-annot
 ;;     (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
 
-
-(defun my-persp-add-buffer (orig-fun &rest args)
-  "Apply a function and and add the opened buffer name to the perspective."
-  (progn
-    (apply orig-fun args)
-    (let ((bname (buffer-name)))
-      (persp-add-buffer bname)
-      ))
-  )
-
 ;; ibuffer and R buffers need to be manually added
 (advice-add 'ibuffer :around #'my-persp-add-buffer)
 (advice-add 'R :around #'my-persp-add-buffer)

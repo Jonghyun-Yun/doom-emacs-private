@@ -45,3 +45,13 @@
   Unibyte strings are converted to multibyte for comparison."
   (assoc-string KEY LIST)
     )
+
+;;;###autoload
+(defun my-persp-add-buffer (orig-fun &rest args)
+  "Apply a function and and add the opened buffer name to the perspective."
+  (progn
+    (apply orig-fun args)
+    (let ((bname (buffer-name)))
+      (persp-add-buffer bname)
+      ))
+  )
