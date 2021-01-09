@@ -55,3 +55,24 @@
       (persp-add-buffer bname)
       ))
   )
+
+;;;###autoload
+(defun my/find-file-in-private-config ()
+  "Search for a file in `doom-private-dir' using `find-file-in-project'."
+  (interactive)
+  ;; (let* ((ffip-project-root "~/.doom.d/"))
+  ;; (let* ((ffip-project-root doom-private-dir))
+  (let* ((default-directory doom-private-dir))
+    (find-file-in-project nil)
+    ))
+
+;;;###autoload
+(defun spacemacs/jabber-connect-hook (jc)
+  (jabber-send-presence "" "Online" 10)
+  (jabber-whitespace-ping-start)
+  ;; Disable the minibuffer getting jabber messages when active
+  ;; See http://www.emacswiki.org/JabberEl
+  (define-jabber-alert echo "Show a message in the echo area"
+    (lambda (msg &optional title)
+      (unless (minibuffer-prompt)
+        (message "%s" (or title msg))))))

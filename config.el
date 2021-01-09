@@ -576,13 +576,6 @@
 
 ;; (setq bibtex-completion-pdf-open-function 'org-open-file)
 
-;; for doom-modeline
-(use-package! find-file-in-project
-  :config
-  (setq ffip-use-rust-fd t)
-  :general ([remap projectile-find-file] #'find-file-in-project)
-  )
-
 ;;; doom-modeline
 ;;; https://github.com/seagle0128/doom-modeline
 (with-eval-after-load 'doom-modeline
@@ -652,10 +645,6 @@
   (setq doom-modeline-env-version nil)
   )
 
-;; (add-to-list 'load-path "~/doom-emacs/.local/straight/repos/emacs-jabber/")
-;; (require 'jabber)
-;; (require 'jabber-autoloads)
-
 ;; Hangout
 (use-package jabber
   :defer t
@@ -671,17 +660,6 @@
   ;; (jabber-connect-all)
   ;; (jabber-keepalive-start)
   )
-
-(defun spacemacs/jabber-connect-hook (jc)
-  (jabber-send-presence "" "Online" 10)
-  (jabber-whitespace-ping-start)
-  ;; Disable the minibuffer getting jabber messages when active
-  ;; See http://www.emacswiki.org/JabberEl
-  (define-jabber-alert echo "Show a message in the echo area"
-    (lambda (msg &optional title)
-      (unless (minibuffer-prompt)
-        (message "%s" (or title msg))))))
-
 
 (after! paradox
   (setq paradox-github-token (password-store-get "paradox/github-token"))
@@ -700,7 +678,8 @@
 
 (after! org-msg
   (setq org-msg-options
-        (concat org-msg-options " num:nil tex:dvipng"))
+        (concat org-msg-options " num:nil tex:dvipng ^:{} \\n:t")
+        org-msg-startup "hidestars indent inlineimages")
   )
 
 ;; OS X ls not working with --quoting-style=literal
@@ -737,18 +716,20 @@
     (setq elfeed-search-print-entry-function #'elfeed-score-print-entry)
     ))
 
-;; (use-package org-pdftools
-;;   :hook (org-mode . org-pdftools-setup-link))
-
-;; (use-package org-noter-pdftools
-;;   :after org-noter
-;;   :config
-;;   (with-eval-after-load 'pdf-annot
-;;     (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
-
 ;; ibuffer and R buffers need to be manually added
 (advice-add 'ibuffer :around #'my-persp-add-buffer)
 (advice-add 'R :around #'my-persp-add-buffer)
+
+;; for doom-modeline
+(use-package! find-file-in-project
+  :general (
+            [remap projectile-find-file] #'find-file-in-project
+            [remap doom/find-file-in-private-config] #'my/find-file-in-private-config)
+  :config
+  (setq ffip-use-rust-fd t)
+  ;; use ffip to find file in private config
+  ;; (advice-add 'doom/find-file-in-private-config :around #'my/find-file-in-private-config)
+  )
 
 (custom-set-faces!
   '(aw-leading-char-face
