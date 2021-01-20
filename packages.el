@@ -116,3 +116,7 @@
 
 ;;; disabled packages
 (package! writegood-mode :disable t)
+
+;; (package! auto-highlight-symbol)
+;; (package! highlight-numbers-mode)
+(package! highlight-parentheses)

@@ -31,17 +31,18 @@
 ;; "Iosevka SS08" ;; Monospace, Pragmata Pro Style
 ;; "Iosevka SS09" ;; Monospace, Source Code Pro Style
 ;; "Iosevka SS13" ;; Monospace, Lucida Style
+
 (setq
- doom-font (font-spec :family "Iosevka SS08" :size 22 :weight 'light)
+ doom-font (font-spec :family "Iosevka SS13" :size 24 :weight 'light)
  doom-variable-pitch-font (font-spec :family "Iosevka Sparkle" :weight 'light)
  doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
- doom-big-font (font-spec :family "Iosevka SS08" :size 26 :weight 'light)
+ doom-big-font (font-spec :family "Iosevka SS13" :size 28 :weight 'light)
  )
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-;; (setq doom-theme 'doom-one)
+(setq doom-theme 'doom-solarized-light)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -77,7 +78,7 @@
   ;; Global settings (defaults)
   ;; (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-one t)
+  ;; (load-theme doom-theme t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -106,32 +107,12 @@
                            "Hangul Jamo Extended-B"
                            "Hangul Syllables"))
     (push "Sarasa Mono K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
-
-  ;; ;; Math unicode
-  ;; (dolist (unicode-block '(
-  ;;                    "Letterlike Symbols"
-  ;;                    "Mathematical Alphanumeric Symbols"
-  ;;                    "Mathematical Operators"
-  ;;                    "Miscellaneous Mathematical Symbols-A"
-  ;;                    "Miscellaneous Mathematical Symbols-B"
-  ;;                    "Miscellaneous Technical"
-  ;;                    "Number Forms"
-  ;;                    "Superscripts and Subscripts"
-  ;;                    "Supplemental Arrows-A"
-  ;;                    "Supplemental Arrows-B"
-  ;;                    "Supplemental Arrows-C"
-  ;;                    "Supplemental Mathematical Operators"))
-  ;;   (push
-  ;;    "XITS Math"
-  ;;    ;; "DejaVu Math TeX Gyre"
-  ;;    (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
   )
 
 ;; disable flycheck by default
 (after! flycheck
   (remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
   )
-
 
 ;; make-frame doesn't create a new persp
 (after! persp-mode
@@ -259,8 +240,7 @@
   )
 
 (after! ess-mode
-  (setq ess-r-smart-operators t
-        ess-use-ido t) ;; what is this?
+  (setq ess-r-smart-operators t)
   )
 
 (load! "lisp/org-plus")
@@ -313,6 +293,7 @@
    ;; org-superstar-headline-bullets-list '("♠" "♥" "♦" "♣" "◉" "▶" "✚" "✸"))
    ;; org-hide-leading-stars t
    ;; org-startup-indented nil
+
    org-indent-indentation-per-level 1
    org-adapt-indentation nil
 
@@ -394,12 +375,11 @@
     )
   )
 
-;;
-;; improve slow scrolling?
-(use-package! hl-line+
-  :config
-  (hl-line-when-idle-interval 0.5)
-  (toggle-hl-line-when-idle 1))
+;; ;; improve slow scrolling?
+;; (use-package! hl-line+
+;;   :config
+;;   (hl-line-when-idle-interval 0.5)
+;;   (toggle-hl-line-when-idle 1))
 
 (setq garbage-collection-messages nil)
 ;;; Fewer garbage collection
@@ -693,8 +673,8 @@
   (setq cdlatex-math-symbol-alist
         '((?: ("\\cdots" "\\ldots"))
           )
-      )
-)
+        )
+  )
 
 (after! ace-window
   (setq aw-scope 'global))
@@ -731,20 +711,26 @@
   ;; (advice-add 'doom/find-file-in-private-config :around #'my/find-file-in-private-config)
   )
 
-(custom-set-faces!
-  '(aw-leading-char-face
-    :foreground "white" :background "red"
-    :weight bold :height 2.5 :box (:line-width 10 :color "red")))
+;; (after! org
+;; (plist-put org-format-latex-options :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")) ;; drop "$"
+;; )
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(safe-local-variable-values '((TeX-engine . xetex))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook #'highlight-parentheses-mode)
+
+;; (custom-set-faces!
+;;   '(aw-leading-char-face
+;;     :foreground "white" :background "red"
+;;     :weight bold :height 2.5 :box (:line-width 10 :color "red"))
+;;   )
+
+  ;; '(rainbow-delimiters-depth-1-face ((,class :foreground ,keyword)))
+  ;; '(rainbow-delimiters-depth-2-face ((,class :foreground ,func)))
+  ;; '(rainbow-delimiters-depth-3-face ((,class :foreground ,str)))
+  ;; '(rainbow-delimiters-depth-4-face ((,class :foreground ,green)))
+  ;; '(rainbow-delimiters-depth-5-face ((,class :foreground ,yellow)))
+  ;; '(rainbow-delimiters-depth-6-face ((,class :foreground ,keyword)))
+  ;; '(rainbow-delimiters-depth-7-face ((,class :foreground ,func)))
+  ;; '(rainbow-delimiters-depth-8-face ((,class :foreground ,str)))
+  ;; '(rainbow-delimiters-mismatched-face ((,class :foreground ,err :overline t)))
+  ;; '(rainbow-delimiters-unmatched-face ((,class :foreground ,err :overline t)))

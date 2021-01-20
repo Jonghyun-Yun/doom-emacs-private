@@ -125,7 +125,7 @@
 
        :lang
        ;;agda              ; types of types of types of types...
-       (cc +lsp)           ; C/C++/Obj-C madness
+       ;; (cc +lsp)           ; C/C++/Obj-C madness
        ;;clojure           ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
@@ -154,7 +154,8 @@
        (latex              ; writing papers in Emacs has never been so fun
         +latexmk
         ;;+lsp
-        +cdlatex)
+        +cdlatex
+        )
        ;;lean
        ;;factor
        ledger            ; an accounting system in Emacs
