@@ -120,3 +120,5 @@
 ;; (package! auto-highlight-symbol)
 ;; (package! highlight-numbers-mode)
 (package! highlight-parentheses)
+
+(package! spacemacs-theme)

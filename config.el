@@ -42,7 +42,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-solarized-light)
+(setq doom-theme 'doom-one)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -114,10 +114,10 @@
   (remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
   )
 
-;; make-frame doesn't create a new persp
-(after! persp-mode
-  (remove-hook 'after-make-frame-functions #'persp-init-new-frame)
-  )
+;; ;; make-frame doesn't create a new persp
+;; (after! persp-mode
+;;   (remove-hook 'after-make-frame-functions #'persp-init-new-frame)
+;;   )
 
 (setq
  ;; persp-add-buffer-on-after-change-major-mode 'free
@@ -129,6 +129,7 @@
   (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
   (projectile-add-known-project "~/OneDrive/research/lapf")
   (projectile-add-known-project "~/research/s.ham/RAS")
+  (projectile-add-known-project "~/research/mj.jeon")
   )
 
 ;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
@@ -734,3 +735,23 @@
   ;; '(rainbow-delimiters-depth-8-face ((,class :foreground ,str)))
   ;; '(rainbow-delimiters-mismatched-face ((,class :foreground ,err :overline t)))
   ;; '(rainbow-delimiters-unmatched-face ((,class :foreground ,err :overline t)))
+
+;; ;; python
+;; (use-package pyvenv
+;;   :init
+;;   (pyvenv-mode 1)
+;;   (pyvenv-tracking-mode 1)
+;;   (add-hook 'pyvenv-post-activate-hooks (lambda() (jupyter-available-kernelspecs t)))
+;;   (setenv "WORKON_HOME" "~/.conda/envs")
+;; )
+
+(after! conda
+  (setq conda-env-home-directory "/Users/yunj/.conda"
+        conda-anaconda-home "/opt/intel/oneapi/intelpython/latest"
+        ;; conda-env-current-name "tf"
+        )
+  ;; (conda-env-activate "tf")
+  (conda-env-initialize-interactive-shells)
+  (conda-env-initialize-eshell)
+  (conda-env-autoactivate-mode t)
+  )
