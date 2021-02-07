@@ -122,3 +122,18 @@
 (package! highlight-parentheses)
 
 (package! spacemacs-theme)
+
+(package! org-ref :pin "1936720c2377d8af9a5edb0d252f881c0ec24918")
+
+;; (package! valign :pin "6b0345e29cdec8526c9c19b73bdea53295ec998e")
+
+(package! spray)
+
+(package! bm)
+
+;; (package! major-mode-hydra :pin "20362323f66883c1336ffe70be24f91509addf54")
+
+(package! string-inflection :pin "c4a519be102cb99dd86be3ee8c387f008d097635")
+
+(package! golden-ratio.el
+  :recipe (:host github :repo "roman/golden-ratio.el"))

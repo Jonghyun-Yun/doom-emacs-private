@@ -76,3 +76,11 @@
     (lambda (msg &optional title)
       (unless (minibuffer-prompt)
         (message "%s" (or title msg))))))
+
+;;;###autoload
+(defun jethro/enable-smerge-maybe ()
+  "Auto-enable `smerge-mode' when merge conflict is detected."
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^<<<<<<< " nil :noerror)
+      (smerge-mode 1))))

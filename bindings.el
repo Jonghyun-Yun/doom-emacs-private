@@ -65,11 +65,11 @@
 ;;   (global-set-key (kbd "C-c l") #'org-roam-store-link)
 ;;   )
 
-(bind-keys* :prefix-map gtd-map
+(bind-keys* :prefix-map gtd-mode-map
             :prefix "C-c g"
            )
 
-(bind-keys :map gtd-map
+(bind-keys :map gtd-mode-map
            ("i" . my-org-agenda-inbox)
            ("s" . my-org-super-agenda-view)
            ("r" . my-org-agenda-routine)
@@ -147,3 +147,34 @@
    )
   )
 
+;; hydra key bindings
+(with-eval-after-load 'smerge-mode
+  (bind-keys :map smerge-mode-map
+             ("C-c ^ ." . my-hydra-smerge/body))
+  )
+
+(with-eval-after-load 'git-timemachine
+  (map! (:map git-timemachine-mode-map
+         :desc "Git Timemachine Hydra"
+         :nv "gt." #'my-hydra-timemachine/body))
+        )
+
+(with-eval-after-load 'org
+  (map!
+   (:map org-mode-map
+    :desc "Org Babel Hydra"
+    :g "C-c C-v ." #'my-hydra-org-babel/body)
+  (:map org-agenda-mode-map
+   :localleader
+   :desc "Org Agenda Hydra" "." #'my-hydra-org-agenda/body)
+  )
+)
+
+(map!
+ (:leader
+  :desc "Bookmark Hydra" "f z" #'my-hydra-bm/body
+  :desc "Code Fold Hydra" "z." #'my-hydra-fold/body)
+ (:map pdf-view-mode-map
+  :localleader
+  :desc "PDF View Hydra" "." #'my-hydra-pdf-tools/body)
+ )

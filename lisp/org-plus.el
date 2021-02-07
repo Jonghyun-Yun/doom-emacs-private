@@ -74,7 +74,7 @@
   (setq org-latex-listings 'minted)
   (setq org-latex-minted-options
         '(("frame" "lines")
-          ("linenos" "false")))
+          ("linenos" "true")))
 
   (eval-after-load 'ox-koma-letter
     '(progn

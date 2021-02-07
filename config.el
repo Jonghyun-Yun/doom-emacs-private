@@ -22,22 +22,29 @@
 ;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
 
-;; (setq doom-font (font-spec :family "Source Code Pro" :size 22 :weight 'semi-light)
-      ;; doom-variable-pitch-font (font-spec :family "Source Serif Pro")
-      ;; doom-serif-font (font-spec :family "Source Serif Pro")
-      ;; )
-
 ;; "Iosevka SS05" ;; Monospace, Fira Mono Style
 ;; "Iosevka SS08" ;; Monospace, Pragmata Pro Style
 ;; "Iosevka SS09" ;; Monospace, Source Code Pro Style
 ;; "Iosevka SS13" ;; Monospace, Lucida Style
 
+;; (setq
+;;  doom-font (font-spec :family "Iosevka SS08" :size 28 :weight 'light :width 'expanded)
+;;  doom-variable-pitch-font (font-spec :family "Iosevka Sparkle" :weight 'light :width 'expanded)
+;;  ;; doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light :width 'expanded)
+;;  )
+
 (setq
- doom-font (font-spec :family "Iosevka SS13" :size 24 :weight 'light)
+ doom-font (font-spec :family "Iosevka SS08" :size 28 :weight 'light)
  doom-variable-pitch-font (font-spec :family "Iosevka Sparkle" :weight 'light)
  doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
- doom-big-font (font-spec :family "Iosevka SS13" :size 28 :weight 'light)
  )
+
+
+;; (setq
+;;  doom-font (font-spec :family "Fira Code" :size 24 :weight 'light)
+;;  doom-variable-pitch-font (font-spec :family "FiraGO" :weight 'light)
+;;  doom-unicode-font (font-spec :family "Noto Serif CJK KR" :weight 'light)
+;;  )
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -107,6 +114,9 @@
                            "Hangul Jamo Extended-B"
                            "Hangul Syllables"))
     (push "Sarasa Mono K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+    ;; (push "Noto Sans CJK KR" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+    ;; (push "Source Han Sans K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+    ;; (push "Source Han Serif K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
   )
 
 ;; disable flycheck by default
@@ -226,6 +236,9 @@
           ))
   )
 
+(with-eval-after-load 'hydra
+  (load! "lisp/hydra-plus")
+  )
 (load! "bindings")
 
 (after! mu4e
@@ -421,6 +434,7 @@
   (setq which-key-idle-delay 1) ;; with 800kb garbage-collection
   ;; (setq which-key-idle-secondary-delay 0.05)
   ;; (which-key-mode)
+  ;; (define-key which-key-mode-map (kbd "C-h") 'which-key-C-h-dispatch)
 )
 
 ;; (with-eval-after-load 'pdf-tools
@@ -562,7 +576,15 @@
 (with-eval-after-load 'doom-modeline
   ;; How tall the mode-line should be. It's only respected in GUI.
   ;; If the actual char height is larger, it respects the actual height.
-  (setq doom-modeline-height 20)
+  (setq doom-modeline-height 25)
+  ;; (set-face-attribute 'mode-line nil :family "Fira Mono for Powerline" :height 100)
+  ;; (set-face-attribute 'mode-line-inactive nil :family "Fira Mono for Powerline" :height 100)
+
+  ;; https://github.com/seagle0128/doom-modeline/issues/187#issuecomment-507201556
+  (defun my-doom-modeline--font-height ()
+    "Calculate the actual char height of the mode-line."
+    (+ (frame-char-height) 2))
+  (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
 
   ;; How wide the mode-line bar should be. It's only respected in GUI.
   (setq doom-modeline-bar-width 3)
@@ -719,23 +741,6 @@
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 (add-hook 'prog-mode-hook #'highlight-parentheses-mode)
 
-;; (custom-set-faces!
-;;   '(aw-leading-char-face
-;;     :foreground "white" :background "red"
-;;     :weight bold :height 2.5 :box (:line-width 10 :color "red"))
-;;   )
-
-  ;; '(rainbow-delimiters-depth-1-face ((,class :foreground ,keyword)))
-  ;; '(rainbow-delimiters-depth-2-face ((,class :foreground ,func)))
-  ;; '(rainbow-delimiters-depth-3-face ((,class :foreground ,str)))
-  ;; '(rainbow-delimiters-depth-4-face ((,class :foreground ,green)))
-  ;; '(rainbow-delimiters-depth-5-face ((,class :foreground ,yellow)))
-  ;; '(rainbow-delimiters-depth-6-face ((,class :foreground ,keyword)))
-  ;; '(rainbow-delimiters-depth-7-face ((,class :foreground ,func)))
-  ;; '(rainbow-delimiters-depth-8-face ((,class :foreground ,str)))
-  ;; '(rainbow-delimiters-mismatched-face ((,class :foreground ,err :overline t)))
-  ;; '(rainbow-delimiters-unmatched-face ((,class :foreground ,err :overline t)))
-
 ;; ;; python
 ;; (use-package pyvenv
 ;;   :init
@@ -746,12 +751,63 @@
 ;; )
 
 (after! conda
-  (setq conda-env-home-directory "/Users/yunj/.conda"
-        conda-anaconda-home "/opt/intel/oneapi/intelpython/latest"
+  (setq-default conda-env-home-directory "/Users/yunj/.conda")
+  (setq conda-anaconda-home "/opt/intel/oneapi/intelpython/latest"
         ;; conda-env-current-name "tf"
         )
   ;; (conda-env-activate "tf")
-  (conda-env-initialize-interactive-shells)
-  (conda-env-initialize-eshell)
-  (conda-env-autoactivate-mode t)
+  ;; (conda-env-initialize-interactive-shells)
+  ;; (conda-env-initialize-eshell)
+  ;; (conda-env-autoactivate-mode t)
   )
+
+(defun thin-all-faces ()
+  "Change all faces to be lighter."
+  (mapc
+   (lambda (face)
+     (when (eq (face-attribute face :weight) 'light)
+       (set-face-attribute face nil :weight 'extra-light))
+     (when (eq (face-attribute face :weight) 'semi-light)
+       (set-face-attribute face nil :weight 'light))
+     (when (eq (face-attribute face :weight) 'normal)
+       (set-face-attribute face nil :weight 'semi-light))
+     (when (eq (face-attribute face :weight) 'semi-bold)
+       (set-face-attribute face nil :weight 'normal))
+     (when (eq (face-attribute face :weight) 'bold)
+       (set-face-attribute face nil :weight 'semi-bold))
+     )
+   (face-list))
+  )
+
+(defun thick-all-faces ()
+  "Change all faces to be bolder."
+  (mapc
+   (lambda (face)
+     (when (eq (face-attribute face :weight) 'extra-light)
+       (set-face-attribute face nil :weight 'light))
+     (when (eq (face-attribute face :weight) 'light)
+       (set-face-attribute face nil :weight 'semi-light))
+     (when (eq (face-attribute face :weight) 'semi-light)
+       (set-face-attribute face nil :weight 'normal))
+     (when (eq (face-attribute face :weight) 'normal)
+       (set-face-attribute face nil :weight 'semi-bold))
+     (when (eq (face-attribute face :weight) 'semi-bold)
+       (set-face-attribute face nil :weight 'bold))
+     )
+   (face-list))
+  )
+
+(add-hook 'after-init-hook #'thin-all-faces)
+
+;; align tables containing variable-pitch font, CJK characters and images
+;; (add-hook 'org-mode-hook #'valign-mode)
+
+(setq +org-roam-open-buffer-on-find-file nil)
+
+(use-package spray
+  :config
+  (setq spray-wpm 500
+        spray-height 700)
+  )
+
+(require 'golden-ratio)
