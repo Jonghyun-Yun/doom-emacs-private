@@ -78,6 +78,44 @@
         (message "%s" (or title msg))))))
 
 ;;;###autoload
+(defun thin-all-faces ()
+  "Change all faces to be lighter."
+  (mapc
+   (lambda (face)
+     (when (eq (face-attribute face :weight) 'light)
+       (set-face-attribute face nil :weight 'extra-light))
+     (when (eq (face-attribute face :weight) 'semi-light)
+       (set-face-attribute face nil :weight 'light))
+     (when (eq (face-attribute face :weight) 'normal)
+       (set-face-attribute face nil :weight 'semi-light))
+     (when (eq (face-attribute face :weight) 'semi-bold)
+       (set-face-attribute face nil :weight 'normal))
+     (when (eq (face-attribute face :weight) 'bold)
+       (set-face-attribute face nil :weight 'semi-bold))
+     )
+   (face-list))
+  )
+
+;;;###autoload
+(defun thick-all-faces ()
+  "Change all faces to be bolder."
+  (mapc
+   (lambda (face)
+     (when (eq (face-attribute face :weight) 'extra-light)
+       (set-face-attribute face nil :weight 'light))
+     (when (eq (face-attribute face :weight) 'light)
+       (set-face-attribute face nil :weight 'semi-light))
+     (when (eq (face-attribute face :weight) 'semi-light)
+       (set-face-attribute face nil :weight 'normal))
+     (when (eq (face-attribute face :weight) 'normal)
+       (set-face-attribute face nil :weight 'semi-bold))
+     (when (eq (face-attribute face :weight) 'semi-bold)
+       (set-face-attribute face nil :weight 'bold))
+     )
+   (face-list))
+  )
+
+;;;###autoload
 (defun jethro/enable-smerge-maybe ()
   "Auto-enable `smerge-mode' when merge conflict is detected."
   (save-excursion
