@@ -43,31 +43,8 @@
   ;; ("?" spacemacs//smerge-ts-toggle-hint)
   )
 
-(use-package bm
-  :defer t
-  :commands
-  (bm-buffer-restore)
-  ;; (bm-buffer-save)
-  ;; (bm-buffer-save-all)
-  ;; (bm-repository-save)
-  :init
-  (progn
-    ;; restore on load (even before you require bm)
-    (setq bm-restore-repository-on-load t)
-    ;; Allow cross-buffer 'next'
-    (setq bm-cycle-all-buffers t)
-    ;; save bookmarks
-    (setq-default bm-buffer-persistence t)
-    ;; where to store persistent files
-    (setq bm-repository-file (format "%sbm-repository"
-                                     doom-etc-dir))
-    (setq bm-cycle-all-buffers t
-          bm-highlight-style 'bm-highlight-only-fringe
-          bm-repository-size 500)
     (defhydra my-hydra-bm
-      (
-       :hint nil
-       )
+      (:hint nil)
       "
  Go to bookmark^^^^       Toggle^^                 Other^^
  ──────────────^^^^─────  ──────^^───────────────  ─────^^───
@@ -81,24 +58,6 @@
       ("N" bm-previous)
       ;; Toggle
       ("t" bm-toggle))
-    ;; (evil-leader/set-key
-    ;;   "atb" 'spacemacs/bm-transient-state/body)
-    (advice-add 'my-hydra-bm/body
-                :before #'bm-buffer-restore))
-  :config
-  (progn
-    ;; Saving bookmarks
-    (add-hook 'kill-buffer-hook #'bm-buffer-save)
-    ;; Saving the repository to file when on exit.
-    ;; kill-buffer-hook is not called when Emacs is killed, so we
-    ;; must save all bookmarks first.
-    (add-hook 'kill-emacs-hook #'(lambda nil
-                                   (bm-buffer-save-all)
-                                   (bm-repository-save)))
-    ;; Restoring bookmarks
-    (add-hook 'find-file-hooks   #'bm-buffer-restore)
-    ;; Make sure bookmarks is saved before check-in (and revert-buffer)
-    (add-hook 'vc-before-checkin-hook #'bm-buffer-save)))
 
 (defhydra my-hydra-org-babel
   (
@@ -217,10 +176,10 @@
   "
  Select^^^^               Move^^^^              Split^^^^^^               Resize^^             Other^^
  ──────^^^^─────────────  ────^^^^────────────  ─────^^^^^^─────────────  ──────^^───────────  ─────^^──────────────────
- [_j_/_k_]  down/up       [_J_/_K_] down/up     [_s_]^^^^ horizontal      [_[_] shrink horiz   [_d_] close current
- [_h_/_l_]  left/right    [_H_/_L_] left/right  [_S_]^^^^ horiz & follow  [_]_] enlarge horiz  [_D_] close other
- [_0_.._9_] window 0..9   [_r_]^^   rotate fwd  [_v_]^^^^ vertical        [_{_] shrink verti   [_u_] restore prev layout
- [_a_]^^    ace-window    [_R_]^^   rotate bwd  [_V_]^^^^ verti & follow  [_}_] enlarge verti  [_U_] restore next layout
+ [_j_/_k_]  down/up       [_J_/_K_] down/up     [_S_]^^^^ horizontal      [_[_] shrink horiz   [_d_] close current
+ [_h_/_l_]  left/right    [_H_/_L_] left/right  [_s_]^^^^ horiz & follow  [_]_] enlarge horiz  [_D_] close other
+ [_0_.._9_] window 0..9   [_r_]^^   rotate fwd  [_V_]^^^^ vertical        [_{_] shrink verti   [_u_] restore prev layout
+ [_a_]^^    ace-window    [_R_]^^   rotate bwd  [_v_]^^^^ verti & follow  [_}_] enlarge verti  [_U_] restore next layout
  [_o_]^^    other frame   ^^^^                  [_m_/_|_/___] maximize    [_g_] golden ratio   [_q_] quit
  [_w_]^^    other window"
   ;; Select
@@ -257,12 +216,12 @@
   ("r" evil-window-rotate-downwards)
   ("R" evil-window-rotate-upwards)
   ;; Split
-  ("s" split-window-below)
-  ("S" split-window-below-and-focus)
-  ("-" split-window-below-and-focus)
-  ("v" split-window-right)
-  ("V" split-window-right-and-focus)
-  ("/" split-window-right-and-focus)
+  ("S" split-window-below)
+  ("s" evil-window-split)
+  ("-" evil-window-split)
+  ("V" split-window-right)
+  ("v" evil-window-vsplit)
+  ("/" evil-window-vsplit)
   ("m" doom/window-maximize-buffer)
   ("|" doom/window-maximize-vertically)
   ("_" doom/window-maximize-horizontally)
@@ -352,34 +311,6 @@
 ;;  (:when (featurep! :editor multiple-cursors)
 ;;   :prefix "g"
 ;;   :nv "z." #'my-mc-hydra/body))
-
-;;;###autoload
-(defun +workspace/rename (new-name)
-  "Rename the current workspace."
-  (interactive (list (read-from-minibuffer "New workspace name: ")))
-  (condition-case-unless-debug ex
-      (let* ((current-name (+workspace-current-name))
-             (old-name (+workspace-rename current-name new-name)))
-        (unless old-name
-          (error "Failed to rename %s" current-name))
-        (+workspace-message (format "Renamed '%s'->'%s'" old-name new-name) 'success))
-    ('error (+workspace-error ex t))))
-
-;;;###autoload
-(defun +workspace/new (&optional name clone-p)
-  "Create a new workspace named NAME. If CLONE-P is non-nil, clone the current
-workspace, otherwise the new workspace is blank."
-  (interactive (list nil current-prefix-arg))
-  (unless name
-    (setq name (format "#%s" (+workspace--generate-id))))
-  (condition-case e
-      (cond ((+workspace-exists-p name)
-             (error "%s already exists" name))
-            (clone-p (persp-copy name t))
-            (t
-             (+workspace-switch name t)
-             (+workspace/display)))
-    ((debug error) (+workspace-error (cadr e) t))))
 
 (defhydra my-hydra-org-agenda
   (
@@ -543,3 +474,72 @@ _hp_: set priority    ^^                          _S_:  delete all filters    _L
   ("t" git-gutter-mode)
   ("z" recenter-top-bottom)
   ("q" nil :exit t))
+
+(defhydra my-hydra-layouts
+  (:hint nil
+   )
+  "
+ Go to^^^^^^                      Actions^^^^^^
+ ─────^^^^^^────────────────────  ───────^^^^^^───────────────────────────────
+ [_0_.._9_]^^   nth layout        [_TAB_]  display
+ [_`_]^^^^      last layout       [_a_]^^    add buffer
+ [_]_/_n_]^^    next layout       [_A_]^^    add all buffers from layout
+ [_[_/_N_/_p_]  prev layout       [_d_]^^    close current layout
+ [_b_]^^^^      buffer in layout  [_L_]^^    load layouts from file
+ [_c_]^^^^      create layout     [_r_]^^    remove current buffer
+ [_l_]^^^^      another layout    [_R_]^^    rename current layout
+ [_w_]^^^^      workspaces TS     [_s_/_S_]  save all layouts/save by names
+ [_e_]^^^^      select layout     [_t_]^^    show buffer w/o adding to layout"
+  ;; need to exit in case number doesn't exist
+  ("1" +workspace/switch-to-1 :exit t)
+  ("2" +workspace/switch-to-2 :exit t)
+  ("3" +workspace/switch-to-3 :exit t)
+  ("5" +workspace/switch-to-4 :exit t)
+  ("5" +workspace/switch-to-5 :exit t)
+  ("6" +workspace/switch-to-6 :exit t)
+  ("7" +workspace/switch-to-7 :exit t)
+  ("8" +workspace/switch-to-8 :exit t)
+  ("9" +workspace/switch-to-9 :exit t)
+  ("0" +workspace/switch-to-final :exit t)
+  ("`" +workspace/other :exit t)
+  ("e" +workspace/switch-to :exit t)
+  ("<tab>" +workspace/display)
+  ("TAB" +workspace/display)
+  ("<return>" nil :exit t)
+  ("RET" nil :exit t)
+  ("[" +workspace/switch-left)
+  ("]" +workspace/switch-right)
+  ("a" persp-add-buffer :exit t)
+  ("A" persp-import-buffers :exit t)
+  ("b" persp-switch-to-buffers :exit t)
+  ("d" +workspace/delete)
+  ("c" my-workspace-create :exit t)
+  ("L" persp-load-state-from-file :exit t)
+  ("l" +workspace/load :exit t)
+  ("n" persp-next)
+  ("N" persp-prev)
+  ("p" persp-prev)
+  ("r" persp-remove-buffer :exit t)
+  ("R" +workspace/rename :exit t)
+  ("s" persp-save-state-to-file :exit t)
+  ("S" persp-save-to-file-by-names :exit t)
+  ("t" persp-temporarily-display-buffer :exit t)
+  ("w" my-hydra-layouts/body :exit t))
+
+(defhydra my-hydra-evil-numbers
+  (:hint nil
+   :foreign-keys run)
+  "
+[_+_/_=_] increase number  [_-_/___] decrease  [_q_] quit"
+  ("+" evil-numbers/inc-at-pt)
+  ("=" evil-numbers/inc-at-pt)
+  ("-" evil-numbers/dec-at-pt)
+  ("_" evil-numbers/dec-at-pt)
+  ("q" nil :exit t))
+(map!
+ :nv "g+" #'my-hydra-evil-numbers/body
+ )
+ ;; (define-key! 'global
+ ;;   [remap evil-numbers/inc-at-pt] #'my-hydra-evil-numbers/evil-numbers/inc-at-pt
+ ;;   [remap evil-numbers/dec-at-pt] #'my-hydra-evil-numbers/evil-numbers/dec-at-pt
+ ;;   )

@@ -39,7 +39,6 @@
  doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
  )
 
-
 ;; (setq
 ;;  doom-font (font-spec :family "Fira Code" :size 24 :weight 'light)
 ;;  doom-variable-pitch-font (font-spec :family "FiraGO" :weight 'light)
@@ -49,7 +48,8 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
+;; (setq doom-theme 'doom-one)
+(setq doom-theme 'spacemacs-light)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -85,7 +85,7 @@
   ;; Global settings (defaults)
   ;; (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  ;; (load-theme doom-theme t)
+  ;; (load-theme 'doom-one t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -124,15 +124,14 @@
   (remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
   )
 
-;; ;; make-frame doesn't create a new persp
-;; (after! persp-mode
-;;   (remove-hook 'after-make-frame-functions #'persp-init-new-frame)
-;;   )
-
-(setq
- ;; persp-add-buffer-on-after-change-major-mode 'free
- ;; persp-add-buffer-on-after-change-major-mode-filter-functions nil
- persp-nil-name "main")
+;; make-frame doesn't create a new persp
+(with-eval-after-load 'persp-mode
+  ;;   (remove-hook 'after-make-frame-functions #'persp-init-new-frame)
+  (setq persp-add-buffer-on-after-change-major-mode 'free
+        ;; persp-add-buffer-on-after-change-major-mode-filter-functions nil
+        ;; persp-nil-name "main")
+        )
+  )
 
 (after! projectile
   (projectile-add-known-project "~/Dropbox/research/lsjm-art")
@@ -144,6 +143,7 @@
 
 ;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
 ;; (remove-hook 'ivy-mode-hook #'ivy-rich-mode)
+(setq ivy-height 10)
 
 (setq ispell-program-name "hunspell"
       ispell-check-comments nil
@@ -292,6 +292,8 @@
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
 
+(require 'golden-ratio)
+
 ;; (setq trash-directory "~/.Trash/")
 
 (after! org
@@ -326,6 +328,9 @@
    )
   ;; (setq org-insert-heading-respect-content nil)
 
+  ;; cdltaex will ignore inline math $...$
+  ;; (plist-put org-format-latex-options :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")) ;; drop "$"
+
   (setq org-preview-latex-image-directory "ltximg/"
         ;; org-archive-location ".archive/%s::"
         )
@@ -354,30 +359,12 @@
   ;; (set 'preview-scale-function 1.75)
   )
 
-;; (after! org
-  ;; org-latex-preview size
-  ;; (setq org-format-latex-options
-  ;;       (list :foreground 'default
-  ;;             :background 'default
-  ;;             :scale 1.5
-  ;;             :html-foreground "Black"
-  ;;             :html-background "Transparent"
-  ;;             :html-scale 1.0
-  ;;             :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
-  ;; (plist-put org-format-latex-options :scale 1.5) ; larger previews
-  ;; )
-
 (with-eval-after-load 'org-roam
-  (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox-bin")
+  (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
+        +org-roam-open-buffer-on-find-file nil)
   ;; (setq org-roam-graph-executable "neato")
   ;; (setq org-roam-graph-extra-config '(("overlap" . "false")))
   )
-
-;; ad-hoc fixes: hangul in dired-mode
-;; https://www.emacswiki.org/emacs/CarbonEmacsPackage#CarbonEmacs
-;; seems to work for emacs 22 and 23
-;; (require 'utf-8m)
-;; (set-file-name-coding-system 'utf-8m)
 
 ;; Dropbox sync changes hangul encoding to NFD, which results in 한글 자소분리 in dired and other modes
 ;; https://tt.kollhong.com/79
@@ -395,16 +382,9 @@
 ;;   (hl-line-when-idle-interval 0.5)
 ;;   (toggle-hl-line-when-idle 1))
 
-(setq garbage-collection-messages nil)
-;;; Fewer garbage collection
-;; Number of bytes of consing between garbage collections.
-;; (defun set-gc-cons-threshold-normal (mb)
-;;   "Set gc-cons-threshold in MB"
-;;   (setq gc-cons-threshold (round (* mb 1000 1000))))
-;; (add-hook 'after-init-hook #'(lambda () (set-gc-cons-threshold-normal 0.8)))
-
 ;; no need: gcmh: https://github.com/emacsmirror/gcmh
 ;; (add-hook 'focus-out-hook #'garbage-collect)
+(setq garbage-collection-messages nil)
 
 ;; no key stroke for exiting INSERT mode: doom default jk
 (setq evil-escape-key-sequence "jk"
@@ -437,17 +417,26 @@
   ;; (define-key which-key-mode-map (kbd "C-h") 'which-key-C-h-dispatch)
 )
 
-;; (with-eval-after-load 'pdf-tools
-;;   ;; Pdf tools dark/light theme
-;;   (add-hook 'pdf-tools-enabled-hook 'pdf-view-midnight-minor-mode)
-
-;;   ;; cursor visibility
-;;   (add-hook 'pdf-view-mode-hook
-;;             (lambda ()
-;;               (set (make-local-variable
-;;                     'evil-evilified-state-cursor)
-;;                    (list nil))))
-;; )
+(use-package nov
+  :defer t
+  :mode ("\\.epub\\'" . nov-mode)
+  :config
+  (map!
+   :map nov-mode-map
+   :nvime "H" #'nov-previous-document
+   :nvime "L" #'nov-next-document
+   :nvime "[" #'nov-previous-document
+   :nvime "]" #'nov-next-document
+   :nvime "d" #'nov-scroll-up
+   :nvime "u" #'nov-scroll-down
+   :nvime "J" #'nov-scroll-up
+   :nvime "K" #'nov-scroll-down
+   :nvime "gm" #'nov-display-metadata
+   :nvime "gr" #'nov-render-document
+   :nvime "gt" #'nov-goto-toc
+   :nvime "gv" #'nov-view-source
+   :nvime "gV" #'nov-view-content-source)
+  )
 
 ;; ;; epub osx dictionary
 ;; (defun my-nov-mode-map ()
@@ -458,18 +447,12 @@
 ;; (evil-set-initial-state 'elfeed-search-mode 'emacs)
 ;; (evil-set-initial-state 'elfeed-shoe-mode 'emacs)
 
-;; ;; savehist-mode history length
-;; (setq history-length 1000)
-;; (put 'minibuffer-history 'history-length 50)
-;; (put 'evil-ex-history 'history-length 50)
-;; (put 'kill-ring 'history-length 25)
-
 ;; (setq save-place-forget-unreadable-files t) ;; emacs is slow to exit after enabling saveplace
 
-;; (setq recentf-auto-cleanup 300)         ;; long recentf slow down emacs
 ;; disable recentf-cleanup on Emacs start, because it can cause
 ;; problems with remote files
 ;; (setq recentf-auto-cleanup 'never)
+;; (setq recentf-auto-cleanup 300)         ;; long recentf slow down emacs
 
 ;; Delete duplicated entries in autosaves of minibuffer history
 ;; (setq history-delete-duplicates t)
@@ -477,11 +460,11 @@
 ;; ;; https://github.com/kaz-yos/emacs/blob/master/init.d/500_recentf-related.el
 ;; (setq recentf-max-saved-items 300)
 ;; (setq recentf-max-menu-items 15)
-;; (setq recentf-exclude '("recentf_.*$"
-;;                         ;; ".*/elpa/.*"
-;;                         ".*\\.maildir.*"
-;;                         "/var/folders/.*"
-;;                         ".*company-statistics.*"))
+(setq recentf-exclude '("recentf_.*$"
+                        ;; ".*/elpa/.*"
+                        ".*\\.maildir.*"
+                        "/var/folders/.*"
+                        ".*company-statistics.*"))
 
 
 ;; ;; speed up comint
@@ -503,8 +486,8 @@
       ;; spacemacs value of parameters
       scroll-conservatively 0
       )
-(blink-cursor-mode t)
-;; (display-time-mode t)
+(blink-cursor-mode 1)
+;; (display-time-mode 1)
 ;; (add-hook 'before-save-hook 'time-stamp)
 
 ;; (global-set-key [C-wheel-up]  'ignore)
@@ -548,11 +531,10 @@
        ;; org-ref-notes-directory "~/org/"
        )
 
-
 ;; (setq reftex-default-bibliography '("~/Zotero/myref.bib"))
 
 ;; ;; open zotero pdf in org-ref
-;; (after! org-ref
+;; (eval-after-load 'org-ref
 ;;   (setq org-ref-default-bibliography "~/Zotero/myref.bib"
 ;;         org-ref-pdf-directory "~/Zotero/storage/"
 ;;         org-ref-bibliography-notes "~/org/refnotes.org"
@@ -561,7 +543,7 @@
 ;;         )
 ;;   )
 
-;; (after! bibtex-completion
+;; (eval-after-load 'bibtex-completion
 ;;   (setq bibtex-completion-library-path "~/Zotero/storage/"
 ;;         bibtex-completion-bibliography org-ref-default-bibliography
 ;;         bibtex-completion-notes-path org-ref-bibliography-notes
@@ -664,7 +646,7 @@
   ;; (jabber-keepalive-start)
   )
 
-(after! paradox
+(eval-after-load 'paradox
   (setq paradox-github-token (password-store-get "paradox/github-token"))
   )
 
@@ -734,10 +716,6 @@
   ;; (advice-add 'doom/find-file-in-private-config :around #'my/find-file-in-private-config)
   )
 
-;; (after! org
-;; (plist-put org-format-latex-options :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")) ;; drop "$"
-;; )
-
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 (add-hook 'prog-mode-hook #'highlight-parentheses-mode)
 
@@ -750,7 +728,7 @@
 ;;   (setenv "WORKON_HOME" "~/.conda/envs")
 ;; )
 
-(after! conda
+(with-eval-after-load 'conda
   (setq-default conda-env-home-directory "/Users/yunj/.conda")
   (setq conda-anaconda-home "/opt/intel/oneapi/intelpython/latest"
         ;; conda-env-current-name "tf"
@@ -761,53 +739,85 @@
   ;; (conda-env-autoactivate-mode t)
   )
 
-(defun thin-all-faces ()
-  "Change all faces to be lighter."
-  (mapc
-   (lambda (face)
-     (when (eq (face-attribute face :weight) 'light)
-       (set-face-attribute face nil :weight 'extra-light))
-     (when (eq (face-attribute face :weight) 'semi-light)
-       (set-face-attribute face nil :weight 'light))
-     (when (eq (face-attribute face :weight) 'normal)
-       (set-face-attribute face nil :weight 'semi-light))
-     (when (eq (face-attribute face :weight) 'semi-bold)
-       (set-face-attribute face nil :weight 'normal))
-     (when (eq (face-attribute face :weight) 'bold)
-       (set-face-attribute face nil :weight 'semi-bold))
-     )
-   (face-list))
-  )
-
-(defun thick-all-faces ()
-  "Change all faces to be bolder."
-  (mapc
-   (lambda (face)
-     (when (eq (face-attribute face :weight) 'extra-light)
-       (set-face-attribute face nil :weight 'light))
-     (when (eq (face-attribute face :weight) 'light)
-       (set-face-attribute face nil :weight 'semi-light))
-     (when (eq (face-attribute face :weight) 'semi-light)
-       (set-face-attribute face nil :weight 'normal))
-     (when (eq (face-attribute face :weight) 'normal)
-       (set-face-attribute face nil :weight 'semi-bold))
-     (when (eq (face-attribute face :weight) 'semi-bold)
-       (set-face-attribute face nil :weight 'bold))
-     )
-   (face-list))
-  )
-
+;; thinning all faces
 (add-hook 'after-init-hook #'thin-all-faces)
 
 ;; align tables containing variable-pitch font, CJK characters and images
 ;; (add-hook 'org-mode-hook #'valign-mode)
 
-(setq +org-roam-open-buffer-on-find-file nil)
-
 (use-package spray
   :config
-  (setq spray-wpm 500
+  )
+
+(use-package spray
+  :commands spray-mode
+  :init
+  (progn
+    (defun speed-reading/start-spray ()
+      "Start spray speed reading on current buffer at current point."
+      (interactive)
+      (evil-insert-state)
+      (spray-mode t)
+      (internal-show-cursor (selected-window) nil))
+
+    (map! :leader "ars" #'speed-reading/start-spray)
+
+    (defadvice spray-quit (after speed-reading//quit-spray activate)
+      "Correctly quit spray."
+      (internal-show-cursor (selected-window) t)
+      (evil-normal-state)))
+  :config
+  (progn
+    (define-key spray-mode-map (kbd "h") 'spray-backward-word)
+    (define-key spray-mode-map (kbd "l") 'spray-forward-word)
+    (define-key spray-mode-map (kbd "q") 'spray-quit))
+  ;; (eval-after-load 'which-key
+  ;;   (push '((nil . "\\`speed-reading/\\(.+\\)\\'") . (nil . "\\1"))
+  ;;         which-key-replacement-alist))
+  (setq spray-wpm 400
         spray-height 700)
   )
 
-(require 'golden-ratio)
+;; (defun speed-reading/post-init-which-key ()
+;;   (push '((nil . "\\`speed-reading/\\(.+\\)\\'") . (nil . "\\1"))
+;;         which-key-replacement-alist))
+
+;; ;; Github flavored markdown exporter
+;; (eval-after-load 'org
+;;   '(require 'ox-gfm nil t))
+
+(use-package bm
+  :defer t
+  :commands
+  (bm-buffer-restore)
+  :init
+  (progn
+    ;; restore on load (even before you require bm)
+    (setq bm-restore-repository-on-load t)
+    ;; Allow cross-buffer 'next'
+    (setq bm-cycle-all-buffers t)
+    ;; save bookmarks
+    (setq-default bm-buffer-persistence t)
+    ;; where to store persistent files
+    (setq bm-repository-file (format "%sbm-repository"
+                                     doom-etc-dir))
+    (setq bm-highlight-style 'bm-highlight-only-fringe
+          bm-repository-size 500)
+    ;; (evil-leader/set-key
+    ;;   "atb" 'spacemacs/bm-transient-state/body)
+    (advice-add 'my-hydra-bm/body
+                :before #'bm-buffer-restore))
+  :config
+  (progn
+    ;; Saving bookmarks
+    (add-hook 'kill-buffer-hook #'bm-buffer-save)
+    ;; Saving the repository to file when on exit.
+    ;; kill-buffer-hook is not called when Emacs is killed, so we
+    ;; must save all bookmarks first.
+    (add-hook 'kill-emacs-hook #'(lambda nil
+                                   (bm-buffer-save-all)
+                                   (bm-repository-save)))
+    ;; Restoring bookmarks
+    (add-hook 'find-file-hooks   #'bm-buffer-restore)
+    ;; Make sure bookmarks is saved before check-in (and revert-buffer)
+    (add-hook 'vc-before-checkin-hook #'bm-buffer-save)))

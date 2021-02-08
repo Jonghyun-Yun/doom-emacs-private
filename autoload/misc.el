@@ -84,3 +84,21 @@
     (goto-char (point-min))
     (when (re-search-forward "^<<<<<<< " nil :noerror)
       (smerge-mode 1))))
+
+;;;###autoload
+(defun my-workspace-create (name)
+  "Create a new workspace named NAME."
+  (interactive (list (read-from-minibuffer "New workspace name: ")))
+  ;; (interactive (list nil current-prefix-arg))
+  (unless name
+    (setq name (format "#%s" (+workspace--generate-id))))
+  (condition-case e
+      (cond ((+workspace-exists-p name)
+             (error "%s already exists" name))
+            ((+workspace--protected-p name)
+    (error "Can't create a new '%s' workspace" name))
+            ;; (clone-p (persp-copy name t))
+            (t
+             (+workspace-switch name t)
+             (+workspace/display)))
+    ((debug error) (+workspace-error (cadr e) t))))

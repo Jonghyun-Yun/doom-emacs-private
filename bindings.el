@@ -36,6 +36,9 @@
  (:map cdlatex-mode-map
   :ie "TAB"           #'cdlatex-tab)
 
+ (:map dired-mode-map
+  :nvme "S" #'dired-do-symlink)
+
  ;; gl for evil-org-mode
  :nv "gl"    nil
  :nv "gL"    nil
@@ -159,7 +162,6 @@
          :nv "gt." #'my-hydra-timemachine/body))
         )
 
-(with-eval-after-load 'org
   (map!
    (:map org-mode-map
     :desc "Org Babel Hydra"
@@ -168,13 +170,20 @@
    :localleader
    :desc "Org Agenda Hydra" "." #'my-hydra-org-agenda/body)
   )
-)
 
 (map!
  (:leader
-  :desc "Bookmark Hydra" "f z" #'my-hydra-bm/body
+  :desc "Bookmark Hydra" "atb" #'my-hydra-bm/body
   :desc "Code Fold Hydra" "z." #'my-hydra-fold/body)
  (:map pdf-view-mode-map
   :localleader
   :desc "PDF View Hydra" "." #'my-hydra-pdf-tools/body)
+ )
+
+(map!
+ :leader
+ :desc "Switch workspace"
+ "TAB e" #'+workspace/switch-to
+ :desc "Layouts Hydra"
+ "TAB ." #'my-hydra-layouts/body
  )

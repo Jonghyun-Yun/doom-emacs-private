@@ -28,7 +28,7 @@
        (ivy                ; a search engine for love and life
         +fuzzy
         +prescient
-        ;; +childframe          ; disabled: ~fit-frame-to-buffer~ is very slow
+        ;; +childframe
         ;; +icons
        )
 

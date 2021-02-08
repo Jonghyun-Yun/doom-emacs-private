@@ -9,7 +9,12 @@
  '(org-agenda-files
    '("~/org/inbox.org" "~/org/todo.org" "~/org/gcal.org" "~/org/projects.org" "~/org/tickler.org" "~/org/routines.org" "~/Dropbox/MobileOrg/roam/lsjm-meeting.org"))
  '(package-selected-packages '(exwm))
- '(safe-local-variable-values '((TeX-engine . xetex))))
+ '(safe-local-variable-values
+   '((org-babel-default-header-args:R
+      (:session . "*R-Org*")
+      (:export . "both")
+      (:results . "output replace"))
+     (TeX-engine . xetex))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

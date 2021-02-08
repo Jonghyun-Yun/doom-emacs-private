@@ -137,3 +137,8 @@
 
 (package! golden-ratio.el
   :recipe (:host github :repo "roman/golden-ratio.el"))
+
+;; Github flavored markdown exporter
+(package! ox-gfm)
+
+(package! nov)
