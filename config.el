@@ -34,9 +34,11 @@
 ;;  )
 
 (setq
- doom-font (font-spec :family "Iosevka SS08" :size 28 :weight 'light)
- doom-variable-pitch-font (font-spec :family "Iosevka Sparkle" :weight 'light)
+ doom-font (font-spec :family "Iosevka SS08" :size 24 :weight 'light)
+ doom-variable-pitch-font (font-spec :family "Iosevka Etoile" :weight 'light)
+ ;; doom-variable-pitch-font (font-spec :family "Iosevka Aile" :weight 'light)
  doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
+ doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light)
  )
 
 ;; (setq
@@ -48,8 +50,8 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-;; (setq doom-theme 'doom-one)
-(setq doom-theme 'spacemacs-light)
+(setq doom-theme 'doom-nord)
+;; (setq doom-theme 'spacemacs-light)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -94,7 +96,7 @@
   ;; (doom-themes-neotree-config)
   ;; or for treemacs users
   ;; doom-themes package forces treemacs to use a variable-pitch font
-  (setq doom-themes-treemacs-enable-variable-pitch nil)
+  (setq doom-themes-treemacs-enable-variable-pitch t)
   (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
   (doom-themes-treemacs-config)
 
@@ -248,21 +250,27 @@
 ;; (setq +latex-viewers '(skim pdf-tools))
 (setq +latex-viewers '(pdf-tools skim))
 
-(after! ess
+(with-eval-after-load 'ess
   (load! "lisp/ess-plus")
-  (evil-set-initial-state 'inferior-ess-mode 'emacs)
+  (evil-set-initial-state 'inferior-ess-r-mode 'emacs)
+  (setq ess-assign-list '(" <- " " = " " -> ")
+        ess-r-smart-operators t)
+  ;; ess-assign
+  (defvar ess-assign-key "\M--"
+    "Call `ess-insert-assign'.")
+  (when ess-assign-key
+    (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign)
+    (define-key ess-r-mode-map ess-assign-key #'ess-insert-assign)
+    ;; (define-key inferior-ess-r-mode-map ess-assign-key #'ess-cycle-assign)
+    ;; (define-key ess-r-mode-map ess-assign-key #'ess-cycle-assign)
+    )
   )
 
-(after! ess-mode
-  (setq ess-r-smart-operators t)
-  )
-
-(load! "lisp/org-plus")
 ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
 ;; (load! "lisp/stan-config") ;; :private stan module
 
 ;; passwords to be accessible
-(use-package! pass)
+;; (use-package! pass)
 
 (after! plantuml-mode
   (setq plantuml-jar-path "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar"
@@ -330,6 +338,8 @@
 
   ;; cdltaex will ignore inline math $...$
   ;; (plist-put org-format-latex-options :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")) ;; drop "$"
+  (setq org-latex-preview-scale 1.5)
+  (plist-put org-format-latex-options :scale org-latex-preview-scale)
 
   (setq org-preview-latex-image-directory "ltximg/"
         ;; org-archive-location ".archive/%s::"
@@ -345,6 +355,7 @@
   ;; insert-mode tab binds back to org-cycle
   (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h)
    )
+(load! "lisp/org-plus")
 
 ;; https://gitlab.com/oer/org-re-reveal-ref/-/blob/master/org-re-reveal-ref.el
 ;; it changes some of org-ref custom variables
@@ -499,6 +510,9 @@
 
 (use-package matlab-mode
   :defer t
+  :commands
+  (matlab-shell)
+  :mode ("\\.m\\'" . matlab-mode)
   ;; :init
   ;; (add-hook 'matlab-mode-hook 'prog-mode-hooks)
   :config
@@ -563,10 +577,10 @@
   ;; (set-face-attribute 'mode-line-inactive nil :family "Fira Mono for Powerline" :height 100)
 
   ;; https://github.com/seagle0128/doom-modeline/issues/187#issuecomment-507201556
-  (defun my-doom-modeline--font-height ()
-    "Calculate the actual char height of the mode-line."
-    (+ (frame-char-height) 2))
-  (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
+  ;; (defun my-doom-modeline--font-height ()
+  ;;   "Calculate the actual char height of the mode-line."
+  ;;   (+ (frame-char-height) 2))
+  ;; (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
 
   ;; How wide the mode-line bar should be. It's only respected in GUI.
   (setq doom-modeline-bar-width 3)
@@ -633,17 +647,21 @@
 ;; Hangout
 (use-package jabber
   :defer t
+  :commands (
+             jabber-connect-all
+             jabber-connect)
   :init
   (add-hook 'jabber-post-connect-hooks 'spacemacs/jabber-connect-hook)
   :config
   ;; password encrypted in ~/.authinfo.gpg
   ;; https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
   (setq jabber-account-list '(("jonghyun.yun@gmail.com"
-                             (:network-server . "talk.google.com")
-                             (:connection-type . starttls)
-                             )))
+                               (:network-server . "talk.google.com")
+                               (:connection-type . starttls)
+                               )))
   ;; (jabber-connect-all)
   ;; (jabber-keepalive-start)
+  (evil-set-initial-state 'jabber-chat-mode 'insert)
   )
 
 (eval-after-load 'paradox
@@ -664,7 +682,10 @@
 (after! org-msg
   (setq org-msg-options
         (concat org-msg-options " num:nil tex:dvipng ^:{} \\n:t")
-        org-msg-startup "hidestars indent inlineimages")
+        org-msg-startup "hidestars indent inlineimages"
+	org-msg-default-alternatives '(text html)
+	org-msg-convert-citation t
+        )
   )
 
 ;; OS X ls not working with --quoting-style=literal
@@ -746,10 +767,6 @@
 ;; (add-hook 'org-mode-hook #'valign-mode)
 
 (use-package spray
-  :config
-  )
-
-(use-package spray
   :commands spray-mode
   :init
   (progn
@@ -821,3 +838,41 @@
     (add-hook 'find-file-hooks   #'bm-buffer-restore)
     ;; Make sure bookmarks is saved before check-in (and revert-buffer)
     (add-hook 'vc-before-checkin-hook #'bm-buffer-save)))
+
+(use-package org-present
+  :defer t
+  :commands org-present
+  :config
+  (map!
+   :map org-present-mode-keymap
+   :g "C->" #'org-present-next
+   :g "C-<" #'org-present-prev)
+  ;; (define-key org-present-mode-keymap "C->" #'org-present-next)
+  ;; (define-key org-present-mode-keymap "C-<" #'org-present-prev)
+  )
+
+(with-eval-after-load 'org-tree-slide
+  (setq org-tree-slide-header nil
+        +org-present-hide-properties t
+        org-tree-slide-skip-outline-level 3
+        org-tree-slide-heading-emphasis nil
+        +org-present-text-scale 3
+        +org-present-hide-tags t
+        +org-present-format-latex-scale 2.25)
+
+  ;; (remove-hook 'org-tree-slide-mode-hook
+  ;;              #'+org-present-hide-blocks-h
+  ;;              #'+org-present-prettify-slide-h
+  ;;              )
+
+  (add-hook 'org-tree-slide-mode-hook #'jyun/org-present-hide)
+
+  (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
+  (load! "~/doom-emacs/modules/lang/org/autoload/contrib-present.el")
+
+  (map!
+   :map org-tree-slide-mode-map
+   :g "C-?" #'org-tree-slide-content
+   :g "C-:" #'yunj/org-present-latex-preview
+   )
+  )

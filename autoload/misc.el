@@ -140,3 +140,62 @@
              (+workspace-switch name t)
              (+workspace/display)))
     ((debug error) (+workspace-error (cadr e) t))))
+
+;;;###autoload
+(defun jyun/org-present-hide ()
+  "Hide comments, drawrs and tags."
+  (save-excursion
+    ;; hide all comments
+    (goto-char (point-min))
+    (while (re-search-forward
+            "^[ \t]*#\\(\\+\\(author\\|title\\|date\\):\\)?.*\n"
+            nil t)
+      (cond
+       ((and (match-string 2)
+             (save-match-data
+               (string-match (regexp-opt '("title" "author" "date"))
+                             (match-string 2)))))
+       ((and (match-string 2)
+             (save-match-data
+               (string-match org-babel-results-keyword (match-string 2))))
+        ;; This pulls back the end of the hidden overlay by one to
+        ;; avoid hiding image results of code blocks.  I'm not sure
+        ;; why this is required, or why images start on the preceding
+        ;; newline, but not knowing why doesn't make it less true.
+        (+org-present--make-invisible (match-beginning 0) (1- (match-end 0))))
+       (t (+org-present--make-invisible (match-beginning 0) (1- (match-end 0))))))
+    ;; hide tags
+    (when +org-present-hide-tags
+      (goto-char (point-min))
+      (while (re-search-forward
+              (org-re "^\\*+.*?\\([ \t]+:[[:alnum:]_@#%:]+:\\)[ \r\n]")
+              nil t)
+        (+org-present--make-invisible (match-beginning 1) (match-end 1))))
+    ;; hide properties
+    (when +org-present-hide-properties
+      (goto-char (point-min))
+      (while (re-search-forward org-drawer-regexp nil t)
+        (let ((beg (match-beginning 0))
+              (end (re-search-forward
+                    "^[ \t]*:END:[ \r\n]*"
+                    (save-excursion (outline-next-heading) (point)) t)))
+          (+org-present--make-invisible beg end))))
+    ;; (dolist (el '("title" "author" "date"))
+    ;;   (goto-char (point-min))
+    ;;   (when (re-search-forward (format "^\\(#\\+%s:[ \t]*\\)[ \t]*\\(.*\\)$" el) nil t)
+    ;;     (+org-present--make-invisible (match-beginning 1) (match-end 1))
+    ;;     (push (make-overlay (match-beginning 2) (match-end 2)) +org-present--overlays)
+    ;;     ))
+    ))
+
+;;;###autoload
+(defun jyun/org-present-latex-preview ()
+  (interactive)
+  (condition-case ex
+      (let ((org-format-latex-options
+             (plist-put (copy-tree org-format-latex-options)
+                        :scale +org-present-format-latex-scale)))
+        (org-preview-latex-fragment '(16)))
+    ('error
+     (message "Unable to imagify latex [%s]" ex)))
+  )

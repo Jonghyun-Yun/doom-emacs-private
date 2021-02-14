@@ -16,7 +16,8 @@
   :after dired)
 
 (use-package! dired-subtree
-  :after dired)
+  :commands dired-subtree-toggle
+  )
 
 ;; (use-package! dired-narrow
 ;;   :after dired)

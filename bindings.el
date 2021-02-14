@@ -37,7 +37,9 @@
   :ie "TAB"           #'cdlatex-tab)
 
  (:map dired-mode-map
-  :nvme "S" #'dired-do-symlink)
+  :nvme "S" #'dired-do-symlink
+  :nvme [tab] #'dired-subtree-toggle
+ )
 
  ;; gl for evil-org-mode
  :nv "gl"    nil
@@ -186,4 +188,5 @@
  "TAB e" #'+workspace/switch-to
  :desc "Layouts Hydra"
  "TAB ." #'my-hydra-layouts/body
+ "TAB c" #'my-workspace-create
  )

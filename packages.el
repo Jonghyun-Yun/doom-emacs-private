@@ -142,3 +142,7 @@
 (package! ox-gfm)
 
 (package! nov)
+
+(package! org-present)
+(package! epresent)
+(package! org-tree-slide)

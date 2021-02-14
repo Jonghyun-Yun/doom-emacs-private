@@ -46,7 +46,10 @@
                       ("research" . ?r) ("teaching" . ?t) ("service" . ?s)
                       (:endgroup . nil)
                       ;; noexport
-                      ("noexport" . ?x)))
+                      (:startgroup . nil)
+                      ("noexport" . ?x) ("export" . ?y)
+                      (:endgroup . nil)
+                      ))
 
 (setq org-todo-keywords
   '((sequence
