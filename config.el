@@ -35,8 +35,8 @@
 
 (setq
  doom-font (font-spec :family "Iosevka SS08" :size 24 :weight 'light)
- doom-variable-pitch-font (font-spec :family "Iosevka Etoile" :weight 'light)
- ;; doom-variable-pitch-font (font-spec :family "Iosevka Aile" :weight 'light)
+ ;; doom-variable-pitch-font (font-spec :family "Iosevka Etoile" :weight 'light)
+ doom-variable-pitch-font (font-spec :family "Iosevka Aile" :weight 'light)
  doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
  doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light)
  )
@@ -51,7 +51,6 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-nord)
-;; (setq doom-theme 'spacemacs-light)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -87,7 +86,7 @@
   ;; Global settings (defaults)
   ;; (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  ;; (load-theme 'doom-one t)
+  ;; (load-theme 'doom-nord t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -258,12 +257,11 @@
   ;; ess-assign
   (defvar ess-assign-key "\M--"
     "Call `ess-insert-assign'.")
-  (when ess-assign-key
-    (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign)
-    (define-key ess-r-mode-map ess-assign-key #'ess-insert-assign)
-    ;; (define-key inferior-ess-r-mode-map ess-assign-key #'ess-cycle-assign)
-    ;; (define-key ess-r-mode-map ess-assign-key #'ess-cycle-assign)
-    )
+
+  (with-eval-after-load 'ess-r-mode
+    (define-key ess-r-mode-map ess-assign-key #'ess-insert-assign))
+  (add-hook 'inferior-ess-r-mode-hook
+            #'(lambda () (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign)))
   )
 
 ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
@@ -280,7 +278,8 @@
 (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
 
 ;; maximize frame at startup
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(add-to-list 'initial-frame-alist '(fullscreen . fullscreen))
 
 ;; Backups & Autosave
 ;; (auto-save-visited-mode +1)
@@ -338,12 +337,12 @@
 
   ;; cdltaex will ignore inline math $...$
   ;; (plist-put org-format-latex-options :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")) ;; drop "$"
-  (setq org-latex-preview-scale 1.5)
-  (plist-put org-format-latex-options :scale org-latex-preview-scale)
 
   (setq org-preview-latex-image-directory "ltximg/"
         ;; org-archive-location ".archive/%s::"
-        )
+        org-latex-preview-scale 1.5)
+  (plist-put org-format-latex-options :scale org-latex-preview-scale)
+
   ;; default attach folder
   ;; (after! org-attach
   ;;   (setq
@@ -354,6 +353,12 @@
 
   ;; insert-mode tab binds back to org-cycle
   (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h)
+
+  (add-hook! 'org-mode-hook
+             #'(lambda () (mixed-pitch-mode 1))
+             #'(lambda () (rainbow-delimiters-mode -1))
+             )
+  ;; (add-hook 'mixed-pitch-mode-hook #'thin-variable-pitch-faces)
    )
 (load! "lisp/org-plus")
 
@@ -395,7 +400,7 @@
 
 ;; no need: gcmh: https://github.com/emacsmirror/gcmh
 ;; (add-hook 'focus-out-hook #'garbage-collect)
-(setq garbage-collection-messages nil)
+;; (setq garbage-collection-messages nil)
 
 ;; no key stroke for exiting INSERT mode: doom default jk
 (setq evil-escape-key-sequence "jk"
@@ -477,7 +482,6 @@
                         "/var/folders/.*"
                         ".*company-statistics.*"))
 
-
 ;; ;; speed up comint
 ;; (setq gud-gdb-command-name "gdb --annotate=1"
 ;;       large-file-warning-threshold nil
@@ -498,15 +502,31 @@
       scroll-conservatively 0
       )
 (blink-cursor-mode 1)
-;; (display-time-mode 1)
+(display-battery-mode 1)
+
+(setq display-time-format "%R %a %b %d"
+      display-time-default-load-average nil
+      display-time-world-list
+      '(("America/Los_Angeles" "Seattle")
+        ("America/New_York" "New York")
+        ("Europe/London" "London")
+        ;; ("Pacific/Auckland" "Auckland")
+        ("Asia/Seoul" "Seoul"))
+      display-time-world-time-format "%a %b %d %Y %R %Z")
+(display-time-mode 1)
+
 ;; (add-hook 'before-save-hook 'time-stamp)
 
 ;; (global-set-key [C-wheel-up]  'ignore)
 ;; (global-set-key [C-wheel-down] 'ignore)
 
-;; ;; custom variables
-;; (setq lsp-prefer-flymake nil
-;;       lsp-enable-file-watchers nil)
+;; custom variables
+(setq
+ ;; lsp-prefer-flymake nil
+ lsp-enable-file-watchers nil
+ ;; lsp-ui-sideline-enable nil
+ ;; lsp-enable-symbol-highlighting nil
+ )
 
 (use-package matlab-mode
   :defer t
@@ -523,7 +543,7 @@
 
   ;; ;; set column for matlab m file buffer
   ;; (add-hook 'matlab-mode-hook
-  ;;           (lambda ()
+  ;;           #'(lambda ()
   ;;             (set-fill-column 100)))
 
   ;; (load! "lisp/matlab-plus")
@@ -540,10 +560,14 @@
 
 (setq! +biblio-pdf-library-dir "~/Zotero/storage/"
        +biblio-default-bibliography-files '("~/Zotero/myref.bib")
-       +biblio-notes-path "~/org/refnotes.org"
-       ;; org-ref-notes-directory +biblio-notes-path
+       ;; a single file for one long note / directory for many note files
+       ;; +biblio-notes-path "~/org/refnotes.org"
        ;; org-ref-notes-directory "~/org/"
        )
+(unless (featurep! :private bilio +roam-bibtex)
+  ;; error when org-ref-notes-directory is nil and no roam-bibtex is loaded
+  (setq org-ref-notes-directory +biblio-notes-path)
+  )
 
 ;; (setq reftex-default-bibliography '("~/Zotero/myref.bib"))
 
@@ -572,9 +596,7 @@
 (with-eval-after-load 'doom-modeline
   ;; How tall the mode-line should be. It's only respected in GUI.
   ;; If the actual char height is larger, it respects the actual height.
-  (setq doom-modeline-height 25)
-  ;; (set-face-attribute 'mode-line nil :family "Fira Mono for Powerline" :height 100)
-  ;; (set-face-attribute 'mode-line-inactive nil :family "Fira Mono for Powerline" :height 100)
+  (setq doom-modeline-height 24)
 
   ;; https://github.com/seagle0128/doom-modeline/issues/187#issuecomment-507201556
   ;; (defun my-doom-modeline--font-height ()
@@ -647,8 +669,7 @@
 ;; Hangout
 (use-package jabber
   :defer t
-  :commands (
-             jabber-connect-all
+  :commands (jabber-connect-all
              jabber-connect)
   :init
   (add-hook 'jabber-post-connect-hooks 'spacemacs/jabber-connect-hook)
@@ -664,15 +685,15 @@
   (evil-set-initial-state 'jabber-chat-mode 'insert)
   )
 
-(eval-after-load 'paradox
-  (setq paradox-github-token (password-store-get "paradox/github-token"))
-  )
+;; (eval-after-load 'paradox
+;;   (setq paradox-github-token (password-store-get "paradox/github-token"))
+;;   )
 
-(with-eval-after-load 'notmuch
-  (setq +notmuch-sync-backend 'mbsync
-        +notmuch-sync-command "mbsync -a"
-        +notmuch-mail-folder "~/.mail/")
-  )
+;; (with-eval-after-load 'notmuch
+;;   (setq +notmuch-sync-backend 'mbsync
+;;         +notmuch-sync-command "mbsync -a"
+;;         +notmuch-mail-folder "~/.mail/")
+;;   )
 
 ;; The text-scaling level for writeroom-mode
 (after! writeroom-mode
@@ -740,28 +761,13 @@
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 (add-hook 'prog-mode-hook #'highlight-parentheses-mode)
 
-;; ;; python
-;; (use-package pyvenv
-;;   :init
-;;   (pyvenv-mode 1)
-;;   (pyvenv-tracking-mode 1)
-;;   (add-hook 'pyvenv-post-activate-hooks (lambda() (jupyter-available-kernelspecs t)))
-;;   (setenv "WORKON_HOME" "~/.conda/envs")
-;; )
-
 (with-eval-after-load 'conda
   (setq-default conda-env-home-directory "/Users/yunj/.conda")
-  (setq conda-anaconda-home "/opt/intel/oneapi/intelpython/latest"
-        ;; conda-env-current-name "tf"
-        )
-  ;; (conda-env-activate "tf")
+  (setq conda-anaconda-home "/opt/intel/oneapi/intelpython/latest")
   ;; (conda-env-initialize-interactive-shells)
   ;; (conda-env-initialize-eshell)
   ;; (conda-env-autoactivate-mode t)
   )
-
-;; thinning all faces
-(add-hook 'after-init-hook #'thin-all-faces)
 
 ;; align tables containing variable-pitch font, CJK characters and images
 ;; (add-hook 'org-mode-hook #'valign-mode)
@@ -794,10 +800,6 @@
   (setq spray-wpm 400
         spray-height 700)
   )
-
-;; (defun speed-reading/post-init-which-key ()
-;;   (push '((nil . "\\`speed-reading/\\(.+\\)\\'") . (nil . "\\1"))
-;;         which-key-replacement-alist))
 
 ;; ;; Github flavored markdown exporter
 ;; (eval-after-load 'org
@@ -873,6 +875,55 @@
   (map!
    :map org-tree-slide-mode-map
    :g "C-?" #'org-tree-slide-content
-   :g "C-:" #'yunj/org-present-latex-preview
+   :g "C-:" #'jyun/org-present-latex-preview
    )
+  )
+
+(defun yunj/doom-modeline-height ()
+  (let ((height doom-modeline-height))
+  (set-face-attribute 'mode-line nil :height (* 10 height))
+  (set-face-attribute 'mode-line-inactive nil :height (* 10 height))
+  (doom/reset-font-size)
+  ))
+
+;; ;; thinning all faces
+(add-hook! 'doom-load-theme-hook
+           ;; #'thin-all-faces
+           #'yunj/doom-modeline-height)
+
+(add-hook! 'window-setup-hook
+           ;; #'thin-all-faces
+           #'yunj/doom-modeline-height)
+
+;; ;; (add-hook! 'org-load-hook
+;; ;;            #'thin-all-faces)
+
+(with-eval-after-load 'org-roam
+  (setq org-roam-dailies-capture-templates
+        '(("d" "default" entry
+           #'org-roam-capture--get-point
+           "* %?"
+           :file-name "daily/%<%Y-%m-%d_%A>"
+           :head "#+TITLE: %<%Y-%m-%d %A>\n\n[[roam:%<%Y-%m %B>]]\n\n")))
+  )
+
+;; this should work, and it actually bind keys
+;; but it cannot override default binding's description
+;; (map! :leader "nrd" #'org-roam-dailies-map)
+
+(map! :leader
+      (:prefix-map ("n" . "notes")
+       (:when (featurep! :lang org +roam)
+        (:prefix ("r" . "roam")
+         (:prefix ("d" . "by date")
+          "." #'org-roam-dailies-find-directory
+          "b" #'org-roam-dailies-find-previous-note
+          "f" #'org-roam-dailies-find-next-note
+          "n" #'org-roam-dailies-capture-today
+          "v" #'org-roam-dailies-capture-date
+          )))))
+
+(defun jyun/update-overleaf ()
+  (shell-command (format "sh %supdate-overleaf.sh" default-directory)
+                 (format "*overleaf: %s*" (projectile-project-name)))
   )

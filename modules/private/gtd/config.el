@@ -51,27 +51,27 @@
            "DONE(d)" ; done
            )
           (sequence
-           "WAIT(w@)" ; waiting for some external change (event)
-           "HOLD(h@)" ; waiting for some internal change (of mind)
+           "WAIT(w@)" ; waiting to be actionalble again
            "IDEA(i)" ; maybe someday
            "|"
-           "STOP(s@/!)" ; stopped waiting, decided not to work on it
-           ;; "KILL(k@/!)" ; cancel
+           "HOLD(h@/!)" ; to be done some day but not now
+           "KILL(k@/!)" ; Task was cancelled, aborted or is no longer applicable
            )
-          (sequence "[ ](T)" "[-](G)" "[?](W)" "|" "[X](D)")
+          ;; (sequence "[ ](T)" "[-](G)" "[?](W)" "|" "[X](D)")
           ;; [-](S) active
           ;; [?](W) onhold
           ))
 
     (with-no-warnings
     ;; (custom-declare-face '+org-todo-stop  '((t (:inherit (bold font-lock-constant-face org-todo)))) "")
-    ;; (custom-declare-face '+org-todo-stop  '((t (:inherit (bold font-lock-string-face org-todo)))) "")
-    (custom-declare-face '+org-todo-stop  '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
+    ;; (custom-declare-face '+org-todo-stop  '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
     ;; (custom-declare-face '+org-todo-stop  '((t (:inherit (bold font-lock-type-face org-todo)))) "")
     ;; (custom-declare-face '+org-todo-idea '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
+    (custom-declare-face '+org-todo-idea  '((t (:inherit (bold font-lock-type-face org-todo)))) "")
+    (custom-declare-face '+org-todo-kill  '((t (:inherit (bold font-lock-doc-face org-todo)))) "")
     (custom-declare-face '+org-todo-next '((t (:inherit (bold org-level-7 org-todo)))) "")
-    (custom-declare-face '+org-todo-idea '((t (:inherit (bold org-level-6 org-todo)))) "")
-    (custom-declare-face '+org-todo-onhold  '((t (:inherit (bold warning org-todo)))) "")
+    (custom-declare-face '+org-todo-hold '((t (:inherit (bold org-level-6 org-todo)))) "")
+    (custom-declare-face '+org-todo-wait  '((t (:inherit (bold warning org-todo)))) "")
     )
 
     ;; font-lock-builtin-face
@@ -89,14 +89,15 @@
     ;; font-lock-variable-name-face
 
   (setq org-todo-keyword-faces (quote (
-                                       ("[-]" . +org-todo-active)
-                                       ("GO" . +org-todo-active)
-                                       ("NEXT" . +org-todo-next)
-                                       ("[?]" . +org-todo-onhold)
-                                       ("WAIT" . +org-todo-onhold)
-                                       ("HOLD" . +org-todo-onhold)
+                                       ;; ("[-]" . +org-todo-active)
+                                       ;; ("GO" . +org-todo-active)
+                                       ("NEXT" . +org-todo-active)
+                                       ;; ("[?]" . +org-todo-onhold)
+                                       ("WAIT" . +org-todo-wait)
+                                       ("HOLD" . +org-todo-hold)
                                        ("IDEA" . +org-todo-idea)
                                        ("STOP" . +org-todo-stop)
+                                       ("KILL" . +org-todo-kill)
                                        ;; ;; ("PROJ" . +org-todo-project)
                                        ;; ;; ("FAIL" :weight bold :foreground "#f2241f")
                                        ;; ;; ("TODO" :weight bold :foreground "tomato")

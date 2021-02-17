@@ -127,38 +127,55 @@
           '(
             ("r" "Reminder" entry
              (file+headline "~/org/tickler.org" "Reminders")
-             "* [ ] %^{Reminder for...} \nSCHEDULED: %^t \n:PROPERTIES: \n:CREATED: %U \n:LINK: %a \n:END: \n%i \n%?"
+             "* TODO %^{Reminder for...} \nSCHEDULED: %^t \n:PROPERTIES: \n:CREATED: %U \n:LINK: %a \n:END: \n%i \n%?"
              :prepend t
              )
-             ("a" "Attach as sub-heading" entry
+            ("a" "Attach as a subtask" entry
              (file+function buffer-name org-back-to-heading)
              "* %?\n :PROPERTIES: \n:CREATED: %U \n:END: \n%i \n")
             ("t" "Templates for todos")
             ("tt" "Todo" entry
              (file+headline "~/org/inbox.org" "Tasks")
-             "* [ ] %^{Todo for...} \n:PROPERTIES: \n:CAPTURED: %U \n:LINK: %a \n:END: \n%i \n%?"
+             "* TODO %^{Todo for...} \n:PROPERTIES: \n:CAPTURED: %U \n:LINK: %a \n:END: \n%i \n%?"
              :prepend t
              )
             ("td" "Todo deadline" entry
              (file+headline "~/org/inbox.org" "Task Deadlines")
-             "* [ ] %^{Deadline for...} \nDEADLINE: %^t \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
+             "* TODO %^{Deadline for...} \nDEADLINE: %^t \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
              :prepend t
              )
-             ("tr" "Rapid task" entry
+            ("tr" "Rapid task" entry
              (file+headline "~/org/inbox.org" "Rapid Tasks")
-             "* [ ] %^{Rapid task for...} \nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+1d\")) \n%i \n%a \n%?"
+             "* TODO %^{Rapid task for...} \nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+1d\")) \n%i \n%a \n%?"
              :prepend t
              )
-             ("n" "Note" entry
+            ("ts" "Clocked entry subtask" entry (clock)
+             "* TODO %^{Clocked entry subtask for...} \n:PROPERTIES: \n:CAPTURED: %U \n:LINK: %a \n:END: \n%i \n%?")
+            ("n" "Note" entry
              (file+headline +org-capture-notes-file "Inbox")
              "* %u %^{Note for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
              :prepend t
              )
-             ("j" "Journal" entry
+            ("j" "Journal" entry
              (file+olp+datetree +org-capture-journal-file)
              "* %U %^{Journal for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
              :prepend t
+             ;; :tree-type week
+             ;; :clock-in :clock-resume
+             ;; :empty-lines 1
              )
+            ;; ("je" "General Entry" entry
+            ;;  (file+olp+datetree +org-capture-journal-file)
+            ;;  "\n* %<%I:%M %p> - %^{Title} \n\n%?\n\n"
+            ;;  ;; :tree-type week
+            ;;  :clock-in :clock-resume
+            ;;  :empty-lines 1)
+            ;; ("jt" "Task Entry" entry
+            ;;  (file+olp+datetree +org-capture-journal-file)
+            ;;  "\n* %<%I:%M %p> - Task Notes: %a\n\n%?\n\n"
+            ;;  ;; :tree-type week
+            ;;  :clock-in :clock-resume
+            ;;  :empty-lines 1)
             ;; ;; Will use {project-root}/{todo,notes,changelog}.org, unless a
             ;; ;; {todo,notes,changelog}.org file is found in a parent directory.
             ;; ;; Uses the basename from `+org-capture-todo-file',
@@ -178,25 +195,25 @@
             ;; these under {ProjectName}/{Tasks,Notes,Changelog} headings. They
             ;; support `:parents' to specify what headings to put them under, e.g.
             ;; :parents ("Projects")
-            ("o" "Centralized templates for projects")
-            ("ot" "Project todo" entry
+            ("p" "Templates for projects")
+            ("pt" "Project todo" entry
              (function +org-capture-central-project-todo-file)
              "* TODO %^{Todo for...} \n:PROPERTIES: \n:CAPTURED: %U \n:LINK: %a \n:END: \n%i \n%?"
              :heading "Tasks"
              :prepend nil)
-            ("on" "Project notes" entry
+            ("pn" "Project notes" entry
              (function +org-capture-central-project-notes-file)
              "* %U %^{Note for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
              :heading "Notes"
              :prepend t
              )
-            ("oc" "Project changelog" entry
+            ("pc" "Project changelog" entry
              (function +org-capture-central-project-changelog-file)
              "* %U %^{Changelog for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
              :heading "Changelog"
              :prepend t
              )
-            ("op" "New Project" entry
+            ("pp" "New Project" entry
              (file+headline +org-capture-todo-file "Projects")
              "* %^{Project for...} [/] %^{GOAL}p \n:PROPERTIES:\n:CAPTURED: %U \n:END: \n%i \n%?"
              :prepend t
@@ -341,14 +358,18 @@
   ;; (setq org-icalendar-date-time-format ";TZID=%Z:%Y%m%dT%H%M%S")
   ;; (setq org-icalendar-timezone "America/Chicago")
 
-  (setq org-agenda-files '(
+  (setq org-agenda-files `(,org-roam-directory
                            "~/org/inbox.org"
                            "~/org/todo.org"
                            "~/org/gcal.org"
                            "~/org/projects.org"
                            "~/org/tickler.org"
                            "~/org/routines.org"
+                           "~/org/journal.org"
+                           "~/org/notes.org"
                            ))
+
+
 
   ;; Don't ask to evaluate code block
   ;; (setq org-confirm-babel-evaluate nil)
@@ -403,7 +424,7 @@
                   ("sr" . "src R")
                   ("sm" . "src matlab")
                   ("sp" . "src python")
-                  ("ss" . "src sh"))))
+                  ("sh" . "src sh"))))
 
   ;; Org-mode: Source block doesn't respect parent buffer indentation
   ;; http://emacs.stackexchange.com/questions/9472/org-mode-source-block-doesnt-respect-parent-buffer-indentation
