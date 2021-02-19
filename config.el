@@ -561,7 +561,7 @@
 (setq! +biblio-pdf-library-dir "~/Zotero/storage/"
        +biblio-default-bibliography-files '("~/Zotero/myref.bib")
        ;; a single file for one long note / directory for many note files
-       ;; +biblio-notes-path "~/org/refnotes.org"
+       +biblio-notes-path "~/org/refnotes.org"
        ;; org-ref-notes-directory "~/org/"
        )
 (unless (featurep! :private bilio +roam-bibtex)
@@ -762,12 +762,20 @@
 (add-hook 'prog-mode-hook #'highlight-parentheses-mode)
 
 (with-eval-after-load 'conda
-  (setq-default conda-env-home-directory "/Users/yunj/.conda")
   (setq conda-anaconda-home "/opt/intel/oneapi/intelpython/latest")
+  (setq conda-env-home-directory "/Users/yunj/.conda")
   ;; (conda-env-initialize-interactive-shells)
   ;; (conda-env-initialize-eshell)
-  ;; (conda-env-autoactivate-mode t)
   )
+
+;; set this variable again after lsp
+;; otherwise the default evn-home will be used
+(when (featurep! :tools debugger +lsp)
+(with-eval-after-load 'lsp-mode
+  (setq conda-env-home-directory "/Users/yunj/.conda")
+  ))
+
+  ;; (setq conda-env-autoactivate-mode t)
 
 ;; align tables containing variable-pitch font, CJK characters and images
 ;; (add-hook 'org-mode-hook #'valign-mode)
@@ -923,7 +931,30 @@
           "v" #'org-roam-dailies-capture-date
           )))))
 
-(defun jyun/update-overleaf ()
-  (shell-command (format "sh %supdate-overleaf.sh" default-directory)
-                 (format "*overleaf: %s*" (projectile-project-name)))
-  )
+(setq doom-scratch-intial-major-mode 'lisp-interaction-mode)
+
+;; ;; skim to org-roam-bibtex integration
+;; ;; org-id is not generated
+;; ;; org-roam-capture error (due to outdated package) -> updated
+;; ;; more than 2 attachment -> error
+;; (with-eval-after-load 'org-capture
+;;     (add-to-list 'org-capture-templates
+;;                  '("RSA" "Skim Annotation" entry
+;;                    (file+function yunj/skim-orb-notes +reference/org-move-point-to-capture-skim-annotation)
+;;                    "* %^{Note for...}
+;;    :PROPERTIES:
+;;    :CREATED: %U
+;;    :CITE: cite:%(+reference/skim-get-bibtex-key)
+;;    :SKIM_NOTE: %(+reference/skim-get-annotation)
+;;    :SKIM_PAGE: %(+reference/get-skim-page-number)
+;;    :END:
+;;    %i \n%?"))
+;;     )
+
+;; ;;;###autoload
+;; (defun yunj/skim-orb-notes ()
+;;   (progn
+;;     (orb-notes-fn (+reference/skim-get-bibtex-key))
+;;     (let ((bname (buffer-file-name)))
+;;       (kill-this-buffer)
+;;       bname)))

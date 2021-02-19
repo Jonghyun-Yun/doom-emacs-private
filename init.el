@@ -98,7 +98,9 @@
 
        :tools
        ;;ansible
-       debugger          ; FIXME stepping through code, to help you add bugs
+       (debugger         ; FIXME stepping through code, to help you add bugs
+        ;; +lsp
+        )
        ;;direnv
        ;;docker
        editorconfig     ; let someone else argue about tabs vs spaces
@@ -107,7 +109,9 @@
        ;;gist              ; interacting with github gists
        (lookup             ; navigate your code and its documentation
         +dictionary)
-       lsp
+       (lsp
+        +peek
+        )
        (magit +forge)    ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        (pass +auth)        ; password manager for nerds
@@ -125,7 +129,7 @@
 
        :lang
        ;;agda              ; types of types of types of types...
-       ;; (cc +lsp)           ; C/C++/Obj-C madness
+       (cc +lsp)           ; C/C++/Obj-C madness
        ;;clojure           ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
@@ -180,8 +184,7 @@
        ;;purescript        ; javascript, but functional
        (python            ; beautiful is better than ugly
         +lsp
-        +conda
-        )
+        +conda)
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6
@@ -206,6 +209,7 @@
 
        :app
        calendar
+       ;;everywhere        ; *leave* Emacs!? You must be joking
        ;;irc               ; how neckbeards socialize
        (rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
@@ -217,12 +221,11 @@
        :private
        reference
        (biblio
-        +roam-bibtex
+       ;; +roam-bibtex
         )
        write
        gcal
        dired-plus
        stan
        gtd
-       ;; tree-sitter
        )

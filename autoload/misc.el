@@ -233,3 +233,9 @@
     ('error
      (message "Unable to imagify latex [%s]" ex)))
   )
+
+;;;###autoload
+(defun jyun/update-overleaf ()
+  (shell-command (format "sh %supdate-overleaf.sh" default-directory)
+                 (format "*overleaf: %s*" (projectile-project-name)))
+  )

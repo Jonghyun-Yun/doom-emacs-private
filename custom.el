@@ -23,7 +23,7 @@
  '(mathpix-app-key (password-store-get "mathpix/app-key") nil nil "Customized with use-package mathpix.el")
  '(mathpix-screenshot-method "screencapture -i %s" nil nil "Customized with use-package mathpix.el")
  '(org-agenda-files
-   '("~/Dropbox/MobileOrg/roam/20210109204523-jeon_jin.org" "~/org/inbox.org" "~/org/todo.org" "~/org/gcal.org" "~/org/projects.org" "~/org/tickler.org" "~/org/routines.org"))
+   '("~/OneDrive/workspace/cor-code/cor-code.org" "~/Dropbox/MobileOrg/roam/20210109204523-jeon_jin.org" "~/org/inbox.org" "~/org/todo.org" "~/org/gcal.org" "~/org/projects.org" "~/org/tickler.org" "~/org/routines.org"))
  '(package-selected-packages '(exwm))
  '(safe-local-variable-values
    '((org-babel-default-header-args:R
