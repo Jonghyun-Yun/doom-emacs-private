@@ -682,6 +682,7 @@
   ;; password encrypted in ~/doom-emacs/.local/etc/authinfo.gpg
   ;; machine gmail.com login jonghyun.yun port xmpp password *******
   ;; or I can use =pass=
+  ;; see https://github.com/DamienCassou/auth-source-pass
   ;; pass insert jonghyun.yun@gmail.com:xmpp
   (setq jabber-account-list '(("jonghyun.yun@gmail.com"
                                (:network-server . "talk.google.com")
