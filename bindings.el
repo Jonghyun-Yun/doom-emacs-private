@@ -12,10 +12,10 @@
           :i  "C-l"    nil
           :i  "C-h"    nil
           :i  "C-k"    nil
-          :i  "C-j"    nil
-          )
-         )
-  )
+          :i  "C-j"    nil)))
+
+
+  
 
 (map!
  ;; C-x C-b to ibuffer
@@ -30,16 +30,16 @@
   "<left>"            #'evil-window-left
   "<down>"            #'evil-window-down
   "<up>"              #'evil-window-up
-  "<right>"           #'evil-window-right
-  )
+  "<right>"           #'evil-window-right)
+
  
  (:map cdlatex-mode-map
   :ie "TAB"           #'cdlatex-tab)
 
  (:map dired-mode-map
   :nvme "S" #'dired-do-symlink
-  :nvme [tab] #'dired-subtree-toggle
- )
+  :nvme [tab] #'dired-subtree-toggle)
+
 
  ;; gl for evil-org-mode
  :nv "gl"    nil
@@ -58,21 +58,21 @@
  ;; Org commands
  :g "C-c a"           #'org-agenda
  :g "C-c c"           #'org-capture
- :g "C-c l"           #'org-store-link
+ :g "C-c l"           #'org-store-link)
 
  ;; ;; elfeed-score
  ;; (:map elfeed-search-mode-map
  ;;  :e "="      #'elfeed-score-map)
 
- )
+
 
 ;; (when (featurep! :lang org +roam)
 ;;   (global-set-key (kbd "C-c l") #'org-roam-store-link)
 ;;   )
 
 (bind-keys* :prefix-map gtd-mode-map
-            :prefix "C-c g"
-           )
+            :prefix "C-c g")
+
 
 (bind-keys :map gtd-mode-map
            ("i" . my-org-agenda-inbox)
@@ -87,8 +87,8 @@
            ("o" . my-open-org-calendar)
            ("f" . org-gcal-fetch)
            ("D" . org-gcal-delete-at-point)
-           ("P" . org-gcal-post-at-point)
-           )
+           ("P" . org-gcal-post-at-point))
+
 
 (map!
  (:map cfw:calendar-mode-map
@@ -132,8 +132,8 @@
  :g "s-7"   #'+workspace/switch-to-6
  :g "s-8"   #'+workspace/switch-to-7
  :g "s-9"   #'+workspace/switch-to-8
- :g "s-0"   #'+workspace/switch-to-final
- )
+ :g "s-0"   #'+workspace/switch-to-final)
+
 
 (map! :g "C-c s t" #'+lookup/dictionary-definition
       :leader
@@ -148,30 +148,39 @@
    :g "C-c s m" #'mw-thesaurus-lookup-at-point
    ;; :g "C-c s l" #'synosaurus-lookup
    :g "C-c s r" #'synosaurus-choose-and-replace
-   :g "C-c s i" #'synosaurus-choose-and-insert
-   )
-  )
+   :g "C-c s i" #'synosaurus-choose-and-insert))
+
+;; org-roam-dailies
+(map! :leader
+      (:prefix-map ("n" . "notes")
+       (:when (featurep! :lang org +roam)
+        (:prefix ("r" . "roam")
+         (:prefix ("d" . "by date")
+          "." #'org-roam-dailies-find-directory
+          "b" #'org-roam-dailies-find-previous-note
+          "f" #'org-roam-dailies-find-next-note
+          "n" #'org-roam-dailies-capture-today
+          "v" #'org-roam-dailies-capture-date)))))
 
 ;; hydra key bindings
 (with-eval-after-load 'smerge-mode
   (bind-keys :map smerge-mode-map
-             ("C-c ^ ." . my-hydra-smerge/body))
-  )
+             ("C-c ^ ." . my-hydra-smerge/body)))
 
 (with-eval-after-load 'git-timemachine
   (map! (:map git-timemachine-mode-map
          :desc "Git Timemachine Hydra"
          :nv "gt." #'my-hydra-timemachine/body))
-        )
+
 
   (map!
    (:map org-mode-map
     :desc "Org Babel Hydra"
-    :g "C-c C-v ." #'my-hydra-org-babel/body)
+    :g "C-c C-v ." #'my-hydra-org-babel/body))
   (:map org-agenda-mode-map
    :localleader
-   :desc "Org Agenda Hydra" "." #'my-hydra-org-agenda/body)
-  )
+   :desc "Org Agenda Hydra" "." #'my-hydra-org-agenda/body))
+
 
 (map!
  (:leader
@@ -179,8 +188,8 @@
   :desc "Code Fold Hydra" "z." #'my-hydra-fold/body)
  (:map pdf-view-mode-map
   :localleader
-  :desc "PDF View Hydra" "." #'my-hydra-pdf-tools/body)
- )
+  :desc "PDF View Hydra" "." #'my-hydra-pdf-tools/body))
+
 
 (map!
  :leader
@@ -188,5 +197,4 @@
  "TAB e" #'+workspace/switch-to
  :desc "Layouts Hydra"
  "TAB ." #'my-hydra-layouts/body
- "TAB c" #'my-workspace-create
- )
+ "TAB c" #'my-workspace-create)

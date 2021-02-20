@@ -60,19 +60,19 @@
       ("t" bm-toggle))
 
 (defhydra my-hydra-org-babel
-  (
-   :hint nil
-   )
+  (:hint nil)
   "
 [_j_/_k_] navigate src blocks         [_e_] execute src block
 [_g_]^^   goto named block            [_'_] edit src block
-[_z_]^^   recenter screen             [_q_] quit"
+[_z_]^^   recenter screen             [_q_] quit
+[_f_]^^   format block"
   ("q" nil :exit t)
   ("j" org-babel-next-src-block)
   ("k" org-babel-previous-src-block)
   ("g" org-babel-goto-named-src-block)
   ("z" recenter-top-bottom)
   ("e" org-babel-execute-maybe)
+  ("f" yunj/format-org-babel)
   ("'" org-edit-special :exit t))
 
 (defhydra my-hydra-timemachine

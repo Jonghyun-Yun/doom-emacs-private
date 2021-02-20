@@ -43,8 +43,8 @@
   Like `assoc', but ignores differences in case and text representation.
   KEY must be a string. Upper-case and lower-case letters are treated as equal.
   Unibyte strings are converted to multibyte for comparison."
-  (assoc-string KEY LIST)
-    )
+  (assoc-string KEY LIST))
+
 
 ;;;###autoload
 (defun my-persp-add-buffer (orig-fun &rest args)
@@ -52,9 +52,9 @@
   (progn
     (apply orig-fun args)
     (let ((bname (buffer-name)))
-      (persp-add-buffer bname)
-      ))
-  )
+      (persp-add-buffer bname))))
+
+  
 
 ;;;###autoload
 (defun my/find-file-in-private-config ()
@@ -63,8 +63,8 @@
   ;; (let* ((ffip-project-root "~/.doom.d/"))
   ;; (let* ((ffip-project-root doom-private-dir))
   (let* ((default-directory doom-private-dir))
-    (find-file-in-project nil)
-    ))
+    (find-file-in-project nil)))
+
 
 ;;;###autoload
 (defun spacemacs/jabber-connect-hook (jc)
@@ -91,10 +91,10 @@
      (when (eq (face-attribute face :weight) 'semi-bold)
        (set-face-attribute face nil :weight 'normal))
      (when (eq (face-attribute face :weight) 'bold)
-       (set-face-attribute face nil :weight 'semi-bold))
-     )
-   (face-list))
-  )
+       (set-face-attribute face nil :weight 'semi-bold)))
+
+   (face-list)))
+
 
 ;;;###autoload
 (defun thick-all-faces ()
@@ -110,10 +110,10 @@
      (when (eq (face-attribute face :weight) 'normal)
        (set-face-attribute face nil :weight 'semi-bold))
      (when (eq (face-attribute face :weight) 'semi-bold)
-       (set-face-attribute face nil :weight 'bold))
-     )
-   (face-list))
-  )
+       (set-face-attribute face nil :weight 'bold)))
+
+   (face-list)))
+
 
 ;;;###autoload
 (defun thin-variable-pitch-faces ()
@@ -123,7 +123,7 @@
         (all-faces (face-list)))
     (dolist (face all-faces)
       (unless (memq face mixed-pitch-fixed-pitch-faces)
-        (add-to-list 'variable-pitch-faces face)))
+        (add-to-list 'variable-pitch-faces face))))
   (mapc
    (lambda (face)
      (when (eq (face-attribute face :weight) 'light)
@@ -135,19 +135,20 @@
      (when (eq (face-attribute face :weight) 'semi-bold)
        (set-face-attribute face nil :weight 'normal))
      (when (eq (face-attribute face :weight) 'bold)
-       (set-face-attribute face nil :weight 'semi-bold))
-     )
-   (face-list))
-  ))
+       (set-face-attribute face nil :weight 'semi-bold)))
+
+   (face-list)))
+
 
 ;;;###autoload
 (defun find-variable-pitch-faces ()
+  "Create a list named `variable-pitch-faces'."
   (setq variable-pitch-faces nil)
   (let ((all-faces (face-list)))
     (dolist (face all-faces)
       (unless (memq face mixed-pitch-fixed-pitch-faces)
-        (add-to-list 'variable-pitch-faces face))))
-  )
+        (add-to-list 'variable-pitch-faces face)))))
+
 
 ;;;###autoload
 (defun jethro/enable-smerge-maybe ()
@@ -167,8 +168,8 @@
   (condition-case e
       (cond ((+workspace-exists-p name)
              (error "%s already exists" name))
-            ((+workspace--protected-p name)
-    (error "Can't create a new '%s' workspace" name))
+            ((+workspace--protected-p name)))
+    (error "Can't create a new '%s' workspace" name
             ;; (clone-p (persp-copy name t))
             (t
              (+workspace-switch name t)
@@ -177,7 +178,7 @@
 
 ;;;###autoload
 (defun jyun/org-present-hide ()
-  "Hide comments, drawrs and tags."
+  "Hide comments, drawers and tags."
   (save-excursion
     ;; hide all comments
     (goto-char (point-min))
@@ -213,17 +214,18 @@
               (end (re-search-forward
                     "^[ \t]*:END:[ \r\n]*"
                     (save-excursion (outline-next-heading) (point)) t)))
-          (+org-present--make-invisible beg end))))
-    ;; (dolist (el '("title" "author" "date"))
-    ;;   (goto-char (point-min))
-    ;;   (when (re-search-forward (format "^\\(#\\+%s:[ \t]*\\)[ \t]*\\(.*\\)$" el) nil t)
-    ;;     (+org-present--make-invisible (match-beginning 1) (match-end 1))
-    ;;     (push (make-overlay (match-beginning 2) (match-end 2)) +org-present--overlays)
-    ;;     ))
-    ))
+          (+org-present--make-invisible beg end))))))
+;; (dolist (el '("title" "author" "date"))
+;;   (goto-char (point-min))
+;;   (when (re-search-forward (format "^\\(#\\+%s:[ \t]*\\)[ \t]*\\(.*\\)$" el) nil t)
+;;     (+org-present--make-invisible (match-beginning 1) (match-end 1))
+;;     (push (make-overlay (match-beginning 2) (match-end 2)) +org-present--overlays)
+;;     ))
+
 
 ;;;###autoload
-(defun jyun/org-present-latex-preview ()
+(defun jyun/org-present-latex-preview ())
+"Render LaTeX fragments in a buffer. The size of image is determned by `+org-present-format-latex-scale'."
   (interactive)
   (condition-case ex
       (let ((org-format-latex-options
@@ -232,10 +234,19 @@
         (org-preview-latex-fragment '(16)))
     ('error
      (message "Unable to imagify latex [%s]" ex)))
-  )
+
 
 ;;;###autoload
+"Run a shellscript to commit and push changes to Overleaf. Assign a name to a shell command output buffer."
 (defun jyun/update-overleaf ()
   (shell-command (format "sh %supdate-overleaf.sh" default-directory)
-                 (format "*overleaf: %s*" (projectile-project-name)))
-  )
+                 (format "*overleaf: %s*" (projectile-project-name))))
+
+;;;###autoload
+(defun yunj/format-org-babel ()
+  "Runs the active formatter on a whole org-babel block."
+  (interactive)
+  (progn
+    (org-edit-special)
+    (+format:region (point-min) (point-max))
+    (org-edit-src-exit)))

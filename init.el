@@ -73,7 +73,7 @@
        ;;parinfer          ; turn lisp into python, sort of
        rotate-text       ; cycle region at point between text candidates
        snippets          ; my elves. They type so I don't have to
-       ;;word-wrap         ; soft wrapping with language-aware indent
+       word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
        (dired             ; making dired pretty [functional]
@@ -99,8 +99,8 @@
        :tools
        ;;ansible
        (debugger         ; FIXME stepping through code, to help you add bugs
-        ;; +lsp
-        )
+        +lsp)
+
        ;;direnv
        ;;docker
        editorconfig     ; let someone else argue about tabs vs spaces
@@ -110,8 +110,8 @@
        (lookup             ; navigate your code and its documentation
         +dictionary)
        (lsp
-        +peek
-        )
+        +peek)
+
        (magit +forge)    ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        (pass +auth)        ; password manager for nerds
@@ -134,7 +134,9 @@
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
-       ;;csharp            ; unity, .NET, and mono shenanigans
+       (csharp)            ; unity, .NET, and mono shenanigans
+        ;; +lsp
+
        ;;data              ; config/data formats
        ;;(dart +flutter)   ; paint ui and not much else
        ;;elixir            ; erlang done right
@@ -158,8 +160,8 @@
        (latex              ; writing papers in Emacs has never been so fun
         +latexmk
         +lsp
-        +cdlatex
-        )
+        +cdlatex)
+
        ;;lean
        ;;factor
        ;;ledger            ; an accounting system in Emacs
@@ -177,8 +179,8 @@
         +pandoc           ; export-with-pandoc support
         +pomodoro         ; be fruitful with the tomato technique
         +present          ; using org-mode for presentations
-        +roam             ; Enables org-roam integration
-        )
+        +roam)             ; Enables org-roam integration
+
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional

@@ -38,8 +38,7 @@
  ;; doom-variable-pitch-font (font-spec :family "Iosevka Etoile" :weight 'light)
  doom-variable-pitch-font (font-spec :family "Iosevka Aile" :weight 'light)
  doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
- doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light)
- )
+ doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
 
 ;; (setq
 ;;  doom-font (font-spec :family "Fira Code" :size 24 :weight 'light)
@@ -100,8 +99,7 @@
   (doom-themes-treemacs-config)
 
   ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config)
-  )
+  (doom-themes-org-config))
 
 ;; (when (featurep! :ui treemacs)
 ;;   (add-hook 'dired-mode-hook #'treemacs-icons-dired-mode)
@@ -231,15 +229,15 @@
           font-lock-constant-face
           font-lock-comment-face
           font-latex-math-face
-          font-latex-sedate-face
+          font-latex-sedate-face)))
           ;; font-latex-verbatim-face
           ;; font-latex-warning-face
-          ))
-  )
+
+  
 
 (with-eval-after-load 'hydra
-  (load! "lisp/hydra-plus")
-  )
+  (load! "lisp/hydra-plus"))
+
 (load! "bindings")
 
 (after! mu4e
@@ -251,6 +249,11 @@
 
 (with-eval-after-load 'ess
   (load! "lisp/ess-plus")
+
+  ;; disable assignment fix (= to <-)
+  ;; https://github.com/jimhester/lintr
+  (setq flycheck-lintr-linters "with_defaults(assignment_linter = NULL, line_length_linter(120))")
+
   (evil-set-initial-state 'inferior-ess-r-mode 'emacs)
   (setq ess-assign-list '(" <- " " = " " -> ")
         ess-r-smart-operators t)
@@ -261,19 +264,18 @@
   (with-eval-after-load 'ess-r-mode
     (define-key ess-r-mode-map ess-assign-key #'ess-insert-assign))
   (add-hook 'inferior-ess-r-mode-hook
-            #'(lambda () (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign)))
-  )
+            #'(lambda () (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign))))
 
 ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
 ;; (load! "lisp/stan-config") ;; :private stan module
 
 ;; passwords to be accessible
-;; (use-package! pass)
+(use-package! pass)
 
 (after! plantuml-mode
   (setq plantuml-jar-path "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar"
-        org-plantuml-jar-path plantuml-jar-path)
-  )
+        org-plantuml-jar-path plantuml-jar-path))
+
 ;; prevent some cases of Emacs flickering
 (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
 
@@ -331,8 +333,8 @@
    ;; latex highlight
    org-highlight-latex-and-related '(native)
    ;; don't ask to follow elisp link
-   org-confirm-elisp-link-function nil
-   )
+   org-confirm-elisp-link-function nil)
+
   ;; (setq org-insert-heading-respect-content nil)
 
   ;; cdltaex will ignore inline math $...$
@@ -388,9 +390,9 @@
 (when IS-MAC
   (use-package! ucs-normalize
     :config
-    (set-file-name-coding-system 'utf-8-hfs)
-    )
-  )
+    (set-file-name-coding-system 'utf-8-hfs)))
+
+  
 
 ;; ;; improve slow scrolling?
 ;; (use-package! hl-line+
@@ -413,8 +415,8 @@
 (with-eval-after-load 'alert
   ;; calendar notification
   ;; (setq alert-default-style 'osx-notifier)
-  (setq alert-default-style 'notifier)
-  )
+  (setq alert-default-style 'notifier))
+
 
 (with-eval-after-load 'deft
   (setq deft-extensions '("org" "md" "txt")
@@ -451,8 +453,8 @@
    :nvime "gr" #'nov-render-document
    :nvime "gt" #'nov-goto-toc
    :nvime "gv" #'nov-view-source
-   :nvime "gV" #'nov-view-content-source)
-  )
+   :nvime "gV" #'nov-view-content-source))
+
 
 ;; ;; epub osx dictionary
 ;; (defun my-nov-mode-map ()
@@ -499,8 +501,8 @@
       mouse-autoselect-window nil
       ;; indicate-unused-lines nil
       ;; spacemacs value of parameters
-      scroll-conservatively 0
-      )
+      scroll-conservatively 0)
+
 (blink-cursor-mode 1)
 (display-battery-mode 1)
 
@@ -663,8 +665,8 @@
   (setq doom-modeline-irc nil)
 
   ;; Whether display the environment version.
-  (setq doom-modeline-env-version nil)
-  )
+  (setq doom-modeline-env-version nil))
+
 
 ;; Hangout
 (use-package jabber
@@ -678,12 +680,12 @@
   ;; https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
   (setq jabber-account-list '(("jonghyun.yun@gmail.com"
                                (:network-server . "talk.google.com")
-                               (:connection-type . starttls)
-                               )))
+                               (:connection-type . starttls))))
+
   ;; (jabber-connect-all)
   ;; (jabber-keepalive-start)
-  (evil-set-initial-state 'jabber-chat-mode 'insert)
-  )
+  (evil-set-initial-state 'jabber-chat-mode 'insert))
+
 
 ;; (eval-after-load 'paradox
 ;;   (setq paradox-github-token (password-store-get "paradox/github-token"))
@@ -740,8 +742,8 @@
     (elfeed-score-enable)
     (define-key elfeed-search-mode-map "=" elfeed-score-map)
     ;; scores displayed in the search buffer
-    (setq elfeed-search-print-entry-function #'elfeed-score-print-entry)
-    ))
+    (setq elfeed-search-print-entry-function #'elfeed-score-print-entry)))
+
 
 ;; ibuffer and R buffers need to be manually added
 (advice-add 'ibuffer :around #'my-persp-add-buffer)
@@ -806,8 +808,8 @@
   ;;   (push '((nil . "\\`speed-reading/\\(.+\\)\\'") . (nil . "\\1"))
   ;;         which-key-replacement-alist))
   (setq spray-wpm 400
-        spray-height 700)
-  )
+        spray-height 700))
+
 
 ;; ;; Github flavored markdown exporter
 ;; (eval-after-load 'org
@@ -958,3 +960,5 @@
 ;;     (let ((bname (buffer-file-name)))
 ;;       (kill-this-buffer)
 ;;       bname)))
+
+(setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
