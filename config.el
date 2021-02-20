@@ -77,14 +77,16 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 
- (let ((default-directory (expand-file-name "packages" doom-private-dir)))
-   (normal-top-level-add-subdirs-to-load-path))
+(lambda ()
+  (let ((default-directory (expand-file-name "packages" doom-private-dir)))
+    (normal-top-level-add-subdirs-to-load-path))
+  )
 
 (with-eval-after-load 'doom-themes
   :config
   ;; Global settings (defaults)
   ;; (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
   ;; (load-theme 'doom-nord t)
 
   ;; Enable flashing mode-line on errors
@@ -676,8 +678,11 @@
   :init
   (add-hook 'jabber-post-connect-hooks 'spacemacs/jabber-connect-hook)
   :config
-  ;; password encrypted in ~/.authinfo.gpg
   ;; https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
+  ;; password encrypted in ~/doom-emacs/.local/etc/authinfo.gpg
+  ;; machine gmail.com login jonghyun.yun port xmpp password *******
+  ;; or I can use =pass=
+  ;; pass insert jonghyun.yun@gmail.com:xmpp
   (setq jabber-account-list '(("jonghyun.yun@gmail.com"
                                (:network-server . "talk.google.com")
                                (:connection-type . starttls))))

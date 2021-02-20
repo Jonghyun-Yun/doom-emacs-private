@@ -224,7 +224,7 @@
 
 
 ;;;###autoload
-(defun jyun/org-present-latex-preview ())
+(defun jyun/org-present-latex-preview ()
 "Render LaTeX fragments in a buffer. The size of image is determned by `+org-present-format-latex-scale'."
   (interactive)
   (condition-case ex
@@ -233,7 +233,7 @@
                         :scale +org-present-format-latex-scale)))
         (org-preview-latex-fragment '(16)))
     ('error
-     (message "Unable to imagify latex [%s]" ex)))
+     (message "Unable to imagify latex [%s]" ex))))
 
 
 ;;;###autoload
@@ -244,7 +244,7 @@
 
 ;;;###autoload
 (defun yunj/format-org-babel ()
-  "Runs the active formatter on a whole org-babel block."
+  "Runs the active formatter on a whole `org-babel-src-block'."
   (interactive)
   (progn
     (org-edit-special)
