@@ -73,7 +73,7 @@
   ("g" org-babel-goto-named-src-block)
   ("z" recenter-top-bottom)
   ("e" org-babel-execute-maybe)
-  ("f" yunj/format-org-babel)
+  ("f" jyun/format-org-babel)
   ("'" org-edit-special :exit t))
 
 (defhydra my-hydra-timemachine
@@ -489,7 +489,7 @@ _hp_: set priority    ^^                          _S_:  delete all filters    _L
   ("A" persp-import-buffers)
   ("b" persp-switch-to-buffer)
   ("d" +workspace/delete)
-  ("c" my-workspace-create :exit t)
+  ("c" jyun/workspace-create :exit t)
   ("L" persp-load-state-from-file)
   ("l" +workspace/load :exit t)
   ("n" persp-next)

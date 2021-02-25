@@ -68,7 +68,7 @@
     (imagemagick-register-types))
 
   ;; open message in external browse if it's too long
-  (defun my-mu4e-html2text (msg)
+  (defun jyun/mu4e-html2text (msg)
     "My html2text function; shows short message inline, show
 long messages in some external browser (see `browse-url-generic-program')."
     (let ((html (or (mu4e-message-field msg :body-html) "")))
@@ -78,7 +78,7 @@ long messages in some external browser (see `browse-url-generic-program')."
             "[Viewing message in external browser]")
         (mu4e-shr2text msg))))
 
-  (setq mu4e-html2text-command 'my-mu4e-html2text)
+  (setq mu4e-html2text-command 'jyun/mu4e-html2text)
 
   ;; tell mu4e to use w3m for html rendering
   ;; (setq mu4e-html2text-command "w3m -T text/html")
@@ -90,10 +90,10 @@ long messages in some external browser (see `browse-url-generic-program')."
   ;; (setq mu4e-html2text-command 'mu4e-shr2text) ;; slow rendering with images
 
   ;; read emails in dark theme.
-  ;; this should be after (setq mu4e-html2text-command 'my-mu4e-html2text) to be effective.
+  ;; this should be after (setq mu4e-html2text-command 'jyun/mu4e-html2text) to be effective.
   ;; https://www.reddit.com/r/emacs/comments/6ul9rz/email_html_rendering_mu4e_with_html2text_how_to/
-  (setq shr-color-visible-luminance-min 80)
-  (setq shr-color-visible-distance-min 5)
+  (setq shr-color-visible-luminance-min 80
+        shr-color-visible-distance-min 5)
 
   (add-hook 'mu4e-view-mode-hook
             (lambda()
@@ -115,8 +115,8 @@ long messages in some external browser (see `browse-url-generic-program')."
 
 
   ;; tell msmtp to choose the SMTP server according to the from field in the outgoing email
-  (setq message-sendmail-extra-arguments '("--read-envelope-from"))
-  (setq message-sendmail-f-is-evil 't)
+  (setq message-sendmail-extra-arguments '("--read-envelope-from")
+        message-sendmail-f-is-evil 't)
 
   ;; Borrowed from http://ionrock.org/emacs-email-and-mu.html
   ;; Choose account label to feed msmtp -a option based on From header
@@ -143,23 +143,23 @@ long messages in some external browser (see `browse-url-generic-program')."
   ;; ;; (setq message-sendmail-envelope-from 'header)
   ;; (add-hook 'message-send-mail-hook 'choose-msmtp-account)
 
-  ;; email attachment from dired: C-c RET C-a
-  (require 'gnus-dired)
-  ;; make the `gnus-dired-mail-buffers' function also work on
-  ;; message-mode derived modes, such as mu4e-compose-mode
-  (defun gnus-dired-mail-buffers ()
-    "Return a list of active message buffers."
-    (let (buffers)
-      (save-current-buffer
-        (dolist (buffer (buffer-list t))
-          (set-buffer buffer)
-          (when (and (derived-mode-p 'message-mode)
-                     (null message-sent-message-via))
-            (push (buffer-name buffer) buffers))))
-      (nreverse buffers)))
+  ;; ;; email attachment from dired: C-c RET C-a
+  ;; (require 'gnus-dired)
+  ;; ;; make the `gnus-dired-mail-buffers' function also work on
+  ;; ;; message-mode derived modes, such as mu4e-compose-mode
+  ;; (defun gnus-dired-mail-buffers ()
+  ;;   "Return a list of active message buffers."
+  ;;   (let (buffers)
+  ;;     (save-current-buffer
+  ;;       (dolist (buffer (buffer-list t))
+  ;;         (set-buffer buffer)
+  ;;         (when (and (derived-mode-p 'message-mode)
+  ;;                    (null message-sent-message-via))
+  ;;           (push (buffer-name buffer) buffers))))
+  ;;     (nreverse buffers)))
 
-  (setq gnus-dired-mail-mode 'mu4e-user-agent)
-  (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
+  ;; (setq gnus-dired-mail-mode 'mu4e-user-agent)
+  ;; (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
   (require 'mu4e-context)
   (setq mu4e-contexts

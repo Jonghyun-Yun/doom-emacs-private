@@ -1,7 +1,7 @@
 ;;; private/gtd/autoload.el -*- lexical-binding: t; -*-
 
-;;;###autoload
 ;; Detect Internet Connection
+;;;###autoload
 (defun internet-up-p (&optional host)
   (= 0 (call-process "ping" nil nil nil "-c" "1" "-W" "1"
                      (if host host "www.google.com"))))

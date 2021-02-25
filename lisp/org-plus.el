@@ -68,6 +68,16 @@
 
 ;; KOMA-SCript letter
 (eval-after-load 'ox '(require 'ox-koma-letter))
+(eval-after-load 'ox-koma-letter
+  '(progn
+     (add-to-list 'org-latex-classes
+                  '("my-koma-letter"
+                    "\\documentclass\{scrlttr2\}
+\[NO-DEFAULT-PACKAGES]
+\[PACKAGES]
+\[EXTRA]"))
+
+     (setq org-koma-letter-default-class "my-koma-letter")))
 
 (with-eval-after-load 'ox-latex
   ;; code highlight
@@ -75,17 +85,6 @@
   (setq org-latex-minted-options
         '(("frame" "lines")
           ("linenos" "true")))
-
-  (eval-after-load 'ox-koma-letter
-    '(progn
-       (add-to-list 'org-latex-classes
-                    '("my-koma-letter"
-                      "\\documentclass\{scrlttr2\}
-\[NO-DEFAULT-PACKAGES]
-\[PACKAGES]
-\[EXTRA]"))
-
-       (setq org-koma-letter-default-class "my-koma-letter")))
 
   ;; highlight lco file
   (add-to-list 'auto-mode-alist '("\\.lco" . LaTeX-mode))
@@ -301,41 +300,38 @@
   ;; (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
   ;; (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
 
-  (after! ispell
-
-    ;; some org elements
-    (pushnew! ispell-skip-region-alist
-              '("~" . "~")
-              '("=" . "=")
-              ;; '(org-property-drawer-re)
-              '(org-ref-cite-re)
-              ;; '(org-ref-ref-re)
-              ;; '(org-ref-label-re)
-              ;; '(org-latex-math-environments-re)
-              )
-
-    ;; latex math
-    (pushnew! ispell-skip-region-alist
-              '("\\$" . "\\$")
-              '("\\\\(" . "\\\\)")
-              '("\\\[" . "\\\]")
-              '("\\\\begin{\\(?:align\\(?:at\\)?\\|d\\(?:array\\|group\\|isplaymath\\|math\\|series\\)\\|e\\(?:mpheq\\|q\\(?:narray\\|uation\\)\\)\\|flalign\\|gather\\|m\\(?:ath\\|ultline\\)\\|subequations\\|x\\(?:x?alignat\\)\\)\\*?}"
-                . "\\\\end{\\(?:align\\(?:at\\)?\\|d\\(?:array\\|group\\|isplaymath\\|math\\|series\\)\\|e\\(?:mpheq\\|q\\(?:narray\\|uation\\)\\)\\|flalign\\|gather\\|m\\(?:ath\\|ultline\\)\\|subequations\\|x\\(?:x?alignat\\)\\)\\*?}")
-              '("\\\\begin\{align\*\}" . "\\\\end\{align\*\}")
-              '("\\\\begin\{equation\*\}" . "\\\\end\{equation\*\}")
-              '("\\\\begin\{eqnarray\*\}" . "\\\\end\{eqnarray\*\}")
-              )
-
-    ;; latex ref
-      (pushnew! ispell-skip-region-alist
-                '("\\\\ref\{" . "\}")
-                '("\\\\cref\{" . "\}")
-                '("\\\\eqref\{" . "\}")
-                '("\\\\label\{" . "\}")
-                '("\\\\printbibliography\\[" . "\\]")
-                )
-
-    )
+  ;; ;; ispell is not in use.
+  ;; (after! ispell
+  ;;   ;; some org elements
+  ;;   (pushnew! ispell-skip-region-alist
+  ;;             '("~" . "~")
+  ;;             '("=" . "=")
+  ;;             ;; '(org-property-drawer-re)
+  ;;             '(org-ref-cite-re)
+  ;;             ;; '(org-ref-ref-re)
+  ;;             ;; '(org-ref-label-re)
+  ;;             ;; '(org-latex-math-environments-re)
+  ;;             )
+  ;;   ;; latex math
+  ;;   (pushnew! ispell-skip-region-alist
+  ;;             '("\\$" . "\\$")
+  ;;             '("\\\\(" . "\\\\)")
+  ;;             '("\\\[" . "\\\]")
+  ;;             '("\\\\begin{\\(?:align\\(?:at\\)?\\|d\\(?:array\\|group\\|isplaymath\\|math\\|series\\)\\|e\\(?:mpheq\\|q\\(?:narray\\|uation\\)\\)\\|flalign\\|gather\\|m\\(?:ath\\|ultline\\)\\|subequations\\|x\\(?:x?alignat\\)\\)\\*?}"
+  ;;               . "\\\\end{\\(?:align\\(?:at\\)?\\|d\\(?:array\\|group\\|isplaymath\\|math\\|series\\)\\|e\\(?:mpheq\\|q\\(?:narray\\|uation\\)\\)\\|flalign\\|gather\\|m\\(?:ath\\|ultline\\)\\|subequations\\|x\\(?:x?alignat\\)\\)\\*?}")
+  ;;             '("\\\\begin\{align\*\}" . "\\\\end\{align\*\}")
+  ;;             '("\\\\begin\{equation\*\}" . "\\\\end\{equation\*\}")
+  ;;             '("\\\\begin\{eqnarray\*\}" . "\\\\end\{eqnarray\*\}")
+  ;;             )
+  ;;   ;; latex ref
+  ;;     (pushnew! ispell-skip-region-alist
+  ;;               '("\\\\ref\{" . "\}")
+  ;;               '("\\\\cref\{" . "\}")
+  ;;               '("\\\\eqref\{" . "\}")
+  ;;               '("\\\\label\{" . "\}")
+  ;;               '("\\\\printbibliography\\[" . "\\]")
+  ;;               )
+  ;;   )
 
   (setq org-highlight-latex-and-related '(native))
 

@@ -21,21 +21,22 @@
 
 ;;; skip ispelling
 (with-eval-after-load 'latex
-  (setq ispell-tex-skip-alists
-        (list
-         (append
-          (car ispell-tex-skip-alists)
-          '(;; First list is used raw.
-            ("[^\\]\\$" . "[^\\]\\$")
-            ("\\\\cite[a-z*]" ispell-tex-arg-end)
-            ("\\\\citealp" ispell-tex-arg-end)
-            ("\\\\cref" ispell-tex-arg-end)
-            ("\\\\bibliography" ispell-tex-arg-end)
-            ("\\\\RequirePackage" ispell-tex-arg-end)
-            ;; Second list has key placed inside \\begin{}.
-            ("align\\*?"	. "\\\\end[ \t\n]*{[ \t\n]*align\\*?[ \t\n]*}")
-            ))
-         (cadr ispell-tex-skip-alists)))
+;; commendted out; spell-fu is active
+  ;; (setq ispell-tex-skip-alists
+  ;;       (list
+  ;;        (append
+  ;;         (car ispell-tex-skip-alists)
+  ;;         '(;; First list is used raw.
+  ;;           ("[^\\]\\$" . "[^\\]\\$")
+  ;;           ("\\\\cite[a-z*]" ispell-tex-arg-end)
+  ;;           ("\\\\citealp" ispell-tex-arg-end)
+  ;;           ("\\\\cref" ispell-tex-arg-end)
+  ;;           ("\\\\bibliography" ispell-tex-arg-end)
+  ;;           ("\\\\RequirePackage" ispell-tex-arg-end)
+  ;;           ;; Second list has key placed inside \\begin{}.
+  ;;           ("align\\*?"	. "\\\\end[ \t\n]*{[ \t\n]*align\\*?[ \t\n]*}")
+  ;;           ))
+  ;;        (cadr ispell-tex-skip-alists)))
 
 ;; make AUCTeX save files without asking
 (setq TeX-save-query nil)

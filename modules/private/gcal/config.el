@@ -49,3 +49,8 @@
 ;;   (cfw:ical-create-source))
 
 (evil-set-initial-state 'cfw:details-mode 'emacs)
+
+(defvar +my-cfw-workspace-name "Calendar")
+(defvar +my-cfw--old-wconf nil)
+
+(add-hook 'cfw:calendar-mode-hook #'+my-cfw-init-h)

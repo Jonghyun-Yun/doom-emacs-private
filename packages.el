@@ -65,9 +65,8 @@
 
 (package! matlab-mode)
 
-;; (package! scihub)
-
 (package! find-file-in-project)
+;; (package! scihub)
 
 ;; (package! wordnut :pin "feac531404041855312c1a046bde7ea18c674915")
 ;; (package! synosaurus :pin "14d34fc92a77c3a916b4d58400424c44ae99cd81")
@@ -121,8 +120,9 @@
 ;; (package! highlight-numbers-mode)
 (package! highlight-parentheses)
 
-(package! spacemacs-theme)
+;; (package! spacemacs-theme)
 
+;; bump org-ref (set in biblio)
 (package! org-ref :pin "1936720c2377d8af9a5edb0d252f881c0ec24918")
 
 ;; (package! valign :pin "6b0345e29cdec8526c9c19b73bdea53295ec998e")
@@ -130,13 +130,13 @@
 ;; speed reading
 (package! spray)
 
-;; bookmark
-(package! bm)
-
 (package! string-inflection :pin "c4a519be102cb99dd86be3ee8c387f008d097635")
 
 (package! golden-ratio.el
   :recipe (:host github :repo "roman/golden-ratio.el"))
+
+;; bookmark
+;; (package! bm)
 
 ;; Github flavored markdown exporter
 (package! ox-gfm)
@@ -146,7 +146,7 @@
 
 ;; org-mode presentation
 ;; (package! org-present)
-(package! epresent)
+;; (package! epresent)
 
 ;; (package! discover)
 

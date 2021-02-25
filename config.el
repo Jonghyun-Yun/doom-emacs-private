@@ -49,7 +49,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-nord)
+(setq doom-theme 'doom-one)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -77,10 +77,10 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 
-(lambda ()
-  (let ((default-directory (expand-file-name "packages" doom-private-dir)))
-    (normal-top-level-add-subdirs-to-load-path))
-  )
+;; (lambda ()
+;;   (let ((default-directory (expand-file-name "packages" doom-private-dir)))
+;;     (normal-top-level-add-subdirs-to-load-path))
+;;   )
 
 (with-eval-after-load 'doom-themes
   :config
@@ -121,17 +121,13 @@
   )
 
 ;; disable flycheck by default
-(after! flycheck
-  (remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
-  )
+(remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
 
 ;; make-frame doesn't create a new persp
-(with-eval-after-load 'persp-mode
   ;;   (remove-hook 'after-make-frame-functions #'persp-init-new-frame)
   (setq persp-add-buffer-on-after-change-major-mode 'free
         ;; persp-add-buffer-on-after-change-major-mode-filter-functions nil
         ;; persp-nil-name "main")
-        )
   )
 
 (after! projectile
@@ -173,10 +169,8 @@
 (setq ispell-personal-dictionary "/Users/yunj/.hunspell_en_US")
 ;; (setq ispell-personal-dictionary "/Users/yunj/.aspell.en.pws")
 
-(after! spell-fu
-  (setq spell-fu-idle-delay 0.5)
-  ;; (global-spell-fu-mode -1)
-  )
+(setq spell-fu-idle-delay 0.5)
+;; (global-spell-fu-mode -1)
 
 ;; I need these lists for langtool!
   (setf (alist-get 'org-mode +spell-excluded-faces-alist)
@@ -238,6 +232,16 @@
 ;; (setq +latex-viewers '(skim pdf-tools))
 (setq +latex-viewers '(pdf-tools skim))
 ;; (add-hook! 'LaTeX-mode-hook #'(lambda () (cdlatex-mode 1)))
+
+;; ;; trying to turn off `rainbow-delimiters-mode'. not working..
+;; (add-hook! 'LaTeX-mode-hook #'(lambda () (rainbow-delimiters-mode -1)))
+;; (remove-hook 'TeX-update-style-hook #'rainbow-delimiters-mode)
+
+(after! cdlatex
+  (setq cdlatex-math-symbol-alist
+        '((?: ("\\cdots" "\\ldots"))
+          )
+        ))
 
 ;; ;; https://www.reddit.com/r/emacs/comments/229bl0/how_to_configure_auctex_to_automatically_use/cgl220b
 ;; ;; WYSWYG latex equation
@@ -388,7 +392,7 @@
              #'(lambda () (mixed-pitch-mode 1))
              #'(lambda () (rainbow-delimiters-mode -1))
              )
-  ;; (add-hook 'mixed-pitch-mode-hook #'thin-variable-pitch-faces)
+  ;; (add-hook 'mixed-pitch-mode-hook #'jyun/thin-variable-pitch-faces)
    )
 (load! "lisp/org-plus")
 
@@ -452,7 +456,7 @@
         ;; include subdirectories
         deft-recursive t))
 
-(with-eval-after-load 'which-key
+;; (with-eval-after-load 'which-key
   ;; Allow C-h to trigger which-key before it is done automatically
   ;; (setq which-key-show-early-on-C-h t)
   ;; make sure which-key doesn't show normally but refreshes quickly after it is
@@ -461,7 +465,7 @@
   ;; (setq which-key-idle-secondary-delay 0.05)
   ;; (which-key-mode)
   ;; (define-key which-key-mode-map (kbd "C-h") 'which-key-C-h-dispatch)
-)
+;; )
 
 (use-package nov
   :defer t
@@ -554,12 +558,12 @@
 ;; (global-set-key [C-wheel-down] 'ignore)
 
 ;; custom variables
-(setq
+;; (setq
  ;; lsp-prefer-flymake nil
- lsp-enable-file-watchers nil
+ ;; lsp-enable-file-watchers nil
  ;; lsp-ui-sideline-enable nil
  ;; lsp-enable-symbol-highlighting nil
- )
+ ;; )
 
 (use-package matlab-mode
   :defer t
@@ -680,9 +684,6 @@
   ;; Whether display the buffer encoding.
   (setq doom-modeline-buffer-encoding nil)
 
-  ;; The maximum displayed length of the branch name of version control.
-  ;; (setq doom-modeline-vcs-max-length 12)
-
   ;; Whether display perspective name. Non-nil to display in mode-line.
   (setq doom-modeline-persp-name t)
 
@@ -735,10 +736,12 @@
 ;;         +notmuch-mail-folder "~/.mail/")
 ;;   )
 
+;;; (setq ...) without after!
 ;; The text-scaling level for writeroom-mode
-(after! writeroom-mode
-  (setq +zen-text-scale 1.2)
-  )
+(setq +zen-text-scale 1.2)
+(setq aw-scope 'global)
+(setq doom-scratch-intial-major-mode 'lisp-interaction-mode)
+(setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
 
 (after! org-msg
   (setq org-msg-options
@@ -756,22 +759,13 @@
     )
   )
 
-(after! cdlatex
-  (setq cdlatex-math-symbol-alist
-        '((?: ("\\cdots" "\\ldots"))
-          )
-        )
-  )
-
-(after! ace-window
-  (setq aw-scope 'global))
-
 (after! elfeed
   (setq elfeed-search-title-max-width 100
         elfeed-search-title-min-width 20)
   )
 
 (use-package elfeed-score
+  :defer t
   :after elfeed
   :init
   (setq elfeed-score-score-file (expand-file-name "elfeed.score" doom-private-dir))
@@ -784,22 +778,28 @@
 
 
 ;; ibuffer and R buffers need to be manually added
-(advice-add 'ibuffer :around #'my-persp-add-buffer)
-(advice-add 'R :around #'my-persp-add-buffer)
+(advice-add 'ibuffer :around #'jyun/persp-add-buffer)
+(advice-add 'R :around #'jyun/persp-add-buffer)
 
 ;; for doom-modeline
 (use-package! find-file-in-project
+  :defer t
+  :commands
+  (find-file-in-project
+  find-file-in-current-directory-by-selected)
   :general (
             [remap projectile-find-file] #'find-file-in-project
-            [remap doom/find-file-in-private-config] #'my/find-file-in-private-config)
+            [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config)
+  :init
+  (map! :leader "SPC" #'find-file-in-current-directory-by-selected)
   :config
   (setq ffip-use-rust-fd t)
   ;; use ffip to find file in private config
-  ;; (advice-add 'doom/find-file-in-private-config :around #'my/find-file-in-private-config)
+  ;; (advice-add 'doom/find-file-in-private-config :around #'jyun/find-file-in-private-config)
   )
 
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-(add-hook 'prog-mode-hook #'highlight-parentheses-mode)
+;; (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+;; (add-hook 'prog-mode-hook #'highlight-parentheses-mode)
 
 (with-eval-after-load 'conda
   (setq conda-anaconda-home "/opt/intel/oneapi/intelpython/latest")
@@ -821,6 +821,7 @@
 ;; (add-hook 'org-mode-hook #'valign-mode)
 
 (use-package spray
+  :defer t
   :commands spray-mode
   :init
   (progn
@@ -852,42 +853,6 @@
 ;; ;; Github flavored markdown exporter
 ;; (eval-after-load 'org
 ;;   '(require 'ox-gfm nil t))
-
-(use-package bm
-  :defer t
-  :commands
-  (bm-buffer-restore)
-  :init
-  (progn
-    ;; restore on load (even before you require bm)
-    (setq bm-restore-repository-on-load t)
-    ;; Allow cross-buffer 'next'
-    (setq bm-cycle-all-buffers t)
-    ;; save bookmarks
-    (setq-default bm-buffer-persistence t)
-    ;; where to store persistent files
-    (setq bm-repository-file (format "%sbm-repository"
-                                     doom-etc-dir))
-    (setq bm-highlight-style 'bm-highlight-only-fringe
-          bm-repository-size 500)
-    ;; (evil-leader/set-key
-    ;;   "atb" 'spacemacs/bm-transient-state/body)
-    (advice-add 'my-hydra-bm/body
-                :before #'bm-buffer-restore))
-  :config
-  (progn
-    ;; Saving bookmarks
-    (add-hook 'kill-buffer-hook #'bm-buffer-save)
-    ;; Saving the repository to file when on exit.
-    ;; kill-buffer-hook is not called when Emacs is killed, so we
-    ;; must save all bookmarks first.
-    (add-hook 'kill-emacs-hook #'(lambda nil
-                                   (bm-buffer-save-all)
-                                   (bm-repository-save)))
-    ;; Restoring bookmarks
-    (add-hook 'find-file-hooks   #'bm-buffer-restore)
-    ;; Make sure bookmarks is saved before check-in (and revert-buffer)
-    (add-hook 'vc-before-checkin-hook #'bm-buffer-save)))
 
 ;; (use-package org-present
 ;;   :defer t
@@ -927,24 +892,17 @@
    )
   )
 
-(defun yunj/doom-modeline-height ()
-  (let ((height doom-modeline-height))
-  (set-face-attribute 'mode-line nil :height (* 10 height))
-  (set-face-attribute 'mode-line-inactive nil :height (* 10 height))
-  (doom/reset-font-size)
-  ))
-
 ;; ;; thinning all faces
 (add-hook! 'doom-load-theme-hook
-           ;; #'thin-all-faces
-           #'yunj/doom-modeline-height)
+           ;; #'jyun/thin-all-faces
+           #'jyun/doom-modeline-height)
 
 (add-hook! 'window-setup-hook
-           ;; #'thin-all-faces
-           #'yunj/doom-modeline-height)
+           ;; #'jyun/thin-all-faces
+           #'jyun/doom-modeline-height)
 
 ;; ;; (add-hook! 'org-load-hook
-;; ;;            #'thin-all-faces)
+;; ;;            #'jyun/thin-all-faces)
 
 (with-eval-after-load 'org-roam
   (setq org-roam-dailies-capture-templates
@@ -971,7 +929,6 @@
           "v" #'org-roam-dailies-capture-date
           )))))
 
-(setq doom-scratch-intial-major-mode 'lisp-interaction-mode)
 
 ;; ;; skim to org-roam-bibtex integration
 ;; ;; org-id is not generated
@@ -999,9 +956,9 @@
 ;;       (kill-this-buffer)
 ;;       bname)))
 
-(setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
 
 (use-package string-inflection
+  :defer t
   :commands
   (my-hydra-string-inflection/body)
   :init
@@ -1024,85 +981,10 @@
       "u" 'string-inflection-underscore
       "U" 'string-inflection-upcase))))
 
-;; (require 'discover)
-;; (global-discover-mode 1)
-
-;; (use-package edwina
-;;   :ensure t
-;;   :config
-;;   (setq display-buffer-base-action '(display-buffer-below-selected))
-;;   (edwina-setup-dwm-keys)
-;;   (edwina-mode 1))
-
-(defvar languagetool-show-error-on-jump nil
-  "If non-nil, automatically show a popup with the error when
-  jumping to LanguageTool errors with '[ g' and '] g'.")
-
 ;; (setq langtool-bin "languagetool")
-
 (setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/5.2.3/libexec/languagetool-server.jar")
-(setq langtool-server-user-arguments '("-p" "8081" "--allow-origin" "\"*\"" "--languageModel" "/Users/yunj/.config/languagetool/languagemodel/"))
 ;; (setq langtool-http-server-host "localhost"
 ;;       langtool-http-server-port 8081)
-
-(use-package! langtool
-  ;; load emacs-langtool branch enabling a variable `langtool-generic-check-predicate'.
-  :load-path "~/Dropbox/emacs/packages/Emacs-langtool"
-  :commands (langtool-check
-             langtool-check-done
-             langtool-show-message-at-point
-             langtool-correct-buffer)
-  :init (setq langtool-default-language "en-US")
-  :config
-  (unless (or langtool-bin
-              langtool-language-tool-jar
-              langtool-java-classpath
-              langtool-language-tool-server-jar)
-    (cond (IS-MAC
-           (cond
-            ;; is user using home brew?
-            ((file-directory-p "/usr/local/Cellar/languagetool")
-             (setq langtool-language-tool-jar
-                   (locate-file "libexec/languagetool-commandline.jar"
-                                (doom-files-in "/usr/local/Cellar/languagetool"
-                                               :type 'dirs
-                                               :depth 2))))
-            ;; macports compatibility
-            ((file-directory-p "/opt/local/share/java/LanguageTool")
-             (setq langtool-java-classpath "/opt/local/share/java/LanguageTool/*"))))
-          (IS-LINUX
-           (setq langtool-java-classpath "/usr/share/languagetool:/usr/share/java/languagetool/*"))))
-
-  ;; https://github.com/redguardtoo/Emacs-langtool
-  ;; not working in latex-mode, server not working
-  ;; (add-hook 'org-mode-hook #'jyun/langtool-org-exclude-faces)
-  ;; (add-hook 'LaTeX-mode-hook #'jyun/langtool-latex-exclude-faces)
-
-  ;; ARROWS: fix -> to a real arrow
-  ;; EN_QUOTES: fix "..." to smart quotes
-  (setq-default langtool-disabled-rules '("WHITESPACE_RULE" "ARROWS" "EN_QUOTES"))
-  ;; (setq-default langtool-disabled-rules nil)
-  (setq langtool-user-arguments '("--languagemodel" "/Users/yunj/.config/languagetool/languagemodel/"))
-  ;; (setq langtool-user-arguments nil)
-
-  (define-key evil-normal-state-map (kbd "[ g")
-    #'jyun/langtool-goto-previous-error)
-  (define-key evil-normal-state-map (kbd "] g")
-    #'jyun/langtool-goto-next-error)
-
-  (setq langtool-autoshow-message-function
-        ;; display in a minibuffer
-        ;; 'langtool-autoshow-force-message
-        ;; display in a popup
-        'langtool-autoshow-detail-popup
-        )
-  )
-
-;; https://github.com/cjl8zf/langtool-ignore-fonts
-(use-package langtool-ignore-fonts
-  :load-path "~/Dropbox/emacs/packages/langtool-ignore-fonts/"
-  :after langtool
-  )
 
 ;; these exculeded faces are in lists for spell-fu
 (add-hook 'markdown-mode-hook #'(lambda ()

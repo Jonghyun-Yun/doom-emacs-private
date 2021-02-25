@@ -14,9 +14,6 @@
           :i  "C-k"    nil
           :i  "C-j"    nil)))
 
-
-  
-
 (map!
  ;; C-x C-b to ibuffer
  [remap list-buffers] #'ibuffer
@@ -163,6 +160,7 @@
           "v" #'org-roam-dailies-capture-date)))))
 
 ;; hydra key bindings
+;; these keymaps are activated after the packages loading.
 (with-eval-after-load 'smerge-mode
   (bind-keys :map smerge-mode-map
              ("C-c ^ ." . my-hydra-smerge/body)))
@@ -173,31 +171,24 @@
          :nv "gt." #'my-hydra-timemachine/body)))
 
 
+;; hydra key bindings
 (map!
+ (:leader
+ :desc "Switch workspace"
+ "TAB e" #'+workspace/switch-to
+ :desc "Layouts Hydra"
+ "TAB ." #'my-hydra-layouts/body
+ "TAB c" #'jyun/workspace-create
+  :desc "Code Fold Hydra" "z." #'my-hydra-fold/body)
+ (:map pdf-view-mode-map
+  :localleader
+  :desc "PDF View Hydra" "." #'my-hydra-pdf-tools/body)
  (:map org-mode-map
   :desc "Org Babel Hydra"
   :g "C-c C-v ." #'my-hydra-org-babel/body)
  (:map org-agenda-mode-map
   :localleader
   :desc "Org Agenda Hydra" "." #'my-hydra-org-agenda/body))
-
-
-(map!
- (:leader
-  :desc "Bookmark Hydra" "atb" #'my-hydra-bm/body
-  :desc "Code Fold Hydra" "z." #'my-hydra-fold/body)
- (:map pdf-view-mode-map
-  :localleader
-  :desc "PDF View Hydra" "." #'my-hydra-pdf-tools/body))
-
-
-(map!
- :leader
- :desc "Switch workspace"
- "TAB e" #'+workspace/switch-to
- :desc "Layouts Hydra"
- "TAB ." #'my-hydra-layouts/body
- "TAB c" #'my-workspace-create)
 
 ;; langtool
 (map!

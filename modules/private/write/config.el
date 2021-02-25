@@ -1,14 +1,10 @@
 ;;; private/write/config.el -*- lexical-binding: t; -*-
 
 (use-package wordnut
+  :defer t
   :commands (wordnut-lookup-current-word
              wordnut-search)
   :hook (wordnut-mode . evil-emacs-state)
-  ;; :init
-  ;; (progn
-  ;;   (global-set-key (kbd "C-c C-s l") 'wordnut-lookup-current-word)
-  ;;   (global-set-key (kbd "C-c C-s w") 'wordnut-search)
-  ;;   )
   :config
   (setq wordnut-cmd "/usr/local/bin/wn")
   )
@@ -100,13 +96,9 @@
 ;;       (set-popup-rule! "\\*osx-dictionary" :size 80 :side 'right :select t :quit t))))
 
 (use-package! academic-phrases
+  :defer t
   :commands (academic-phrases
              academic-phrases-by-section)
-  ;; :init
-  ;; (progn
-  ;;   (global-set-key (kbd "C-c C-s p") 'academic-phrases)
-  ;;   (global-set-key (kbd "C-c C-s s") 'academic-phrases-by-section)
-  ;;   )
   )
 
 ;; (use-package! wordsmith-mode
@@ -152,11 +144,12 @@
   (setq flycheck-textlint-config "~/.config/textlint/textlintrc.json")
 
   ;; enable flycheck for latex
-  (add-hook 'LaTeX-mode-hook 'flycheck-mode)
+  ;; (add-hook 'LaTeX-mode-hook 'flycheck-mode)
   )
 
 ;; https://github.com/agzam/mw-thesaurus.el
 (use-package! mw-thesaurus
+  :defer t
   ;; (spacemacs/set-leader-keys
   ;;   "xwm" 'mw-thesaurus-lookup-at-point
   ;;   )
@@ -176,31 +169,9 @@
   ;; (define-key mw-thesaurus-mode-map [remap evil-forward-word-begin] #'wordnut-search) ;;w
   )
 
-;; https://github.com/gromnitsky/wordnut
-;; (use-package wordnut
-;; :init
-;; (spacemacs/set-leader-keys
-;;   "xwl" 'wordnut-lookup-current-word
-;;   "xww" 'wordnut-search)
-;; :commands (wordnut-lookup-current-word
-;; wordnut-search)
-;; :bind ("s-x" . synosaurus-choose-and-replace)
-;;
-;; :config
-;; (evilified-state-evilify-map wordnut-mode-map
-;;   :mode wordnut-mode
-;;   :bindings
-;;   "q" 'quit-window
-;;   "w" 'wordnut-search
-;;   "d" 'osx-dictionary-search-pointer
-;;   "m" 'mw-thesaurus-lookup-at-point
-;;   "l" 'wordnut-lookup-current-word
-;;   "s" 'osx-dictionary-search-input
-;;   )
-;; )
-
 ;; https://github.com/hpdeifel/synosaurus
 (use-package synosaurus
+  :defer t
   :commands (synosaurus-mode
              synosaurus-lookup
              synosaurus-choose-and-replace)
@@ -238,77 +209,8 @@
   ;;   )
   )
 
-;; See https://github.com/kaz-yos/emacs/blob/master/init.d/500_spell-check-related.el
-;; https://emacs.stackexchange.com/questions/21378/spell-check-with-multiple-dictionaries
-
-;; http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
-;; find aspell and hunspell automatically
-;;
-
-;; add Korean dic for hunspell
-;; (add-to-list 'ispell-hunspell-dict-paths-alist
-             ;; '("ko" "/Users/yunj/Library/Spelling/ko.aff")
-             ;; )
-;; (add-to-list 'ispell-hunspell-dictionary-alist '("ko"))
-
-;; (add-to-list 'ispell-hunspell-dict-paths-alist
-;;              '("en_US" "/Users/yunj/Library/Spelling/en_US.aff")
-;;              )
-;; (add-to-list 'ispell-hunspell-dictionary-alist '("en_US"))
-
-;; (add-to-list 'ispell-hunspell-dict-paths-alist
-;;              '("en_US-med" "/Users/yunj/Library/Spelling/en_US-med.aff")
-;;              )
-;; (add-to-list 'ispell-hunspell-dictionary-alist '("en_US-med"))
-
-;; (with-eval-after-load 'ispell
-;;   (cond
-;;    ;; try hunspell at first
-;;    ;; if hunspell does NOT exist, use aspell
-;;    ((executable-find "hunspell")
-;;     (setq ispell-program-name "hunspell")
-;;     (setq ispell-dictionary "en_US,en_US-med")
-;;     (setq ispell-dictionary-alist
-;;           ;; Please note the list `("-d" "en_US")` contains ACTUAL parameters passed to hunspell
-;;           ;; You could use `("-d" "en_US,en_US-med")` to check with multiple dictionaries
-;;           ;; '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8))))
-;;           '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US,en_US-med") nil utf-8)))
-;;     (ispell-set-spellchecker-params)
-;;     ;; (setq ispell-personal-dictionary "/Users/yunj/.hunspell_en_US")
-;;     (ispell-hunspell-add-multi-dic "en_US,en_US-med")
-;;     )
-
-;;    ((executable-find "aspell")
-;;     (setq ispell-program-name "aspell")
-;;     ;; Please note ispell-extra-args contains ACTUAL parameters passed to aspell
-;;     (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US"))))
-;;   )
-
-;; (setq langtool-mother-tongue nil)
-;; ;; Disabled rules pass to LanguageTool.
-;; ;; String that separated by comma or list of string.
-(after! 'langtool
-  (setq langtool-disabled-rules '("WHITESPACE_RULE"
-                                  "EN_UNPAIRED_BRACKETS"
-                                  "COMMA_PARENTHESIS_WHITESPACE"
-                                  "EN_QUOTES"))
-  )
-
-;; ;; Show LanguageTool report automatically by popup.
-;; ;; This idea come from: http://d.hatena.ne.jp/LaclefYoshi/20150912/langtool_popup
-;; (defun langtool-autoshow-detail-popup (overlays)
-;;   (when (require 'popup nil t)
-;;     ;; Do not interrupt current popup
-;;     (unless (or popup-instances
-;;                 ;; suppress popup after type `C-g` .
-;;                 (memq last-command '(keyboard-quit)))
-;;       (let ((msg (langtool-details-error-message overlays)))
-;;         (popup-tip msg)))))
-;; (setq langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
-
-;; (setq google-translate-default-target-language "ko")
-
 (use-package! mathpix.el
+  :defer t
   :commands (mathpix-screenshot)
   ;; :init
   ;; (my-mathpix-password)

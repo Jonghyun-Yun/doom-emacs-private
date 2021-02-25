@@ -14,6 +14,7 @@
 ;;   )
 
 (use-package org-super-agenda
+  :defer t
   :hook (org-agenda-mode . org-super-agenda-mode)
 )
 
@@ -101,40 +102,18 @@
                                        ("IDEA" . +org-todo-idea)
                                        ("STOP" . +org-todo-stop)
                                        ("KILL" . +org-todo-kill)
-                                       ;; ;; ("PROJ" . +org-todo-project)
-                                       ;; ;; ("FAIL" :weight bold :foreground "#f2241f")
-                                       ;; ;; ("TODO" :weight bold :foreground "tomato")
-                                       ;; ;; ("NEXT" :weight bold :foreground "SlateGray")
-                                       ;; ("NEXT" :weight bold :foreground "tomato")
-                                       ;; ;; ("GO" :weight bold :foreground "orchid")
-                                       ;; ;; ("GO" :weight bold :foreground "HotPink")
-                                       ;; ;; ("GO" :weight bold :foreground "DarkGoldenrod3")
-                                       ;; ;; ("REVIEW" :weight bold :foreground "gold")
-                                       ;; ;; ("REVIEW" :weight bold :foreground "orange")
-                                       ;; ;; ("REVIEW" :weight bold :foreground "DarkGoldenrod")
-                                       ;; ;; ("WAIT" :weight bold :foreground "DarkOrchid")
-                                       ;; ;; ("WAIT" :weight bold :foreground "pink")
-                                       ;; ;; ("HOLD" :weight bold :foreground "moccasin")
-                                       ;; ;; ("HOLD" :weight bold :foreground "DarkOrchid")
-                                       ;; ;; ("IDEA" :weight bold :foreground "salmon1")
-                                       ;; ("IDEA" :weight bold :foreground "Mocha")
-                                       ;; ("STOP" :weight bold :foreground "SlateGray")
-                                       ;; ;; ("STOP" :weight bold :foreground "turquoise")
                                        )))
   )
 
 (after! org-agenda
-  ;; Org agenda files
-  (setq org-agenda-default-appointment-duration 60)
-
-  (setq org-agenda-skip-deadline-prewarning-if-scheduled t
-        org-agenda-skip-scheduled-if-deadline-is-shown 'not-today)
-
   ;; agenda should be in a full window
   ;; (add-hook 'org-agenda-finalize-hook (lambda () (delete-other-windows)))
-  (setq org-agenda-window-setup 'current-window)
 
-  (setq org-agenda-custom-commands
+  (setq org-agenda-default-appointment-duration 60
+        org-agenda-skip-deadline-prewarning-if-scheduled t
+        org-agenda-skip-scheduled-if-deadline-is-shown 'not-today
+        org-agenda-window-setup 'current-window
+        org-agenda-custom-commands
         '(
           ("Q" . "Custom queries") ;; gives label to "Q"
           ("p" . "Priorities")

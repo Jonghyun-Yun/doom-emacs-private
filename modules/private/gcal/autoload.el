@@ -62,12 +62,6 @@ The function can be run automatically with the 'org-capture-after-finalize-hook'
 ;;     ;; (cfw:cal-create-source "Orange") ; diary source
 ;;     )))
 
-(defvar +my-cfw-workspace-name "Calendar"
-  "TODO")
-(defvar +my-cfw--old-wconf nil)
-
-(add-hook 'cfw:calendar-mode-hook #'+my-cfw-init-h)
-
 ;;;###autoload
 (defun my-open-calendar ()
   (interactive)
@@ -109,9 +103,11 @@ The function can be run automatically with the 'org-capture-after-finalize-hook'
 ;;
 ;; Hooks
 
+;;;###autoload
 (defun +my-cfw-init-h ()
   (add-hook 'kill-buffer-hook #'+my-cfw-kill-cfw-h nil t))
 
+;;;###autoload
 (defun +my-cfw-kill-cfw-h ()
   ;; (prolusion-mail-hide)
   (cond

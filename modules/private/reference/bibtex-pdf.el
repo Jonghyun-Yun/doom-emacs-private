@@ -1,7 +1,6 @@
 ;;; private/reference/autoload/bibtex-pdf.el -*- lexical-binding: t; -*-
 
-;;;###autoload
-;; https://github.com/jkitchin/org-ref/blob/master/org-ref.org
+;; See https://github.com/jkitchin/org-ref/blob/master/org-ref.org"
 (defun org-ref-open-pdf-at-point ()
   "Open the pdf for bibtex key under point if it exists."
   (interactive)
@@ -13,12 +12,10 @@
         (org-open-file pdf-file)
       (message "No PDF found for %s" key))))
 
-;;;###autoload
 ;; Override this function in org-ref.
 (defun org-ref-open-bibtex-pdf ()
   "Open pdf for a bibtex entry, if it exists.
-assumes point is in
-the entry of interest in the bibfile.  but does not check that."
+assumes point is in the entry of interest in the bibfile.  but does not check that."
   (interactive)
   (save-excursion
     (bibtex-beginning-of-entry)
@@ -30,7 +27,6 @@ the entry of interest in the bibfile.  but does not check that."
           (call-process "open" nil 0 nil "-a" "Skim" pdf-file)
         (message "No PDF found for %s" key)))))
 
-;;;###autoload
 ;; (package! org-ref :pin "caca18f8eeae213c2719e628949df70910f7d3c7") ;; breaking changes in this commit
 (defun org-ref-open-bibtex-notes ()
   "From a bibtex entry, open the notes if they exist."

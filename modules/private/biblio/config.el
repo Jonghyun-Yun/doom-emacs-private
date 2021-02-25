@@ -90,12 +90,14 @@ In case of directory the path must end with a slash."
   (unless (featurep! +roam-bibtex)
     ;; Allow org-ref to use the same template mechanism as {helm,ivy}-bibtex for
     ;; multiple files if the user has chosen to spread their notes.
-    (setq org-ref-notes-function (if (directory-name-p org-ref-notes-directory)
-                                     #'org-ref-notes-function-many-files
-                                   #'org-ref-notes-function-one-file)))
-
+    (setq org-ref-notes-function #'org-ref-notes-function-one-file)
+    (unless (null org-ref-notes-directory)
+      (setq org-ref-notes-function (if (directory-name-p org-ref-notes-directory)
+                                       #'org-ref-notes-function-many-files
+                                     #'org-ref-notes-function-one-file))
+      )
+    )
   )
-
 
 (use-package! org-roam-bibtex
   :when (featurep! +roam-bibtex)

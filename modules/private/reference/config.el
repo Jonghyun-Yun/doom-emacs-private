@@ -32,7 +32,8 @@
 
 
   ;; override functions in org-ref
-  (load! "autoload/bibtex-pdf")
+  ;; b/c these functions are loaded before loading org-ref
+  (load! "bibtex-pdf")
 
 ;;   ;; https://github.com/jkitchin/org-ref/blob/master/org-ref.org
 ;;   (defun org-ref-open-pdf-at-point ()

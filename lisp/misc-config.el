@@ -35,7 +35,7 @@
 (global-set-key "\C-co" 'switch-to-minibuffer) ;; Bind to `C-c o'
 
 ;; browse rendered html
-(defun browse-rendered-html ()
+(defun jyun/browse-rendered-html ()
   (interactive)
   (setq file-to-open (format "file://%s.html" (file-name-sans-extension buffer-file-name)))
   (browse-url file-to-open))

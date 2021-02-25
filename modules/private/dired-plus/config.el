@@ -1,6 +1,7 @@
 ;;; private/dired-plus/config.el -*- lexical-binding: t; -*-
 
 (use-package! ivy-dired-history
+  :defer t
   :after dired
   :config
   (after! savehist
@@ -13,9 +14,11 @@
 ;;   (dired-quick-sort-setup))
 
 (use-package! dired-filter
+  :defer t
   :after dired)
 
 (use-package! dired-subtree
+  :defer t
   :commands dired-subtree-toggle
   )
 

@@ -1,4 +1,5 @@
 ;;; emacs/dired-plus/autoload.el -*- lexical-binding: t; -*-
+
 ;;;###autoload
 (defun dired-open-mac () (interactive)
        (let ((file-name (dired-get-file-for-visit)))
