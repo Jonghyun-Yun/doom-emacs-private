@@ -176,23 +176,14 @@
 (after! spell-fu
   (setq spell-fu-idle-delay 0.5)
   ;; (global-spell-fu-mode -1)
+  )
 
-  ;; (add-hook 'org-mode-hook
-  ;;           (lambda ()
-  ;;             (setq spell-fu-faces-exclude
-  ;;                   '(
-  ;;                     org-property-drawer-re
-  ;;                     org-ref-cite-re
-  ;;                     org-ref-ref-re
-  ;;                     org-ref-label-re
-  ;;                     org-latex-math-environments-re
-  ;;                     "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
-  ;;                     font-lock-comment-face
-  ;;                     ))
-  ;;             (spell-fu-mode)))
-
+;; I need these lists for langtool!
   (setf (alist-get 'org-mode +spell-excluded-faces-alist)
         '(
+          org-level-1
+          org-document-info
+          org-list-dt
           org-block
           org-block-begin-line
           org-block-end-line
@@ -223,7 +214,7 @@
           font-lock-comment-face
           ))
 
-  (setf (alist-get 'latex-mode +spell-excluded-faces-alist)
+  (setf (alist-get 'LaTeX-mode +spell-excluded-faces-alist)
         '(
           font-lock-function-name-face
           font-lock-variable-name-face
@@ -231,11 +222,9 @@
           font-lock-constant-face
           font-lock-comment-face
           font-latex-math-face
-          font-latex-sedate-face)))
+          font-latex-sedate-face))
           ;; font-latex-verbatim-face
           ;; font-latex-warning-face
-
-  
 
 (with-eval-after-load 'hydra
   (load! "lisp/hydra-plus"))
@@ -248,13 +237,44 @@
 (load! "lisp/latex-plus")
 ;; (setq +latex-viewers '(skim pdf-tools))
 (setq +latex-viewers '(pdf-tools skim))
+;; (add-hook! 'LaTeX-mode-hook #'(lambda () (cdlatex-mode 1)))
+
+;; ;; https://www.reddit.com/r/emacs/comments/229bl0/how_to_configure_auctex_to_automatically_use/cgl220b
+;; ;; WYSWYG latex equation
+;; (defvar my/wyswyg-latex-math nil)
+;; (defvar my/was-inside-math nil)
+
+;; (defun my/toggle-preview-when-leaving-math ()
+;;   (interactive)
+;;   (cond (my/wyswyg-latex-math
+;;          (setq my/wyswyg-latex-math nil))
+;;         (t (setq my/wyswyg-latex-math t)))
+;;   )
+
+;; (defun my/preview-when-leaving-math ()
+;;   (if my/wyswyg-latex-math
+;;       (let ((in-math (texmathp)))
+;;         (cond (in-math
+;;                (setq my/was-inside-math t))
+;;               ((and (not in-math)
+;;                     my/was-inside-math)
+;;                (progn
+;;                  (condition-case ex
+;;                      (unless (get-process "Preview-Ghostscript")
+;;                        (preview-at-point))
+;;                    ('error
+;;                     (message (format "Could not invoke Preview: %s" ex))))
+;;                  (setq my/was-inside-math nil)))))))
+
+;; (add-hook 'post-command-hook 'my/preview-when-leaving-math t)
 
 (with-eval-after-load 'ess
   (load! "lisp/ess-plus")
 
   ;; disable assignment fix (= to <-)
   ;; https://github.com/jimhester/lintr
-  (setq flycheck-lintr-linters "with_defaults(assignment_linter = NULL, line_length_linter(120))")
+  (setq flycheck-lintr-linters
+        "with_defaults(line_length_linter(120), assignment_linter = NULL, object_name_linter = NULL)")
 
   (evil-set-initial-state 'inferior-ess-r-mode 'emacs)
   (setq ess-assign-list '(" <- " " = " " -> ")
@@ -273,6 +293,9 @@
 
 ;; passwords to be accessible
 (use-package! pass)
+
+;; information for debugging authentication in *Messages* buffer
+;; (setq auth-source-debug t)
 
 (after! plantuml-mode
   (setq plantuml-jar-path "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar"
@@ -344,8 +367,11 @@
 
   (setq org-preview-latex-image-directory "ltximg/"
         ;; org-archive-location ".archive/%s::"
-        org-latex-preview-scale 1.5)
-  (plist-put org-format-latex-options :scale org-latex-preview-scale)
+        )
+
+  (defvar jyun/org-latex-preview-scale 1.5
+    "A scaling factor for the size of images created from LaTeX fragments.")
+  (plist-put org-format-latex-options :scale jyun/org-latex-preview-scale)
 
   ;; default attach folder
   ;; (after! org-attach
@@ -404,7 +430,7 @@
 
 ;; no need: gcmh: https://github.com/emacsmirror/gcmh
 ;; (add-hook 'focus-out-hook #'garbage-collect)
-;; (setq garbage-collection-messages nil)
+(setq garbage-collection-messages nil)
 
 ;; no key stroke for exiting INSERT mode: doom default jk
 (setq evil-escape-key-sequence "jk"
@@ -494,6 +520,9 @@
 ;; set korean keyboard layout
 ;; C-\ to switch input-method
 (setq default-input-method "korean-hangul390")
+(global-set-key (kbd "s-j s-k") 'evil-escape)
+(global-set-key (kbd "s-j k") 'evil-escape)
+;; (key-chord-define-global "45" 'evil-escape)
 
 ;; Other options
 ;; replace highlighted text with what I type
@@ -506,7 +535,7 @@
       scroll-conservatively 0)
 
 (blink-cursor-mode 1)
-(display-battery-mode 1)
+;; (display-battery-mode 1)
 
 (setq display-time-format "%R %a %b %d"
       display-time-default-load-average nil
@@ -568,7 +597,7 @@
        +biblio-notes-path "~/org/refnotes.org"
        ;; org-ref-notes-directory "~/org/"
        )
-(unless (featurep! :private bilio +roam-bibtex)
+(unless (featurep! :private biblio +roam-bibtex)
   ;; error when org-ref-notes-directory is nil and no roam-bibtex is loaded
   (setq org-ref-notes-directory +biblio-notes-path)
   )
@@ -650,6 +679,9 @@
 
   ;; Whether display the buffer encoding.
   (setq doom-modeline-buffer-encoding nil)
+
+  ;; The maximum displayed length of the branch name of version control.
+  ;; (setq doom-modeline-vcs-max-length 12)
 
   ;; Whether display perspective name. Non-nil to display in mode-line.
   (setq doom-modeline-persp-name t)
@@ -857,22 +889,22 @@
     ;; Make sure bookmarks is saved before check-in (and revert-buffer)
     (add-hook 'vc-before-checkin-hook #'bm-buffer-save)))
 
-(use-package org-present
-  :defer t
-  :commands org-present
-  :config
-  (map!
-   :map org-present-mode-keymap
-   :g "C->" #'org-present-next
-   :g "C-<" #'org-present-prev)
-  ;; (define-key org-present-mode-keymap "C->" #'org-present-next)
-  ;; (define-key org-present-mode-keymap "C-<" #'org-present-prev)
-  )
+;; (use-package org-present
+;;   :defer t
+;;   :commands org-present
+;;   :config
+;;   (map!
+;;    :map org-present-mode-keymap
+;;    :g "C->" #'org-present-next
+;;    :g "C-<" #'org-present-prev)
+;;   ;; (define-key org-present-mode-keymap "C->" #'org-present-next)
+;;   ;; (define-key org-present-mode-keymap "C-<" #'org-present-prev)
+;;   )
 
 (with-eval-after-load 'org-tree-slide
   (setq org-tree-slide-header nil
         +org-present-hide-properties t
-        org-tree-slide-skip-outline-level 3
+        org-tree-slide-skip-outline-level 5
         org-tree-slide-heading-emphasis nil
         +org-present-text-scale 3
         +org-present-hide-tags t
@@ -968,3 +1000,117 @@
 ;;       bname)))
 
 (setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
+
+(use-package string-inflection
+  :commands
+  (my-hydra-string-inflection/body)
+  :init
+  (progn
+    (defhydra my-hydra-string-inflection
+      (:hint nil)
+      "
+[_i_] cycle"
+      ("i" string-inflection-all-cycle)
+      )
+    (map!
+     :leader
+     (:prefix ("zi" . "inflection")
+      "c" 'string-inflection-lower-camelcase
+      "C" 'string-inflection-camelcase
+      :desc "String Inflection Hydra" "i" 'my-hydra-string-inflection/body
+      "-" 'string-inflection-kebab-case
+      "k" 'string-inflection-kebab-case
+      "_" 'string-inflection-underscore
+      "u" 'string-inflection-underscore
+      "U" 'string-inflection-upcase))))
+
+;; (require 'discover)
+;; (global-discover-mode 1)
+
+;; (use-package edwina
+;;   :ensure t
+;;   :config
+;;   (setq display-buffer-base-action '(display-buffer-below-selected))
+;;   (edwina-setup-dwm-keys)
+;;   (edwina-mode 1))
+
+(defvar languagetool-show-error-on-jump nil
+  "If non-nil, automatically show a popup with the error when
+  jumping to LanguageTool errors with '[ g' and '] g'.")
+
+;; (setq langtool-bin "languagetool")
+
+(setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/5.2.3/libexec/languagetool-server.jar")
+(setq langtool-server-user-arguments '("-p" "8081" "--allow-origin" "\"*\"" "--languageModel" "/Users/yunj/.config/languagetool/languagemodel/"))
+;; (setq langtool-http-server-host "localhost"
+;;       langtool-http-server-port 8081)
+
+(use-package! langtool
+  ;; load emacs-langtool branch enabling a variable `langtool-generic-check-predicate'.
+  :load-path "~/Dropbox/emacs/packages/Emacs-langtool"
+  :commands (langtool-check
+             langtool-check-done
+             langtool-show-message-at-point
+             langtool-correct-buffer)
+  :init (setq langtool-default-language "en-US")
+  :config
+  (unless (or langtool-bin
+              langtool-language-tool-jar
+              langtool-java-classpath
+              langtool-language-tool-server-jar)
+    (cond (IS-MAC
+           (cond
+            ;; is user using home brew?
+            ((file-directory-p "/usr/local/Cellar/languagetool")
+             (setq langtool-language-tool-jar
+                   (locate-file "libexec/languagetool-commandline.jar"
+                                (doom-files-in "/usr/local/Cellar/languagetool"
+                                               :type 'dirs
+                                               :depth 2))))
+            ;; macports compatibility
+            ((file-directory-p "/opt/local/share/java/LanguageTool")
+             (setq langtool-java-classpath "/opt/local/share/java/LanguageTool/*"))))
+          (IS-LINUX
+           (setq langtool-java-classpath "/usr/share/languagetool:/usr/share/java/languagetool/*"))))
+
+  ;; https://github.com/redguardtoo/Emacs-langtool
+  ;; not working in latex-mode, server not working
+  ;; (add-hook 'org-mode-hook #'jyun/langtool-org-exclude-faces)
+  ;; (add-hook 'LaTeX-mode-hook #'jyun/langtool-latex-exclude-faces)
+
+  ;; ARROWS: fix -> to a real arrow
+  ;; EN_QUOTES: fix "..." to smart quotes
+  (setq-default langtool-disabled-rules '("WHITESPACE_RULE" "ARROWS" "EN_QUOTES"))
+  ;; (setq-default langtool-disabled-rules nil)
+  (setq langtool-user-arguments '("--languagemodel" "/Users/yunj/.config/languagetool/languagemodel/"))
+  ;; (setq langtool-user-arguments nil)
+
+  (define-key evil-normal-state-map (kbd "[ g")
+    #'jyun/langtool-goto-previous-error)
+  (define-key evil-normal-state-map (kbd "] g")
+    #'jyun/langtool-goto-next-error)
+
+  (setq langtool-autoshow-message-function
+        ;; display in a minibuffer
+        ;; 'langtool-autoshow-force-message
+        ;; display in a popup
+        'langtool-autoshow-detail-popup
+        )
+  )
+
+;; https://github.com/cjl8zf/langtool-ignore-fonts
+(use-package langtool-ignore-fonts
+  :load-path "~/Dropbox/emacs/packages/langtool-ignore-fonts/"
+  :after langtool
+  )
+
+;; these exculeded faces are in lists for spell-fu
+(add-hook 'markdown-mode-hook #'(lambda ()
+                                (setq-local langtool-ignore-fonts
+                                            (alist-get 'markdown-mode +spell-excluded-faces-alist))))
+(add-hook 'org-mode-hook #'(lambda ()
+                           (setq-local langtool-ignore-fonts
+                                       (alist-get 'org-mode +spell-excluded-faces-alist))))
+(add-hook 'LaTeX-mode-hook #'(lambda ()
+                             (setq-local langtool-ignore-fonts
+                                         (alist-get 'LaTeX-mode +spell-excluded-faces-alist))))

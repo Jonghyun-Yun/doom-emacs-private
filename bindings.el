@@ -170,16 +170,16 @@
 (with-eval-after-load 'git-timemachine
   (map! (:map git-timemachine-mode-map
          :desc "Git Timemachine Hydra"
-         :nv "gt." #'my-hydra-timemachine/body))
+         :nv "gt." #'my-hydra-timemachine/body)))
 
 
-  (map!
-   (:map org-mode-map
-    :desc "Org Babel Hydra"
-    :g "C-c C-v ." #'my-hydra-org-babel/body))
-  (:map org-agenda-mode-map
-   :localleader
-   :desc "Org Agenda Hydra" "." #'my-hydra-org-agenda/body))
+(map!
+ (:map org-mode-map
+  :desc "Org Babel Hydra"
+  :g "C-c C-v ." #'my-hydra-org-babel/body)
+ (:map org-agenda-mode-map
+  :localleader
+  :desc "Org Agenda Hydra" "." #'my-hydra-org-agenda/body))
 
 
 (map!
@@ -198,3 +198,10 @@
  :desc "Layouts Hydra"
  "TAB ." #'my-hydra-layouts/body
  "TAB c" #'my-workspace-create)
+
+;; langtool
+(map!
+ :leader
+ "sgc" 'langtool-correct-buffer
+ "sgs" 'langtool-check
+ "sgd" 'langtool-check-done)

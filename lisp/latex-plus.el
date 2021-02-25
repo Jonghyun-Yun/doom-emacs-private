@@ -198,10 +198,10 @@
 ;; latexdiff
 (defun my-latexdiff-init ()
   (require 'latexdiff)
-  (local-set-key (kbd "C-c d") 'helm-latexdiff-vc))
+  (local-set-key (kbd "C-c d") 'latexdiff-vc))
 
 (add-hook 'LaTeX-mode-hook 'my-latexdiff-init)
-(add-hook 'latex-mode-hook 'my-latexdiff-init)
+;; (add-hook 'latex-mode-hook 'my-latexdiff-init)
 
 (provide 'latex-plus)
 ;;; latex-plus.el ends here

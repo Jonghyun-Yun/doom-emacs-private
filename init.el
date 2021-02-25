@@ -160,7 +160,8 @@
        (latex              ; writing papers in Emacs has never been so fun
         +latexmk
         +lsp
-        +cdlatex)
+        +cdlatex
+        +fold)
 
        ;;lean
        ;;factor

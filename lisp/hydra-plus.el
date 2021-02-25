@@ -62,13 +62,14 @@
 (defhydra my-hydra-org-babel
   (:hint nil)
   "
-[_j_/_k_] navigate src blocks         [_e_] execute src block
-[_g_]^^   goto named block            [_'_] edit src block
-[_z_]^^   recenter screen             [_q_] quit
-[_f_]^^   format block"
+[_n_/_p_] navigate src blocks  [_z_] recenter screen  [_e_] execute src block
+[_g_]^^   goto named block     [_f_] format block     [_'_] edit src block
+[_k_]^^   kill result          ^^                     [_q_] quit"
+;; bindings
   ("q" nil :exit t)
-  ("j" org-babel-next-src-block)
-  ("k" org-babel-previous-src-block)
+  ("n" org-babel-next-src-block)
+  ("p" org-babel-previous-src-block)
+  ("k" org-babel-remove-result)
   ("g" org-babel-goto-named-src-block)
   ("z" recenter-top-bottom)
   ("e" org-babel-execute-maybe)
@@ -244,54 +245,29 @@
       "w{" #'my-hydra-window/shrink-window
       "w}" #'my-hydra-window/enlarge-window)
 
-(use-package string-inflection
-  :init
-  (progn
-    (defhydra my-hydra-string-inflection
-      (:hint nil)
-      "
-[_i_] cycle"
-      ("i" string_inflection_all_cycle)
-      )
-    (map!
-     :leader
-     (:prefix ("zi" . "inflection")
-      "c" 'string-inflection-lower-camelcase
-      "C" 'string-inflection-camelcase
-      :desc "String Inflection Hydra" "i" 'my-hydra-string-inflection/body
-      "-" 'string-inflection-kebab-case
-      "k" 'string-inflection-kebab-case
-      "_" 'string-inflection-underscore
-      "u" 'string-inflection-underscore
-      "U" 'string-inflection-upcase))))
-
-;; (defhydra my-mc-hydra (
-;;                        :hint nil
-;;                        :pre (evil-mc-pause-cursors))
-;;   "
-;; ^Match^            ^Line-wise^           ^Manual^
-;; ^^^^^^----------------------------------------------------
-;; _Z_: match all              _J_: make & go down   _z_: toggle here
-;; _d_/_D_: make & next/prev   _K_: make & go up     _u_: remove last
-;; _M_: make & prev            ^ ^                   _R_: remove all
-;; _n_: skip & next            ^ ^                   _t_: pause/resume
-;; _N_: skip & prev
-
-;; Current pattern: %`evil-mc-pattern
-;; "
-;;   ("Z" #'evil-mc-make-all-cursors)
-;;   ("m" #'evil-mc-make-and-goto-next-match)
-;;   ("M" #'evil-mc-make-and-goto-prev-match)
-;;   ("n" #'evil-mc-skip-andtgoto-next-match)
-;;   ("N" #'evil-mc-skip-andtgoto-prev-match)
-;;   ("J" #'evil-mc-make-curtor-move-next-line)
-;;   ("K" #'evil-mc-make-cursor-move-prev-line)
-;;   ("z" #'+multiple-cursors/evil-mc-toggle-cursor-here)
-;;   ("u" #'+multiple-cursors/evil-mc-undo-cursor)
-;;   ("R" #'evil-mc-undo-all-cursors)
-;;   ("t" #'+multiple-cursors/evil-mc-toggle-cursors)
-;;   ("q" #'evil-mc-resume-cursors "quit" :color blue)
-;;   ("<escape>" nil :exit t))
+(defhydra my-hydra-mc
+  (:hint nil
+   :pre (evil-mc-pause-cursors))
+"
+_d_/_D_: make & next/prev  _J_/_K_: make & down/up  _z_^^: cursor here      _m_^^: make all
+_n_/_N_: skip & next/prev  _H_/_L_: make & cursor   _u_/_U_: undo last/all  _t_^^: toggle cursor
+mc-pattern: %(evil-mc-get-pattern-text)"
+  ;; bindings
+  ("m" #'evil-mc-make-all-cursors)
+  ("n" #'evil-mc-skip-and-goto-next-match)
+  ("N" #'evil-mc-skip-and-goto-prev-match)
+  ("d" #'evil-mc-make-and-goto-next-match)
+  ("D" #'evil-mc-make-and-goto-prev-match)
+  ("L" #'evil-mc-make-and-goto-next-cursor)
+  ("H" #'evil-mc-make-and-goto-prev-cursor)
+  ("J" #'evil-mc-make-cursor-move-next-line)
+  ("K" #'evil-mc-make-cursor-move-prev-line)
+  ("z" #'+multiple-cursors/evil-mc-toggle-cursor-here)
+  ("u" #'+multiple-cursors/evil-mc-undo-cursor)
+  ("U" #'evil-mc-undo-all-cursors)
+  ("t" #'+multiple-cursors/evil-mc-toggle-cursors)
+  ("q" #'evil-mc-resume-cursors :exit t)
+  ("<escape>" nil :exit t))
 
 ;; g z D           evil-mc-make-and-goto-prev-match
 ;; g z N           evil-mc-make-and-goto-last-cursor
@@ -307,10 +283,10 @@
 ;; g z u           +multiple-cursors/evil-mc-undo-cursor
 ;; g z z           +multiple-cursors/evil-mc-toggle-cursor-here
 
-;; (map!
-;;  (:when (featurep! :editor multiple-cursors)
-;;   :prefix "g"
-;;   :nv "z." #'my-mc-hydra/body))
+(map!
+ (:when (featurep! :editor multiple-cursors)
+  :prefix "g"
+  :desc "Multiple Cursors Hydra" :nv "z." #'my-hydra-mc/body))
 
 (defhydra my-hydra-org-agenda
   (
@@ -543,3 +519,19 @@ _hp_: set priority    ^^                          _S_:  delete all filters    _L
  ;;   [remap evil-numbers/inc-at-pt] #'my-hydra-evil-numbers/evil-numbers/inc-at-pt
  ;;   [remap evil-numbers/dec-at-pt] #'my-hydra-evil-numbers/evil-numbers/dec-at-pt
  ;;   )
+
+(defhydra my-hydra-error
+  (:hint nil
+   :pre (unless (bound-and-true-p flycheck-mode) (flycheck-mode 1))
+   :foreign-keys run)
+  "
+_n_: next error  _N_/_p_: prev error  _z_: recenter  _q_: quit"
+  ("n" flycheck-next-error)
+  ("p" flycheck-previous-error)
+  ("N" flycheck-previous-error)
+  ("z" recenter-top-bottom)
+  ("q" nil :exit t)
+)
+(map!
+ :g "C-c ! ." #'my-hydra-error/body
+ )

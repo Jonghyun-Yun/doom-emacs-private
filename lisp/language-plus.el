@@ -88,7 +88,7 @@ Each entry is either:
     (flycheck-define-checker textidote
       "My latex checker"
       :command
-      ("~/Dropbox/spacemacs/textidote-wrapper.sh" source)
+      ("~/Dropbox/emacs/textidote-wrapper.sh" source)
       :error-patterns
       ((warning line-start (file-name) ":" line ":" column ": [" (id (1+ (not (any "]")))) "] " (message) line-end))
       :modes
