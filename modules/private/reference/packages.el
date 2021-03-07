@@ -1,5 +1,5 @@
 ;; -*- no-byte-compile: t; -*-
-;;; tools/reference/packages.el
+;;; private/reference/packages.el
 
 ;; (when (featurep! :completion ivy)
 ;;   (package! ivy-bibtex))

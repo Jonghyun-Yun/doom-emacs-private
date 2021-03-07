@@ -29,11 +29,13 @@
   :defer t
   )
 
+;;; ox-ravel
+;; `ox-hugo' depends on this
 (use-package ox-ravel
   :load-path "~/.doom.d/packages/ox-ravel"
   :after ox
   :config
-  (require 'ob-R)
+  ;; (require 'ob-R)
   (setq org-ravel-engines
         '(("R" . "engine='R'")
           ("c" . "engine='c'")
@@ -99,9 +101,20 @@
   (add-to-list 'org-latex-classes
                '("no-article"
                  "\\documentclass{article}
- [NO-DEFAULT-PACKAGES]
- [PACKAGES]
- [EXTRA]"
+\[NO-DEFAULT-PACKAGES]
+\[PACKAGES]
+\[EXTRA]
+\\usepackage{graphicx}
+\\usepackage{subfigure}
+\\usepackage{grffile} % Extended file name support for graphics (legacy package)
+\\usepackage{float} % Fix figures and tables by [H]
+\\usepackage{longtable}
+\\usepackage{wrapfig}
+\\usepackage{rotating}
+\\usepackage[normalem]{ulem}
+\\usepackage{textcomp}
+\\usepackage{capt-of}
+"
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -300,38 +313,37 @@
   ;; (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
   ;; (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
 
-  ;; ;; ispell is not in use.
-  ;; (after! ispell
-  ;;   ;; some org elements
-  ;;   (pushnew! ispell-skip-region-alist
-  ;;             '("~" . "~")
-  ;;             '("=" . "=")
-  ;;             ;; '(org-property-drawer-re)
-  ;;             '(org-ref-cite-re)
-  ;;             ;; '(org-ref-ref-re)
-  ;;             ;; '(org-ref-label-re)
-  ;;             ;; '(org-latex-math-environments-re)
-  ;;             )
-  ;;   ;; latex math
-  ;;   (pushnew! ispell-skip-region-alist
-  ;;             '("\\$" . "\\$")
-  ;;             '("\\\\(" . "\\\\)")
-  ;;             '("\\\[" . "\\\]")
-  ;;             '("\\\\begin{\\(?:align\\(?:at\\)?\\|d\\(?:array\\|group\\|isplaymath\\|math\\|series\\)\\|e\\(?:mpheq\\|q\\(?:narray\\|uation\\)\\)\\|flalign\\|gather\\|m\\(?:ath\\|ultline\\)\\|subequations\\|x\\(?:x?alignat\\)\\)\\*?}"
-  ;;               . "\\\\end{\\(?:align\\(?:at\\)?\\|d\\(?:array\\|group\\|isplaymath\\|math\\|series\\)\\|e\\(?:mpheq\\|q\\(?:narray\\|uation\\)\\)\\|flalign\\|gather\\|m\\(?:ath\\|ultline\\)\\|subequations\\|x\\(?:x?alignat\\)\\)\\*?}")
-  ;;             '("\\\\begin\{align\*\}" . "\\\\end\{align\*\}")
-  ;;             '("\\\\begin\{equation\*\}" . "\\\\end\{equation\*\}")
-  ;;             '("\\\\begin\{eqnarray\*\}" . "\\\\end\{eqnarray\*\}")
-  ;;             )
-  ;;   ;; latex ref
-  ;;     (pushnew! ispell-skip-region-alist
-  ;;               '("\\\\ref\{" . "\}")
-  ;;               '("\\\\cref\{" . "\}")
-  ;;               '("\\\\eqref\{" . "\}")
-  ;;               '("\\\\label\{" . "\}")
-  ;;               '("\\\\printbibliography\\[" . "\\]")
-  ;;               )
-  ;;   )
+  (after! ispell
+    ;; some org elements
+    (pushnew! ispell-skip-region-alist
+              '("~" . "~")
+              '("=" . "=")
+              ;; '(org-property-drawer-re)
+              '(org-ref-cite-re)
+              ;; '(org-ref-ref-re)
+              ;; '(org-ref-label-re)
+              ;; '(org-latex-math-environments-re)
+              )
+    ;; latex math
+    (pushnew! ispell-skip-region-alist
+              '("\\$" . "\\$")
+              '("\\\\(" . "\\\\)")
+              '("\\\[" . "\\\]")
+              '("\\\\begin{\\(?:align\\(?:at\\)?\\|d\\(?:array\\|group\\|isplaymath\\|math\\|series\\)\\|e\\(?:mpheq\\|q\\(?:narray\\|uation\\)\\)\\|flalign\\|gather\\|m\\(?:ath\\|ultline\\)\\|subequations\\|x\\(?:x?alignat\\)\\)\\*?}"
+                . "\\\\end{\\(?:align\\(?:at\\)?\\|d\\(?:array\\|group\\|isplaymath\\|math\\|series\\)\\|e\\(?:mpheq\\|q\\(?:narray\\|uation\\)\\)\\|flalign\\|gather\\|m\\(?:ath\\|ultline\\)\\|subequations\\|x\\(?:x?alignat\\)\\)\\*?}")
+              '("\\\\begin\{align\*\}" . "\\\\end\{align\*\}")
+              '("\\\\begin\{equation\*\}" . "\\\\end\{equation\*\}")
+              '("\\\\begin\{eqnarray\*\}" . "\\\\end\{eqnarray\*\}")
+              )
+    ;; latex ref
+      (pushnew! ispell-skip-region-alist
+                '("\\\\ref\{" . "\}")
+                '("\\\\cref\{" . "\}")
+                '("\\\\eqref\{" . "\}")
+                '("\\\\label\{" . "\}")
+                '("\\\\printbibliography\\[" . "\\]")
+                )
+    )
 
   (setq org-highlight-latex-and-related '(native))
 

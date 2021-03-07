@@ -50,7 +50,7 @@
         '((sequence
            "TODO(t)" ; doing later
            "NEXT(n!)" ; next action
-           "GO(g!)" ; active todo
+           ;; "GO(g!)" ; active todo
            "|"
            "DONE(d)" ; done
            )
@@ -76,6 +76,7 @@
     (custom-declare-face '+org-todo-next '((t (:inherit (bold org-level-7 org-todo)))) "")
     (custom-declare-face '+org-todo-hold '((t (:inherit (bold org-level-6 org-todo)))) "")
     (custom-declare-face '+org-todo-wait  '((t (:inherit (bold warning org-todo)))) "")
+    (custom-declare-face '+org-todo-cancel  '((t (:inherit (bold error org-todo)))) "")
     )
 
     ;; font-lock-builtin-face
@@ -101,7 +102,7 @@
                                        ("HOLD" . +org-todo-hold)
                                        ("IDEA" . +org-todo-idea)
                                        ("STOP" . +org-todo-stop)
-                                       ("KILL" . +org-todo-kill)
+                                       ("KILL" . +org-todo-cancle)
                                        )))
   )
 

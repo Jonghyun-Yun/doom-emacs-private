@@ -74,13 +74,13 @@
 ;; (package! org-pdftools)
 ;; (package! org-noter-pdftools)
 
-;; Rmd export doesn't work. Load it localy
+;; ;; export doesn't work. problem in compiling; defmacro and marco eval in the same file
+;; ;; ;; Load it localy
 ;; (package! ox-ravel
 ;;   :recipe (:host github
 ;;            :repo "jonghyun-yun/ox-ravel"
-;;            ;;          :branch "org-plus-9"
-;;            :files ("ox-ravel.el"))
-;;   :pin "f6410c256b5d14f5257252698e08785e5670b92a"
+;;            :files ("*.el")
+;;            )
 ;;   )
 
 (package! ox-hugo
@@ -127,9 +127,6 @@
 
 ;; (package! valign :pin "6b0345e29cdec8526c9c19b73bdea53295ec998e")
 
-;; speed reading
-(package! spray)
-
 (package! string-inflection :pin "c4a519be102cb99dd86be3ee8c387f008d097635")
 
 (package! golden-ratio.el
@@ -140,9 +137,6 @@
 
 ;; Github flavored markdown exporter
 (package! ox-gfm)
-
-;; epub
-(package! nov)
 
 ;; org-mode presentation
 ;; (package! org-present)

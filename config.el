@@ -233,8 +233,17 @@
 
 (load! "bindings")
 
-(after! mu4e
-  (load! "lisp/mu4e-plus"))
+(load! "lisp/mu4e-plus")
+;; no accumulating drafts
+(add-hook 'mu4e-compose-mode-hook #'(lambda () (auto-save-visited-mode -1)))
+(after! org-msg
+  (setq org-msg-options
+        (concat org-msg-options " num:nil tex:dvipng ^:{} \\n:t")
+        org-msg-startup "hidestars indent inlineimages"
+	org-msg-default-alternatives '(text html)
+	org-msg-convert-citation t
+        )
+  )
 
 (load! "lisp/latex-plus")
 ;; (setq +latex-viewers '(skim pdf-tools))
@@ -280,9 +289,9 @@
 
 ;; (add-hook 'post-command-hook 'my/preview-when-leaving-math t)
 
-(with-eval-after-load 'ess
-  (load! "lisp/ess-plus")
+(load! "lisp/ess-plus")
 
+(with-eval-after-load 'ess
   ;; disable assignment fix (= to <-)
   ;; https://github.com/jimhester/lintr
   (setq flycheck-lintr-linters
@@ -297,8 +306,9 @@
 
   (with-eval-after-load 'ess-r-mode
     (define-key ess-r-mode-map ess-assign-key #'ess-insert-assign))
-  (add-hook 'inferior-ess-r-mode-hook
-            #'(lambda () (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign))))
+  ;; (add-hook 'inferior-ess-r-mode-hook
+  ;;           #'(lambda () (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign)))
+  )
 
 ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
 ;; (load! "lisp/stan-config") ;; :private stan module
@@ -326,22 +336,13 @@
       create-lockfiles t
       make-backup-files nil)
 
-;; no accumulating drafts
-(add-hook 'mu4e-compose-mode-hook #'(lambda () (auto-save-visited-mode -1)))
-
 (setq company-idle-delay nil
       company-tooltip-limit 10
       ;; company-box-enable-icon nil ;;disable all-the-icons
       )
 
-;; Switch to the new window after splitting
-(setq evil-split-window-below t
-      evil-vsplit-window-right t)
 
-(require 'golden-ratio)
-
-;; (setq trash-directory "~/.Trash/")
-
+;;; org-mode
 (after! org
   ;; background color for org-latex
   ;; (+org-refresh-latex-background-h)
@@ -395,18 +396,24 @@
 
   ;; insert-mode tab binds back to org-cycle
   (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h)
+  )
 
-  (add-hook! 'org-mode-hook
-             #'(lambda () (mixed-pitch-mode 1))
-             #'(lambda () (rainbow-delimiters-mode -1))
-             )
-  ;; (add-hook 'mixed-pitch-mode-hook #'jyun/thin-variable-pitch-faces)
-   )
+(add-hook 'org-mode-hook (defun jyun/org-mode-hook-collection ()
+  (progn
+    ;; (rainbow-delimiters-mode-disable)
+    (setq-local langtool-ignore-fonts
+                (alist-get 'org-mode +spell-excluded-faces-alist))
+    )))
+
 (load! "lisp/org-plus")
+
+
 
 ;; https://gitlab.com/oer/org-re-reveal-ref/-/blob/master/org-re-reveal-ref.el
 ;; it changes some of org-ref custom variables
 (use-package! org-re-reveal-ref
+  :defer t
+  :when (featurep! :lang org +present)
   :after org-re-reveal
   )
 
@@ -447,6 +454,9 @@
 ;; no key stroke for exiting INSERT mode: doom default jk
 (setq evil-escape-key-sequence "jk"
       evil-escape-delay 0.1)
+;; to escape from emacs state
+(key-chord-mode 1)
+(key-chord-define evil-emacs-state-map evil-escape-key-sequence 'evil-escape)
 
 ;; emacs-mode shift can be used for C-SPC
 ;; didn't know it exists
@@ -474,26 +484,6 @@
   ;; (which-key-mode)
   ;; (define-key which-key-mode-map (kbd "C-h") 'which-key-C-h-dispatch)
 ;; )
-
-(use-package nov
-  :defer t
-  :mode ("\\.epub\\'" . nov-mode)
-  :config
-  (map!
-   :map nov-mode-map
-   :nvime "H" #'nov-previous-document
-   :nvime "L" #'nov-next-document
-   :nvime "[" #'nov-previous-document
-   :nvime "]" #'nov-next-document
-   :nvime "d" #'nov-scroll-up
-   :nvime "u" #'nov-scroll-down
-   :nvime "J" #'nov-scroll-up
-   :nvime "K" #'nov-scroll-down
-   :nvime "gm" #'nov-display-metadata
-   :nvime "gr" #'nov-render-document
-   :nvime "gt" #'nov-goto-toc
-   :nvime "gv" #'nov-view-source
-   :nvime "gV" #'nov-view-content-source))
 
 
 ;; ;; epub osx dictionary
@@ -603,6 +593,7 @@
   ;;        )
   )
 
+;;; bibtex
 (setq! +biblio-pdf-library-dir "~/Zotero/storage/"
        +biblio-default-bibliography-files '("~/Zotero/myref.bib")
        ;; a single file for one long note / directory for many note files
@@ -636,8 +627,27 @@
 
 ;; (setq bibtex-completion-pdf-open-function 'org-open-file)
 
+;;; ui, window mangement
+;; Switch to the new window after splitting
+(setq evil-split-window-below t
+      evil-vsplit-window-right t)
+
+(require 'golden-ratio)
+
+;; ;; thinning all faces
+(add-hook! 'doom-load-theme-hook
+           ;; #'jyun/thin-all-faces
+           #'jyun/doom-modeline-height)
+
+(add-hook! 'window-setup-hook
+           ;; #'jyun/thin-all-faces
+           #'jyun/doom-modeline-height)
+
+;; ;; (add-hook! 'org-load-hook
+;; ;;            #'jyun/thin-all-faces)
+
 ;;; doom-modeline
-;;; https://github.com/seagle0128/doom-modeline
+;; https://github.com/seagle0128/doom-modeline
 (with-eval-after-load 'doom-modeline
   ;; How tall the mode-line should be. It's only respected in GUI.
   ;; If the actual char height is larger, it respects the actual height.
@@ -744,21 +754,12 @@
 ;;         +notmuch-mail-folder "~/.mail/")
 ;;   )
 
-;;; (setq ...) without after!
-;; The text-scaling level for writeroom-mode
-(setq +zen-text-scale 1.2)
-(setq aw-scope 'global)
-(setq doom-scratch-intial-major-mode 'lisp-interaction-mode)
-(setq omnisharp-server-executable-path "/usr/local/bin/omnisharp")
+(add-to-list '+zen-mixed-pitch-modes 'latex-mode)
+(setq +zen-text-scale 1.2 ;; The text-scaling level for writeroom-mode
+      aw-scope 'global
+      doom-scratch-intial-major-mode 'lisp-interaction-mode
+      omnisharp-server-executable-path "/usr/local/bin/omnisharp")
 
-(after! org-msg
-  (setq org-msg-options
-        (concat org-msg-options " num:nil tex:dvipng ^:{} \\n:t")
-        org-msg-startup "hidestars indent inlineimages"
-	org-msg-default-alternatives '(text html)
-	org-msg-convert-citation t
-        )
-  )
 
 ;; OS X ls not working with --quoting-style=literal
 (after! fd-dired
@@ -767,13 +768,10 @@
     )
   )
 
-
+;;; elfeed
 (after! elfeed
   (setq elfeed-search-title-max-width 100
         elfeed-search-title-min-width 20)
-  (add-hook 'elfeed-search-mode-hook #'+my-elfeed-init-h)
-  (defvar +my-elfeed-workspace-name "*elfeed*")
-  (defvar +my-elfeed--old-wconf nil)
   )
 
 (use-package elfeed-score
@@ -814,8 +812,8 @@
 ;; (add-hook 'prog-mode-hook #'highlight-parentheses-mode)
 
 (with-eval-after-load 'conda
-  (setq conda-anaconda-home "/opt/intel/oneapi/intelpython/latest")
-  (setq conda-env-home-directory "/Users/yunj/.conda")
+  (setq conda-anaconda-home "/opt/intel/oneapi/intelpython/latest"
+        conda-env-home-directory "/Users/yunj/.conda")
   ;; (conda-env-initialize-interactive-shells)
   ;; (conda-env-initialize-eshell)
   )
@@ -832,39 +830,10 @@
 ;; align tables containing variable-pitch font, CJK characters and images
 ;; (add-hook 'org-mode-hook #'valign-mode)
 
-(use-package spray
-  :defer t
-  :commands spray-mode
-  :init
-  (progn
-    (defun speed-reading/start-spray ()
-      "Start spray speed reading on current buffer at current point."
-      (interactive)
-      (evil-insert-state)
-      (spray-mode t)
-      (internal-show-cursor (selected-window) nil))
-
-    (map! :leader "ars" #'speed-reading/start-spray)
-
-    (defadvice spray-quit (after speed-reading//quit-spray activate)
-      "Correctly quit spray."
-      (internal-show-cursor (selected-window) t)
-      (evil-normal-state)))
-  :config
-  (progn
-    (define-key spray-mode-map (kbd "h") 'spray-backward-word)
-    (define-key spray-mode-map (kbd "l") 'spray-forward-word)
-    (define-key spray-mode-map (kbd "q") 'spray-quit))
-  ;; (eval-after-load 'which-key
-  ;;   (push '((nil . "\\`speed-reading/\\(.+\\)\\'") . (nil . "\\1"))
-  ;;         which-key-replacement-alist))
-  (setq spray-wpm 400
-        spray-height 700))
-
 
 ;; ;; Github flavored markdown exporter
-;; (eval-after-load 'org
-;;   '(require 'ox-gfm nil t))
+(eval-after-load 'ox
+  '(require 'ox-gfm nil t))
 
 ;; (use-package org-present
 ;;   :defer t
@@ -878,6 +847,7 @@
 ;;   ;; (define-key org-present-mode-keymap "C-<" #'org-present-prev)
 ;;   )
 
+;;; presentation
 (with-eval-after-load 'org-tree-slide
   (setq org-tree-slide-header nil
         +org-present-hide-properties t
@@ -894,7 +864,7 @@
 
   ;; `jyun/org-present-hide' needs some functions in `contrib-present.el'
   ;; these functions are not autoloaded.
-  (load! "~/doom-emacs/modules/lang/org/autoload/contrib-present")
+  (load (expand-file-name "modules/lang/org/autoload/contrib-present" doom-emacs-dir))
   (add-hook 'org-tree-slide-mode-hook #'jyun/org-present-hide)
 
   ;; cause errors in navigating slides
@@ -907,18 +877,32 @@
    )
   )
 
-;; ;; thinning all faces
-(add-hook! 'doom-load-theme-hook
-           ;; #'jyun/thin-all-faces
-           #'jyun/doom-modeline-height)
+;;; string-inflection
+(use-package string-inflection
+  :defer t
+  :commands
+  (my-hydra-string-inflection/body)
+  :init
+  (progn
+    (defhydra my-hydra-string-inflection
+      (:hint nil)
+      "
+[_i_] cycle"
+      ("i" string-inflection-all-cycle)
+      )
+    (map!
+     :leader
+     (:prefix ("zi" . "inflection")
+      "c" 'string-inflection-lower-camelcase
+      "C" 'string-inflection-camelcase
+      :desc "String Inflection Hydra" "i" 'my-hydra-string-inflection/body
+      "-" 'string-inflection-kebab-case
+      "k" 'string-inflection-kebab-case
+      "_" 'string-inflection-underscore
+      "u" 'string-inflection-underscore
+      "U" 'string-inflection-upcase))))
 
-(add-hook! 'window-setup-hook
-           ;; #'jyun/thin-all-faces
-           #'jyun/doom-modeline-height)
-
-;; ;; (add-hook! 'org-load-hook
-;; ;;            #'jyun/thin-all-faces)
-
+;;; org-roam
 (with-eval-after-load 'org-roam
   (setq org-roam-dailies-capture-templates
         '(("d" "default" entry
@@ -958,43 +942,49 @@
 ;;       (kill-this-buffer)
 ;;       bname)))
 
-
-(use-package string-inflection
-  :defer t
-  :commands
-  (my-hydra-string-inflection/body)
-  :init
-  (progn
-    (defhydra my-hydra-string-inflection
-      (:hint nil)
-      "
-[_i_] cycle"
-      ("i" string-inflection-all-cycle)
-      )
-    (map!
-     :leader
-     (:prefix ("zi" . "inflection")
-      "c" 'string-inflection-lower-camelcase
-      "C" 'string-inflection-camelcase
-      :desc "String Inflection Hydra" "i" 'my-hydra-string-inflection/body
-      "-" 'string-inflection-kebab-case
-      "k" 'string-inflection-kebab-case
-      "_" 'string-inflection-underscore
-      "u" 'string-inflection-underscore
-      "U" 'string-inflection-upcase))))
-
+;;; *languagetool
 ;; (setq langtool-bin "languagetool")
 (setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/5.2.3/libexec/languagetool-server.jar")
 ;; (setq langtool-http-server-host "localhost"
 ;;       langtool-http-server-port 8081)
 
 ;; these exculeded faces are in lists for spell-fu
-(add-hook 'markdown-mode-hook #'(lambda ()
-                                (setq-local langtool-ignore-fonts
-                                            (alist-get 'markdown-mode +spell-excluded-faces-alist))))
-(add-hook 'org-mode-hook #'(lambda ()
-                           (setq-local langtool-ignore-fonts
-                                       (alist-get 'org-mode +spell-excluded-faces-alist))))
-(add-hook 'LaTeX-mode-hook #'(lambda ()
-                             (setq-local langtool-ignore-fonts
-                                         (alist-get 'LaTeX-mode +spell-excluded-faces-alist))))
+(add-hook 'markdown-mode-hook (defun langtool-markdown-ignore-fonts ()
+                                  (setq-local langtool-ignore-fonts
+                                              (alist-get 'markdown-mode +spell-excluded-faces-alist))))
+(add-hook 'LaTeX-mode-hook (defun langtool-LaTeX-ignore-fonts ()
+                               (setq-local langtool-ignore-fonts
+                                           (alist-get 'LaTeX-mode +spell-excluded-faces-alist))))
+
+;; (byte-recompile-directory (expand-file-name "~/.doom.d/") 0) ;
+;; (byte-compile-file (expand-file-name "modules/private/reference/autoload/applescript.el" doom-private-dir))
+;; (shell-command "find ~/.doom.d/ -type f -name \"*.elc\" -delete")
+
+(map! (:map outshine-mode-map
+      "<M-up>"    #'drag-stuff-up
+      "<M-down>"  #'drag-stuff-down))
+
+;;; printer
+(setq pdf-misc-print-program "lpr"
+      pdf-misc-print-program-args nil)
+
+;; no bug-fix in doom loaded pdf-tools yet.
+;;;###autoload
+(defun pdf-misc-print-program (&optional interactive-p)
+  (or (and pdf-misc-print-program
+           (executable-find pdf-misc-print-program))
+      (when interactive-p
+        (let* ((default (car (delq nil (mapcar
+                                        'executable-find
+                                        '("gtklp" "xpp" "gpr")))))
+               buffer-file-name
+               (program
+                (expand-file-name
+                 (read-file-name
+                  "Print with: " default nil t nil 'file-executable-p))))
+          (when (and program
+                     (executable-find program))
+            (when (y-or-n-p "Save choice using customize ?")
+              (customize-save-variable
+               'pdf-misc-print-program program))
+            (setq pdf-misc-print-program program))))))

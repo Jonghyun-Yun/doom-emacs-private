@@ -94,8 +94,7 @@ In case of directory the path must end with a slash."
     (unless (null org-ref-notes-directory)
       (setq org-ref-notes-function (if (directory-name-p org-ref-notes-directory)
                                        #'org-ref-notes-function-many-files
-                                     #'org-ref-notes-function-one-file))
-      )
+                                     #'org-ref-notes-function-one-file)))
     )
   )
 

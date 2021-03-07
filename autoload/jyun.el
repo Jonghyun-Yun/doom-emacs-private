@@ -67,18 +67,6 @@
 
 
 ;;;###autoload
-(defun jyun/mu4e-html2text (msg)
-  "My html2text function; shows short message inline, show
-long messages in some external browser (see `browse-url-generic-program')."
-  (let ((html (or (mu4e-message-field msg :body-html) "")))
-    (if (> (length html) 50000)
-        (progn
-          (mu4e-action-view-in-browser msg)
-          "[Viewing message in external browser]")
-      (mu4e-shr2text msg))))
-
-
-;;;###autoload
 (defun jyun/workspace-create ()
   "Create a new workspace after read `name' from a minibuffer."
   (interactive)

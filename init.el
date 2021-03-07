@@ -67,7 +67,7 @@
         ;; +onsave
         )
        ;;god               ; run Emacs commands without modifier keys
-       ;;lispy             ; vim for lisp, for people who don't like vim
+       ;; lispy             ; vim for lisp, for people who don't like vim
        multiple-cursors  ; editing in many places at once
        ;;objed             ; text object editing for the innocent
        ;;parinfer          ; turn lisp into python, sort of
@@ -100,7 +100,6 @@
        ;;ansible
        (debugger         ; FIXME stepping through code, to help you add bugs
         +lsp)
-
        ;;direnv
        ;;docker
        editorconfig     ; let someone else argue about tabs vs spaces
@@ -111,7 +110,6 @@
         +dictionary)
        (lsp
         +peek)
-
        (magit +forge)    ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        (pass +auth)        ; password manager for nerds
@@ -135,8 +133,6 @@
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
        ;; csharp              ; unity, .NET, and mono shenanigans
-        ;; +lsp
-
        ;;data              ; config/data formats
        ;;(dart +flutter)   ; paint ui and not much else
        ;;elixir            ; erlang done right
@@ -162,7 +158,6 @@
         +lsp
         +cdlatex
         +fold)
-
        ;;lean
        ;;factor
        ;;ledger            ; an accounting system in Emacs
@@ -181,7 +176,6 @@
         +pomodoro         ; be fruitful with the tomato technique
         +present          ; using org-mode for presentations
         +roam)             ; Enables org-roam integration
-
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
@@ -229,5 +223,7 @@
        dired-plus
        stan
        gtd
-       grammer
+       grammar
+       ;; outshine
+       reading
        )

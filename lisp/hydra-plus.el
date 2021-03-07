@@ -247,6 +247,7 @@
 
 (defhydra my-hydra-mc
   (:hint nil
+   :foreign-keys run
    :pre (evil-mc-pause-cursors))
 "
 _d_/_D_: make & next/prev  _J_/_K_: make & down/up  _z_^^: cursor here      _m_^^: make all

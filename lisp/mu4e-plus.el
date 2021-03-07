@@ -19,16 +19,14 @@
 ;;
 ;;; Code:
 
-;; set mu4e-use-maildirs-extension-load to be evaluated after mu4e has been loaded.
-(use-package mu4e-maildirs-extension
-  :init (with-eval-after-load 'mu4e (mu4e-maildirs-extension-load))
-  :config
-  (mu4e-maildirs-extension)
-  (setq mu4e-maildirs-extension-action-key "")
-  (setq mu4e-maildirs-extension-action-text nil))
-
 (with-eval-after-load 'mu4e
-;; set a full-path of mu binary
+  ;; set mu4e-use-maildirs-extension-load to be evaluated after mu4e has been loaded.
+  (require 'mu4e-maildirs-extension)
+  (mu4e-maildirs-extension)
+  (setq mu4e-maildirs-extension-action-key ""
+        mu4e-maildirs-extension-action-text nil)
+
+  ;; set a full-path of mu binary
   (setq mu4e-mu-binary "/usr/local/bin/mu")
 
   ;; to use mu4e-headers-mark-all
@@ -45,23 +43,23 @@
 
   ;; Set up some common mu4e variables
   (setq ;; mu4e-maildir "~/.mail"
-        mu4e-get-mail-command "mbsync --pull-new --push gmail"
-        ;; mu4e-get-mail-command "mbsync -a"
-        ;; mu4e-get-mail-command "mbsync gmail"
-        ;; update database every x seconds
-        mu4e-update-interval 1800
-        mu4e-compose-signature-auto-include nil
-        mu4e-view-show-images t ;; slow rendering with t
-        mu4e-view-show-addresses t
-        mu4e-use-fancy-chars nil
-        mu4e-attachment-dir "~/Downloads"
-        ;; for mbsync
-        ;; rename files when moving - NEEDED FOR MBSYNC not to duplicate UIDs
-        mu4e-change-filenames-when-moving t
-        mu4e-confirm-quit nil
-        mu4e-headers-skip-duplicates t
-        message-kill-buffer-on-exit t
-        )
+   mu4e-get-mail-command "mbsync --pull-new --push gmail"
+   ;; mu4e-get-mail-command "mbsync -a"
+   ;; mu4e-get-mail-command "mbsync gmail"
+   ;; update database every x seconds
+   mu4e-update-interval 1800
+   mu4e-compose-signature-auto-include nil
+   mu4e-view-show-images t ;; slow rendering with t
+   mu4e-view-show-addresses t
+   mu4e-use-fancy-chars nil
+   mu4e-attachment-dir "~/Downloads"
+   ;; for mbsync
+   ;; rename files when moving - NEEDED FOR MBSYNC not to duplicate UIDs
+   mu4e-change-filenames-when-moving t
+   mu4e-confirm-quit nil
+   mu4e-headers-skip-duplicates t
+   message-kill-buffer-on-exit t
+   )
 
   ;; use imagemagick, if available
   (when (fboundp 'imagemagick-register-types)
@@ -111,7 +109,7 @@ long messages in some external browser (see `browse-url-generic-program')."
   ;; commented out, messages are not sent, disapper
   ;; (require 'smtpmail-async)
   ;; (setq send-mail-function         'async-smtpmail-send-it
-        ;; message-send-mail-function 'async-smtpmail-send-it)
+  ;; message-send-mail-function 'async-smtpmail-send-it)
 
 
   ;; tell msmtp to choose the SMTP server according to the from field in the outgoing email

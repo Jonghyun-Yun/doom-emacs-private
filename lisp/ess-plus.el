@@ -47,8 +47,8 @@
 (setq ess-eval-visibly 'nowait
       inferior-R-args "--no-restore-history --no-save "
       ess-ask-for-ess-directory nil
-      ess--style 'RStudio
-      ess-tab-complete-in-script t
+      ;; ess-style 'RStudio
+      ;; ess-tab-complete-in-script t
 )
 
 ;; forward/inverse sync: Rnw and pdf
