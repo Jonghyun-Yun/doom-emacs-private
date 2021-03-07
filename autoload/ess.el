@@ -1,3 +1,7 @@
+;;; ~/.doom.d/autoload/ess.el -*- lexical-binding: t; -*-
+;;;###if (featurep! :lang ess)
+
+
 ;;;###autoload
 (defun Sweave-mode ()
   "ESS Sweave mode for Rnw files."

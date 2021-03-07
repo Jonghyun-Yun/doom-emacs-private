@@ -82,6 +82,13 @@
 ;;     (normal-top-level-add-subdirs-to-load-path))
 ;;   )
 
+;; ;; ;; ox-hugo looks for `ox-ravel' during the incremental org loading
+;; (add-hook 'after-init-hook #'(lambda ()
+;;                                (load (expand-file-name "packages/ox-ravel/ox-ravel" doom-private-dir))
+;;                                ))
+
+(load! "lisp/idle")
+
 (with-eval-after-load 'doom-themes
   :config
   ;; Global settings (defaults)
@@ -125,10 +132,10 @@
 
 ;; make-frame doesn't create a new persp
   ;;   (remove-hook 'after-make-frame-functions #'persp-init-new-frame)
-  (setq persp-add-buffer-on-after-change-major-mode 'free
+  ;; (setq persp-add-buffer-on-after-change-major-mode 'free
         ;; persp-add-buffer-on-after-change-major-mode-filter-functions nil
         ;; persp-nil-name "main")
-  )
+  ;; )
 
 (after! projectile
   (projectile-add-known-project "~/Dropbox/research/lsjm-art")
@@ -169,6 +176,7 @@
 (setq ispell-personal-dictionary "/Users/yunj/.hunspell_en_US")
 ;; (setq ispell-personal-dictionary "/Users/yunj/.aspell.en.pws")
 
+(require 'spell-fu) ;; otherwise error b/c `+spell/previous-error' is not defined.
 (setq spell-fu-idle-delay 0.5)
 ;; (global-spell-fu-mode -1)
 
@@ -759,9 +767,13 @@
     )
   )
 
+
 (after! elfeed
   (setq elfeed-search-title-max-width 100
         elfeed-search-title-min-width 20)
+  (add-hook 'elfeed-search-mode-hook #'+my-elfeed-init-h)
+  (defvar +my-elfeed-workspace-name "*elfeed*")
+  (defvar +my-elfeed--old-wconf nil)
   )
 
 (use-package elfeed-score
@@ -880,10 +892,13 @@
   ;;              #'+org-present-prettify-slide-h
   ;;              )
 
+  ;; `jyun/org-present-hide' needs some functions in `contrib-present.el'
+  ;; these functions are not autoloaded.
+  (load! "~/doom-emacs/modules/lang/org/autoload/contrib-present")
   (add-hook 'org-tree-slide-mode-hook #'jyun/org-present-hide)
 
+  ;; cause errors in navigating slides
   (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
-  (load! "~/doom-emacs/modules/lang/org/autoload/contrib-present.el")
 
   (map!
    :map org-tree-slide-mode-map
@@ -916,19 +931,6 @@
 ;; this should work, and it actually bind keys
 ;; but it cannot override default binding's description
 ;; (map! :leader "nrd" #'org-roam-dailies-map)
-
-(map! :leader
-      (:prefix-map ("n" . "notes")
-       (:when (featurep! :lang org +roam)
-        (:prefix ("r" . "roam")
-         (:prefix ("d" . "by date")
-          "." #'org-roam-dailies-find-directory
-          "b" #'org-roam-dailies-find-previous-note
-          "f" #'org-roam-dailies-find-next-note
-          "n" #'org-roam-dailies-capture-today
-          "v" #'org-roam-dailies-capture-date
-          )))))
-
 
 ;; ;; skim to org-roam-bibtex integration
 ;; ;; org-id is not generated

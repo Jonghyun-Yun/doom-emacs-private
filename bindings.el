@@ -196,3 +196,16 @@
  "sgc" 'langtool-correct-buffer
  "sgs" 'langtool-check
  "sgd" 'langtool-check-done)
+
+;; org-roam-daily
+(map! :leader
+      (:prefix-map ("n" . "notes")
+       (:when (featurep! :lang org +roam)
+        (:prefix ("r" . "roam")
+         (:prefix ("d" . "by date")
+          "." #'org-roam-dailies-find-directory
+          "b" #'org-roam-dailies-find-previous-note
+          "f" #'org-roam-dailies-find-next-note
+          "n" #'org-roam-dailies-capture-today
+          "v" #'org-roam-dailies-capture-date
+          )))))

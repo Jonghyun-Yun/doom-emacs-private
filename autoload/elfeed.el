@@ -1,7 +1,8 @@
 ;;; ../Dropbox/emacs/.doom.d/autoload/elfeed.el -*- lexical-binding: t; -*-
+;;;###if (featurep! :app rss)
 
-(defvar +my-elfeed-workspace-name "*elfeed*"
-  "TODO")
+
+(defvar +my-elfeed-workspace-name "*elfeed*")
 (defvar +my-elfeed--old-wconf nil)
 
 (add-hook 'elfeed-search-mode-hook #'+my-elfeed-init-h)
@@ -16,9 +17,6 @@
     (switch-to-buffer (doom-fallback-buffer)))
   (elfeed)
   )
-
-;;
-;; Hooks
 
 ;;;###autoload
 (defun +my-elfeed-init-h ()
