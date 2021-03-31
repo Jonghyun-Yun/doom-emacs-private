@@ -326,9 +326,10 @@
 ;; prevent some cases of Emacs flickering
 (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
 
-;; maximize frame at startup
-;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-(add-to-list 'initial-frame-alist '(fullscreen . fullscreen))
+;;; maximize frame at startup
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; OS X native full screen
+;; (add-to-list 'initial-frame-alist '(fullscreen . fullscreen))
 
 ;; Backups & Autosave
 ;; (auto-save-visited-mode +1)
@@ -439,7 +440,7 @@
     :config
     (set-file-name-coding-system 'utf-8-hfs)))
 
-  
+
 
 ;; ;; improve slow scrolling?
 ;; (use-package! hl-line+
@@ -801,7 +802,7 @@
             [remap projectile-find-file] #'find-file-in-project
             [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config)
   :init
-  (map! :leader "SPC" #'find-file-in-current-directory-by-selected)
+  (map! :leader "SPC" #'find-file-in-project-by-selected)
   :config
   (setq ffip-use-rust-fd t)
   ;; use ffip to find file in private config
@@ -968,23 +969,22 @@
 (setq pdf-misc-print-program "lpr"
       pdf-misc-print-program-args nil)
 
-;; no bug-fix in doom loaded pdf-tools yet.
+;; ESS's equivalent of RStudio's `clean and rebuild'
 ;;;###autoload
-(defun pdf-misc-print-program (&optional interactive-p)
-  (or (and pdf-misc-print-program
-           (executable-find pdf-misc-print-program))
-      (when interactive-p
-        (let* ((default (car (delq nil (mapcar
-                                        'executable-find
-                                        '("gtklp" "xpp" "gpr")))))
-               buffer-file-name
-               (program
-                (expand-file-name
-                 (read-file-name
-                  "Print with: " default nil t nil 'file-executable-p))))
-          (when (and program
-                     (executable-find program))
-            (when (y-or-n-p "Save choice using customize ?")
-              (customize-save-variable
-               'pdf-misc-print-program program))
-            (setq pdf-misc-print-program program))))))
+(defun ess-r-devtools-clean-and-rebuild-package (&optional arg)
+  "Interface to `devtools::install()'.
+By default the installation is \"quick\" with arguments quick =
+TRUE, upgrade = FALSE, build = FALSE. On prefix ARG
+\\[universal-argument] install with the default
+`devtools::install()' arguments."
+  (interactive "P")
+  (progn
+  (ess-r-package-eval-linewise "Rcpp::compileAttributes(%s)")
+  (ess-r-package-eval-linewise
+   "devtools::install(%s)\n" "Installing %s" arg
+   '("quick = TRUE, build = FALSE, upgrade = FALSE, keep_source = TRUE"
+     (read-string "Arguments: " "keep_source = TRUE, force = TRUE")))))
+
+(map! (:map ess-r-package-dev-map
+      "I" #'ess-r-devtools-clean-and-rebuild-package
+      ))

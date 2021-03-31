@@ -7,6 +7,7 @@
   "Use Magit to stage files if there are unstaged ones.
 Call asynchronous magit processes to commit and push staged files (if exist) to origin"
   (progn
+    (unless (featurep 'magit) (require 'magit))
     (when (or (magit-anything-unstaged-p) (magit-anything-staged-p))
       (magit-with-toplevel
         (magit-stage-1 "--u" magit-buffer-diff-files))
@@ -18,7 +19,9 @@ Call asynchronous magit processes to commit and push staged files (if exist) to 
 ;;;###autoload
 (defun jyun/magit-pull-origin-master ()
   "Run `git pull origin master' using asynchronous magit processes."
-  (magit-run-git-async "pull" "origin" "master")
+  (progn
+    (unless (featurep 'magit) (require 'magit))
+    (magit-run-git-async "pull" "origin" "master"))
   )
 
 ;;;###autoload
