@@ -150,6 +150,7 @@
 (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook #'jyun/magit-stage-commit-push-origin-master))
 (add-to-list 'safe-local-eval-forms '(add-hook 'projectile-after-switch-project-hook #'jyun/magit-pull-origin-master))
 (add-to-list 'safe-local-eval-forms '(add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]art\\'"))
+(add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook #'jyun/magit-stage-commit-push-origin-master "~/Dropbox/research/lsjm-art/tempest-draft/"))
 
 ;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
 ;; (remove-hook 'ivy-mode-hook #'ivy-rich-mode)
