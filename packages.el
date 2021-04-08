@@ -145,3 +145,10 @@
 ;; (package! discover)
 
 ;; (package! edwina)
+
+;; https://github.com/emacs-straight/auctex
+;; auctex preview fix
+(package! auctex :pin "1472d1d231aeae463013d5e36307605157f84191")
+
+;; https://github.com/emacsmirror/org-gcal
+(package! org-gcal :pin "52b7f8f7654e391f51e8d6d40506c8c170a5be20")

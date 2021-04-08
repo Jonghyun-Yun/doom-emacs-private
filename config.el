@@ -141,13 +141,19 @@
   (projectile-add-known-project "~/Dropbox/research/lsjm-art")
   (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
   (projectile-add-known-project "~/OneDrive/research/lapf")
-  (projectile-add-known-project "~/research/s.ham/RAS")
+  ;; (projectile-add-known-project "~/research/s.ham/RAS")
   (projectile-add-known-project "~/research/mj.jeon")
   )
 
+;; emacs 27.2 riksy local variables
+(setq enable-local-eval t)
+(add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook #'jyun/magit-stage-commit-push-origin-master))
+(add-to-list 'safe-local-eval-forms '(add-hook 'projectile-after-switch-project-hook #'jyun/magit-pull-origin-master))
+(add-to-list 'safe-local-eval-forms '(add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]art\\'"))
+
 ;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
 ;; (remove-hook 'ivy-mode-hook #'ivy-rich-mode)
-(setq ivy-height 10)
+(setq ivy-height 15)
 
 (setq ispell-program-name "hunspell"
       ispell-check-comments nil
@@ -558,11 +564,14 @@
 
 ;; custom variables
 ;; (setq
- ;; lsp-prefer-flymake nil
- ;; lsp-enable-file-watchers nil
- ;; lsp-ui-sideline-enable nil
- ;; lsp-enable-symbol-highlighting nil
- ;; )
+;; lsp-prefer-flymake nil
+;; lsp-enable-file-watchers nil
+;; lsp-ui-sideline-enable nil
+;; lsp-enable-symbol-highlighting nil
+;; )
+(with-eval-after-load 'lsp-mode
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.ccls-cache\\'")
+  )
 
 (use-package matlab-mode
   :defer t
@@ -945,7 +954,7 @@
 
 ;;; *languagetool
 ;; (setq langtool-bin "languagetool")
-(setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/5.2.3/libexec/languagetool-server.jar")
+(setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/*/libexec/languagetool-server.jar")
 ;; (setq langtool-http-server-host "localhost"
 ;;       langtool-http-server-port 8081)
 
@@ -988,3 +997,8 @@ TRUE, upgrade = FALSE, build = FALSE. On prefix ARG
 (map! (:map ess-r-package-dev-map
       "I" #'ess-r-devtools-clean-and-rebuild-package
       ))
+
+;; (map! (:map org-mode-map
+;;        :i "M-<right>" #'org-metaright
+;;        :i "M-<left>"  #'org-metaleft))
+
