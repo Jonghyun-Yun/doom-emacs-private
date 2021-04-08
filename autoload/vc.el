@@ -50,6 +50,7 @@ Run a shellscript to commit and push staged files (if exist) to Overleaf.
   (progn
     (unless (featurep 'find-file-in-project) (require 'find-file-in-project))
     (when (or (magit-anything-unstaged-p) (magit-anything-staged-p))
+      ;; stage all unstage files
       (magit-with-toplevel
         (magit-stage-1 "--u" magit-buffer-diff-files))
       (message "Asynchronously pushing changes to Overleaf...")
