@@ -1001,4 +1001,3 @@ TRUE, upgrade = FALSE, build = FALSE. On prefix ARG
 ;; (map! (:map org-mode-map
 ;;        :i "M-<right>" #'org-metaright
 ;;        :i "M-<left>"  #'org-metaleft))
-
