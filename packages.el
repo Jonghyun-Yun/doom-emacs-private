@@ -142,10 +142,6 @@
 ;; (package! org-present)
 ;; (package! epresent)
 
-;; (package! discover)
-
-;; (package! edwina)
-
 ;; https://github.com/emacs-straight/auctex
 ;; auctex preview fix
 (package! auctex :pin "1472d1d231aeae463013d5e36307605157f84191")
