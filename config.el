@@ -104,7 +104,7 @@
   ;; or for treemacs users
   ;; doom-themes package forces treemacs to use a variable-pitch font
   (setq doom-themes-treemacs-enable-variable-pitch t)
-  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  ;; (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
   (doom-themes-treemacs-config)
 
   ;; Corrects (and improves) org-mode's native fontification.
