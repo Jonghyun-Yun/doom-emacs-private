@@ -3,18 +3,19 @@
 
 
 ;;;###autoload
-(defun jyun/magit-stage-commit-push-origin-master ()
+(defun jyun/magit-stage-commit-push-origin-master (&optional proj)
   "Use Magit to stage files if there are unstaged ones.
 Call asynchronous magit processes to commit and push staged files (if exist) to origin"
   (progn
     (unless (featurep 'magit) (require 'magit))
+    (let ((default-directory (if proj proj default-directory)))
     (when (or (magit-anything-unstaged-p) (magit-anything-staged-p))
       (magit-with-toplevel
         (magit-stage-1 "--u" magit-buffer-diff-files))
       (let ((message (format "pushing changes %s" (format-time-string "%Y-%m-%d %H:%M:%S %Z"))))
         (magit-run-git-async "commit" "-m" message)
         (magit-run-git-async "push" "origin" "master")
-        ))))
+        )))))
 
 ;;;###autoload
 (defun jyun/magit-pull-origin-master ()
@@ -42,7 +43,7 @@ Call asynchronous magit processes to commit and push staged files (if exist) to 
 
 
 ;;;###autoload
-(defun jyun/magit-update-overleaf ()
+(defun jyun/magit-update-overleaf (&optional proj)
   "Use Magit to stage files if there are unstaged ones.
 Run a shellscript to commit and push staged files (if exist) to Overleaf.
  Assign a name to a shell command output buffer."
@@ -53,9 +54,8 @@ Run a shellscript to commit and push staged files (if exist) to Overleaf.
       ;; stage all unstage files
       ;; (magit-with-toplevel
       ;;   (magit-stage-1 "--u" magit-buffer-diff-files))
-
       (message "Asynchronously pushing changes to Overleaf...")
-      (async-shell-command (format "sh %supdate-overleaf.sh" (ffip-project-root))
+      (async-shell-command (format "sh %supdate-overleaf.sh" (if proj proj (ffip-project-root)))
                            (format "*overleaf: %s*" (projectile-project-name))
                            (format "*overleaf error: %s*" (projectile-project-name)))
       ;; (message "Done!")
