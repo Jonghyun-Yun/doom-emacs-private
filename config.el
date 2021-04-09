@@ -146,11 +146,18 @@
   )
 
 ;; emacs 27.2 riksy local variables
+;; old tricks stopped working. risky variables are ignored, and dunno how to make them safe...
+;; instead I can safely eval risky variables...
 (setq enable-local-eval t)
-(add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook #'jyun/magit-stage-commit-push-origin-master))
-(add-to-list 'safe-local-eval-forms '(add-hook 'projectile-after-switch-project-hook #'jyun/magit-pull-origin-master))
-(add-to-list 'safe-local-eval-forms '(add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]art\\'"))
-(add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook #'jyun/magit-stage-commit-push-origin-master "~/Dropbox/research/lsjm-art/tempest-draft/"))
+;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook #'jyun/magit-stage-commit-push-origin-master))
+;; (add-to-list 'safe-local-eval-forms '(add-hook 'projectile-after-switch-project-hook #'jyun/magit-pull-origin-master))
+;; (add-to-list 'safe-local-eval-forms '(add-hook 'projectile-after-switch-project-hook #'jyun/pull-overleaf))
+;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook #'jyun/push-overleaf))
+;; (add-to-list 'safe-local-eval-forms '(add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-origin-master "~/Dropbox/research/lsjm-art/tempest-draft/"))))
+(add-to-list 'safe-local-eval-forms '(add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-origin-master overleaf-directory))))
+;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook (lambda () (jyun/magit-stage-commit-push-origin-master "~/Dropbox/research/lsjm-art/tempest-draft/"))))
+(add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook (lambda () (jyun/magit-stage-commit-push-origin-master overleaf-directory))))
+(add-to-list 'safe-local-eval-forms '(setq overleaf-directory (ffip-project-root)))
 
 ;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
 ;; (remove-hook 'ivy-mode-hook #'ivy-rich-mode)
