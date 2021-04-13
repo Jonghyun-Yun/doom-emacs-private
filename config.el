@@ -33,12 +33,18 @@
 ;;  ;; doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light :width 'expanded)
 ;;  )
 
-(setq
- doom-font (font-spec :family "Iosevka SS08" :size 24 :weight 'light)
- ;; doom-variable-pitch-font (font-spec :family "Iosevka Etoile" :weight 'light)
- doom-variable-pitch-font (font-spec :family "Iosevka Aile" :weight 'light)
- doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
- doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
+;; (setq
+;;  doom-font (font-spec :family "Iosevka SS08" :size 24 :weight 'light)
+;;  ;; doom-variable-pitch-font (font-spec :family "Iosevka Etoile" :weight 'light)
+;;  doom-variable-pitch-font (font-spec :family "Iosevka Aile" :weight 'light)
+;;  doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
+;;  doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
+
+(setq doom-font (font-spec :family "JetBrains Mono" :size 22 :weight 'light))
+      ;; doom-big-font (font-spec :family "JetBrains Mono" :size 36 :weight 'light)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 22 :weight 'light)
+      doom-unicode-font (font-spec :family "JuliaMono" :weight 'light)
+      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light)
 
 ;; (setq
 ;;  doom-font (font-spec :family "Fira Code" :size 24 :weight 'light)
@@ -49,7 +55,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
+(setq doom-theme 'doom-one-light)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -87,14 +93,14 @@
 ;;                                (load (expand-file-name "packages/ox-ravel/ox-ravel" doom-private-dir))
 ;;                                ))
 
-(load! "lisp/idle")
+;; (load! "lisp/idle")
 
 (with-eval-after-load 'doom-themes
   :config
   ;; Global settings (defaults)
   ;; (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
   ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  ;; (load-theme 'doom-nord t)
+  (load-theme doom-theme t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -104,7 +110,7 @@
   ;; or for treemacs users
   ;; doom-themes package forces treemacs to use a variable-pitch font
   (setq doom-themes-treemacs-enable-variable-pitch t)
-  ;; (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
   (doom-themes-treemacs-config)
 
   ;; Corrects (and improves) org-mode's native fontification.
@@ -150,18 +156,22 @@
 ;; instead I can safely eval risky variables...
 (setq enable-local-eval t)
 ;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook #'jyun/magit-stage-commit-push-origin-master))
-;; (add-to-list 'safe-local-eval-forms '(add-hook 'projectile-after-switch-project-hook #'jyun/magit-pull-origin-master))
-;; (add-to-list 'safe-local-eval-forms '(add-hook 'projectile-after-switch-project-hook #'jyun/pull-overleaf))
 ;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook #'jyun/push-overleaf))
-;; (add-to-list 'safe-local-eval-forms '(add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-origin-master "~/Dropbox/research/lsjm-art/tempest-draft/"))))
-(add-to-list 'safe-local-eval-forms '(add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-origin-master overleaf-directory))))
-;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook (lambda () (jyun/magit-stage-commit-push-origin-master "~/Dropbox/research/lsjm-art/tempest-draft/"))))
-(add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook (lambda () (jyun/magit-stage-commit-push-origin-master overleaf-directory))))
-(add-to-list 'safe-local-eval-forms '(setq overleaf-directory (ffip-project-root)))
+;; (add-to-list 'safe-local-eval-forms
+;;              '(add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-overleaf overleaf-directory))))
+;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory))))
+;; (add-to-list 'safe-local-eval-forms '(setq overleaf-directory (ffip-project-root)))
+
+(setq safe-local-eval-forms
+      (append safe-local-eval-forms
+              '((setq overleaf-directory (ffip-project-root))
+                (add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-overleaf overleaf-directory)))
+                (add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory)))
+                )))
 
 ;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
 ;; (remove-hook 'ivy-mode-hook #'ivy-rich-mode)
-(setq ivy-height 15)
+;; (setq ivy-height 15)
 
 (setq ispell-program-name "hunspell"
       ispell-check-comments nil
@@ -650,15 +660,19 @@
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
 
-(require 'golden-ratio)
+;; (require 'golden-ratio)
 
+(remove-hook 'doom-load-theme-hook '+evil-update-cursor-color-h)
 ;; ;; thinning all faces
 (add-hook! 'doom-load-theme-hook
            ;; #'jyun/thin-all-faces
-           #'jyun/doom-modeline-height)
+           #'jyun/doom-modeline-height
+           #'jyun/evil-state-cursors
+           )
 
 (add-hook! 'window-setup-hook
            ;; #'jyun/thin-all-faces
+           #'jyun/evil-state-cursors
            #'jyun/doom-modeline-height)
 
 ;; ;; (add-hook! 'org-load-hook
@@ -670,6 +684,9 @@
   ;; How tall the mode-line should be. It's only respected in GUI.
   ;; If the actual char height is larger, it respects the actual height.
   (setq doom-modeline-height 24)
+
+  ;; to see letters instead of the colored circles
+  (setq doom-modeline-modal-icon nil)
 
   ;; https://github.com/seagle0128/doom-modeline/issues/187#issuecomment-507201556
   ;; (defun my-doom-modeline--font-height ()
@@ -1009,3 +1026,47 @@ TRUE, upgrade = FALSE, build = FALSE. On prefix ARG
 ;; (map! (:map org-mode-map
 ;;        :i "M-<right>" #'org-metaright
 ;;        :i "M-<left>"  #'org-metaleft))
+
+(defun jyun/evil-state-cursors ()
+  ;; doom-modeline
+  (setq +evil--default-cursor-color (face-attribute 'success :foreground))
+  (setq +evil--insert-cursor-color (face-attribute 'font-lock-keyword-face :foreground))
+  (setq +evil--emacs-cursor-color (face-attribute 'font-lock-builtin-face :foreground))
+  (setq +evil--replace-cursor-color (face-attribute 'error :foreground))
+  (setq +evil--visual-cursor-color (face-attribute 'warning :foreground))
+  (setq +evil--motion-cursor-color (face-attribute 'font-lock-doc-face :foreground))
+
+  ;;; modal icon face color should be found here
+  ;; doom-modeline-evil-normal-state
+  ;; doom-modeline-evil-insert-state
+  ;; doom-modeline-evil-emacs-state
+  ;; doom-modeline-evil-replace-state
+  ;; doom-modeline-evil-visual-state
+  ;; doom-modeline-evil-motion-state
+  ;; doom-modeline-evil-operator-state
+  )
+
+  ;; spacemacs evil cursors
+  (setq
+   evil-normal-state-cursor '(+evil-default-cursor-fn box)
+   evil-insert-state-cursor '(+evil-insert-cursor-fn (bar . 2))
+   evil-emacs-state-cursor '(+evil-emacs-cursor-fn box)
+   evil-replace-state-cursor '(+evil-replace-cursor-fn (hbar . 2))
+   evil-visual-state-cursor '(+evil-visual-cursor-fn (hbar . 2))
+   evil-motion-state-cursor '(+evil-motion-cursor-fn box))
+
+  (setq +evil--default-cursor-color "DarkGoldenrod2")
+  (setq +evil--emacs-cursor-color "SkyBlue2")
+  (defvar +evil--insert-cursor-color "chartreuse3")
+  (defvar +evil--replace-cursor-color "chocolate")
+  (defvar +evil--visual-cursor-color "gray")
+  (defvar +evil--motion-cursor-color "plum3")
+
+  (defun +evil-insert-cursor-fn ()
+    (evil-set-cursor-color +evil--insert-cursor-color))
+  (defun +evil-replace-cursor-fn ()
+    (evil-set-cursor-color +evil--replace-cursor-color))
+  (defun +evil-visual-cursor-fn ()
+    (evil-set-cursor-color +evil--visual-cursor-color))
+  (defun +evil-motion-cursor-fn ()
+    (evil-set-cursor-color +evil--motion-cursor-color))

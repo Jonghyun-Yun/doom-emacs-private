@@ -120,7 +120,7 @@
 ;; (package! highlight-numbers-mode)
 (package! highlight-parentheses)
 
-;; (package! spacemacs-theme)
+(package! spacemacs-theme)
 
 ;; bump org-ref (set in biblio)
 (package! org-ref :pin "1936720c2377d8af9a5edb0d252f881c0ec24918")
@@ -147,4 +147,4 @@
 (package! auctex :pin "1472d1d231aeae463013d5e36307605157f84191")
 
 ;; https://github.com/emacsmirror/org-gcal
-(package! org-gcal :pin "52b7f8f7654e391f51e8d6d40506c8c170a5be20")
+;; (package! org-gcal :pin "52b7f8f7654e391f51e8d6d40506c8c170a5be20")

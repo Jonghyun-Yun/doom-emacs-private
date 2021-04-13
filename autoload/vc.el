@@ -3,7 +3,7 @@
 
 
 ;;;###autoload
-(defun jyun/magit-stage-commit-push-origin-master (directory)
+(defun jyun/magit-push-overleaf (directory)
   "Use Magit to stage files if there are unstaged ones.
 Call asynchronous magit processes to commit and push staged files (if exist) to origin"
   (progn
@@ -18,7 +18,7 @@ Call asynchronous magit processes to commit and push staged files (if exist) to 
         )))))
 
 ;;;###autoload
-(defun jyun/magit-pull-origin-master (directory)
+(defun jyun/magit-pull-overleaf (directory)
   "Run `git pull origin master' using asynchronous magit processes."
   (progn
     (unless (featurep 'magit) (require 'magit))
