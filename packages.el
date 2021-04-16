@@ -65,7 +65,7 @@
 
 (package! matlab-mode)
 
-(package! find-file-in-project)
+(package! find-file-in-project :pin "cb5f3d1b697ef8212cc276c7486cbce2bf6c2a02")
 ;; (package! scihub)
 
 ;; (package! wordnut :pin "feac531404041855312c1a046bde7ea18c674915")
@@ -121,6 +121,7 @@
 (package! highlight-parentheses)
 
 (package! spacemacs-theme)
+(package! modus-themes)
 
 ;; bump org-ref (set in biblio)
 (package! org-ref :pin "1936720c2377d8af9a5edb0d252f881c0ec24918")
@@ -148,3 +149,16 @@
 
 ;; https://github.com/emacsmirror/org-gcal
 ;; (package! org-gcal :pin "52b7f8f7654e391f51e8d6d40506c8c170a5be20")
+
+;; (package! visual-regexp)
+
+(package! info-colors :pin "47ee73cc19...")
+
+;; (package! org-pretty-table
+;;   :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "474ad84a8fe5377d67ab7e491e8e68dac6e37a11")
+
+(package! org-appear :recipe (:host github :repo "awth13/org-appear")
+  :pin "0b3b029d5851c77ee792727b280f062eaf2c22c7")
+
+;; mixed-pitch-face available
+(package! mixed-pitch :pin "519e05f74825abf04b7d2e0e38ec040d013a125a")

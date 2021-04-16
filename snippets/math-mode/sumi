@@ -1,5 +1,6 @@
 # -*- mode: snippet -*-
 # name: sumi
+# group: math
 # key: sumi
 # --
-\sum^{\infty}_{i=1}
+\sum_{i=1}^{\infty}

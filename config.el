@@ -33,18 +33,31 @@
 ;;  ;; doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light :width 'expanded)
 ;;  )
 
-;; (setq
-;;  doom-font (font-spec :family "Iosevka SS08" :size 24 :weight 'light)
-;;  ;; doom-variable-pitch-font (font-spec :family "Iosevka Etoile" :weight 'light)
-;;  doom-variable-pitch-font (font-spec :family "Iosevka Aile" :weight 'light)
-;;  doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
-;;  doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
+(setq
+ doom-font (font-spec :family "Iosevka SS08" :size 24 :weight 'light)
+ doom-big-font (font-spec :family "Iosevka SS08" :size 36 :weight 'light)
+ ;; doom-variable-pitch-font (font-spec :family "Iosevka Etoile" :weight 'light)
+ doom-variable-pitch-font (font-spec :family "Iosevka Aile" :weight 'light)
+ doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
+ doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
 
-(setq doom-font (font-spec :family "JetBrains Mono" :size 22 :weight 'light))
+(setq
+ ;;doom-font (font-spec :family "JetBrains Mono" :size 24 :weight 'light)
       ;; doom-big-font (font-spec :family "JetBrains Mono" :size 36 :weight 'light)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 22 :weight 'light)
+      doom-font (font-spec :family "Fira Code" :size 24 :weight 'light)
+      doom-big-font (font-spec :family "Fira Code" :size 36 :weight 'light)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 24 :weight 'light)
       doom-unicode-font (font-spec :family "JuliaMono" :weight 'light)
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light)
+      )
+
+(setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
+;; (setq variable-pitch-serif-font (font-spec :family "Libre Baskerville" :size 24))
+;; (setq variable-pitch-serif-font (font-spec :family "Libertinus Serif" :size 27))
+
+;; missing out on the following Alegreya ligatures:
+(set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
+(set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
 
 ;; (setq
 ;;  doom-font (font-spec :family "Fira Code" :size 24 :weight 'light)
@@ -55,7 +68,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one-light)
+(setq doom-theme 'doom-nord-light)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -95,12 +108,28 @@
 
 ;; (load! "lisp/idle")
 
+(use-package modus-themes
+  :ensure
+  :init
+  ;; Add all your customizations prior to loading the themes
+  (setq modus-themes-slanted-constructs t
+        modus-themes-bold-constructs nil
+        modus-themes-region 'no-extend)
+
+  ;; Load the theme files before enabling a theme
+  (modus-themes-load-themes)
+  :config
+  ;; ;; Load the theme of your choice:
+  ;; (modus-themes-load-operandi) ;; OR (modus-themes-load-vivendi)
+  ;; :bind ("<f5>" . modus-themes-toggle)
+  )
+
 (with-eval-after-load 'doom-themes
   :config
   ;; Global settings (defaults)
   ;; (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
   ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme doom-theme t)
+  ;; (load-theme doom-theme t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -109,8 +138,9 @@
   ;; (doom-themes-neotree-config)
   ;; or for treemacs users
   ;; doom-themes package forces treemacs to use a variable-pitch font
-  (setq doom-themes-treemacs-enable-variable-pitch t)
-  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  (setq doom-themes-treemacs-enable-variable-pitch t
+        treemacs-width 30)
+  ;; (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
   (doom-themes-treemacs-config)
 
   ;; Corrects (and improves) org-mode's native fontification.
@@ -267,12 +297,23 @@
 	org-msg-default-alternatives '(text html)
 	org-msg-convert-citation t
         )
-  )
+(setq 	org-msg-greeting-fmt "\nHi *%s*,\n\n"
+	org-msg-recipient-names '(("jonghyun.yun@gmail.com" . "Jonghyun"))
+	org-msg-greeting-name-limit 3
+	org-msg-signature "
+
+ Cheers,
+
+ #+begin_signature
+ -- *Jonghyun* \\\\
+ #+end_signature")
+)
 
 (load! "lisp/latex-plus")
 ;; (setq +latex-viewers '(skim pdf-tools))
 (setq +latex-viewers '(pdf-tools skim))
 ;; (add-hook! 'LaTeX-mode-hook #'(lambda () (cdlatex-mode 1)))
+(setq TeX-command-extra-options "-shell-escape")
 
 ;; ;; trying to turn off `rainbow-delimiters-mode'. not working..
 ;; (add-hook! 'LaTeX-mode-hook #'(lambda () (rainbow-delimiters-mode -1)))
@@ -366,21 +407,30 @@
       ;; company-box-enable-icon nil ;;disable all-the-icons
       )
 
+(setq evil-want-fine-undo t                       ; By default while in insert all changes are one big blob. Be more granular
+      truncate-string-ellipsis "…")               ; Unicode ellispis are nicer than "...", and also save /precious/ space
 
 ;;; org-mode
 (after! org
+;; (remove-hook 'org-mode-hook #'org-superstar-mode)
+(when (featurep! :lang org +pretty)
+  ;; org-superstar-headline-bullets-list '("♠" "♥" "♦" "♣" "◉" "▶" "✚" "✸")
+  (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
+        org-superstar-remove-leading-stars nil
+        ))
+
   ;; background color for org-latex
   ;; (+org-refresh-latex-background-h)
   (setq
    org-fontify-quote-and-verse-blocks nil
    org-fontify-whole-heading-line nil
-   org-ellipsis " ▼ "
+
    org-journal-encrypt-journal t
-   ;; (remove-hook 'org-mode-hook #'org-superstar-mode)
-   ;; (when (featurep! :lang org +pretty)
-   ;; org-superstar-headline-bullets-list '("♠" "♥" "♦" "♣" "◉" "▶" "✚" "✸"))
    ;; org-hide-leading-stars t
    ;; org-startup-indented nil
+
+   ;; org-ellipsis " ▾ "
+   org-ellipsis " ▼ "
 
    org-indent-indentation-per-level 1
    org-adapt-indentation nil
@@ -396,7 +446,13 @@
    ;; latex highlight
    org-highlight-latex-and-related '(native)
    ;; don't ask to follow elisp link
-   org-confirm-elisp-link-function nil)
+   org-confirm-elisp-link-function nil
+   )
+
+(setq org-highlight-latex-and-related '(native script entities))
+(add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
+;; (setq org-format-latex-options
+;;       (plist-put org-format-latex-options :background "Transparent"))
 
   ;; (setq org-insert-heading-respect-content nil)
 
@@ -499,7 +555,9 @@
         ;; include subdirectories
         deft-recursive t))
 
-;; (with-eval-after-load 'which-key
+;; (setq which-key-allow-multiple-replacements t)
+
+(with-eval-after-load 'which-key
   ;; Allow C-h to trigger which-key before it is done automatically
   ;; (setq which-key-show-early-on-C-h t)
   ;; make sure which-key doesn't show normally but refreshes quickly after it is
@@ -508,7 +566,12 @@
   ;; (setq which-key-idle-secondary-delay 0.05)
   ;; (which-key-mode)
   ;; (define-key which-key-mode-map (kbd "C-h") 'which-key-C-h-dispatch)
-;; )
+  (pushnew!
+   which-key-replacement-alist
+   '(("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
+   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
+   )
+)
 
 
 ;; ;; epub osx dictionary
@@ -672,11 +735,11 @@
 
 (add-hook! 'window-setup-hook
            ;; #'jyun/thin-all-faces
-           #'jyun/evil-state-cursors
+           ;; #'jyun/evil-state-cursors
            #'jyun/doom-modeline-height)
 
-;; ;; (add-hook! 'org-load-hook
-;; ;;            #'jyun/thin-all-faces)
+;; (add-hook! 'org-load-hook
+;;            #'jyun/thin-all-faces)
 
 ;;; doom-modeline
 ;; https://github.com/seagle0128/doom-modeline
@@ -790,7 +853,7 @@
 ;;   )
 
 (add-to-list '+zen-mixed-pitch-modes 'latex-mode)
-(setq +zen-text-scale 1.2 ;; The text-scaling level for writeroom-mode
+(setq +zen-text-scale 0.8 ;; The text-scaling level for writeroom-mode
       aw-scope 'global
       doom-scratch-intial-major-mode 'lisp-interaction-mode
       omnisharp-server-executable-path "/usr/local/bin/omnisharp")
@@ -807,6 +870,7 @@
 (after! elfeed
   (setq elfeed-search-title-max-width 100
         elfeed-search-title-min-width 20)
+    (run-at-time nil (* 8 60 60) #'elfeed-update)
   )
 
 (use-package elfeed-score
@@ -895,7 +959,7 @@
   ;; (remove-hook 'org-tree-slide-mode-hook
   ;;              #'+org-present-hide-blocks-h
   ;;              #'+org-present-prettify-slide-h
-  ;;              )
+
 
   ;; `jyun/org-present-hide' needs some functions in `contrib-present.el'
   ;; these functions are not autoloaded.
@@ -1048,7 +1112,7 @@ TRUE, upgrade = FALSE, build = FALSE. On prefix ARG
 
   ;; spacemacs evil cursors
   (setq
-   evil-normal-state-cursor '(+evil-default-cursor-fn box)
+   evil-default-cursor '(+evil-default-cursor-fn box)
    evil-insert-state-cursor '(+evil-insert-cursor-fn (bar . 2))
    evil-emacs-state-cursor '(+evil-emacs-cursor-fn box)
    evil-replace-state-cursor '(+evil-replace-cursor-fn (hbar . 2))
@@ -1070,3 +1134,273 @@ TRUE, upgrade = FALSE, build = FALSE. On prefix ARG
     (evil-set-cursor-color +evil--visual-cursor-color))
   (defun +evil-motion-cursor-fn ()
     (evil-set-cursor-color +evil--motion-cursor-color))
+
+;; (use-package visual-regexp
+;;   :defer t
+;;   :commands (vr/replace vr/query-replace)
+;;   :config
+;;   (define-key global-map (kbd "C-c r") 'vr/replace)
+;;   (define-key global-map (kbd "C-c q") 'vr/query-replace)
+;;   ;; if you use multiple-cursors, this is for you:
+;;   ;; (define-key global-map (kbd "C-c m") 'vr/mc-mark)
+;;   )
+
+(use-package! info-colors
+  :commands (info-colors-fontify-node))
+(add-hook 'Info-selection-hook 'info-colors-fontify-node)
+;; (add-hook 'Info-mode-hook #'mixed-pitch-mode)
+
+(setq +zen-serif-p t)
+
+(use-package! org-appear
+  :hook (org-mode . org-appear-mode)
+  :config
+  (setq org-appear-autoemphasis t
+        org-appear-autosubmarkers t
+        org-appear-autolinks nil)
+  ;; for proper first-time setup, `org-appear--set-elements'
+  ;; needs to be run after other hooks have acted.
+  (run-at-time nil nil #'org-appear--set-elements))
+
+(after! ess-r-mode
+  (appendq! +ligatures-extra-symbols
+            '(
+              :infix "▷"
+              :assign "⟵"
+              ;; :multiply "×"
+              ;; greek
+              :alpha #X3B1
+              :beta #X3B2
+              :chi #X3C7
+              :delta #X3B4
+              :epsilon #X3F5
+              :eta #X3B7
+              :gamma #X3B3
+              :iota #X3B9
+              :kappa #X3BA
+              :lambda #X3BB
+              :mu #X3BC
+              :nu #X3BD
+              :omega #X3C9
+              :phi #X3D5
+              :pi #X3C0
+              :psi #X3C8
+              :rho #X3C1
+              :sigma #X3C3
+              :tau #X3C4
+              :theta #X3B8
+              :upsilon #X3C5
+              :xi #X3BE
+              :zeta #X3B6
+              :Delta #X394
+              :Gamma #X393
+              :Lambda #X39B
+              :Omega #X3A9
+              :Phi #X3A6
+              :Pi #X3A0
+              :Psi #X3A8
+              :Sigma #X3A3
+              :Theta #X398
+              :Upsilon #X3D2
+              :Xi #X39E
+              ;; :aleph "ℵ"
+              ;; :alpha "α"
+              ;; :beta "β"
+              ;; :beth "ℶ"
+              ;; :chi "χ"
+              ;; :daleth "ℸ"
+              ;; :delta "δ"
+              ;; :digamma "ϝ"
+              ;; :ell "ℓ"
+              ;; :epsilon "ϵ"
+              ;; :eta "η"
+              ;; :eth "ð"
+              ;; :gamma "γ"
+              ;; :gimel "ℷ"
+              ;; :hslash "ℏ"
+              ;; :imath "ı"
+              ;; :iota "ι"
+              ;; :jmath "ȷ"
+              ;; :kappa "κ"
+              ;; :koppa "ϟ"
+              ;; :lambda "λ"
+              ;; ;; greek capital
+              ;; :Delta "Δ"
+              ;; :Digamma "Ϝ"
+              ;; :Gamma "Γ"
+              ;; :Im "ℑ"
+              ;; :Koppa "Ϟ"
+              ;; :Lambda "Λ"
+              ;; :Micro "µ"
+              ;; :Omega "Ω"
+              ;; :Phi "Φ"
+              ;; :Pi "Π"
+              ;; :Psi "Ψ"
+              ;; :Re "ℜ"
+              ;; :Sampi "Ϡ"
+              ;; :Sigma "Σ"
+              ;; :Stigma "Ϛ"
+              ;; :Theta "Θ"
+              ;; :Upsilon "Υ"
+              ;; :Xi "Ξ"
+              )
+            )
+  (set-ligatures! 'ess-r-mode
+    ;;Functional
+    :def "function"
+    ;;Types
+    :null "NULL"
+    :true "TRUE"
+    :false "FALSE"
+    :int "int"
+    :floar "float"
+    :bool "bool"
+    ;;Flow
+    ;; :not "!"
+    ;; :and "&&" :or "||"
+    :for "for"
+    :in "%in%"
+    :infix "%>%"
+    :return "return"
+    ;;Other
+    :assign "<-"
+    ;; :multiply "%*%"
+    ;; greek
+    :alpha "alpha"
+    :beta "beta"
+    :chi "chi"
+    :delta "delta"
+    :epsilon "epsilon"
+    :eta "eta"
+    :gamma "gamma"
+    :iota "iota"
+    :kappa "kappa"
+    :lambda "lambda"
+    :mu "mu"
+    :nu "nu"
+    :omega "omega"
+    :phi "phi"
+    :pi "pi"
+    :psi "psi"
+    :rho "rho"
+    :sigma "sigma"
+    :tau "tau"
+    :theta "theta"
+    :upsilon "upsilon"
+    :xi "xi"
+    :zeta "zeta"
+    :Delta "Delta"
+    :Gamma "Gamma"
+    :Lambda "Lambda"
+    :Omega "Omega"
+    :Phi "Phi"
+    :Pi "Pi"
+    :Psi "Psi"
+    :Sigma "Sigma"
+    :Theta "Theta"
+    :Upsilon "Upsilon"
+    :Xi "Xi"
+    )
+  )
+
+
+(appendq! +ligatures-extra-symbols
+          `(
+            ;; :checkbox      "☐"
+            ;; :pending       "◼"
+            ;; :checkedbox    "☑"
+            :list_property "∷"
+            :em_dash       "—"
+            :ellipses      "…"
+            :arrow_right   "→"
+            :arrow_left    "←"
+            :title         "𝙏"
+            :subtitle      "𝙩"
+            :author        "𝘼"
+            :date          "𝘿"
+            :property      "☸"
+            :options       "⌥"
+            :latex_class   "🄲"
+            ;; :latex_header  "⇥"
+            :latex_header  "𝔏"
+            ;; :beamer_header "↠"
+            :beamer_header "𝔅"
+            :html_head "🌐"
+            :attr_latex    "🄛"
+            :attr_html     "🄗"
+            :begin_quote   "❝"
+            :end_quote     "❞"
+            :caption       "🄒"
+            :header        "›"
+            :results       "🠶"
+            :begin_export  "⏩"
+            :end_export    "⏪"
+            :properties    "🛈"
+            :end           "🛇"
+            ;; :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
+            ;; :priority_b   ,(propertize "⬆" 'face 'all-the-icons-orange)
+            ;; :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
+            ;; :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
+            ;; :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)
+            ))
+(set-ligatures! 'org-mode
+  ;; :merge t
+  ;; :checkbox      "[ ]"
+  ;; :pending       "[-]"
+  ;; :checkedbox    "[X]"
+  :list_property "::"
+  :em_dash       "---"
+  :ellipsis      "..."
+  :arrow_right   "->"
+  :arrow_left    "<-"
+  :title         "#+title:"
+  :subtitle      "#+subtitle:"
+  :author        "#+author:"
+  :date          "#+date:"
+  :property      "#+property:"
+  :options       "#+options:"
+  :latex_class   "#+latex_class:"
+  :latex_header  "#+latex_header:"
+  :beamer_header "#+beamer_header:"
+  :html_head     "#+html_head:"
+  :attr_latex    "#+attr_latex:"
+  :attr_html     "#+attr_latex:"
+  :begin_quote   "#+begin_quote"
+  :end_quote     "#+end_quote"
+  :caption       "#+caption:"
+  :header        "#+header:"
+  :begin_export  "#+begin_export"
+  :end_export    "#+end_export"
+  :results       "#+RESULTS:"
+  :property      ":PROPERTIES:"
+  :end           ":END:"
+  ;; :priority_a    "[#A]"
+  ;; :priority_b    "[#B]"
+  ;; :priority_c    "[#C]"
+  ;; :priority_d    "[#D]"
+  ;; :priority_e    "[#E]"
+  )
+;; (plist-put +ligatures-extra-symbols :name "⁍")
+
+
+(setq org-latex-tables-booktabs t
+;;       org-latex-default-class "scr-article"
+;;       org-latex-hyperref-template "
+;; \\colorlet{greenyblue}{blue!70!green}
+;; \\colorlet{blueygreen}{blue!40!green}
+;; \\providecolor{link}{named}{greenyblue}
+;; \\providecolor{cite}{named}{blueygreen}
+;; \\hypersetup{
+;;   pdfauthor={%a},
+;;   pdftitle={%t},
+;;   pdfkeywords={%k},
+;;   pdfsubject={%d},
+;;   pdfcreator={%c},
+;;   pdflang={%L},
+;;   breaklinks=true,
+;;   colorlinks=true,
+;;   linkcolor=,
+;;   urlcolor=link,
+;;   citecolor=cite\n}
+;; \\urlstyle{same}"
+)
