@@ -19,6 +19,28 @@
 ;;
 ;;; Code:
 
+;; no accumulating drafts
+(add-hook 'mu4e-compose-mode-hook #'(lambda () (auto-save-visited-mode -1)))
+
+(after! org-msg
+  (setq org-msg-options
+        (concat org-msg-options " num:nil tex:dvipng ^:{} \\n:t")
+        org-msg-startup "hidestars indent inlineimages"
+        org-msg-default-alternatives '(text html)
+        org-msg-convert-citation t
+        ;; msg auto completion
+        org-msg-greeting-fmt "\nHi *%s*,\n\n"
+        org-msg-recipient-names '(("jonghyun.yun@gmail.com" . "Jonghyun"))
+        org-msg-greeting-name-limit 3
+        org-msg-signature "
+
+ Cheers,
+
+ #+begin_signature
+ -- *Jonghyun* \\\\
+ #+end_signature")
+  )
+
 (with-eval-after-load 'mu4e
   ;; set mu4e-use-maildirs-extension-load to be evaluated after mu4e has been loaded.
   (require 'mu4e-maildirs-extension)

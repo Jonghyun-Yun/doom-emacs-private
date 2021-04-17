@@ -95,3 +95,658 @@
 ;;
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
+
+;;; load lisp
+(with-eval-after-load 'hydra
+  (load! "lisp/hydra-plus"))
+(load! "bindings")
+(load! "lisp/mu4e-plus")
+(load! "lisp/org-plus")
+(load! "lisp/ligature")
+(load! "lisp/ess-plus")
+(load! "lisp/latex-plus")
+(load! "lisp/visual-plus")
+
+(after! projectile
+  (projectile-add-known-project "~/Dropbox/research/lsjm-art")
+  (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
+  (projectile-add-known-project "~/OneDrive/research/lapf")
+  ;; (projectile-add-known-project "~/research/s.ham/RAS")
+  (projectile-add-known-project "~/research/mj.jeon")
+  )
+
+;; emacs 27.2 riksy local variables
+;; old tricks stopped working. risky variables are ignored, and dunno how to make them safe...
+;; instead I can safely eval risky variables...
+(setq enable-local-eval t)
+;; (add-to-list 'safe-local-eval-forms
+;;              '(add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-overleaf overleaf-directory))))
+;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory))))
+;; (add-to-list 'safe-local-eval-forms '(setq overleaf-directory (ffip-project-root)))
+
+(setq safe-local-eval-forms
+      (append safe-local-eval-forms
+              '((setq overleaf-directory (ffip-project-root))
+                (add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-overleaf overleaf-directory)))
+                (add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory)))
+                )))
+
+;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
+;; (remove-hook 'ivy-mode-hook #'ivy-rich-mode)
+;; (setq ivy-height 15)
+
+;;; LaTeX
+;; (setq +latex-viewers '(skim pdf-tools))
+(setq +latex-viewers '(pdf-tools skim))
+;; (add-hook! 'LaTeX-mode-hook #'(lambda () (cdlatex-mode 1)))
+(setq TeX-command-extra-options "-shell-escape")
+
+;; Set LaTeX preview image size for Org and LaTeX buffers.
+(after! preview
+  ;; latex-preview size
+  (setq preview-scale 1.5)
+  ;; (set 'preview-scale-function 1.75)
+  )
+
+;; ;; trying to turn off `rainbow-delimiters-mode'. not working..
+;; (add-hook! 'LaTeX-mode-hook #'(lambda () (rainbow-delimiters-mode -1)))
+;; (remove-hook 'TeX-update-style-hook #'rainbow-delimiters-mode)
+
+(after! cdlatex
+  (setq cdlatex-math-symbol-alist
+        '((?: ("\\cdots" "\\ldots"))
+          )
+        ))
+
+;;; ess
+(with-eval-after-load 'ess
+  ;; disable assignment fix (= to <-)
+  ;; https://github.com/jimhester/lintr
+  (setq flycheck-lintr-linters
+        "with_defaults(line_length_linter(120), assignment_linter = NULL, object_name_linter = NULL)")
+
+  (evil-set-initial-state 'inferior-ess-r-mode 'emacs)
+  (setq ess-assign-list '(" <- " " = " " -> ")
+        ess-r-smart-operators t)
+  ;; ess-assign
+  (defvar ess-assign-key "\M--"
+    "Call `ess-insert-assign'.")
+
+  (with-eval-after-load 'ess-r-mode
+    (define-key ess-r-mode-map ess-assign-key #'ess-insert-assign))
+  ;; (add-hook 'inferior-ess-r-mode-hook
+  ;;           #'(lambda () (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign)))
+  )
+
+
+;; passwords to be accessible
+(use-package! pass)
+
+;; information for debugging authentication in *Messages* buffer
+;; (setq auth-source-debug t)
+
+(after! plantuml-mode
+  (setq plantuml-jar-path "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar"
+        org-plantuml-jar-path plantuml-jar-path))
+
+;; prevent some cases of Emacs flickering
+(add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
+
+;;; maximize frame at startup
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; OS X native full screen
+;; (add-to-list 'initial-frame-alist '(fullscreen . fullscreen))
+
+;;; Backups & Autosave
+;; (auto-save-visited-mode +1)
+(setq auto-save-default t
+      create-lockfiles t
+      make-backup-files nil
+      truncate-string-ellipsis "…"               ; Unicode ellispis are nicer than "...", and also save /precious/ space
+      yas-triggers-in-field t ;snippets inside snippets
+      )
+
+;;; company
+(after! company
+  (setq company-idle-delay 0.5
+        company-minimum-prefix-length 2
+        company-tooltip-limit 10
+        ;; company-box-enable-icon nil ;;disable all-the-icons
+        ))
+
+;; company memory
+(setq-default history-length 1000)
+(setq-default prescient-history-length 1000)
+
+
+;;; org-mode
+(after! org
+  (when (featurep! :lang org +pretty)
+    (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
+          org-superstar-remove-leading-stars nil
+          ))
+
+  ;; background color for org-latex
+  ;; (+org-refresh-latex-background-h)
+  (setq
+   ;; org-export-in-background t                  ; async export by default
+
+   org-fontify-quote-and-verse-blocks nil
+   org-fontify-whole-heading-line nil
+
+   org-journal-encrypt-journal t
+   ;; org-hide-leading-stars t
+   ;; org-startup-indented nil
+
+   ;; org-ellipsis " ▾ "
+   ;; org-ellipsis "  ⏷  "
+   org-ellipsis " ▼ "
+
+   org-indent-indentation-per-level 1
+   org-adapt-indentation nil
+
+   ;; tag indent
+   ;; org-tags-column -77
+
+   ;; org export global setting
+   org-export-with-toc nil
+   ;; custom_id -> \label
+   ;; org-latex-prefer-user-labels t
+   org-log-done 'time
+   ;; latex highlight
+   ;; org-highlight-latex-and-related '(native)
+   ;; don't ask to follow elisp link
+   org-confirm-elisp-link-function nil
+   )
+
+  (setq org-highlight-latex-and-related '(native script entities))
+  (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
+
+  ;; (setq org-insert-heading-respect-content nil)
+
+  ;; cdltaex will ignore inline math $...$
+  ;; (plist-put org-format-latex-options :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")) ;; drop "$"
+
+  (setq org-preview-latex-image-directory "ltximg/"
+        ;; org-archive-location ".archive/%s::"
+        )
+
+  (defvar jyun/org-latex-preview-scale 1.5
+    "A scaling factor for the size of images created from LaTeX fragments.")
+  (plist-put org-format-latex-options :scale jyun/org-latex-preview-scale)
+
+  ;; default attach folder
+  ;; (after! org-attach
+  ;;   (setq
+  ;;    org-attach-id-dir "data/"))
+
+  ;; visual-mode tab binds back to org-cycle
+  (remove-hook 'org-tab-first-hook #'+org-yas-expand-maybe-h)
+
+  ;; insert-mode tab binds back to org-cycle
+  (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h)
+  )
+
+;; (evil-set-initial-state 'org-agenda-mode 'emacs)
+
+(add-hook 'org-mode-hook (defun jyun/org-mode-hook-collection ()
+                           (progn
+                             ;; (rainbow-delimiters-mode-disable)
+                             (setq-local langtool-ignore-fonts
+                                         (alist-get 'org-mode +spell-excluded-faces-alist))
+                             )))
+
+;;; ox
+(after! ox
+  (setq org-beamer-theme "[progressbar=foot]metropolis"
+        org-beamer-frame-level 4
+        org-latex-tables-booktabs t
+        ))
+;; ;; Github flavored markdown exporter
+;; (eval-after-load 'ox
+;;   '(require 'ox-gfm nil t))
+(use-package ox-gfm
+  :defer t
+  :after ox)
+
+;;; org-roam
+(with-eval-after-load 'org-roam
+  (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
+        +org-roam-open-buffer-on-find-file nil)
+  ;; (setq org-roam-graph-executable "neato")
+  ;; (setq org-roam-graph-extra-config '(("overlap" . "false")))
+  (setq org-roam-dailies-capture-templates
+        '(("d" "default" entry
+           #'org-roam-capture--get-point
+           "* %?"
+           :file-name "daily/%<%Y-%m-%d_%A>"
+           :head "#+TITLE: %<%Y-%m-%d %A>\n\n[[roam:%<%Y-%m %B>]]\n\n")))
+  )
+
+;; this should work, and it actually bind keys
+;; but it cannot override default binding's description
+;; (map! :leader "nrd" #'org-roam-dailies-map)
+
+;;; misc
+;; ;; improve slow scrolling?
+;; (use-package! hl-line+
+;;   :config
+;;   (hl-line-when-idle-interval 0.5)
+;;   (toggle-hl-line-when-idle 1))
+
+;; no need: gcmh: https://github.com/emacsmirror/gcmh
+;; (add-hook 'focus-out-hook #'garbage-collect)
+(setq garbage-collection-messages nil)
+
+;; no key stroke for exiting INSERT mode: doom default jk
+(setq evil-escape-key-sequence "jk"
+      evil-escape-delay 0.1)
+;; to escape from emacs state
+(key-chord-mode 1)
+(key-chord-define evil-emacs-state-map evil-escape-key-sequence 'evil-escape)
+
+;; set korean keyboard layout
+;; C-\ to switch input-method
+(setq default-input-method "korean-hangul390")
+(global-set-key (kbd "s-j s-k") 'evil-escape)
+(global-set-key (kbd "s-j k") 'evil-escape)
+;; (key-chord-define-global "45" 'evil-escape)
+
+;; emacs-mode shift can be used for C-SPC
+;; didn't know it exists
+;; (setq shift-select-mode t)
+
+(with-eval-after-load 'alert
+  ;; calendar notification
+  ;; (setq alert-default-style 'osx-notifier)
+  (setq alert-default-style 'notifier))
+
+(with-eval-after-load 'deft
+  (setq deft-extensions '("org" "md" "txt")
+        deft-directory org-directory
+        ;; include subdirectories
+        deft-recursive t))
+
+;; (setq which-key-allow-multiple-replacements t)
+
+(with-eval-after-load 'which-key
+  ;; Allow C-h to trigger which-key before it is done automatically
+  ;; (setq which-key-show-early-on-C-h t)
+  ;; make sure which-key doesn't show normally but refreshes quickly after it is
+  ;; triggered.
+  (setq which-key-idle-delay 1) ;; with 800kb garbage-collection
+  ;; (setq which-key-idle-secondary-delay 0.05)
+  ;; (which-key-mode)
+  ;; (define-key which-key-mode-map (kbd "C-h") 'which-key-C-h-dispatch)
+  (pushnew!
+   which-key-replacement-alist
+   '(("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
+   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
+   )
+  )
+
+
+;; (setq save-place-forget-unreadable-files t) ;; emacs is slow to exit after enabling saveplace
+
+;; disable recentf-cleanup on Emacs start, because it can cause
+;; problems with remote files
+;; (setq recentf-auto-cleanup 'never)
+;; (setq recentf-auto-cleanup 300)         ;; long recentf slow down emacs
+
+;; Delete duplicated entries in autosaves of minibuffer history
+;; (setq history-delete-duplicates t)
+
+;; ;; https://github.com/kaz-yos/emacs/blob/master/init.d/500_recentf-related.el
+;; (setq recentf-max-saved-items 300)
+;; (setq recentf-max-menu-items 15)
+(setq recentf-exclude '("recentf_.*$"
+                        ;; ".*/elpa/.*"
+                        ".*\\.maildir.*"
+                        "/var/folders/.*"
+                        ".*company-statistics.*"))
+
+;; ;; speed up comint
+;; (setq gud-gdb-command-name "gdb --annotate=1"
+;;       large-file-warning-threshold nil
+;;       line-move-visual nil)
+
+;; Other options
+;; replace highlighted text with what I type
+;; (delete-selection-mode 1)
+
+(setq display-time-24hr-format t
+      mouse-autoselect-window nil
+      ;; indicate-unused-lines nil
+      ;; spacemacs value of parameters
+      scroll-conservatively 0)
+(setq display-time-format "%R %a %b %d"
+      display-time-default-load-average nil
+      display-time-world-list
+      '(("America/Los_Angeles" "Seattle")
+        ("America/New_York" "New York")
+        ("Europe/London" "London")
+        ;; ("Pacific/Auckland" "Auckland")
+        ("Asia/Seoul" "Seoul"))
+      display-time-world-time-format "%a %b %d %Y %R %Z")
+(display-time-mode 1)
+(blink-cursor-mode 1)
+;; (display-battery-mode 1)
+
+
+;; (add-hook 'before-save-hook 'time-stamp)
+
+;; (global-set-key [C-wheel-up]  'ignore)
+;; (global-set-key [C-wheel-down] 'ignore)
+
+;; custom variables
+;; (setq
+;; lsp-prefer-flymake nil
+;; lsp-enable-file-watchers nil
+;; lsp-ui-sideline-enable nil
+;; lsp-enable-symbol-highlighting nil
+;; )
+;; (with-eval-after-load 'lsp-mode
+;;   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.ccls-cache\\'")
+;;   )
+
+(use-package matlab-mode
+  :defer t
+  :commands
+  (matlab-shell)
+  :mode ("\\.m\\'" . matlab-mode)
+  ;; :init
+  ;; (add-hook 'matlab-mode-hook 'prog-mode-hooks)
+  :config
+  ;; matlab
+  (setq matlab-return-add-semicolon t
+        matlab-shell-ask-MATLAB-for-completions t
+        matlab-shell-command-switches '("-nodesktop" "-nosplash"))
+
+  ;; ;; set column for matlab m file buffer
+  ;; (add-hook 'matlab-mode-hook
+  ;;           #'(lambda ()
+  ;;             (set-fill-column 100)))
+
+  ;; (load! "lisp/matlab-plus")
+  ;; (bind-keys :prefix-map matlab-mode-map
+  ;;            :prefix ""
+  ;;            ("[key]" . command))
+  ;; :bind (:map matlab-mode-map
+  ;;        ;; ("C-c C-l" . matlab-shell-run-line)
+  ;;        ;; ("C-M-x" . matlab-shell-run-region-or-paragraph-and-step)
+  ;;        ;; ("C-c C-n" . matlab-shell-run-line-and-step)
+  ;;        ;; ("C-c C-z" . matlab-show-matlab-shell-buffer)
+  ;;        )
+  )
+
+;;; bibtex
+(setq! +biblio-pdf-library-dir "~/Zotero/storage/"
+       +biblio-default-bibliography-files '("~/Zotero/myref.bib")
+       ;; a single file for one long note / directory for many note files
+       +biblio-notes-path "~/org/refnotes.org"
+       ;; org-ref-notes-directory "~/org/"
+       )
+(unless (featurep! :private biblio +roam-bibtex)
+  ;; error when org-ref-notes-directory is nil and no roam-bibtex is loaded
+  (setq org-ref-notes-directory +biblio-notes-path)
+  )
+
+;; (setq reftex-default-bibliography '("~/Zotero/myref.bib"))
+
+;; ;; open zotero pdf in org-ref
+;; (eval-after-load 'org-ref
+;;   (setq org-ref-default-bibliography "~/Zotero/myref.bib"
+;;         org-ref-pdf-directory "~/Zotero/storage/"
+;;         org-ref-bibliography-notes "~/org/refnotes.org"
+;;         ;; org-ref-notes-function #'org-ref-notes-function-many-files
+;;         ;; org-ref-notes-function #'org-ref-notes-function-one-file
+;;         )
+;;   )
+
+;; (eval-after-load 'bibtex-completion
+;;   (setq bibtex-completion-library-path "~/Zotero/storage/"
+;;         bibtex-completion-bibliography org-ref-default-bibliography
+;;         bibtex-completion-notes-path org-ref-bibliography-notes
+;;         bibtex-completion-pdf-field "file"
+;;         bibtex-completion-find-additional-pdfs t)
+;;   )
+
+;; (setq bibtex-completion-pdf-open-function 'org-open-file)
+
+;;; ui, window mangement
+;; Switch to the new window after splitting
+(setq evil-split-window-below t
+      evil-vsplit-window-right t)
+
+;; disable flycheck by default
+(remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
+;; replace it to update all cursor colors
+(remove-hook 'doom-load-theme-hook '+evil-update-cursor-color-h)
+
+;; ;; thinning all faces
+(add-hook! 'doom-load-theme-hook
+           ;; #'jyun/thin-all-faces
+           #'jyun/doom-modeline-height
+           #'jyun/evil-state-cursors
+           )
+
+(add-hook! 'window-setup-hook
+           ;; #'jyun/thin-all-faces
+           ;; #'jyun/evil-state-cursors
+           #'jyun/doom-modeline-height)
+
+;; (add-hook! 'org-load-hook
+;;            #'jyun/thin-all-faces)
+
+;;; Hangout
+(use-package jabber
+  :defer t
+  :commands (jabber-connect-all
+             jabber-connect)
+  :init
+  (add-hook 'jabber-post-connect-hooks 'spacemacs/jabber-connect-hook)
+  :config
+  ;; https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
+  ;; password encrypted in ~/doom-emacs/.local/etc/authinfo.gpg
+  ;; machine gmail.com login jonghyun.yun port xmpp password *******
+  ;; or I can use =pass=
+  ;; see https://github.com/DamienCassou/auth-source-pass
+  ;; pass insert jonghyun.yun@gmail.com:xmpp
+  (setq jabber-account-list '(("jonghyun.yun@gmail.com"
+                               (:network-server . "talk.google.com")
+                               (:connection-type . starttls))))
+
+  ;; (jabber-connect-all)
+  ;; (jabber-keepalive-start)
+  (evil-set-initial-state 'jabber-chat-mode 'insert))
+
+
+;; (eval-after-load 'paradox
+;;   (setq paradox-github-token (password-store-get "paradox/github-token"))
+;;   )
+
+;; (with-eval-after-load 'notmuch
+;;   (setq +notmuch-sync-backend 'mbsync
+;;         +notmuch-sync-command "mbsync -a"
+;;         +notmuch-mail-folder "~/.mail/")
+;;   )
+
+(add-to-list '+zen-mixed-pitch-modes 'latex-mode)
+(setq +zen-text-scale 0.8 ;; The text-scaling level for writeroom-mode
+      aw-scope 'global
+      doom-scratch-intial-major-mode 'lisp-interaction-mode
+      omnisharp-server-executable-path "/usr/local/bin/omnisharp")
+
+
+;; OS X ls not working with --quoting-style=literal
+(after! fd-dired
+  (when IS-MAC
+    (setq fd-dired-ls-option '("| xargs -0 gls -ld --quoting-style=literal" . "-ld"))
+    )
+  )
+
+;;; elfeed
+;; (evil-set-initial-state 'elfeed-search-mode 'emacs)
+;; (evil-set-initial-state 'elfeed-show-mode 'emacs)
+
+(after! elfeed
+  (setq elfeed-search-title-max-width 100
+        elfeed-search-title-min-width 20)
+  (run-at-time nil (* 8 60 60) #'elfeed-update)
+  )
+
+(use-package elfeed-score
+  :defer t
+  :after elfeed
+  :init
+  (setq elfeed-score-score-file (expand-file-name "elfeed.score" doom-private-dir))
+  :config
+  (progn
+    (elfeed-score-enable)
+    (define-key elfeed-search-mode-map "=" elfeed-score-map)
+    ;; scores displayed in the search buffer
+    (setq elfeed-search-print-entry-function #'elfeed-score-print-entry)))
+
+
+;; ibuffer and R buffers need to be manually added
+(advice-add 'ibuffer :around #'jyun/persp-add-buffer)
+(advice-add 'R :around #'jyun/persp-add-buffer)
+
+;;; ffip
+;; for doom-modeline
+(use-package! find-file-in-project
+  :defer t
+  :commands
+  (find-file-in-project
+   find-file-in-current-directory-by-selected)
+  :general (
+            [remap projectile-find-file] #'find-file-in-project
+            [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config)
+  :init
+  (map! :leader "SPC" #'find-file-in-project-by-selected)
+  :config
+  (setq ffip-use-rust-fd t)
+  ;; use ffip to find file in private config
+  ;; (advice-add 'doom/find-file-in-private-config :around #'jyun/find-file-in-private-config)
+  )
+
+;; (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+;; (add-hook 'prog-mode-hook #'highlight-parentheses-mode)
+
+(with-eval-after-load 'conda
+  (setq conda-anaconda-home "/opt/intel/oneapi/intelpython/latest"
+        conda-env-home-directory "/Users/yunj/.conda")
+  ;; (conda-env-initialize-interactive-shells)
+  ;; (conda-env-initialize-eshell)
+  )
+
+;; set this variable again after lsp
+;; otherwise the default evn-home will be used
+(when (featurep! :tools debugger +lsp)
+  (with-eval-after-load 'lsp-mode
+    (setq conda-env-home-directory "/Users/yunj/.conda")
+    ))
+
+;; (setq conda-env-autoactivate-mode t)
+
+;; align tables containing variable-pitch font, CJK characters and images
+;; (add-hook 'org-mode-hook #'valign-mode)
+
+;;; org-tree-slide
+(with-eval-after-load 'org-tree-slide
+  (defvar +org-present-hide-properties t
+    "Whether to hide property draws in `org-tree-slide'.")
+  (defvar +org-present-hide-tags t
+    "Whether to hide tags in `org-tree-slide'.")
+  (defvar +org-present-format-latex-scale 2.5
+    "A local variable to be used as `org-latex-preview-scale' in `org-tree-slide'.")
+  (setq org-tree-slide-header nil
+        org-tree-slide-skip-outline-level 5
+        org-tree-slide-heading-emphasis nil
+        +org-present-text-scale 3)
+
+  ;; (remove-hook 'org-tree-slide-mode-hook
+  ;;              #'+org-present-hide-blocks-h
+  ;;              #'+org-present-prettify-slide-h
+
+  ;; `jyun/org-present-hide' needs some functions in `contrib-present.el'
+  ;; these functions are not autoloaded.
+  (load (expand-file-name "modules/lang/org/autoload/contrib-present" doom-emacs-dir))
+  (add-hook! 'org-tree-slide-mode-hook
+             ;; #'jyun/org-present-hide
+             #'jyun/org-present-mixed-pitch-setup
+             )
+  (defun jyun/org-present-mixed-pitch-setup ()
+    "Visual enchancement for `org-tree-slide'. `mixed-pitch-mode'
+or `mixed-pitch-serif-mode' can be called afterward."
+    (progn
+      (require 'mixed-pitch)
+      (setq-local
+       ;; visual-fill-column-width 60
+       ;; org-adapt-indentation nil
+       org-fontify-quote-and-verse-blocks t
+       org-fontify-whole-heading-line t
+       org-hide-emphasis-markers t
+       mixed-pitch-set-height nil
+       )
+      (when (featurep 'org-superstar)
+        (setq-local org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
+                    ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
+                    org-superstar-remove-leading-stars t)
+        (org-superstar-restart))
+      ))
+
+(defun jyun/org-tree-slide (orig-fun &rest args)
+"Hide a few `org-element'. Then, do `org-tree-slide-mode'."
+  (progn
+    (jyun/org-present-hide)
+    (apply orig-fun args)
+))
+(advice-add 'org-tree-slide-mode :around #'jyun/org-tree-slide)
+
+  ;; cause errors in navigating slides
+  (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
+  )
+
+;;; languagetool
+;; (setq langtool-bin "languagetool")
+(setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/*/libexec/languagetool-server.jar")
+;; (setq langtool-http-server-host "localhost"
+;;       langtool-http-server-port 8081)
+
+;; these exculeded faces are in lists for spell-fu
+(add-hook 'markdown-mode-hook (defun langtool-markdown-ignore-fonts ()
+                                (setq-local langtool-ignore-fonts
+                                            (alist-get 'markdown-mode +spell-excluded-faces-alist))))
+(add-hook 'LaTeX-mode-hook (defun langtool-LaTeX-ignore-fonts ()
+                             (setq-local langtool-ignore-fonts
+                                         (alist-get 'LaTeX-mode +spell-excluded-faces-alist))))
+
+;; (byte-recompile-directory (expand-file-name "~/.doom.d/") 0) ;
+;; (byte-compile-file (expand-file-name "modules/private/reference/autoload/applescript.el" doom-private-dir))
+;; (shell-command "find ~/.doom.d/ -type f -name \"*.elc\" -delete")
+
+;;; printer
+(setq pdf-misc-print-program "lpr"
+      pdf-misc-print-program-args nil)
+
+(use-package! info-colors
+  :commands (info-colors-fontify-node))
+(add-hook 'Info-selection-hook 'info-colors-fontify-node)
+;; (add-hook 'Info-mode-hook #'mixed-pitch-mode)
+
+;;; abbrev
+(use-package abbrev
+  :init
+  (setq-default abbrev-mode t)
+  ;; a hook funtion that sets the abbrev-table to org-mode-abbrev-table
+  ;; whenever the major mode is a text mode
+  (defun tec/set-text-mode-abbrev-table ()
+    (if (derived-mode-p 'text-mode)
+        (setq local-abbrev-table org-mode-abbrev-table)))
+  :commands abbrev-mode
+  :hook
+  (abbrev-mode . tec/set-text-mode-abbrev-table)
+  :config
+  (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))
+  (setq save-abbrevs 'silently))

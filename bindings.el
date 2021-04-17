@@ -62,7 +62,6 @@
  ;;  :e "="      #'elfeed-score-map)
 
 
-
 ;; (when (featurep! :lang org +roam)
 ;;   (global-set-key (kbd "C-c l") #'org-roam-store-link)
 ;;   )

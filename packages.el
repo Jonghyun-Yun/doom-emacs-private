@@ -128,8 +128,6 @@
 
 ;; (package! valign :pin "6b0345e29cdec8526c9c19b73bdea53295ec998e")
 
-(package! string-inflection :pin "c4a519be102cb99dd86be3ee8c387f008d097635")
-
 (package! golden-ratio.el
   :recipe (:host github :repo "roman/golden-ratio.el"))
 

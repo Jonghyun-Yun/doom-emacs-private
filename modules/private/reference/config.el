@@ -267,3 +267,29 @@
 ;;    :SKIM_PAGE: %(+reference/get-skim-page-number)
 ;;    :END:
 ;;    %i"))))
+
+;; ;; skim to org-roam-bibtex integration
+;; ;; org-id is not generated
+;; ;; org-roam-capture error (due to outdated package) -> updated
+;; ;; more than 2 attachment -> error
+;; (with-eval-after-load 'org-capture
+;;     (add-to-list 'org-capture-templates
+;;                  '("RSA" "Skim Annotation" entry
+;;                    (file+function yunj/skim-orb-notes +reference/org-move-point-to-capture-skim-annotation)
+;;                    "* %^{Note for...}
+;;    :PROPERTIES:
+;;    :CREATED: %U
+;;    :CITE: cite:%(+reference/skim-get-bibtex-key)
+;;    :SKIM_NOTE: %(+reference/skim-get-annotation)
+;;    :SKIM_PAGE: %(+reference/get-skim-page-number)
+;;    :END:
+;;    %i \n%?"))
+;;     )
+
+;; ;;;###autoload
+;; (defun yunj/skim-orb-notes ()
+;;   (progn
+;;     (orb-notes-fn (+reference/skim-get-bibtex-key))
+;;     (let ((bname (buffer-file-name)))
+;;       (kill-this-buffer)
+;;       bname)))

@@ -60,8 +60,8 @@
                 shr-use-colors nil)
     (require 'visual-fill-column nil t)
     (setq-local visual-fill-column-center-text t
-                visual-fill-column-width 100
-                nov-text-width 90)
+                visual-fill-column-width 80
+                nov-text-width 80)
     (visual-fill-column-mode 1)
     (hl-line-mode -1)
     )
@@ -132,6 +132,7 @@
   "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
 
 (after! mixed-pitch
+  (setq mixed-pitch-set-height t)
   (append mixed-pitch-fixed-pitch-faces
           '(org-drawer org-todo))
   (defface variable-pitch-serif
@@ -142,7 +143,6 @@
     "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
     (interactive)
     (progn
-      (setq-local mixed-pitch-set-height t)
       (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
       (let ((mixed-pitch-face 'variable-pitch-serif))
         (mixed-pitch-mode (or arg 'toggle))))))

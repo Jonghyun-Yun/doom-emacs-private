@@ -227,4 +227,109 @@
 ;;         mathpix-app-key (password-store-get "mathpix/app-key"))
 ;;   )
 
+;;; string-inflection
+(use-package string-inflection
+  :defer t
+  :commands
+  (my-hydra-string-inflection/body)
+  :init
+  (progn
+    (defhydra my-hydra-string-inflection
+      (:hint nil)
+      "
+[_i_] cycle"
+      ("i" string-inflection-all-cycle)
+      )
+    (map!
+     :leader
+     (:prefix ("zi" . "inflection")
+      "c" 'string-inflection-lower-camelcase
+      "C" 'string-inflection-camelcase
+      :desc "String Inflection Hydra" "i" 'my-hydra-string-inflection/body
+      "-" 'string-inflection-kebab-case
+      "k" 'string-inflection-kebab-case
+      "_" 'string-inflection-underscore
+      "u" 'string-inflection-underscore
+      "U" 'string-inflection-upcase))))
+
+;;; spell
+(setq ispell-program-name "hunspell"
+      ispell-check-comments nil
+      ispell-hunspell-dict-paths-alist
+      '(
+        ("en_US" "/Users/yunj/Library/Spelling/en_US.aff")
+        ("ko" "/Users/yunj/Library/Spelling/ko.aff")
+        ("en_US-med" "/Users/yunj/Library/Spelling/en_US-med.aff"))
+      ispell-hunspell-dictionary-alist
+      '(
+        ("ko_KR"
+         "[가-힣]"
+         "[^가-힣]"
+         "[0-9a-zA-Z]" nil
+         ("-d" "ko"))
+        ("en_US"
+         "[[:alpha:]]"
+         "[^[:alpha:]]"
+         "['.0-9’-]" t
+         ;; "[']" t
+         ("-d" "en_US,en_US-med")
+         nil utf-8))
+      ispell-dictionary-alist ispell-hunspell-dictionary-alist)
+;; (ispell-set-spellchecker-params) ; Initialize variables and dicts alists
+(setq ispell-local-dictionary "en_US")
+(setq ispell-personal-dictionary "/Users/yunj/.hunspell_en_US")
+;; (setq ispell-personal-dictionary "/Users/yunj/.aspell.en.pws")
+
+(require 'spell-fu) ;; otherwise error b/c `+spell/previous-error' is not defined.
+(setq spell-fu-idle-delay 0.5)
+;; (global-spell-fu-mode -1)
+
+;; I need these lists for langtool!
+(setf (alist-get 'org-mode +spell-excluded-faces-alist)
+      '(
+        org-level-1
+        org-document-info
+        org-list-dt
+        org-block
+        org-block-begin-line
+        org-block-end-line
+        org-code
+        org-date
+        org-formula
+        org-latex-and-related
+        org-link
+        org-meta-line
+        org-property-value
+        org-ref-cite-face
+        org-special-keyword
+        org-tag
+        org-todo
+        org-todo-keyword-done
+        org-todo-keyword-habt
+        org-todo-keyword-kill
+        org-todo-keyword-outd
+        org-todo-keyword-todo
+        org-todo-keyword-wait
+        org-verbatim
+        org-property-drawer-re
+        org-ref-cite-re
+        org-ref-ref-re
+        org-ref-label-re
+        org-latex-math-environments-re
+        "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
+        font-lock-comment-face
+        ))
+
+(setf (alist-get 'LaTeX-mode +spell-excluded-faces-alist)
+      '(
+        font-lock-function-name-face
+        font-lock-variable-name-face
+        font-lock-keyword-face
+        font-lock-constant-face
+        font-lock-comment-face
+        font-latex-math-face
+        font-latex-sedate-face))
+;; font-latex-verbatim-face
+;; font-latex-warning-face
+
 ;;; packages.el ends here
