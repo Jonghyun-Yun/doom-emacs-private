@@ -223,14 +223,14 @@
        (default +bindings +smartparens)
 
        :private
-       reference
-       biblio
-       write
-       gcal
-       dired-plus
-       stan
-       gtd
-       grammar
-       ;; outshine
-       reading
+       ;; reference
+       ;; biblio
+       ;; write
+       ;; gcal
+       ;; dired-plus
+       ;; stan
+       ;; gtd
+       ;; grammar
+       ;; ;; outshine
+       ;; reading
        )
