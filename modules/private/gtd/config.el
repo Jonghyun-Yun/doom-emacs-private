@@ -1,40 +1,41 @@
 ;;; private/gtd/config.el -*- lexical-binding: t; -*-
 
-(use-package org-pretty-tags
-:config
- (setq org-pretty-tags-surrogate-strings
-       `(
-         ("@home"      .       ,(all-the-icons-octicon   "home"          :face 'all-the-icons-orange  :v-adjust 0.01))
-         ("@work"      .       ,(all-the-icons-faicon   "building-o"     :face 'all-the-icons-orange  :v-adjust 0.01))
-         ("@email"     .       ,(all-the-icons-faicon   "envelope-o"     :face 'all-the-icons-orange  :v-adjust 0.01))
-         ("@phone"     .       ,(all-the-icons-faicon   "phone"          :face 'all-the-icons-orange  :v-adjust 0.01))
-         ("@errand"     .      ,(all-the-icons-octicon   "zap"           :face 'all-the-icons-orange  :v-adjust 0.01))
-         ;; ("research"   .    ,(all-the-icons-faicon   "graduation-cap" :face 'all-the-icons-purple  :v-adjust 0.01))
-         ("research"   .       ,(all-the-icons-octicon   "beaker"        :face 'all-the-icons-lgreen  :v-adjust 0.01))
-         ("teaching"   .       ,(all-the-icons-fileicon "keynote"        :face 'all-the-icons-lgreen  :v-adjust 0.01))
-         ("service"      .     ,(all-the-icons-faicon   "scribd"         :face 'all-the-icons-lgreen  :v-adjust 0.01))
-         ;; ("coding"   .      ,(all-the-icons-material "computer"       :face 'all-the-icons-green   :v-adjust 0.01))
-         ;; ("test"       .    ,(all-the-icons-material "timer"          :face 'all-the-icons-red     :v-adjust 0.01))
-         ("literature" .       ,(all-the-icons-octicon  "book"           :face 'all-the-icons-lgreen  :v-adjust 0.01))
-         ("paper"      .       ,(all-the-icons-octicon  "file-text"      :face 'all-the-icons-lgreen  :v-adjust 0.01))
-         ("emacs"      .       ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))
-         ("buy"        .       ,(all-the-icons-faicon   "shopping-bag"   :face 'all-the-icons-lblue   :v-adjust 0.01))
-         ("finance"    .       ,(all-the-icons-faicon   "krw"            :face 'all-the-icons-lblue   :v-adjust 0.01))
-         ("auto"        .      ,(all-the-icons-faicon   "car"            :face 'all-the-icons-lblue   :v-adjust 0.01))
-         ("coding"     .       ,(all-the-icons-octicon   "file-code"     :face 'all-the-icons-lgreen  :v-adjust 0.01))
-         ("project"     .      ,(all-the-icons-octicon   "list-ordered"  :face 'all-the-icons-lgreen  :v-adjust 0.01))
-         ;; ("noexport"      . ,(all-the-icons-octicon   "alert"         :face 'all-the-icons-red     :v-adjust 0.01))
-         ("maintenance"      . ,(all-the-icons-octicon   "tools"         :face 'all-the-icons-lblue   :v-adjust 0.01))
-         ("immigration"      . ,(all-the-icons-faicon   "info"           :face 'all-the-icons-red     :v-adjust 0.01))
-         ("export"      .      ,(all-the-icons-faicon   "share-alt"      :face 'all-the-icons-lred    :v-adjust 0.01))
-         ("noexport"      .    ,(all-the-icons-faicon   "ban"            :face 'all-the-icons-lred    :v-adjust 0.   01))
-         ("issue"      .       ,(all-the-icons-faicon   "bug"            :face 'all-the-icons-lred    :v-adjust 0.01))
-         ("web"        .       ,(all-the-icons-faicon   "globe"          :face 'all-the-icons-green   :v-adjust 0.01))
-         ("info"       .       ,(all-the-icons-faicon   "info-circle"    :face 'all-the-icons-blue    :v-adjust 0.01))
-         ("someday"    .       ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
-         ("idea"       .       ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
-         ))
- (org-pretty-tags-global-mode))
+;; ;;; org-pretty-tags
+;; (use-package org-pretty-tags
+;;   :config
+;;   (setq org-pretty-tags-surrogate-strings
+;;         `(
+;;           ("@home"      .       ,(all-the-icons-octicon   "home"          :face 'all-the-icons-orange  :v-adjust 0.01))
+;;           ("@work"      .       ,(all-the-icons-faicon   "building-o"     :face 'all-the-icons-orange  :v-adjust 0.01))
+;;           ("@email"     .       ,(all-the-icons-faicon   "envelope-o"     :face 'all-the-icons-orange  :v-adjust 0.01))
+;;           ("@phone"     .       ,(all-the-icons-faicon   "phone"          :face 'all-the-icons-orange  :v-adjust 0.01))
+;;           ("@errand"     .      ,(all-the-icons-octicon   "zap"           :face 'all-the-icons-orange  :v-adjust 0.01))
+;;           ;; ("research"   .    ,(all-the-icons-faicon   "graduation-cap" :face 'all-the-icons-purple  :v-adjust 0.01))
+;;           ("research"   .       ,(all-the-icons-octicon   "beaker"        :face 'all-the-icons-lgreen  :v-adjust 0.01))
+;;           ("teaching"   .       ,(all-the-icons-fileicon "keynote"        :face 'all-the-icons-lgreen  :v-adjust 0.01))
+;;           ("service"      .     ,(all-the-icons-faicon   "scribd"         :face 'all-the-icons-lgreen  :v-adjust 0.01))
+;;           ;; ("coding"   .      ,(all-the-icons-material "computer"       :face 'all-the-icons-green   :v-adjust 0.01))
+;;           ;; ("test"       .    ,(all-the-icons-material "timer"          :face 'all-the-icons-red     :v-adjust 0.01))
+;;           ("literature" .       ,(all-the-icons-octicon  "book"           :face 'all-the-icons-lgreen  :v-adjust 0.01))
+;;           ("paper"      .       ,(all-the-icons-octicon  "file-text"      :face 'all-the-icons-lgreen  :v-adjust 0.01))
+;;           ("emacs"      .       ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))
+;;           ("buy"        .       ,(all-the-icons-faicon   "shopping-bag"   :face 'all-the-icons-lblue   :v-adjust 0.01))
+;;           ("finance"    .       ,(all-the-icons-faicon   "krw"            :face 'all-the-icons-lblue   :v-adjust 0.01))
+;;           ("auto"        .      ,(all-the-icons-faicon   "car"            :face 'all-the-icons-lblue   :v-adjust 0.01))
+;;           ("coding"     .       ,(all-the-icons-octicon   "file-code"     :face 'all-the-icons-lgreen  :v-adjust 0.01))
+;;           ("project"     .      ,(all-the-icons-octicon   "list-ordered"  :face 'all-the-icons-lgreen  :v-adjust 0.01))
+;;           ;; ("noexport"      . ,(all-the-icons-octicon   "alert"         :face 'all-the-icons-red     :v-adjust 0.01))
+;;           ("maintenance"      . ,(all-the-icons-octicon   "tools"         :face 'all-the-icons-lblue   :v-adjust 0.01))
+;;           ("immigration"      . ,(all-the-icons-faicon   "info"           :face 'all-the-icons-red     :v-adjust 0.01))
+;;           ("export"      .      ,(all-the-icons-faicon   "share-alt"      :face 'all-the-icons-lred    :v-adjust 0.01))
+;;           ("noexport"      .    ,(all-the-icons-faicon   "ban"            :face 'all-the-icons-lred    :v-adjust 0.   01))
+;;           ("issue"      .       ,(all-the-icons-faicon   "bug"            :face 'all-the-icons-lred    :v-adjust 0.01))
+;;           ("web"        .       ,(all-the-icons-faicon   "globe"          :face 'all-the-icons-green   :v-adjust 0.01))
+;;           ("info"       .       ,(all-the-icons-faicon   "info-circle"    :face 'all-the-icons-blue    :v-adjust 0.01))
+;;           ("someday"    .       ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
+;;           ("idea"       .       ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
+;;           ))
+;;   (org-pretty-tags-global-mode))
 
 (use-package org-super-agenda
   :defer t

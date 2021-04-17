@@ -96,66 +96,16 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 
-;; (lambda ()
-;;   (let ((default-directory (expand-file-name "packages" doom-private-dir)))
-;;     (normal-top-level-add-subdirs-to-load-path))
-;;   )
-
-;; ;; ;; ox-hugo looks for `ox-ravel' during the incremental org loading
-;; (add-hook 'after-init-hook #'(lambda ()
-;;                                (load (expand-file-name "packages/ox-ravel/ox-ravel" doom-private-dir))
-;;                                ))
-
-;; (load! "lisp/idle")
-
-(with-eval-after-load 'doom-themes
-  :config
-  ;; Global settings (defaults)
-  ;; (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-  ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  ;; (load-theme doom-theme t)
-
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
-
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
-  ;; (doom-themes-neotree-config)
-  ;; or for treemacs users
-  ;; doom-themes package forces treemacs to use a variable-pitch font
-  (setq doom-themes-treemacs-enable-variable-pitch t
-        treemacs-width 30)
-  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-  (doom-themes-treemacs-config)
-
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config))
-
-;; (when (featurep! :ui treemacs)
-;;   (add-hook 'dired-mode-hook #'treemacs-icons-dired-mode)
-;;   )
-
-(after! unicode-fonts
-  ;; fix Hangul fonts for Jamo
-  (dolist (unicode-block '("Hangul Compatibility Jamo"
-                           "Hangul Jamo"
-                           "Hangul Jamo Extended-A"
-                           "Hangul Jamo Extended-B"
-                           "Hangul Syllables"))
-    (push "Sarasa Mono K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
-  ;; (push "Noto Sans CJK KR" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
-  ;; (push "Source Han Sans K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
-  ;; (push "Source Han Serif K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
-  )
-
-;; disable flycheck by default
-(remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
-
-;; make-frame doesn't create a new persp
-;;   (remove-hook 'after-make-frame-functions #'persp-init-new-frame)
-;; (setq persp-add-buffer-on-after-change-major-mode 'free
-;; persp-add-buffer-on-after-change-major-mode-filter-functions nil
-;; persp-nil-name "main")
-;; )
+;;; load lisp
+(with-eval-after-load 'hydra
+  (load! "lisp/hydra-plus"))
+(load! "bindings")
+(load! "lisp/mu4e-plus")
+(load! "lisp/org-plus")
+(load! "lisp/ligature")
+(load! "lisp/ess-plus")
+(load! "lisp/latex-plus")
+(load! "lisp/visual-plus")
 
 (after! projectile
   (projectile-add-known-project "~/Dropbox/research/lsjm-art")
@@ -169,8 +119,6 @@
 ;; old tricks stopped working. risky variables are ignored, and dunno how to make them safe...
 ;; instead I can safely eval risky variables...
 (setq enable-local-eval t)
-;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook #'jyun/magit-stage-commit-push-origin-master))
-;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook #'jyun/push-overleaf))
 ;; (add-to-list 'safe-local-eval-forms
 ;;              '(add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-overleaf overleaf-directory))))
 ;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory))))
@@ -187,117 +135,18 @@
 ;; (remove-hook 'ivy-mode-hook #'ivy-rich-mode)
 ;; (setq ivy-height 15)
 
-(setq ispell-program-name "hunspell"
-      ispell-check-comments nil
-      ispell-hunspell-dict-paths-alist
-      '(
-        ("en_US" "/Users/yunj/Library/Spelling/en_US.aff")
-        ("ko" "/Users/yunj/Library/Spelling/ko.aff")
-        ("en_US-med" "/Users/yunj/Library/Spelling/en_US-med.aff"))
-      ispell-hunspell-dictionary-alist
-      '(
-        ("ko_KR"
-         "[가-힣]"
-         "[^가-힣]"
-         "[0-9a-zA-Z]" nil
-         ("-d" "ko"))
-        ("en_US"
-         "[[:alpha:]]"
-         "[^[:alpha:]]"
-         "['.0-9’-]" t
-         ;; "[']" t
-         ("-d" "en_US,en_US-med")
-         nil utf-8))
-      ispell-dictionary-alist ispell-hunspell-dictionary-alist)
-;; (ispell-set-spellchecker-params) ; Initialize variables and dicts alists
-(setq ispell-local-dictionary "en_US")
-(setq ispell-personal-dictionary "/Users/yunj/.hunspell_en_US")
-;; (setq ispell-personal-dictionary "/Users/yunj/.aspell.en.pws")
-
-(require 'spell-fu) ;; otherwise error b/c `+spell/previous-error' is not defined.
-(setq spell-fu-idle-delay 0.5)
-;; (global-spell-fu-mode -1)
-
-;; I need these lists for langtool!
-(setf (alist-get 'org-mode +spell-excluded-faces-alist)
-      '(
-        org-level-1
-        org-document-info
-        org-list-dt
-        org-block
-        org-block-begin-line
-        org-block-end-line
-        org-code
-        org-date
-        org-formula
-        org-latex-and-related
-        org-link
-        org-meta-line
-        org-property-value
-        org-ref-cite-face
-        org-special-keyword
-        org-tag
-        org-todo
-        org-todo-keyword-done
-        org-todo-keyword-habt
-        org-todo-keyword-kill
-        org-todo-keyword-outd
-        org-todo-keyword-todo
-        org-todo-keyword-wait
-        org-verbatim
-        org-property-drawer-re
-        org-ref-cite-re
-        org-ref-ref-re
-        org-ref-label-re
-        org-latex-math-environments-re
-        "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
-        font-lock-comment-face
-        ))
-
-(setf (alist-get 'LaTeX-mode +spell-excluded-faces-alist)
-      '(
-        font-lock-function-name-face
-        font-lock-variable-name-face
-        font-lock-keyword-face
-        font-lock-constant-face
-        font-lock-comment-face
-        font-latex-math-face
-        font-latex-sedate-face))
-;; font-latex-verbatim-face
-;; font-latex-warning-face
-
-(with-eval-after-load 'hydra
-  (load! "lisp/hydra-plus"))
-
-(load! "bindings")
-
-(load! "lisp/mu4e-plus")
-;; no accumulating drafts
-(add-hook 'mu4e-compose-mode-hook #'(lambda () (auto-save-visited-mode -1)))
-(after! org-msg
-  (setq org-msg-options
-        (concat org-msg-options " num:nil tex:dvipng ^:{} \\n:t")
-        org-msg-startup "hidestars indent inlineimages"
-        org-msg-default-alternatives '(text html)
-        org-msg-convert-citation t
-        ;; msg auto completion
-        org-msg-greeting-fmt "\nHi *%s*,\n\n"
-        org-msg-recipient-names '(("jonghyun.yun@gmail.com" . "Jonghyun"))
-        org-msg-greeting-name-limit 3
-        org-msg-signature "
-
- Cheers,
-
- #+begin_signature
- -- *Jonghyun* \\\\
- #+end_signature")
-  )
-
-(load! "lisp/latex-plus")
+;;; LaTeX
 ;; (setq +latex-viewers '(skim pdf-tools))
 (setq +latex-viewers '(pdf-tools skim))
 ;; (add-hook! 'LaTeX-mode-hook #'(lambda () (cdlatex-mode 1)))
 (setq TeX-command-extra-options "-shell-escape")
+
+;; Set LaTeX preview image size for Org and LaTeX buffers.
+(after! preview
+  ;; latex-preview size
+  (setq preview-scale 1.5)
+  ;; (set 'preview-scale-function 1.75)
+  )
 
 ;; ;; trying to turn off `rainbow-delimiters-mode'. not working..
 ;; (add-hook! 'LaTeX-mode-hook #'(lambda () (rainbow-delimiters-mode -1)))
@@ -309,8 +158,7 @@
           )
         ))
 
-(load! "lisp/ess-plus")
-
+;;; ess
 (with-eval-after-load 'ess
   ;; disable assignment fix (= to <-)
   ;; https://github.com/jimhester/lintr
@@ -330,8 +178,6 @@
   ;;           #'(lambda () (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign)))
   )
 
-;; (evil-set-initial-state 'org-agenda-mode 'emacs)
-;; (load! "lisp/stan-config") ;; :private stan module
 
 ;; passwords to be accessible
 (use-package! pass)
@@ -351,7 +197,7 @@
 ;; OS X native full screen
 ;; (add-to-list 'initial-frame-alist '(fullscreen . fullscreen))
 
-;; Backups & Autosave
+;;; Backups & Autosave
 ;; (auto-save-visited-mode +1)
 (setq auto-save-default t
       create-lockfiles t
@@ -360,16 +206,22 @@
       yas-triggers-in-field t ;snippets inside snippets
       )
 
-(setq company-idle-delay nil
-      company-tooltip-limit 10
-      ;; company-box-enable-icon nil ;;disable all-the-icons
-      )
+;;; company
+(after! company
+  (setq company-idle-delay 0.5
+        company-minimum-prefix-length 2
+        company-tooltip-limit 10
+        ;; company-box-enable-icon nil ;;disable all-the-icons
+        ))
+
+;; company memory
+(setq-default history-length 1000)
+(setq-default prescient-history-length 1000)
+
 
 ;;; org-mode
 (after! org
-  ;; (remove-hook 'org-mode-hook #'org-superstar-mode)
   (when (featurep! :lang org +pretty)
-    ;; org-superstar-headline-bullets-list '("♠" "♥" "♦" "♣" "◉" "▶" "✚" "✸")
     (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
           org-superstar-remove-leading-stars nil
           ))
@@ -377,7 +229,7 @@
   ;; background color for org-latex
   ;; (+org-refresh-latex-background-h)
   (setq
-   org-export-in-background t                  ; async export by default
+   ;; org-export-in-background t                  ; async export by default
 
    org-fontify-quote-and-verse-blocks nil
    org-fontify-whole-heading-line nil
@@ -387,8 +239,9 @@
    ;; org-startup-indented nil
 
    ;; org-ellipsis " ▾ "
-   ;; org-ellipsis " ▼ "
-   org-ellipsis "  ⏷  "
+   ;; org-ellipsis "  ⏷  "
+   org-ellipsis " ▼ "
+
    org-indent-indentation-per-level 1
    org-adapt-indentation nil
 
@@ -408,8 +261,6 @@
 
   (setq org-highlight-latex-and-related '(native script entities))
   (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
-  ;; (setq org-format-latex-options
-  ;;       (plist-put org-format-latex-options :background "Transparent"))
 
   ;; (setq org-insert-heading-respect-content nil)
 
@@ -436,6 +287,8 @@
   (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h)
   )
 
+;; (evil-set-initial-state 'org-agenda-mode 'emacs)
+
 (add-hook 'org-mode-hook (defun jyun/org-mode-hook-collection ()
                            (progn
                              ;; (rainbow-delimiters-mode-disable)
@@ -443,37 +296,38 @@
                                          (alist-get 'org-mode +spell-excluded-faces-alist))
                              )))
 
+;;; ox
 (after! ox
   (setq org-beamer-theme "[progressbar=foot]metropolis"
         org-beamer-frame-level 4
         org-latex-tables-booktabs t
         ))
+;; ;; Github flavored markdown exporter
+;; (eval-after-load 'ox
+;;   '(require 'ox-gfm nil t))
+(use-package ox-gfm
+  :defer t
+  :after ox)
 
-(load! "lisp/org-plus")
-(load! "lisp/ligature")
-
-;; Set LaTeX preview image size for Org and LaTeX buffers.
-(after! preview
-  ;; latex-preview size
-  (setq preview-scale 1.5)
-  ;; (set 'preview-scale-function 1.75)
-  )
-
+;;; org-roam
 (with-eval-after-load 'org-roam
   (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
         +org-roam-open-buffer-on-find-file nil)
   ;; (setq org-roam-graph-executable "neato")
   ;; (setq org-roam-graph-extra-config '(("overlap" . "false")))
+  (setq org-roam-dailies-capture-templates
+        '(("d" "default" entry
+           #'org-roam-capture--get-point
+           "* %?"
+           :file-name "daily/%<%Y-%m-%d_%A>"
+           :head "#+TITLE: %<%Y-%m-%d %A>\n\n[[roam:%<%Y-%m %B>]]\n\n")))
   )
 
-;; Dropbox sync changes hangul encoding to NFD, which results in 한글 자소분리 in dired and other modes
-;; https://tt.kollhong.com/79
-;; https://nullprogram.com/blog/2014/06/13/
-(when IS-MAC
-  (use-package! ucs-normalize
-    :config
-    (set-file-name-coding-system 'utf-8-hfs)))
+;; this should work, and it actually bind keys
+;; but it cannot override default binding's description
+;; (map! :leader "nrd" #'org-roam-dailies-map)
 
+;;; misc
 ;; ;; improve slow scrolling?
 ;; (use-package! hl-line+
 ;;   :config
@@ -507,7 +361,6 @@
   ;; (setq alert-default-style 'osx-notifier)
   (setq alert-default-style 'notifier))
 
-
 (with-eval-after-load 'deft
   (setq deft-extensions '("org" "md" "txt")
         deft-directory org-directory
@@ -532,9 +385,6 @@
    )
   )
 
-
-;; (evil-set-initial-state 'elfeed-search-mode 'emacs)
-;; (evil-set-initial-state 'elfeed-shoe-mode 'emacs)
 
 ;; (setq save-place-forget-unreadable-files t) ;; emacs is slow to exit after enabling saveplace
 
@@ -668,8 +518,8 @@
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
 
-;; (require 'golden-ratio)
-
+;; disable flycheck by default
+(remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
 ;; replace it to update all cursor colors
 (remove-hook 'doom-load-theme-hook '+evil-update-cursor-color-h)
 
@@ -688,85 +538,7 @@
 ;; (add-hook! 'org-load-hook
 ;;            #'jyun/thin-all-faces)
 
-;;; doom-modeline
-;; https://github.com/seagle0128/doom-modeline
-(with-eval-after-load 'doom-modeline
-  ;; How tall the mode-line should be. It's only respected in GUI.
-  ;; If the actual char height is larger, it respects the actual height.
-  (setq doom-modeline-height 24)
-
-  ;; to see letters instead of the colored circles
-  (setq doom-modeline-modal-icon nil)
-
-  ;; https://github.com/seagle0128/doom-modeline/issues/187#issuecomment-507201556
-  ;; (defun my-doom-modeline--font-height ()
-  ;;   "Calculate the actual char height of the mode-line."
-  ;;   (+ (frame-char-height) 2))
-  ;; (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
-
-  ;; How wide the mode-line bar should be. It's only respected in GUI.
-  (setq doom-modeline-bar-width 3)
-
-  ;; The limit of the window width.
-  ;; If `window-width' is smaller than the limit, some information won't be displayed.
-  (setq doom-modeline-window-width-limit fill-column)
-
-  ;; How to detect the project root.
-  ;; The default priority of detection is `ffip' > `projectile' > `project'.
-  ;; nil means to use `default-directory'.
-  ;; The project management packages have some issues on detecting project root.
-  ;; e.g. `projectile' doesn't handle symlink folders well, while `project' is unable
-  ;; to hanle sub-projects.
-  ;; You can specify one if you encounter the issue.
-  (setq doom-modeline-project-detection 'ffip)
-
-  ;; Determines the style used by `doom-modeline-buffer-file-name'.
-  ;;
-  ;; Given ~/Projects/FOSS/emacs/lisp/comint.el
-  ;;   auto => emacs/lisp/comint.el (in a project) or comint.el
-  ;;   truncate-upto-project => ~/P/F/emacs/lisp/comint.el
-  ;;   truncate-from-project => ~/Projects/FOSS/emacs/l/comint.el
-  ;;   truncate-with-project => emacs/l/comint.el
-  ;;   truncate-except-project => ~/P/F/emacs/l/comint.el
-  ;;   truncate-upto-root => ~/P/F/e/lisp/comint.el
-  ;;   truncate-all => ~/P/F/e/l/comint.el
-  ;;   relative-from-project => emacs/lisp/comint.el
-  ;;   relative-to-project => lisp/comint.el
-  ;;   file-name => comint.el
-  ;;   buffer-name => comint.el<2> (uniquify buffer name)
-  ;;
-  ;; If you are experiencing the laggy issue, especially while editing remote files
-  ;; with tramp, please try `file-name' style.
-  ;; Please refer to https://github.com/bbatsov/projectile/issues/657.
-  (setq doom-modeline-buffer-file-name-style 'auto)
-
-  ;; Whether display icons in the mode-line. Respects `all-the-icons-color-icons'.
-  ;; While using the server mode in GUI, should set the value explicitly.
-  (setq doom-modeline-icon t)
-
-  ;; Whether display the buffer encoding.
-  (setq doom-modeline-buffer-encoding nil)
-
-  ;; Whether display perspective name. Non-nil to display in mode-line.
-  (setq doom-modeline-persp-name t)
-
-  ;; Whether display the `lsp' state. Non-nil to display in the mode-line.
-  (setq doom-modeline-lsp t)
-
-  ;; Whether display mu4e notifications. It requires `mu4e-alert' package.
-  (setq doom-modeline-mu4e t)
-
-  ;; Whether display the gnus notifications.
-  (setq doom-modeline-gnus nil)
-
-  ;; Whether display the IRC notifications. It requires `circe' or `erc' package.
-  (setq doom-modeline-irc nil)
-
-  ;; Whether display the environment version.
-  (setq doom-modeline-env-version nil))
-
-
-;; Hangout
+;;; Hangout
 (use-package jabber
   :defer t
   :commands (jabber-connect-all
@@ -814,6 +586,9 @@
   )
 
 ;;; elfeed
+;; (evil-set-initial-state 'elfeed-search-mode 'emacs)
+;; (evil-set-initial-state 'elfeed-show-mode 'emacs)
+
 (after! elfeed
   (setq elfeed-search-title-max-width 100
         elfeed-search-title-min-width 20)
@@ -837,6 +612,7 @@
 (advice-add 'ibuffer :around #'jyun/persp-add-buffer)
 (advice-add 'R :around #'jyun/persp-add-buffer)
 
+;;; ffip
 ;; for doom-modeline
 (use-package! find-file-in-project
   :defer t
@@ -876,15 +652,7 @@
 ;; align tables containing variable-pitch font, CJK characters and images
 ;; (add-hook 'org-mode-hook #'valign-mode)
 
-
-;; ;; Github flavored markdown exporter
-;; (eval-after-load 'ox
-;;   '(require 'ox-gfm nil t))
-(use-package ox-gfm
-  :defer t
-  :after ox)
-
-;;; presentation
+;;; org-tree-slide
 (with-eval-after-load 'org-tree-slide
   (defvar +org-present-hide-properties t
     "Whether to hide property draws in `org-tree-slide'.")
@@ -905,7 +673,7 @@
   ;; these functions are not autoloaded.
   (load (expand-file-name "modules/lang/org/autoload/contrib-present" doom-emacs-dir))
   (add-hook! 'org-tree-slide-mode-hook
-             #'jyun/org-present-hide
+             ;; #'jyun/org-present-hide
              #'jyun/org-present-mixed-pitch-setup
              )
   (defun jyun/org-present-mixed-pitch-setup ()
@@ -928,76 +696,19 @@ or `mixed-pitch-serif-mode' can be called afterward."
         (org-superstar-restart))
       ))
 
+(defun jyun/org-tree-slide (orig-fun &rest args)
+"Hide a few `org-element'. Then, do `org-tree-slide-mode'."
+  (progn
+    (jyun/org-present-hide)
+    (apply orig-fun args)
+))
+(advice-add 'org-tree-slide-mode :around #'jyun/org-tree-slide)
+
   ;; cause errors in navigating slides
   (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
   )
 
-;;; string-inflection
-(use-package string-inflection
-  :defer t
-  :commands
-  (my-hydra-string-inflection/body)
-  :init
-  (progn
-    (defhydra my-hydra-string-inflection
-      (:hint nil)
-      "
-[_i_] cycle"
-      ("i" string-inflection-all-cycle)
-      )
-    (map!
-     :leader
-     (:prefix ("zi" . "inflection")
-      "c" 'string-inflection-lower-camelcase
-      "C" 'string-inflection-camelcase
-      :desc "String Inflection Hydra" "i" 'my-hydra-string-inflection/body
-      "-" 'string-inflection-kebab-case
-      "k" 'string-inflection-kebab-case
-      "_" 'string-inflection-underscore
-      "u" 'string-inflection-underscore
-      "U" 'string-inflection-upcase))))
-
-;;; org-roam
-(with-eval-after-load 'org-roam
-  (setq org-roam-dailies-capture-templates
-        '(("d" "default" entry
-           #'org-roam-capture--get-point
-           "* %?"
-           :file-name "daily/%<%Y-%m-%d_%A>"
-           :head "#+TITLE: %<%Y-%m-%d %A>\n\n[[roam:%<%Y-%m %B>]]\n\n")))
-  )
-
-;; this should work, and it actually bind keys
-;; but it cannot override default binding's description
-;; (map! :leader "nrd" #'org-roam-dailies-map)
-
-;; ;; skim to org-roam-bibtex integration
-;; ;; org-id is not generated
-;; ;; org-roam-capture error (due to outdated package) -> updated
-;; ;; more than 2 attachment -> error
-;; (with-eval-after-load 'org-capture
-;;     (add-to-list 'org-capture-templates
-;;                  '("RSA" "Skim Annotation" entry
-;;                    (file+function yunj/skim-orb-notes +reference/org-move-point-to-capture-skim-annotation)
-;;                    "* %^{Note for...}
-;;    :PROPERTIES:
-;;    :CREATED: %U
-;;    :CITE: cite:%(+reference/skim-get-bibtex-key)
-;;    :SKIM_NOTE: %(+reference/skim-get-annotation)
-;;    :SKIM_PAGE: %(+reference/get-skim-page-number)
-;;    :END:
-;;    %i \n%?"))
-;;     )
-
-;; ;;;###autoload
-;; (defun yunj/skim-orb-notes ()
-;;   (progn
-;;     (orb-notes-fn (+reference/skim-get-bibtex-key))
-;;     (let ((bname (buffer-file-name)))
-;;       (kill-this-buffer)
-;;       bname)))
-
-;;; *languagetool
+;;; languagetool
 ;; (setq langtool-bin "languagetool")
 (setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/*/libexec/languagetool-server.jar")
 ;; (setq langtool-http-server-host "localhost"
@@ -1019,65 +730,12 @@ or `mixed-pitch-serif-mode' can be called afterward."
 (setq pdf-misc-print-program "lpr"
       pdf-misc-print-program-args nil)
 
-(defun jyun/evil-state-cursors ()
-  ;; doom-modeline
-  (setq +evil--default-cursor-color (face-attribute 'success :foreground))
-  (setq +evil--insert-cursor-color (face-attribute 'font-lock-keyword-face :foreground))
-  (setq +evil--emacs-cursor-color (face-attribute 'font-lock-builtin-face :foreground))
-  (setq +evil--replace-cursor-color (face-attribute 'error :foreground))
-  (setq +evil--visual-cursor-color (face-attribute 'warning :foreground))
-  (setq +evil--motion-cursor-color (face-attribute 'font-lock-doc-face :foreground))
-
-  ;;; modal icon face color should be found here
-  ;; doom-modeline-evil-normal-state
-  ;; doom-modeline-evil-insert-state
-  ;; doom-modeline-evil-emacs-state
-  ;; doom-modeline-evil-replace-state
-  ;; doom-modeline-evil-visual-state
-  ;; doom-modeline-evil-motion-state
-  ;; doom-modeline-evil-operator-state
-  )
-
-;; spacemacs evil cursors
-(setq
- evil-default-cursor '(+evil-default-cursor-fn box)
- evil-insert-state-cursor '(+evil-insert-cursor-fn (bar . 2))
- evil-emacs-state-cursor '(+evil-emacs-cursor-fn box)
- evil-replace-state-cursor '(+evil-replace-cursor-fn (hbar . 2))
- evil-visual-state-cursor '(+evil-visual-cursor-fn (hbar . 2))
- evil-motion-state-cursor '(+evil-motion-cursor-fn box))
-
-(setq +evil--default-cursor-color "DarkGoldenrod2")
-(setq +evil--emacs-cursor-color "SkyBlue2")
-(defvar +evil--insert-cursor-color "chartreuse3")
-(defvar +evil--replace-cursor-color "chocolate")
-(defvar +evil--visual-cursor-color "gray")
-(defvar +evil--motion-cursor-color "plum3")
-
-(defun +evil-insert-cursor-fn ()
-  (evil-set-cursor-color +evil--insert-cursor-color))
-(defun +evil-replace-cursor-fn ()
-  (evil-set-cursor-color +evil--replace-cursor-color))
-(defun +evil-visual-cursor-fn ()
-  (evil-set-cursor-color +evil--visual-cursor-color))
-(defun +evil-motion-cursor-fn ()
-  (evil-set-cursor-color +evil--motion-cursor-color))
-
-;; (use-package visual-regexp
-;;   :defer t
-;;   :commands (vr/replace vr/query-replace)
-;;   :config
-;;   (define-key global-map (kbd "C-c r") 'vr/replace)
-;;   (define-key global-map (kbd "C-c q") 'vr/query-replace)
-;;   ;; if you use multiple-cursors, this is for you:
-;;   ;; (define-key global-map (kbd "C-c m") 'vr/mc-mark)
-;;   )
-
 (use-package! info-colors
   :commands (info-colors-fontify-node))
 (add-hook 'Info-selection-hook 'info-colors-fontify-node)
 ;; (add-hook 'Info-mode-hook #'mixed-pitch-mode)
 
+;;; abbrev
 (use-package abbrev
   :init
   (setq-default abbrev-mode t)
@@ -1092,12 +750,3 @@ or `mixed-pitch-serif-mode' can be called afterward."
   :config
   (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))
   (setq save-abbrevs 'silently))
-
-;; (after! company
-;;   (setq company-idle-delay nil
-;;         company-minimum-prefix-length 2)
-;;   (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying
-
-;; company memory
-(setq-default history-length 1000)
-(setq-default prescient-history-length 1000)

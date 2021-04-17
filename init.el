@@ -43,7 +43,8 @@
        hydra
        ;;indent-guides     ; highlighted indent columns
        (ligatures         ; ligatures and symbols to make your code pretty again
-        +extra)
+        +extra
+        )
        ;;minimap           ; show a map of the code on the side
        modeline          ; snazzy, Atom-inspired modeline, plus API
        nav-flash         ; blink cursor line after big motions
@@ -113,8 +114,7 @@
        (lookup             ; navigate your code and its documentation
         +dictionary)
        (lsp
-        ;; +peek
-        )
+        +peek)
        (magit +forge)    ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        (pass +auth)        ; password manager for nerds
@@ -231,6 +231,6 @@
        stan
        gtd
        grammar
-       ;; outshine
+       outshine
        reading
        )
