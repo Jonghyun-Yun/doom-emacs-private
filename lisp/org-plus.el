@@ -19,6 +19,24 @@
 ;;
 ;;; Code:
 
+;; https://gitlab.com/oer/org-re-reveal-ref/-/blob/master/org-re-reveal-ref.el
+;; it changes some of org-ref custom variables
+(use-package! org-re-reveal-ref
+  :defer t
+  :when (featurep! :lang org +present)
+  :after org-re-reveal
+  )
+
+(use-package! org-appear
+  :hook (org-mode . org-appear-mode)
+  :config
+  (setq org-appear-autoemphasis t
+        org-appear-autosubmarkers t
+        org-appear-autolinks nil)
+  ;; for proper first-time setup, `org-appear--set-elements'
+  ;; needs to be run after other hooks have acted.
+  (run-at-time nil nil #'org-appear--set-elements))
+
 (use-package org-cv
   :load-path "~/Dropbox/emacs/packages/org-cv"
   :after ox
@@ -106,7 +124,7 @@
 \[EXTRA]
 \\usepackage{graphicx}
 \\usepackage{subfigure}
-\\usepackage{grffile} % Extended file name support for graphics (legacy package)
+%%\\usepackage{grffile} % Extended file name support for graphics (legacy package)
 \\usepackage{float} % Fix figures and tables by [H]
 \\usepackage{longtable}
 \\usepackage{wrapfig}
@@ -114,12 +132,23 @@
 \\usepackage[normalem]{ulem}
 \\usepackage{textcomp}
 \\usepackage{capt-of}
+\\usepackage{hyperref}
 "
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("scr-article"
+                 "\\documentclass{scrartcl}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
 
   ;; org-export: Remove additional latex temporary files.
   (setq org-latex-logfiles-extensions
@@ -267,6 +296,7 @@
       ))
 
 (with-eval-after-load 'org
+;;;
 ;; (setq org-export-headline-levels 5) ; I like nesting
 ;; ignore heading not content
 (require 'ox-extra)

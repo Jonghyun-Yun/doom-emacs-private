@@ -162,3 +162,5 @@
 
 ;; mixed-pitch-face available
 (package! mixed-pitch :pin "519e05f74825abf04b7d2e0e38ec040d013a125a")
+
+(package! org-pretty-tags :pin "5c7521651b35ae9a7d3add4a66ae8cc176ae1c76")

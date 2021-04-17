@@ -196,3 +196,17 @@
  "sgc" 'langtool-correct-buffer
  "sgs" 'langtool-check
  "sgd" 'langtool-check-done)
+
+(map! (:map ess-r-package-dev-map
+      "I" #'ess-r-devtools-clean-and-rebuild-package
+      ))
+
+(map! (:map outshine-mode-map
+      "<M-up>"    #'drag-stuff-up
+      "<M-down>"  #'drag-stuff-down))
+
+(map!
+ :map org-tree-slide-mode-map
+ :g "C-?" #'org-tree-slide-content
+ :g "C-:" #'jyun/org-present-latex-preview
+ )

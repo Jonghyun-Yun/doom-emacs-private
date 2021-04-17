@@ -68,6 +68,12 @@
   ;; (add-hook 'nov-mode-hook #'+nov-mode-setup)
   )
 
+;; ;; epub osx dictionary
+;; (defun my-nov-mode-map ()
+;;   (define-key nov-mode-map "s" 'osx-dictionary-search-pointer)
+;;   t)
+;; (add-hook 'nov-mode-hook 'my-nov-mode-map)
+
 (defvar +zen-serif-p t
   "Whether to use a serifed font with `mixed-pitch-mode'.")
 (after! writeroom-mode
@@ -126,14 +132,17 @@
   "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
 
 (after! mixed-pitch
+  (append mixed-pitch-fixed-pitch-faces
+          '(org-drawer org-todo))
   (defface variable-pitch-serif
     '((t (:family "serif")))
     "A variable-pitch face with serifs."
     :group 'basic-faces)
-  (setq mixed-pitch-set-height t)
   (defun mixed-pitch-serif-mode (&optional arg)
     "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
     (interactive)
-    (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
-    (let ((mixed-pitch-face 'variable-pitch-serif))
-      (mixed-pitch-mode (or arg 'toggle)))))
+    (progn
+      (setq-local mixed-pitch-set-height t)
+      (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
+      (let ((mixed-pitch-face 'variable-pitch-serif))
+        (mixed-pitch-mode (or arg 'toggle))))))

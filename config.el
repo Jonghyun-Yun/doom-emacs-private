@@ -33,26 +33,26 @@
 ;;  ;; doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light :width 'expanded)
 ;;  )
 
-(setq
- doom-font (font-spec :family "Iosevka SS08" :size 24 :weight 'light)
- doom-big-font (font-spec :family "Iosevka SS08" :size 36 :weight 'light)
- ;; doom-variable-pitch-font (font-spec :family "Iosevka Etoile" :weight 'light)
- doom-variable-pitch-font (font-spec :family "Iosevka Aile" :weight 'light)
- doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
- doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
+;; (setq
+;;  doom-font (font-spec :family "Iosevka SS08" :size 24 :weight 'light)
+;;  doom-big-font (font-spec :family "Iosevka SS08" :size 36 :weight 'light)
+;;  ;; doom-variable-pitch-font (font-spec :family "Iosevka Etoile" :weight 'light)
+;;  doom-variable-pitch-font (font-spec :family "Iosevka Aile" :weight 'light)
+;;  doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
+;;  doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
 
 (setq
- ;;doom-font (font-spec :family "JetBrains Mono" :size 24 :weight 'light)
-      ;; doom-big-font (font-spec :family "JetBrains Mono" :size 36 :weight 'light)
-      doom-font (font-spec :family "Fira Code" :size 24 :weight 'light)
-      doom-big-font (font-spec :family "Fira Code" :size 36 :weight 'light)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 24 :weight 'light)
-      doom-unicode-font (font-spec :family "JuliaMono" :weight 'light)
-      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light)
-      )
+ doom-font (font-spec :family "JetBrains Mono" :size 24 :weight 'light)
+ doom-big-font (font-spec :family "JetBrains Mono" :size 36 :weight 'light)
+ ;; doom-font (font-spec :family "Fira Code" :size 24 :weight 'light)
+ ;; doom-big-font (font-spec :family "Fira Code" :size 36 :weight 'light)
+ doom-variable-pitch-font (font-spec :family "Overpass" :size 24 :weight 'light)
+ doom-unicode-font (font-spec :family "JuliaMono" :weight 'light)
+ doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light)
+ )
 
 (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
-;; (setq variable-pitch-serif-font (font-spec :family "Libre Baskerville" :size 24))
+;; (setq variable-pitch-serif-font (font-spec :family "Libre Baskerville" :size 23))
 ;; (setq variable-pitch-serif-font (font-spec :family "Libertinus Serif" :size 27))
 
 ;; missing out on the following Alegreya ligatures:
@@ -108,22 +108,6 @@
 
 ;; (load! "lisp/idle")
 
-(use-package modus-themes
-  :ensure
-  :init
-  ;; Add all your customizations prior to loading the themes
-  (setq modus-themes-slanted-constructs t
-        modus-themes-bold-constructs nil
-        modus-themes-region 'no-extend)
-
-  ;; Load the theme files before enabling a theme
-  (modus-themes-load-themes)
-  :config
-  ;; ;; Load the theme of your choice:
-  ;; (modus-themes-load-operandi) ;; OR (modus-themes-load-vivendi)
-  ;; :bind ("<f5>" . modus-themes-toggle)
-  )
-
 (with-eval-after-load 'doom-themes
   :config
   ;; Global settings (defaults)
@@ -140,7 +124,7 @@
   ;; doom-themes package forces treemacs to use a variable-pitch font
   (setq doom-themes-treemacs-enable-variable-pitch t
         treemacs-width 30)
-  ;; (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
   (doom-themes-treemacs-config)
 
   ;; Corrects (and improves) org-mode's native fontification.
@@ -158,20 +142,20 @@
                            "Hangul Jamo Extended-B"
                            "Hangul Syllables"))
     (push "Sarasa Mono K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
-    ;; (push "Noto Sans CJK KR" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
-    ;; (push "Source Han Sans K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
-    ;; (push "Source Han Serif K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+  ;; (push "Noto Sans CJK KR" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+  ;; (push "Source Han Sans K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+  ;; (push "Source Han Serif K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
   )
 
 ;; disable flycheck by default
 (remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
 
 ;; make-frame doesn't create a new persp
-  ;;   (remove-hook 'after-make-frame-functions #'persp-init-new-frame)
-  ;; (setq persp-add-buffer-on-after-change-major-mode 'free
-        ;; persp-add-buffer-on-after-change-major-mode-filter-functions nil
-        ;; persp-nil-name "main")
-  ;; )
+;;   (remove-hook 'after-make-frame-functions #'persp-init-new-frame)
+;; (setq persp-add-buffer-on-after-change-major-mode 'free
+;; persp-add-buffer-on-after-change-major-mode-filter-functions nil
+;; persp-nil-name "main")
+;; )
 
 (after! projectile
   (projectile-add-known-project "~/Dropbox/research/lsjm-art")
@@ -235,52 +219,52 @@
 ;; (global-spell-fu-mode -1)
 
 ;; I need these lists for langtool!
-  (setf (alist-get 'org-mode +spell-excluded-faces-alist)
-        '(
-          org-level-1
-          org-document-info
-          org-list-dt
-          org-block
-          org-block-begin-line
-          org-block-end-line
-          org-code
-          org-date
-          org-formula
-          org-latex-and-related
-          org-link
-          org-meta-line
-          org-property-value
-          org-ref-cite-face
-          org-special-keyword
-          org-tag
-          org-todo
-          org-todo-keyword-done
-          org-todo-keyword-habt
-          org-todo-keyword-kill
-          org-todo-keyword-outd
-          org-todo-keyword-todo
-          org-todo-keyword-wait
-          org-verbatim
-          org-property-drawer-re
-          org-ref-cite-re
-          org-ref-ref-re
-          org-ref-label-re
-          org-latex-math-environments-re
-          "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
-          font-lock-comment-face
-          ))
+(setf (alist-get 'org-mode +spell-excluded-faces-alist)
+      '(
+        org-level-1
+        org-document-info
+        org-list-dt
+        org-block
+        org-block-begin-line
+        org-block-end-line
+        org-code
+        org-date
+        org-formula
+        org-latex-and-related
+        org-link
+        org-meta-line
+        org-property-value
+        org-ref-cite-face
+        org-special-keyword
+        org-tag
+        org-todo
+        org-todo-keyword-done
+        org-todo-keyword-habt
+        org-todo-keyword-kill
+        org-todo-keyword-outd
+        org-todo-keyword-todo
+        org-todo-keyword-wait
+        org-verbatim
+        org-property-drawer-re
+        org-ref-cite-re
+        org-ref-ref-re
+        org-ref-label-re
+        org-latex-math-environments-re
+        "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
+        font-lock-comment-face
+        ))
 
-  (setf (alist-get 'LaTeX-mode +spell-excluded-faces-alist)
-        '(
-          font-lock-function-name-face
-          font-lock-variable-name-face
-          font-lock-keyword-face
-          font-lock-constant-face
-          font-lock-comment-face
-          font-latex-math-face
-          font-latex-sedate-face))
-          ;; font-latex-verbatim-face
-          ;; font-latex-warning-face
+(setf (alist-get 'LaTeX-mode +spell-excluded-faces-alist)
+      '(
+        font-lock-function-name-face
+        font-lock-variable-name-face
+        font-lock-keyword-face
+        font-lock-constant-face
+        font-lock-comment-face
+        font-latex-math-face
+        font-latex-sedate-face))
+;; font-latex-verbatim-face
+;; font-latex-warning-face
 
 (with-eval-after-load 'hydra
   (load! "lisp/hydra-plus"))
@@ -294,20 +278,20 @@
   (setq org-msg-options
         (concat org-msg-options " num:nil tex:dvipng ^:{} \\n:t")
         org-msg-startup "hidestars indent inlineimages"
-	org-msg-default-alternatives '(text html)
-	org-msg-convert-citation t
-        )
-(setq 	org-msg-greeting-fmt "\nHi *%s*,\n\n"
-	org-msg-recipient-names '(("jonghyun.yun@gmail.com" . "Jonghyun"))
-	org-msg-greeting-name-limit 3
-	org-msg-signature "
+        org-msg-default-alternatives '(text html)
+        org-msg-convert-citation t
+        ;; msg auto completion
+        org-msg-greeting-fmt "\nHi *%s*,\n\n"
+        org-msg-recipient-names '(("jonghyun.yun@gmail.com" . "Jonghyun"))
+        org-msg-greeting-name-limit 3
+        org-msg-signature "
 
  Cheers,
 
  #+begin_signature
  -- *Jonghyun* \\\\
  #+end_signature")
-)
+  )
 
 (load! "lisp/latex-plus")
 ;; (setq +latex-viewers '(skim pdf-tools))
@@ -324,35 +308,6 @@
         '((?: ("\\cdots" "\\ldots"))
           )
         ))
-
-;; ;; https://www.reddit.com/r/emacs/comments/229bl0/how_to_configure_auctex_to_automatically_use/cgl220b
-;; ;; WYSWYG latex equation
-;; (defvar my/wyswyg-latex-math nil)
-;; (defvar my/was-inside-math nil)
-
-;; (defun my/toggle-preview-when-leaving-math ()
-;;   (interactive)
-;;   (cond (my/wyswyg-latex-math
-;;          (setq my/wyswyg-latex-math nil))
-;;         (t (setq my/wyswyg-latex-math t)))
-;;   )
-
-;; (defun my/preview-when-leaving-math ()
-;;   (if my/wyswyg-latex-math
-;;       (let ((in-math (texmathp)))
-;;         (cond (in-math
-;;                (setq my/was-inside-math t))
-;;               ((and (not in-math)
-;;                     my/was-inside-math)
-;;                (progn
-;;                  (condition-case ex
-;;                      (unless (get-process "Preview-Ghostscript")
-;;                        (preview-at-point))
-;;                    ('error
-;;                     (message (format "Could not invoke Preview: %s" ex))))
-;;                  (setq my/was-inside-math nil)))))))
-
-;; (add-hook 'post-command-hook 'my/preview-when-leaving-math t)
 
 (load! "lisp/ess-plus")
 
@@ -400,28 +355,30 @@
 ;; (auto-save-visited-mode +1)
 (setq auto-save-default t
       create-lockfiles t
-      make-backup-files nil)
+      make-backup-files nil
+      truncate-string-ellipsis "…"               ; Unicode ellispis are nicer than "...", and also save /precious/ space
+      yas-triggers-in-field t ;snippets inside snippets
+      )
 
 (setq company-idle-delay nil
       company-tooltip-limit 10
       ;; company-box-enable-icon nil ;;disable all-the-icons
       )
 
-(setq evil-want-fine-undo t                       ; By default while in insert all changes are one big blob. Be more granular
-      truncate-string-ellipsis "…")               ; Unicode ellispis are nicer than "...", and also save /precious/ space
-
 ;;; org-mode
 (after! org
-;; (remove-hook 'org-mode-hook #'org-superstar-mode)
-(when (featurep! :lang org +pretty)
-  ;; org-superstar-headline-bullets-list '("♠" "♥" "♦" "♣" "◉" "▶" "✚" "✸")
-  (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
-        org-superstar-remove-leading-stars nil
-        ))
+  ;; (remove-hook 'org-mode-hook #'org-superstar-mode)
+  (when (featurep! :lang org +pretty)
+    ;; org-superstar-headline-bullets-list '("♠" "♥" "♦" "♣" "◉" "▶" "✚" "✸")
+    (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
+          org-superstar-remove-leading-stars nil
+          ))
 
   ;; background color for org-latex
   ;; (+org-refresh-latex-background-h)
   (setq
+   org-export-in-background t                  ; async export by default
+
    org-fontify-quote-and-verse-blocks nil
    org-fontify-whole-heading-line nil
 
@@ -430,13 +387,13 @@
    ;; org-startup-indented nil
 
    ;; org-ellipsis " ▾ "
-   org-ellipsis " ▼ "
-
+   ;; org-ellipsis " ▼ "
+   org-ellipsis "  ⏷  "
    org-indent-indentation-per-level 1
    org-adapt-indentation nil
 
    ;; tag indent
-   org-tags-column -77
+   ;; org-tags-column -77
 
    ;; org export global setting
    org-export-with-toc nil
@@ -444,15 +401,15 @@
    ;; org-latex-prefer-user-labels t
    org-log-done 'time
    ;; latex highlight
-   org-highlight-latex-and-related '(native)
+   ;; org-highlight-latex-and-related '(native)
    ;; don't ask to follow elisp link
    org-confirm-elisp-link-function nil
    )
 
-(setq org-highlight-latex-and-related '(native script entities))
-(add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
-;; (setq org-format-latex-options
-;;       (plist-put org-format-latex-options :background "Transparent"))
+  (setq org-highlight-latex-and-related '(native script entities))
+  (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
+  ;; (setq org-format-latex-options
+  ;;       (plist-put org-format-latex-options :background "Transparent"))
 
   ;; (setq org-insert-heading-respect-content nil)
 
@@ -480,23 +437,20 @@
   )
 
 (add-hook 'org-mode-hook (defun jyun/org-mode-hook-collection ()
-  (progn
-    ;; (rainbow-delimiters-mode-disable)
-    (setq-local langtool-ignore-fonts
-                (alist-get 'org-mode +spell-excluded-faces-alist))
-    )))
+                           (progn
+                             ;; (rainbow-delimiters-mode-disable)
+                             (setq-local langtool-ignore-fonts
+                                         (alist-get 'org-mode +spell-excluded-faces-alist))
+                             )))
+
+(after! ox
+  (setq org-beamer-theme "[progressbar=foot]metropolis"
+        org-beamer-frame-level 4
+        org-latex-tables-booktabs t
+        ))
 
 (load! "lisp/org-plus")
-
-
-
-;; https://gitlab.com/oer/org-re-reveal-ref/-/blob/master/org-re-reveal-ref.el
-;; it changes some of org-ref custom variables
-(use-package! org-re-reveal-ref
-  :defer t
-  :when (featurep! :lang org +present)
-  :after org-re-reveal
-  )
+(load! "lisp/ligature")
 
 ;; Set LaTeX preview image size for Org and LaTeX buffers.
 (after! preview
@@ -520,8 +474,6 @@
     :config
     (set-file-name-coding-system 'utf-8-hfs)))
 
-
-
 ;; ;; improve slow scrolling?
 ;; (use-package! hl-line+
 ;;   :config
@@ -538,6 +490,13 @@
 ;; to escape from emacs state
 (key-chord-mode 1)
 (key-chord-define evil-emacs-state-map evil-escape-key-sequence 'evil-escape)
+
+;; set korean keyboard layout
+;; C-\ to switch input-method
+(setq default-input-method "korean-hangul390")
+(global-set-key (kbd "s-j s-k") 'evil-escape)
+(global-set-key (kbd "s-j k") 'evil-escape)
+;; (key-chord-define-global "45" 'evil-escape)
 
 ;; emacs-mode shift can be used for C-SPC
 ;; didn't know it exists
@@ -571,14 +530,8 @@
    '(("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
    '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
    )
-)
+  )
 
-
-;; ;; epub osx dictionary
-;; (defun my-nov-mode-map ()
-;;   (define-key nov-mode-map "s" 'osx-dictionary-search-pointer)
-;;   t)
-;; (add-hook 'nov-mode-hook 'my-nov-mode-map)
 
 ;; (evil-set-initial-state 'elfeed-search-mode 'emacs)
 ;; (evil-set-initial-state 'elfeed-shoe-mode 'emacs)
@@ -607,13 +560,6 @@
 ;;       large-file-warning-threshold nil
 ;;       line-move-visual nil)
 
-;; set korean keyboard layout
-;; C-\ to switch input-method
-(setq default-input-method "korean-hangul390")
-(global-set-key (kbd "s-j s-k") 'evil-escape)
-(global-set-key (kbd "s-j k") 'evil-escape)
-;; (key-chord-define-global "45" 'evil-escape)
-
 ;; Other options
 ;; replace highlighted text with what I type
 ;; (delete-selection-mode 1)
@@ -623,10 +569,6 @@
       ;; indicate-unused-lines nil
       ;; spacemacs value of parameters
       scroll-conservatively 0)
-
-(blink-cursor-mode 1)
-;; (display-battery-mode 1)
-
 (setq display-time-format "%R %a %b %d"
       display-time-default-load-average nil
       display-time-world-list
@@ -637,6 +579,9 @@
         ("Asia/Seoul" "Seoul"))
       display-time-world-time-format "%a %b %d %Y %R %Z")
 (display-time-mode 1)
+(blink-cursor-mode 1)
+;; (display-battery-mode 1)
+
 
 ;; (add-hook 'before-save-hook 'time-stamp)
 
@@ -650,9 +595,9 @@
 ;; lsp-ui-sideline-enable nil
 ;; lsp-enable-symbol-highlighting nil
 ;; )
-(with-eval-after-load 'lsp-mode
-  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.ccls-cache\\'")
-  )
+;; (with-eval-after-load 'lsp-mode
+;;   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.ccls-cache\\'")
+;;   )
 
 (use-package matlab-mode
   :defer t
@@ -725,7 +670,9 @@
 
 ;; (require 'golden-ratio)
 
+;; replace it to update all cursor colors
 (remove-hook 'doom-load-theme-hook '+evil-update-cursor-color-h)
+
 ;; ;; thinning all faces
 (add-hook! 'doom-load-theme-hook
            ;; #'jyun/thin-all-faces
@@ -870,7 +817,7 @@
 (after! elfeed
   (setq elfeed-search-title-max-width 100
         elfeed-search-title-min-width 20)
-    (run-at-time nil (* 8 60 60) #'elfeed-update)
+  (run-at-time nil (* 8 60 60) #'elfeed-update)
   )
 
 (use-package elfeed-score
@@ -895,7 +842,7 @@
   :defer t
   :commands
   (find-file-in-project
-  find-file-in-current-directory-by-selected)
+   find-file-in-current-directory-by-selected)
   :general (
             [remap projectile-find-file] #'find-file-in-project
             [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config)
@@ -920,60 +867,69 @@
 ;; set this variable again after lsp
 ;; otherwise the default evn-home will be used
 (when (featurep! :tools debugger +lsp)
-(with-eval-after-load 'lsp-mode
-  (setq conda-env-home-directory "/Users/yunj/.conda")
-  ))
+  (with-eval-after-load 'lsp-mode
+    (setq conda-env-home-directory "/Users/yunj/.conda")
+    ))
 
-  ;; (setq conda-env-autoactivate-mode t)
+;; (setq conda-env-autoactivate-mode t)
 
 ;; align tables containing variable-pitch font, CJK characters and images
 ;; (add-hook 'org-mode-hook #'valign-mode)
 
 
 ;; ;; Github flavored markdown exporter
-(eval-after-load 'ox
-  '(require 'ox-gfm nil t))
-
-;; (use-package org-present
-;;   :defer t
-;;   :commands org-present
-;;   :config
-;;   (map!
-;;    :map org-present-mode-keymap
-;;    :g "C->" #'org-present-next
-;;    :g "C-<" #'org-present-prev)
-;;   ;; (define-key org-present-mode-keymap "C->" #'org-present-next)
-;;   ;; (define-key org-present-mode-keymap "C-<" #'org-present-prev)
-;;   )
+;; (eval-after-load 'ox
+;;   '(require 'ox-gfm nil t))
+(use-package ox-gfm
+  :defer t
+  :after ox)
 
 ;;; presentation
 (with-eval-after-load 'org-tree-slide
+  (defvar +org-present-hide-properties t
+    "Whether to hide property draws in `org-tree-slide'.")
+  (defvar +org-present-hide-tags t
+    "Whether to hide tags in `org-tree-slide'.")
+  (defvar +org-present-format-latex-scale 2.5
+    "A local variable to be used as `org-latex-preview-scale' in `org-tree-slide'.")
   (setq org-tree-slide-header nil
-        +org-present-hide-properties t
         org-tree-slide-skip-outline-level 5
         org-tree-slide-heading-emphasis nil
-        +org-present-text-scale 3
-        +org-present-hide-tags t
-        +org-present-format-latex-scale 2.25)
+        +org-present-text-scale 3)
 
   ;; (remove-hook 'org-tree-slide-mode-hook
   ;;              #'+org-present-hide-blocks-h
   ;;              #'+org-present-prettify-slide-h
 
-
   ;; `jyun/org-present-hide' needs some functions in `contrib-present.el'
   ;; these functions are not autoloaded.
   (load (expand-file-name "modules/lang/org/autoload/contrib-present" doom-emacs-dir))
-  (add-hook 'org-tree-slide-mode-hook #'jyun/org-present-hide)
+  (add-hook! 'org-tree-slide-mode-hook
+             #'jyun/org-present-hide
+             #'jyun/org-present-mixed-pitch-setup
+             )
+  (defun jyun/org-present-mixed-pitch-setup ()
+    "Visual enchancement for `org-tree-slide'. `mixed-pitch-mode'
+or `mixed-pitch-serif-mode' can be called afterward."
+    (progn
+      (require 'mixed-pitch)
+      (setq-local
+       ;; visual-fill-column-width 60
+       ;; org-adapt-indentation nil
+       org-fontify-quote-and-verse-blocks t
+       org-fontify-whole-heading-line t
+       org-hide-emphasis-markers t
+       mixed-pitch-set-height nil
+       )
+      (when (featurep 'org-superstar)
+        (setq-local org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
+                    ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
+                    org-superstar-remove-leading-stars t)
+        (org-superstar-restart))
+      ))
 
   ;; cause errors in navigating slides
   (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
-
-  (map!
-   :map org-tree-slide-mode-map
-   :g "C-?" #'org-tree-slide-content
-   :g "C-:" #'jyun/org-present-latex-preview
-   )
   )
 
 ;;; string-inflection
@@ -1049,47 +1005,19 @@
 
 ;; these exculeded faces are in lists for spell-fu
 (add-hook 'markdown-mode-hook (defun langtool-markdown-ignore-fonts ()
-                                  (setq-local langtool-ignore-fonts
-                                              (alist-get 'markdown-mode +spell-excluded-faces-alist))))
+                                (setq-local langtool-ignore-fonts
+                                            (alist-get 'markdown-mode +spell-excluded-faces-alist))))
 (add-hook 'LaTeX-mode-hook (defun langtool-LaTeX-ignore-fonts ()
-                               (setq-local langtool-ignore-fonts
-                                           (alist-get 'LaTeX-mode +spell-excluded-faces-alist))))
+                             (setq-local langtool-ignore-fonts
+                                         (alist-get 'LaTeX-mode +spell-excluded-faces-alist))))
 
 ;; (byte-recompile-directory (expand-file-name "~/.doom.d/") 0) ;
 ;; (byte-compile-file (expand-file-name "modules/private/reference/autoload/applescript.el" doom-private-dir))
 ;; (shell-command "find ~/.doom.d/ -type f -name \"*.elc\" -delete")
 
-(map! (:map outshine-mode-map
-      "<M-up>"    #'drag-stuff-up
-      "<M-down>"  #'drag-stuff-down))
-
 ;;; printer
 (setq pdf-misc-print-program "lpr"
       pdf-misc-print-program-args nil)
-
-;; ESS's equivalent of RStudio's `clean and rebuild'
-;;;###autoload
-(defun ess-r-devtools-clean-and-rebuild-package (&optional arg)
-  "Interface to `devtools::install()'.
-By default the installation is \"quick\" with arguments quick =
-TRUE, upgrade = FALSE, build = FALSE. On prefix ARG
-\\[universal-argument] install with the default
-`devtools::install()' arguments."
-  (interactive "P")
-  (progn
-  (ess-r-package-eval-linewise "Rcpp::compileAttributes(%s)")
-  (ess-r-package-eval-linewise
-   "devtools::install(%s)\n" "Installing %s" arg
-   '("quick = TRUE, build = FALSE, upgrade = FALSE, keep_source = TRUE"
-     (read-string "Arguments: " "keep_source = TRUE, force = TRUE")))))
-
-(map! (:map ess-r-package-dev-map
-      "I" #'ess-r-devtools-clean-and-rebuild-package
-      ))
-
-;; (map! (:map org-mode-map
-;;        :i "M-<right>" #'org-metaright
-;;        :i "M-<left>"  #'org-metaleft))
 
 (defun jyun/evil-state-cursors ()
   ;; doom-modeline
@@ -1110,30 +1038,30 @@ TRUE, upgrade = FALSE, build = FALSE. On prefix ARG
   ;; doom-modeline-evil-operator-state
   )
 
-  ;; spacemacs evil cursors
-  (setq
-   evil-default-cursor '(+evil-default-cursor-fn box)
-   evil-insert-state-cursor '(+evil-insert-cursor-fn (bar . 2))
-   evil-emacs-state-cursor '(+evil-emacs-cursor-fn box)
-   evil-replace-state-cursor '(+evil-replace-cursor-fn (hbar . 2))
-   evil-visual-state-cursor '(+evil-visual-cursor-fn (hbar . 2))
-   evil-motion-state-cursor '(+evil-motion-cursor-fn box))
+;; spacemacs evil cursors
+(setq
+ evil-default-cursor '(+evil-default-cursor-fn box)
+ evil-insert-state-cursor '(+evil-insert-cursor-fn (bar . 2))
+ evil-emacs-state-cursor '(+evil-emacs-cursor-fn box)
+ evil-replace-state-cursor '(+evil-replace-cursor-fn (hbar . 2))
+ evil-visual-state-cursor '(+evil-visual-cursor-fn (hbar . 2))
+ evil-motion-state-cursor '(+evil-motion-cursor-fn box))
 
-  (setq +evil--default-cursor-color "DarkGoldenrod2")
-  (setq +evil--emacs-cursor-color "SkyBlue2")
-  (defvar +evil--insert-cursor-color "chartreuse3")
-  (defvar +evil--replace-cursor-color "chocolate")
-  (defvar +evil--visual-cursor-color "gray")
-  (defvar +evil--motion-cursor-color "plum3")
+(setq +evil--default-cursor-color "DarkGoldenrod2")
+(setq +evil--emacs-cursor-color "SkyBlue2")
+(defvar +evil--insert-cursor-color "chartreuse3")
+(defvar +evil--replace-cursor-color "chocolate")
+(defvar +evil--visual-cursor-color "gray")
+(defvar +evil--motion-cursor-color "plum3")
 
-  (defun +evil-insert-cursor-fn ()
-    (evil-set-cursor-color +evil--insert-cursor-color))
-  (defun +evil-replace-cursor-fn ()
-    (evil-set-cursor-color +evil--replace-cursor-color))
-  (defun +evil-visual-cursor-fn ()
-    (evil-set-cursor-color +evil--visual-cursor-color))
-  (defun +evil-motion-cursor-fn ()
-    (evil-set-cursor-color +evil--motion-cursor-color))
+(defun +evil-insert-cursor-fn ()
+  (evil-set-cursor-color +evil--insert-cursor-color))
+(defun +evil-replace-cursor-fn ()
+  (evil-set-cursor-color +evil--replace-cursor-color))
+(defun +evil-visual-cursor-fn ()
+  (evil-set-cursor-color +evil--visual-cursor-color))
+(defun +evil-motion-cursor-fn ()
+  (evil-set-cursor-color +evil--motion-cursor-color))
 
 ;; (use-package visual-regexp
 ;;   :defer t
@@ -1150,257 +1078,26 @@ TRUE, upgrade = FALSE, build = FALSE. On prefix ARG
 (add-hook 'Info-selection-hook 'info-colors-fontify-node)
 ;; (add-hook 'Info-mode-hook #'mixed-pitch-mode)
 
-(setq +zen-serif-p t)
-
-(use-package! org-appear
-  :hook (org-mode . org-appear-mode)
+(use-package abbrev
+  :init
+  (setq-default abbrev-mode t)
+  ;; a hook funtion that sets the abbrev-table to org-mode-abbrev-table
+  ;; whenever the major mode is a text mode
+  (defun tec/set-text-mode-abbrev-table ()
+    (if (derived-mode-p 'text-mode)
+        (setq local-abbrev-table org-mode-abbrev-table)))
+  :commands abbrev-mode
+  :hook
+  (abbrev-mode . tec/set-text-mode-abbrev-table)
   :config
-  (setq org-appear-autoemphasis t
-        org-appear-autosubmarkers t
-        org-appear-autolinks nil)
-  ;; for proper first-time setup, `org-appear--set-elements'
-  ;; needs to be run after other hooks have acted.
-  (run-at-time nil nil #'org-appear--set-elements))
+  (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))
+  (setq save-abbrevs 'silently))
 
-(after! ess-r-mode
-  (appendq! +ligatures-extra-symbols
-            '(
-              :infix "▷"
-              :assign "⟵"
-              ;; :multiply "×"
-              ;; greek
-              :alpha #X3B1
-              :beta #X3B2
-              :chi #X3C7
-              :delta #X3B4
-              :epsilon #X3F5
-              :eta #X3B7
-              :gamma #X3B3
-              :iota #X3B9
-              :kappa #X3BA
-              :lambda #X3BB
-              :mu #X3BC
-              :nu #X3BD
-              :omega #X3C9
-              :phi #X3D5
-              :pi #X3C0
-              :psi #X3C8
-              :rho #X3C1
-              :sigma #X3C3
-              :tau #X3C4
-              :theta #X3B8
-              :upsilon #X3C5
-              :xi #X3BE
-              :zeta #X3B6
-              :Delta #X394
-              :Gamma #X393
-              :Lambda #X39B
-              :Omega #X3A9
-              :Phi #X3A6
-              :Pi #X3A0
-              :Psi #X3A8
-              :Sigma #X3A3
-              :Theta #X398
-              :Upsilon #X3D2
-              :Xi #X39E
-              ;; :aleph "ℵ"
-              ;; :alpha "α"
-              ;; :beta "β"
-              ;; :beth "ℶ"
-              ;; :chi "χ"
-              ;; :daleth "ℸ"
-              ;; :delta "δ"
-              ;; :digamma "ϝ"
-              ;; :ell "ℓ"
-              ;; :epsilon "ϵ"
-              ;; :eta "η"
-              ;; :eth "ð"
-              ;; :gamma "γ"
-              ;; :gimel "ℷ"
-              ;; :hslash "ℏ"
-              ;; :imath "ı"
-              ;; :iota "ι"
-              ;; :jmath "ȷ"
-              ;; :kappa "κ"
-              ;; :koppa "ϟ"
-              ;; :lambda "λ"
-              ;; ;; greek capital
-              ;; :Delta "Δ"
-              ;; :Digamma "Ϝ"
-              ;; :Gamma "Γ"
-              ;; :Im "ℑ"
-              ;; :Koppa "Ϟ"
-              ;; :Lambda "Λ"
-              ;; :Micro "µ"
-              ;; :Omega "Ω"
-              ;; :Phi "Φ"
-              ;; :Pi "Π"
-              ;; :Psi "Ψ"
-              ;; :Re "ℜ"
-              ;; :Sampi "Ϡ"
-              ;; :Sigma "Σ"
-              ;; :Stigma "Ϛ"
-              ;; :Theta "Θ"
-              ;; :Upsilon "Υ"
-              ;; :Xi "Ξ"
-              )
-            )
-  (set-ligatures! 'ess-r-mode
-    ;;Functional
-    :def "function"
-    ;;Types
-    :null "NULL"
-    :true "TRUE"
-    :false "FALSE"
-    :int "int"
-    :floar "float"
-    :bool "bool"
-    ;;Flow
-    ;; :not "!"
-    ;; :and "&&" :or "||"
-    :for "for"
-    :in "%in%"
-    :infix "%>%"
-    :return "return"
-    ;;Other
-    :assign "<-"
-    ;; :multiply "%*%"
-    ;; greek
-    :alpha "alpha"
-    :beta "beta"
-    :chi "chi"
-    :delta "delta"
-    :epsilon "epsilon"
-    :eta "eta"
-    :gamma "gamma"
-    :iota "iota"
-    :kappa "kappa"
-    :lambda "lambda"
-    :mu "mu"
-    :nu "nu"
-    :omega "omega"
-    :phi "phi"
-    :pi "pi"
-    :psi "psi"
-    :rho "rho"
-    :sigma "sigma"
-    :tau "tau"
-    :theta "theta"
-    :upsilon "upsilon"
-    :xi "xi"
-    :zeta "zeta"
-    :Delta "Delta"
-    :Gamma "Gamma"
-    :Lambda "Lambda"
-    :Omega "Omega"
-    :Phi "Phi"
-    :Pi "Pi"
-    :Psi "Psi"
-    :Sigma "Sigma"
-    :Theta "Theta"
-    :Upsilon "Upsilon"
-    :Xi "Xi"
-    )
-  )
+;; (after! company
+;;   (setq company-idle-delay nil
+;;         company-minimum-prefix-length 2)
+;;   (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying
 
-
-(appendq! +ligatures-extra-symbols
-          `(
-            ;; :checkbox      "☐"
-            ;; :pending       "◼"
-            ;; :checkedbox    "☑"
-            :list_property "∷"
-            :em_dash       "—"
-            :ellipses      "…"
-            :arrow_right   "→"
-            :arrow_left    "←"
-            :title         "𝙏"
-            :subtitle      "𝙩"
-            :author        "𝘼"
-            :date          "𝘿"
-            :property      "☸"
-            :options       "⌥"
-            :latex_class   "🄲"
-            ;; :latex_header  "⇥"
-            :latex_header  "𝔏"
-            ;; :beamer_header "↠"
-            :beamer_header "𝔅"
-            :html_head "🌐"
-            :attr_latex    "🄛"
-            :attr_html     "🄗"
-            :begin_quote   "❝"
-            :end_quote     "❞"
-            :caption       "🄒"
-            :header        "›"
-            :results       "🠶"
-            :begin_export  "⏩"
-            :end_export    "⏪"
-            :properties    "🛈"
-            :end           "🛇"
-            ;; :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
-            ;; :priority_b   ,(propertize "⬆" 'face 'all-the-icons-orange)
-            ;; :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
-            ;; :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
-            ;; :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)
-            ))
-(set-ligatures! 'org-mode
-  ;; :merge t
-  ;; :checkbox      "[ ]"
-  ;; :pending       "[-]"
-  ;; :checkedbox    "[X]"
-  :list_property "::"
-  :em_dash       "---"
-  :ellipsis      "..."
-  :arrow_right   "->"
-  :arrow_left    "<-"
-  :title         "#+title:"
-  :subtitle      "#+subtitle:"
-  :author        "#+author:"
-  :date          "#+date:"
-  :property      "#+property:"
-  :options       "#+options:"
-  :latex_class   "#+latex_class:"
-  :latex_header  "#+latex_header:"
-  :beamer_header "#+beamer_header:"
-  :html_head     "#+html_head:"
-  :attr_latex    "#+attr_latex:"
-  :attr_html     "#+attr_latex:"
-  :begin_quote   "#+begin_quote"
-  :end_quote     "#+end_quote"
-  :caption       "#+caption:"
-  :header        "#+header:"
-  :begin_export  "#+begin_export"
-  :end_export    "#+end_export"
-  :results       "#+RESULTS:"
-  :property      ":PROPERTIES:"
-  :end           ":END:"
-  ;; :priority_a    "[#A]"
-  ;; :priority_b    "[#B]"
-  ;; :priority_c    "[#C]"
-  ;; :priority_d    "[#D]"
-  ;; :priority_e    "[#E]"
-  )
-;; (plist-put +ligatures-extra-symbols :name "⁍")
-
-
-(setq org-latex-tables-booktabs t
-;;       org-latex-default-class "scr-article"
-;;       org-latex-hyperref-template "
-;; \\colorlet{greenyblue}{blue!70!green}
-;; \\colorlet{blueygreen}{blue!40!green}
-;; \\providecolor{link}{named}{greenyblue}
-;; \\providecolor{cite}{named}{blueygreen}
-;; \\hypersetup{
-;;   pdfauthor={%a},
-;;   pdftitle={%t},
-;;   pdfkeywords={%k},
-;;   pdfsubject={%d},
-;;   pdfcreator={%c},
-;;   pdflang={%L},
-;;   breaklinks=true,
-;;   colorlinks=true,
-;;   linkcolor=,
-;;   urlcolor=link,
-;;   citecolor=cite\n}
-;; \\urlstyle{same}"
-)
+;; company memory
+(setq-default history-length 1000)
+(setq-default prescient-history-length 1000)

@@ -43,3 +43,19 @@
           (add-to-list 'reftex-file-extensions suffix))
         '(("nw") ("Snw") ("Rnw")))
   )
+
+;; ESS's equivalent of RStudio's `clean and rebuild'
+;;;###autoload
+(defun ess-r-devtools-clean-and-rebuild-package (&optional arg)
+  "Interface to `devtools::install()'.
+By default the installation is \"quick\" with arguments quick =
+TRUE, upgrade = FALSE, build = FALSE. On prefix ARG
+\\[universal-argument] install with the default
+`devtools::install()' arguments."
+  (interactive "P")
+  (progn
+  (ess-r-package-eval-linewise "Rcpp::compileAttributes(%s)")
+  (ess-r-package-eval-linewise
+   "devtools::install(%s)\n" "Installing %s" arg
+   '("quick = TRUE, build = FALSE, upgrade = FALSE, keep_source = TRUE"
+     (read-string "Arguments: " "keep_source = TRUE, force = TRUE")))))

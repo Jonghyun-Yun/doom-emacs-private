@@ -1,10 +1,10 @@
 # -*- mode: snippet -*-
-# name: R_src
-# uuid: R_src
-# key: <sr
+# name: shell src
+# uuid: src_sh
+# key: <sh
 # condition: t
 # expand-env: ((yas-after-exit-snippet-hook #'org-edit-src-code))
 # --
-#+begin_src R
+#+begin_src emacs-lisp
 `%`$0
 #+end_src
