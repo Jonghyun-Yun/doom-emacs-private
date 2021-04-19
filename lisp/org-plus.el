@@ -27,15 +27,15 @@
   :after org-re-reveal
   )
 
-;; (use-package! org-appear
-;;   :hook (org-mode . org-appear-mode)
-;;   :config
-;;   (setq org-appear-autoemphasis t
-;;         org-appear-autosubmarkers t
-;;         org-appear-autolinks nil)
-;;   ;; for proper first-time setup, `org-appear--set-elements'
-;;   ;; needs to be run after other hooks have acted.
-;;   (run-at-time nil nil #'org-appear--set-elements))
+(use-package! org-appear
+  :hook (org-mode . org-appear-mode)
+  :config
+  (setq org-appear-autoemphasis t
+        org-appear-autosubmarkers t
+        org-appear-autolinks nil)
+  ;; for proper first-time setup, `org-appear--set-elements'
+  ;; needs to be run after other hooks have acted.
+  (run-at-time nil nil #'org-appear--set-elements))
 
 (use-package org-cv
   :load-path "~/Dropbox/emacs/packages/org-cv"
@@ -485,8 +485,11 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
   ;; Org-mode: Source block doesn't respect parent buffer indentation
   ;; http://emacs.stackexchange.com/questions/9472/org-mode-source-block-doesnt-respect-parent-buffer-indentation
   (setq org-edit-src-content-indentation 0
-        org-src-preserve-indentation nil
+        ;; org-src-preserve-indentation nil
         )
+
+  ;; no extra indentation in the source blocks
+  (setq org-src-preserve-indentation t)
 
   ;; Org-mode
   ;; M-RET broken in org-mode

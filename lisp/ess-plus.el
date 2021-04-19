@@ -51,6 +51,18 @@
       ;; ess-tab-complete-in-script t
 )
 
+;;; The following chunks are taken from https://github.com/vspinu/polymode
+;;; MARKDOWN
+;; (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
+
+;;; R modes
+(add-to-list 'auto-mode-alist '("\\.[rR]md$". poly-markdown+r-mode))
+;; (add-to-list 'auto-mode-alist '("\\.rapport$" . poly-rapport-mode))
+;; (add-to-list 'auto-mode-alist '("\\.Rhtml$" . poly-html+r-mode))
+;; (add-to-list 'auto-mode-alist '("\\.Rbrew$" . poly-brew+r-mode))
+(add-to-list 'auto-mode-alist '("\\.Rcpp$" . poly-r+c++-mode))
+(add-to-list 'auto-mode-alist '("\\.cppR$" . poly-c++r-mode))
+
 ;; forward/inverse sync: Rnw and pdf
 ;; don't move this to private layer -> won't work
 ;; eval-after-load or use-package not working

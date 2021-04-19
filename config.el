@@ -96,6 +96,9 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 
+;; passwords to be accessible
+(use-package! pass)
+
 ;;; load lisp
 (with-eval-after-load 'hydra
   (load! "lisp/hydra-plus"))
@@ -106,6 +109,7 @@
 (load! "lisp/ess-plus")
 (load! "lisp/latex-plus")
 (load! "lisp/visual-plus")
+(load! "lisp/elfeed")
 
 (after! projectile
   (projectile-add-known-project "~/Dropbox/research/lsjm-art")
@@ -115,8 +119,8 @@
   (projectile-add-known-project "~/research/mj.jeon")
   )
 
-;; emacs 27.2 riksy local variables
-;; old tricks stopped working. risky variables are ignored, and dunno how to make them safe...
+;; riksy local variables
+;; old tricks stopped working. risky variables are ignored (doom updates)
 ;; instead I can safely eval risky variables...
 (setq enable-local-eval t)
 ;; (add-to-list 'safe-local-eval-forms
@@ -178,13 +182,6 @@
   ;;           #'(lambda () (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign)))
   )
 
-
-;; passwords to be accessible
-(use-package! pass)
-
-;; information for debugging authentication in *Messages* buffer
-;; (setq auth-source-debug t)
-
 (after! plantuml-mode
   (setq plantuml-jar-path "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar"
         org-plantuml-jar-path plantuml-jar-path))
@@ -221,6 +218,10 @@
 
 ;;; org-mode
 (after! org
+  ;; rendering when not at point
+  ;; (use-package! org-fragtog
+  ;; :hook (org-mode . org-fragtog-mode))
+
   (when (featurep! :lang org +pretty)
     (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
           org-superstar-remove-leading-stars nil
@@ -259,10 +260,30 @@
    org-confirm-elisp-link-function nil
    )
 
+  ;; (setq org-insert-heading-respect-content nil)
+
+  ;; default attach folder
+  ;; (after! org-attach
+  ;;   (setq
+  ;;    org-attach-id-dir "data/"))
+
+  ;; visual-mode tab binds back to org-cycle
+  (remove-hook 'org-tab-first-hook #'+org-yas-expand-maybe-h)
+
+  ;; insert-mode tab binds back to org-cycle
+  (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h))
+
+;;;; org-latex
+(after! org
+  ;; adjust background colors of org-latex fragments
+  ;; call it manually!
+  ;; (add-hook! 'org-mode-hook #'my/org-latex-set-directory-name-to-background)
+  ;; (add-hook! 'doom-load-theme-hook #'my/org-latex-set-directory-name-to-background)
+
   (setq org-highlight-latex-and-related '(native script entities))
   (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
-
-  ;; (setq org-insert-heading-respect-content nil)
+  (setq org-format-latex-options
+        (plist-put org-format-latex-options :background "Transparent"))
 
   ;; cdltaex will ignore inline math $...$
   ;; (plist-put org-format-latex-options :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")) ;; drop "$"
@@ -275,26 +296,58 @@
     "A scaling factor for the size of images created from LaTeX fragments.")
   (plist-put org-format-latex-options :scale jyun/org-latex-preview-scale)
 
-  ;; default attach folder
-  ;; (after! org-attach
-  ;;   (setq
-  ;;    org-attach-id-dir "data/"))
+  ;; https://stackoverflow.com/questions/43149119/how-to-regenerate-latex-fragments-in-org-mode
+  (defun my/org-latex-set-options ()
+  (plist-put org-format-latex-options :scale jyun/org-latex-preview-scale))
 
-  ;; visual-mode tab binds back to org-cycle
-  (remove-hook 'org-tab-first-hook #'+org-yas-expand-maybe-h)
+  (defvar my/org-latex-toggle-fragment-has-been-called nil
+    "Tracks if org-toggle-latex-fragment has ever been called (updated locally).")
 
-  ;; insert-mode tab binds back to org-cycle
-  (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h)
+  (defadvice org-toggle-latex-fragment (before my/latex-fragments-advice activate)
+    "Keep Org LaTeX fragments in a directory with background color name."
+    (if (not my/org-latex-toggle-fragment-has-been-called) (my/org-latex-set-options))
+    (setq-local my/org-latex-toggle-fragment-has-been-called t)
+    (my/org-latex-set-directory-name-to-background))
+
+  (defadvice load-theme (after my/load-theme-advice-for-latex activate)
+    "Conditionally update Org LaTeX fragments for current background."
+    (if my/org-latex-toggle-fragment-has-been-called (my/org-latex-update-fragments-for-background)))
+
+  (defadvice disable-theme (after my/disable-theme-advice-for-latex activate)
+    "Conditionally update Org LaTeX fragments for current background."
+    (if my/org-latex-toggle-fragment-has-been-called (my/org-latex-update-fragments-for-background)))
+
+  (defun my/org-latex-set-directory-name-to-background ()
+    "Set Org LaTeX directory name to background color name: c_Red_Green_Blue."
+    (setq org-preview-latex-image-directory
+          (concat "ltximg/c"
+                  (let ((color (color-values (alist-get 'background-color (frame-parameters)))))
+                    (apply 'concat (mapcar (lambda (x) (concat "_" x)) (mapcar 'int-to-string color))))
+                  "/")))
+
+  (defun my/org-latex-update-fragments-for-background ()
+    "Remove Org LaTeX fragment layout, switch directory for background, turn fragments back on."
+    ;; removes latex overlays in the whole buffer
+    (org-remove-latex-fragment-image-overlays)
+
+    ;; background directory switch
+    (my/org-latex-set-directory-name-to-background)
+
+    ;; recreate overlay
+    ;; Argument '(16) is same as prefix C-u C-u,
+    ;; means create images in the whole buffer instead of just the current section.
+    ;; For many new images this will take time.
+    (org-toggle-latex-fragment '(16)))
   )
 
-;; (evil-set-initial-state 'org-agenda-mode 'emacs)
+;;;; org-pretty
+;; align tables containing variable-pitch font, CJK characters and images
+;; (add-hook 'org-mode-hook #'valign-mode)
 
-(add-hook 'org-mode-hook (defun jyun/org-mode-hook-collection ()
-                           (progn
-                             ;; (rainbow-delimiters-mode-disable)
-                             (setq-local langtool-ignore-fonts
-                                         (alist-get 'org-mode +spell-excluded-faces-alist))
-                             )))
+;; (use-package! org-pretty-table
+;;   :commands (org-pretty-table-mode global-org-pretty-table-mode))
+
+;; (evil-set-initial-state 'org-agenda-mode 'emacs)
 
 ;;; ox
 (after! ox
@@ -367,25 +420,6 @@
         ;; include subdirectories
         deft-recursive t))
 
-;; (setq which-key-allow-multiple-replacements t)
-
-(with-eval-after-load 'which-key
-  ;; Allow C-h to trigger which-key before it is done automatically
-  ;; (setq which-key-show-early-on-C-h t)
-  ;; make sure which-key doesn't show normally but refreshes quickly after it is
-  ;; triggered.
-  (setq which-key-idle-delay 1) ;; with 800kb garbage-collection
-  ;; (setq which-key-idle-secondary-delay 0.05)
-  ;; (which-key-mode)
-  ;; (define-key which-key-mode-map (kbd "C-h") 'which-key-C-h-dispatch)
-  (pushnew!
-   which-key-replacement-alist
-   '(("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
-   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
-   )
-  )
-
-
 ;; (setq save-place-forget-unreadable-files t) ;; emacs is slow to exit after enabling saveplace
 
 ;; disable recentf-cleanup on Emacs start, because it can cause
@@ -438,46 +472,25 @@
 ;; (global-set-key [C-wheel-up]  'ignore)
 ;; (global-set-key [C-wheel-down] 'ignore)
 
-;; custom variables
-;; (setq
-;; lsp-prefer-flymake nil
-;; lsp-enable-file-watchers nil
-;; lsp-ui-sideline-enable nil
-;; lsp-enable-symbol-highlighting nil
-;; )
-;; (with-eval-after-load 'lsp-mode
-;;   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.ccls-cache\\'")
-;;   )
-
-(use-package matlab-mode
-  :defer t
-  :commands
-  (matlab-shell)
-  :mode ("\\.m\\'" . matlab-mode)
-  ;; :init
-  ;; (add-hook 'matlab-mode-hook 'prog-mode-hooks)
-  :config
-  ;; matlab
-  (setq matlab-return-add-semicolon t
-        matlab-shell-ask-MATLAB-for-completions t
-        matlab-shell-command-switches '("-nodesktop" "-nosplash"))
-
-  ;; ;; set column for matlab m file buffer
-  ;; (add-hook 'matlab-mode-hook
-  ;;           #'(lambda ()
-  ;;             (set-fill-column 100)))
-
-  ;; (load! "lisp/matlab-plus")
-  ;; (bind-keys :prefix-map matlab-mode-map
-  ;;            :prefix ""
-  ;;            ("[key]" . command))
-  ;; :bind (:map matlab-mode-map
-  ;;        ;; ("C-c C-l" . matlab-shell-run-line)
-  ;;        ;; ("C-M-x" . matlab-shell-run-region-or-paragraph-and-step)
-  ;;        ;; ("C-c C-n" . matlab-shell-run-line-and-step)
-  ;;        ;; ("C-c C-z" . matlab-show-matlab-shell-buffer)
-  ;;        )
+;;;; which-key
+(with-eval-after-load 'which-key
+  ;; Allow C-h to trigger which-key before it is done automatically
+  ;; (setq which-key-show-early-on-C-h t)
+  ;; make sure which-key doesn't show normally but refreshes quickly after it is
+  ;; triggered.
+  (setq which-key-idle-delay 1) ;; with 800kb garbage-collection
+  ;; (setq which-key-idle-secondary-delay 0.05)
+  ;; (which-key-mode)
+  ;; (define-key which-key-mode-map (kbd "C-h") 'which-key-C-h-dispatch)
+  ;; (setq which-key-allow-multiple-replacements t)
+  (pushnew!
+   which-key-replacement-alist
+   '(("" . "\\`+?evil[-:\\/]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
+   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
+   )
   )
+
+(setq which-key-replacement-alist nil)
 
 ;;; bibtex
 (setq! +biblio-pdf-library-dir "~/Zotero/storage/"
@@ -585,72 +598,9 @@
     )
   )
 
-;;; elfeed
-;; (evil-set-initial-state 'elfeed-search-mode 'emacs)
-;; (evil-set-initial-state 'elfeed-show-mode 'emacs)
-
-(after! elfeed
-  (setq elfeed-search-title-max-width 100
-        elfeed-search-title-min-width 20)
-  (run-at-time nil (* 8 60 60) #'elfeed-update)
-  )
-
-(use-package elfeed-score
-  :defer t
-  :after elfeed
-  :init
-  (setq elfeed-score-score-file (expand-file-name "elfeed.score" doom-private-dir))
-  :config
-  (progn
-    (elfeed-score-enable)
-    (define-key elfeed-search-mode-map "=" elfeed-score-map)
-    ;; scores displayed in the search buffer
-    (setq elfeed-search-print-entry-function #'elfeed-score-print-entry)))
-
-
 ;; ibuffer and R buffers need to be manually added
 (advice-add 'ibuffer :around #'jyun/persp-add-buffer)
 (advice-add 'R :around #'jyun/persp-add-buffer)
-
-;;; ffip
-;; for doom-modeline
-(use-package! find-file-in-project
-  :defer t
-  :commands
-  (find-file-in-project
-   find-file-in-current-directory-by-selected)
-  :general (
-            [remap projectile-find-file] #'find-file-in-project
-            [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config)
-  :init
-  (map! :leader "SPC" #'find-file-in-project-by-selected)
-  :config
-  (setq ffip-use-rust-fd t)
-  ;; use ffip to find file in private config
-  ;; (advice-add 'doom/find-file-in-private-config :around #'jyun/find-file-in-private-config)
-  )
-
-;; (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-;; (add-hook 'prog-mode-hook #'highlight-parentheses-mode)
-
-(with-eval-after-load 'conda
-  (setq conda-anaconda-home "/opt/intel/oneapi/intelpython/latest"
-        conda-env-home-directory "/Users/yunj/.conda")
-  ;; (conda-env-initialize-interactive-shells)
-  ;; (conda-env-initialize-eshell)
-  )
-
-;; set this variable again after lsp
-;; otherwise the default evn-home will be used
-(when (featurep! :tools debugger +lsp)
-  (with-eval-after-load 'lsp-mode
-    (setq conda-env-home-directory "/Users/yunj/.conda")
-    ))
-
-;; (setq conda-env-autoactivate-mode t)
-
-;; align tables containing variable-pitch font, CJK characters and images
-;; (add-hook 'org-mode-hook #'valign-mode)
 
 ;;; org-tree-slide
 (with-eval-after-load 'org-tree-slide
@@ -708,19 +658,95 @@ or `mixed-pitch-serif-mode' can be called afterward."
   (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
   )
 
+;;; ffip
+;; for doom-modeline
+(use-package! find-file-in-project
+  :defer t
+  :commands
+  (find-file-in-project
+   find-file-in-current-directory-by-selected)
+  :general (
+            [remap projectile-find-file] #'find-file-in-project
+            [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config)
+  :init
+  (map! :leader "SPC" #'find-file-in-project-by-selected)
+  :config
+  (setq ffip-use-rust-fd t)
+  ;; use ffip to find file in private config
+  ;; (advice-add 'doom/find-file-in-private-config :around #'jyun/find-file-in-private-config)
+  )
+
+;;; prog-mode
+;; (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+;; (add-hook 'prog-mode-hook #'highlight-parentheses-mode)
+
+;;;; lsp
+;; (setq
+;; lsp-prefer-flymake nil
+;; lsp-enable-file-watchers nil
+;; lsp-ui-sideline-enable nil
+;; lsp-enable-symbol-highlighting nil
+;; )
+;; (with-eval-after-load 'lsp-mode
+;;   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.ccls-cache\\'")
+;;   )
+
+;;;; matlab
+(use-package matlab-mode
+  :defer t
+  :commands
+  (matlab-shell)
+  :mode ("\\.m\\'" . matlab-mode)
+  ;; :init
+  ;; (add-hook 'matlab-mode-hook 'prog-mode-hooks)
+  :config
+  ;; matlab
+  (setq matlab-return-add-semicolon t
+        matlab-shell-ask-MATLAB-for-completions t
+        matlab-shell-command-switches '("-nodesktop" "-nosplash"))
+
+  ;; ;; set column for matlab m file buffer
+  ;; (add-hook 'matlab-mode-hook
+  ;;           #'(lambda ()
+  ;;             (set-fill-column 100)))
+
+  ;; (load! "lisp/matlab-plus")
+  ;; (bind-keys :prefix-map matlab-mode-map
+  ;;            :prefix ""
+  ;;            ("[key]" . command))
+  ;; :bind (:map matlab-mode-map
+  ;;        ;; ("C-c C-l" . matlab-shell-run-line)
+  ;;        ;; ("C-M-x" . matlab-shell-run-region-or-paragraph-and-step)
+  ;;        ;; ("C-c C-n" . matlab-shell-run-line-and-step)
+  ;;        ;; ("C-c C-z" . matlab-show-matlab-shell-buffer)
+  ;;        )
+  )
+
+;;;; conda
+(with-eval-after-load 'conda
+  (setq conda-anaconda-home "/opt/intel/oneapi/intelpython/latest"
+        conda-env-home-directory "/Users/yunj/.conda")
+  ;; (conda-env-initialize-interactive-shells)
+  ;; (conda-env-initialize-eshell)
+  )
+;; (setq conda-env-autoactivate-mode t)
+
+;;;; debugging
+;; set this variable again after lsp
+;; otherwise the default evn-home will be used
+(when (featurep! :tools debugger +lsp)
+  (with-eval-after-load 'lsp-mode
+    (setq conda-env-home-directory "/Users/yunj/.conda")
+    ))
+
+;; information for debugging authentication in *Messages* buffer
+;; (setq auth-source-debug t)
+
 ;;; languagetool
 ;; (setq langtool-bin "languagetool")
 (setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/*/libexec/languagetool-server.jar")
 ;; (setq langtool-http-server-host "localhost"
 ;;       langtool-http-server-port 8081)
-
-;; these exculeded faces are in lists for spell-fu
-(add-hook 'markdown-mode-hook (defun langtool-markdown-ignore-fonts ()
-                                (setq-local langtool-ignore-fonts
-                                            (alist-get 'markdown-mode +spell-excluded-faces-alist))))
-(add-hook 'LaTeX-mode-hook (defun langtool-LaTeX-ignore-fonts ()
-                             (setq-local langtool-ignore-fonts
-                                         (alist-get 'LaTeX-mode +spell-excluded-faces-alist))))
 
 ;; (byte-recompile-directory (expand-file-name "~/.doom.d/") 0) ;
 ;; (byte-compile-file (expand-file-name "modules/private/reference/autoload/applescript.el" doom-private-dir))
@@ -729,11 +755,6 @@ or `mixed-pitch-serif-mode' can be called afterward."
 ;;; printer
 (setq pdf-misc-print-program "lpr"
       pdf-misc-print-program-args nil)
-
-(use-package! info-colors
-  :commands (info-colors-fontify-node))
-(add-hook 'Info-selection-hook 'info-colors-fontify-node)
-;; (add-hook 'Info-mode-hook #'mixed-pitch-mode)
 
 ;;; abbrev
 (use-package abbrev
@@ -748,5 +769,35 @@ or `mixed-pitch-serif-mode' can be called afterward."
   :hook
   (abbrev-mode . tec/set-text-mode-abbrev-table)
   :config
-  (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))
-  (setq save-abbrevs 'silently))
+  (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir)
+        save-abbrevs 'silently))
+
+(setq +lookup-provider-url-alist
+      (append +lookup-provider-url-alist
+              '(("Google Scholar"       "http://scholar.google.com/scholar?q=%s")
+                ("Crossref"             "http://search.crossref.org/?q=%s")
+                ("PubMed"               "http://www.ncbi.nlm.nih.gov/pubmed/?term=%s")
+                ("arXiv"     "https://arxiv.org/search/?query=%s&searchtype=all&abstracts=show&order=-announced_date_first&size=50")
+                ("Semantic Scholar"     "https://www.semanticscholar.org/search?q=%s")
+                ("Dictionary.com"     "http://dictionary.reference.com/browse/%s?s=t")
+                ("Thesaurus.com"   "http://www.thesaurus.com/browse/%s")
+                )))
+
+(setq mac-right-option-modifier 'hyper)
+
+;;; email send
+;; sending mail
+(setq sendmail-program "/usr/local/bin/msmtp"
+      message-send-mail-function 'message-send-mail-with-sendmail
+      ;; user-full-name "Jonghyun Yun")
+      )
+
+  ;; tell msmtp to choose the SMTP server according to the from field in the outgoing email
+  (setq message-sendmail-extra-arguments '("--read-envelope-from")
+        message-sendmail-f-is-evil 't)
+
+  ;; async-operations
+  ;; commented out, messages are not sent, disapper
+  ;; (require 'smtpmail-async)
+  ;; (setq send-mail-function         'async-smtpmail-send-it
+  ;; message-send-mail-function 'async-smtpmail-send-it)

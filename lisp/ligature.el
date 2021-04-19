@@ -131,8 +131,8 @@
             :begin_export  "⏩"
             :end_export    "⏪"
             ;; :properties    "🛈"
-            :properties      ""
-            :end           ""
+            :properties    ""
+            :end           "⏶"
             ))
 (set-ligatures! 'org-mode
   :merge t

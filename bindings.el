@@ -85,7 +85,6 @@
            ("D" . org-gcal-delete-at-point)
            ("P" . org-gcal-post-at-point))
 
-
 (map!
  (:map cfw:calendar-mode-map
   :e "R" #'cfw:hide-routines)

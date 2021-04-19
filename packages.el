@@ -150,10 +150,7 @@
 
 ;; (package! visual-regexp)
 
-(package! info-colors :pin "47ee73cc19...")
-
-;; (package! org-pretty-table
-;;   :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "474ad84a8fe5377d67ab7e491e8e68dac6e37a11")
+;; (package! info-colors :pin "47ee73cc19...")
 
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
   :pin "0b3b029d5851c77ee792727b280f062eaf2c22c7")
@@ -162,3 +159,6 @@
 (package! mixed-pitch :pin "519e05f74825abf04b7d2e0e38ec040d013a125a")
 
 (package! org-pretty-tags :pin "5c7521651b35ae9a7d3add4a66ae8cc176ae1c76")
+;; (package! org-pretty-table
+  ;; :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "474ad84a8f...")
+;; (package! org-fragtog :pin "0151cabc7a...")

@@ -29,12 +29,12 @@
         org-msg-default-alternatives '(text html)
         org-msg-convert-citation t
         ;; msg auto completion
-        org-msg-greeting-fmt "\nHi *%s*,\n\n"
+        ;; org-msg-greeting-fmt "\nHi *%s*,\n\n"
+        ;; org-msg-greeting-name-limit 3
         org-msg-recipient-names '(("jonghyun.yun@gmail.com" . "Jonghyun"))
-        org-msg-greeting-name-limit 3
         org-msg-signature "
 
- Cheers,
+ Best wishes,
 
  #+begin_signature
  -- *Jonghyun* \\\\
@@ -120,23 +120,6 @@ long messages in some external browser (see `browse-url-generic-program')."
               ;; try to emulate some of the eww key-bindings
               (local-set-key (kbd "<tab>") 'shr-next-link)
               (local-set-key (kbd "<backtab>") 'shr-previous-link)))
-
-  ;; sending mail
-  (setq sendmail-program "/usr/local/bin/msmtp"
-        message-send-mail-function 'message-send-mail-with-sendmail
-        ;; user-full-name "Jonghyun Yun")
-        )
-
-  ;; async-operations
-  ;; commented out, messages are not sent, disapper
-  ;; (require 'smtpmail-async)
-  ;; (setq send-mail-function         'async-smtpmail-send-it
-  ;; message-send-mail-function 'async-smtpmail-send-it)
-
-
-  ;; tell msmtp to choose the SMTP server according to the from field in the outgoing email
-  (setq message-sendmail-extra-arguments '("--read-envelope-from")
-        message-sendmail-f-is-evil 't)
 
   ;; Borrowed from http://ionrock.org/emacs-email-and-mu.html
   ;; Choose account label to feed msmtp -a option based on From header

@@ -71,7 +71,7 @@
         ;; +onsave
         )
        ;;god               ; run Emacs commands without modifier keys
-       ;;lispy             ; vim for lisp, for people who don't like vim
+       lispy             ; vim for lisp, for people who don't like vim
        multiple-cursors  ; editing in many places at once
        ;;objed             ; text object editing for the innocent
        ;;parinfer          ; turn lisp into python, sort of
@@ -112,7 +112,8 @@
        (eval +overlay)     ; run code, run (also, repls)
        ;;gist              ; interacting with github gists
        (lookup             ; navigate your code and its documentation
-        +dictionary)
+        +dictionary
+        +docsets)
        (lsp
         +peek)
        (magit +forge)    ; a git porcelain for Emacs
@@ -233,4 +234,5 @@
        grammar
        outshine
        reading
+       scimax
        )

@@ -203,6 +203,13 @@
 (add-hook 'LaTeX-mode-hook 'my-latexdiff-init)
 ;; (add-hook 'latex-mode-hook 'my-latexdiff-init)
 
+(after! latex
+   (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★") ;; make \star bigger
+ ;;   (map!
+ ;;    :map LaTeX-mode-map
+ ;;    :ei [C-return] #'LaTeX-insert-item)
+ (setq TeX-electric-math '("\\(" . "")))
+
 (setq TeX-fold-math-spec-list
       `(
         ;; private macros
@@ -273,12 +280,6 @@
         ("¶ {1}" ("paragraph" "paragraph*"))
         ("¶¶ {1}" ("subparagraph" "subparagraph*"))
         ))
-
-(after! tex
-;;   (map!
-;;    :map LaTeX-mode-map
-;;    :ei [C-return] #'LaTeX-insert-item)
-   (setq TeX-electric-math '("\\(" . "")))
 
 
 ;; Making \( \) less visible
