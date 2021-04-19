@@ -1,3 +1,5 @@
+;;; super-agenda-custom-commands.el
+
 (add-to-list 'org-agenda-custom-commands
              '("gs" "Super View"
                ((agenda "" (
@@ -235,3 +237,7 @@
                 ("pb" "B items" tags-todo "+PRIORITY=\"B\"")
                 ("pc" "C items" tags-todo "+PRIORITY=\"C\"")
                 )))
+
+(provide 'super-agenda-custom-commands)
+
+;;; super-agenda-custom-commands.el ends here

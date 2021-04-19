@@ -1,6 +1,6 @@
 ;;; private/reading/config.el -*- lexical-binding: t; -*-
 
-
+;;; speed reading
 (use-package spray
   :defer t
   :commands spray-mode
@@ -30,6 +30,7 @@
   (setq spray-wpm 400
         spray-height 700))
 
+;;; nov
 (use-package nov
   :defer t
   :mode ("\\.epub\\'" . nov-mode)
@@ -74,6 +75,7 @@
 ;;   t)
 ;; (add-hook 'nov-mode-hook 'my-nov-mode-map)
 
+;;; write-room
 (defvar +zen-serif-p t
   "Whether to use a serifed font with `mixed-pitch-mode'.")
 (after! writeroom-mode
@@ -128,6 +130,7 @@
                 )))
   )
 
+;;; mixed-pitch
 (autoload #'mixed-pitch-serif-mode "mixed-pitch"
   "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
 
@@ -146,3 +149,9 @@
       (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
       (let ((mixed-pitch-face 'variable-pitch-serif))
         (mixed-pitch-mode (or arg 'toggle))))))
+
+;;; info-colors
+(use-package! info-colors
+  :commands (info-colors-fontify-node))
+(add-hook 'Info-selection-hook 'info-colors-fontify-node)
+;; (add-hook 'Info-mode-hook #'mixed-pitch-mode)

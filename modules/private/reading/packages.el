@@ -6,3 +6,6 @@
 
 ;; epub
 (package! nov)
+
+;; Emacs info
+(package! info-colors :pin "47ee73cc19...")

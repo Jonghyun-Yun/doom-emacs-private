@@ -332,4 +332,17 @@
 ;; font-latex-verbatim-face
 ;; font-latex-warning-face
 
+;; these exculeded faces are in lists for spell-fu
+(add-hook 'org-mode-hook (defun langtool-org-mode-ignore-fonts ()
+                             (setq-local langtool-ignore-fonts
+                                         (alist-get 'org-mode +spell-excluded-faces-alist))
+                             ))
+(add-hook 'markdown-mode-hook (defun langtool-markdown-ignore-fonts ()
+                                (setq-local langtool-ignore-fonts
+                                            (alist-get 'markdown-mode +spell-excluded-faces-alist))))
+(add-hook 'LaTeX-mode-hook (defun langtool-LaTeX-ignore-fonts ()
+                             (setq-local langtool-ignore-fonts
+                                         (alist-get 'LaTeX-mode +spell-excluded-faces-alist))))
+
+
 ;;; packages.el ends here
