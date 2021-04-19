@@ -60,12 +60,12 @@
                 shr-use-colors nil)
     (require 'visual-fill-column nil t)
     (setq-local visual-fill-column-center-text t
-                visual-fill-column-width 80
+                visual-fill-column-width 83
                 nov-text-width 80)
     (visual-fill-column-mode 1)
     (hl-line-mode -1)
     )
-  ;; (add-hook 'nov-mode-hook #'+nov-mode-setup)
+  (add-hook 'nov-mode-hook #'+nov-mode-setup)
   )
 
 ;; ;; epub osx dictionary

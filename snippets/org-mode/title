@@ -1,8 +1,5 @@
 # -*- mode: snippet -*-
-# name: title
-# contributor : Rick Moynihan <rick@sourcesmouth.co.uk>
-# contributor: Rafael Villarroel (rvf0068@gmail.com)
-# condition: (= (current-column) 5)
-# key: title
+# name: title keyword
+# key: ti
 # --
-#+TITLE: ${1:title}
+#+title: $0

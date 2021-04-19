@@ -1,5 +1,8 @@
 # -*- mode: snippet -*-
-# name: cite
+# name: org-ref cite link
 # key: cite
 # --
-\footnotesize $0 \normalsize
+cite:${1:$$(completing-read
+       "bibtex key: "
+       (let ((bibtex-files (org-ref-find-bibliography)))
+	 (bibtex-global-key-alist)))}

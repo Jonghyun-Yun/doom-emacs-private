@@ -1,9 +1,7 @@
 # -*- mode: snippet -*-
-# name: options
-# contributor : Rick Moynihan <rick@sourcesmouth.co.uk>
-# contributor: Rafael Villarroel (rvf0068@gmail.com)
-# binding: C-c y o
-# condition: (or (= (current-column) 3) (= (current-column) 0))
-# key: opt
+# name: org-mode options keyword
+# key: op
+# contributor: John Kitchin <jkitchin@andrew.cmu.edu>
+# condition: (looking-back "^op" 2)
 # --
-#+OPTIONS: $0
+#+options: $0

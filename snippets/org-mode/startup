@@ -1,8 +1,6 @@
 # -*- mode: snippet -*-
-# name: startup
-# contributor : Rick Moynihan <rick@sourcesmouth.co.uk>
-# contributor: Rafael Villarroel (rvf0068@gmail.com)
-# condition: (or (= (current-column) 3) (= (current-column) 0))
-# key: sta
+# name: startup options
+# key: st
+# condition: (looking-back "^st" 2)
 # --
-#+STARTUP: ${1:options}
+#+startup: ${1:showeverything}
