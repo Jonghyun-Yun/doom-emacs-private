@@ -101,15 +101,15 @@
 
 ;;; load lisp
 (with-eval-after-load 'hydra
-  (load! "lisp/hydra-plus"))
+  (load! "local/hydra-plus"))
 (load! "bindings")
-(load! "lisp/mu4e-plus")
-(load! "lisp/org-plus")
-(load! "lisp/ligature")
-(load! "lisp/ess-plus")
-(load! "lisp/latex-plus")
-(load! "lisp/visual-plus")
-(load! "lisp/elfeed")
+(load! "local/mu4e-plus")
+(load! "local/org-plus")
+;; (load! "local/ligature")
+(load! "local/ess-plus")
+(load! "local/latex-plus")
+(load! "local/visual-plus")
+(load! "local/elfeed")
 
 (after! projectile
   (projectile-add-known-project "~/Dropbox/research/lsjm-art")
@@ -199,22 +199,30 @@
 (setq auto-save-default t
       create-lockfiles t
       make-backup-files nil
-      truncate-string-ellipsis "…"               ; Unicode ellispis are nicer than "...", and also save /precious/ space
-      yas-triggers-in-field t ;snippets inside snippets
+      truncate-string-ellipsis "…"      ; Unicode ellispis are nicer than "...", and also save /precious/ space
+      yas-triggers-in-field t           ; snippets inside snippets
       )
 
 ;;; company
 (after! company
-  (setq company-idle-delay 0.5
+  (setq company-idle-delay 1
         company-minimum-prefix-length 2
         company-tooltip-limit 10
-        ;; company-box-enable-icon nil ;;disable all-the-icons
+        ;; company-box-enable-icon nil ; disable all-the-icons
         ))
 
 ;; company memory
-(setq-default history-length 1000)
-(setq-default prescient-history-length 1000)
+(setq-default history-length 500)
+(setq-default prescient-history-length 500)
 
+;; defer font-locking
+(defun locally-defer-font-lock ()
+  "Set jit-lock defer and stealth, when buffer is over a certain size."
+  (when (> (buffer-size) 50000)
+    (setq-local jit-lock-defer-time 0.05
+                jit-lock-stealth-time 1)))
+
+;; (add-hook 'org-mode-hook #'locally-defer-font-lock)
 
 ;;; org-mode
 (after! org
@@ -223,6 +231,7 @@
   ;; :hook (org-mode . org-fragtog-mode))
 
   (when (featurep! :lang org +pretty)
+    (remove-hook 'org-mode-hook 'org-superstar-mode) ; manually turn it on!
     (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
           org-superstar-remove-leading-stars nil
           ))
@@ -255,8 +264,7 @@
    ;; latex highlight
    ;; org-highlight-latex-and-related '(native)
    ;; don't ask to follow elisp link
-   org-confirm-elisp-link-function nil
-   )
+   org-confirm-elisp-link-function nil)
 
   ;; (setq org-insert-heading-respect-content nil)
 
@@ -279,9 +287,9 @@
   ;; (add-hook! 'doom-load-theme-hook #'my/org-latex-set-directory-name-to-background)
 
   (setq org-highlight-latex-and-related '(native script entities))
-  (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
   (setq org-format-latex-options
         (plist-put org-format-latex-options :background "Transparent"))
+  (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
 
   ;; cdltaex will ignore inline math $...$
   ;; (plist-put org-format-latex-options :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")) ;; drop "$"
@@ -646,11 +654,13 @@ or `mixed-pitch-serif-mode' can be called afterward."
        org-hide-emphasis-markers t
        mixed-pitch-set-height nil
        )
-      (when (featurep 'org-superstar)
+      (when (require 'org-superstar)
         (setq-local org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
                     ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
                     org-superstar-remove-leading-stars t)
-        (org-superstar-restart))
+        ;; (org-superstar-restart)
+        (org-superstar-mode 1)
+        )
       ))
 
   (defun jyun/org-tree-slide (orig-fun &rest args)
@@ -662,7 +672,7 @@ or `mixed-pitch-serif-mode' can be called afterward."
   (advice-add 'org-tree-slide-mode :around #'jyun/org-tree-slide)
 
   ;; cause errors in navigating slides
-  ;; (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
+  (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
   )
 
 ;;; ffip
@@ -717,7 +727,7 @@ or `mixed-pitch-serif-mode' can be called afterward."
   ;;           #'(lambda ()
   ;;             (set-fill-column 100)))
 
-  ;; (load! "lisp/matlab-plus")
+  ;; (load! "local/matlab-plus")
   ;; (bind-keys :prefix-map matlab-mode-map
   ;;            :prefix ""
   ;;            ("[key]" . command))

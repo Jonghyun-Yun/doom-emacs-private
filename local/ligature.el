@@ -1,3 +1,7 @@
+;; -*- no-byte-compile: t; -*-
+;;; ../Dropbox/emacs/.doom.d/local/ligature.el
+
+;;; ess
 (after! ess-r-mode
   (appendq! +ligatures-extra-symbols
             '(
@@ -99,6 +103,7 @@
     )
   )
 
+;;; org-mode
 (appendq! +ligatures-extra-symbols
           `(
             :list_property "∷"

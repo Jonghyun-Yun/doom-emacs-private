@@ -202,10 +202,6 @@
       "I" #'ess-r-devtools-clean-and-rebuild-package
       ))
 
-(map! (:map outshine-mode-map
-      "<M-up>"    #'drag-stuff-up
-      "<M-down>"  #'drag-stuff-down))
-
 (map!
  :map org-tree-slide-mode-map
  :g "C-?" #'org-tree-slide-content

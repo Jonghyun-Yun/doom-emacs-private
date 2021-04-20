@@ -34,11 +34,11 @@
             "J"  'outline-move-subtree-down
             ">"  'outline-demote
             "<"  'outline-promote
-           (:prefix ("g" . "goto")
-            "u" 'outline-up-heading
-            "n" 'outline-next-heading
-            "j" 'outline-forward-same-level
-            "k" 'outline-backward-same-level))
+            (:prefix ("g" . "goto")
+             "u" 'outline-up-heading
+             "n" 'outline-next-heading
+             "j" 'outline-forward-same-level
+             "k" 'outline-backward-same-level))
            (:prefix ("aOi" . "insert")
             "h" 'outline-insert-heading)))
     (defhydra outshine-hydra (:hint nil)
@@ -61,7 +61,11 @@ Navigate headings^^^^      Move subtrees^^^^               Other^^
       ("K" outline-move-subtree-up)
       ;; Move headings
       (">" outline-demote)
-      ("<" outline-promote))))
+      ("<" outline-promote))
+    (map! (:map outshine-mode-map
+           "<M-up>"    #'drag-stuff-up
+           "<M-down>"  #'drag-stuff-down))
+    ))
 
 (use-package outorg
   :defer t

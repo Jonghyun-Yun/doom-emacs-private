@@ -152,6 +152,8 @@
 
 ;;; info-colors
 (use-package! info-colors
-  :commands (info-colors-fontify-node))
-(add-hook 'Info-selection-hook 'info-colors-fontify-node)
-;; (add-hook 'Info-mode-hook #'mixed-pitch-mode)
+  :commands (info-colors-fontify-node)
+  :config
+  (add-hook 'Info-selection-hook 'info-colors-fontify-node)
+  ;; (add-hook 'Info-mode-hook #'mixed-pitch-mode)
+  )

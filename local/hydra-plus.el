@@ -1,6 +1,7 @@
 ;;; lisp/hydra-plus.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! :ui hydra)
 
+;;; smerge
 ;; (add-hook 'find-file-hook #'jethro/enable-smerge-maybe :append)
 (defhydra my-hydra-smerge (
                            :hint nil
@@ -43,29 +44,14 @@
   ;; ("?" spacemacs//smerge-ts-toggle-hint)
   )
 
-    (defhydra my-hydra-bm
-      (:hint nil)
-      "
- Go to bookmark^^^^       Toggle^^                 Other^^
- ──────────────^^^^─────  ──────^^───────────────  ─────^^───
- [_n_/_N_] next/previous  [_t_] bookmark at point  [_q_] quit
-^^^^                            ^^                 [_L_] List
-"
-      ("q" nil :exit t)
-      ("L" bm-show-all :exit t)
-      ;; Go to bookmark
-      ("n" bm-next)
-      ("N" bm-previous)
-      ;; Toggle
-      ("t" bm-toggle))
-
+;;; org-babel
 (defhydra my-hydra-org-babel
   (:hint nil)
   "
 [_n_/_p_] navigate src blocks  [_z_] recenter screen  [_e_] execute src block
 [_g_]^^   goto named block     [_f_] format block     [_'_] edit src block
 [_k_]^^   kill result          ^^                     [_q_] quit"
-;; bindings
+  ;; bindings
   ("q" nil :exit t)
   ("n" org-babel-next-src-block)
   ("p" org-babel-previous-src-block)
@@ -76,6 +62,7 @@
   ("f" jyun/format-org-babel)
   ("'" org-edit-special :exit t))
 
+;;; time-machine
 (defhydra my-hydra-timemachine
   (
    :hint nil
@@ -96,6 +83,7 @@
   ("Y" git-timemachine-kill-revision)
   ("q" nil :exit t))
 
+;;; fold
 (defhydra my-hydra-fold
   (
    :hint nil
@@ -117,7 +105,7 @@
   ("C-g" nil :exit t)
   ("<SPC>" nil :exit t))
 
-;; scrolling transient state
+;;; scrolling transient state
 (defhydra my-hydra-scroll
   (
    :hint nil
@@ -172,6 +160,7 @@
       "Ng" 'my-hydra-scroll/evil-goto-first-line
       "NG" 'my-hydra-scroll/evil-goto-line)
 
+;;; window
 (defhydra my-hydra-window
   (:hint nil)
   "
@@ -245,11 +234,12 @@
       "w{" #'my-hydra-window/shrink-window
       "w}" #'my-hydra-window/enlarge-window)
 
+;;; mc
 (defhydra my-hydra-mc
   (:hint nil
    :foreign-keys run
    :pre (evil-mc-pause-cursors))
-"
+  "
 _d_/_D_: make & next/prev  _J_/_K_: make & down/up  _z_^^: cursor here      _m_^^: make all
 _n_/_N_: skip & next/prev  _H_/_L_: make & cursor   _u_/_U_: undo last/all  _t_^^: toggle cursor
 mc-pattern: %(evil-mc-get-pattern-text)"
@@ -289,6 +279,7 @@ mc-pattern: %(evil-mc-get-pattern-text)"
   :prefix "g"
   :desc "Multiple Cursors Hydra" :nv "z." #'my-hydra-mc/body))
 
+;;; org-agenda
 (defhydra my-hydra-org-agenda
   (
    :hint nil
@@ -368,6 +359,7 @@ _hp_: set priority    ^^                          _S_:  delete all filters    _L
   ("." org-agenda-goto-today)
   ("gd" org-agenda-goto-date))
 
+;;; pdf-tools
 (defhydra my-hydra-pdf-tools
   (:hint nil
    :pre (setq which-key-inhibit t)
@@ -420,7 +412,7 @@ _hp_: set priority    ^^                          _S_:  delete all filters    _L
   ;; Other
   ("q" nil :exit t))
 
-;; VCS Hydra
+;;; VCS Hydra
 (defhydra my-hydra-vcs
   (:hint nil
    ;; :pre (git-gutter-mode 1)
@@ -452,6 +444,7 @@ _hp_: set priority    ^^                          _S_:  delete all filters    _L
   ("z" recenter-top-bottom)
   ("q" nil :exit t))
 
+;;; layout
 (defhydra my-hydra-layouts
   (:hint nil
    )
@@ -503,6 +496,7 @@ _hp_: set priority    ^^                          _S_:  delete all filters    _L
   ("t" persp-temporarily-display-buffer)
   ("w" my-hydra-layouts/body :exit t))
 
+;;; evil-number
 (defhydra my-hydra-evil-numbers
   (:hint nil
    :foreign-keys run)
@@ -521,6 +515,7 @@ _hp_: set priority    ^^                          _S_:  delete all filters    _L
  ;;   [remap evil-numbers/dec-at-pt] #'my-hydra-evil-numbers/evil-numbers/dec-at-pt
  ;;   )
 
+;;; error
 (defhydra my-hydra-error
   (:hint nil
    :pre (unless (bound-and-true-p flycheck-mode) (flycheck-mode 1))
@@ -532,7 +527,24 @@ _n_: next error  _N_/_p_: prev error  _z_: recenter  _q_: quit"
   ("N" flycheck-previous-error)
   ("z" recenter-top-bottom)
   ("q" nil :exit t)
-)
+  )
 (map!
  :g "C-c ! ." #'my-hydra-error/body
  )
+
+;; ;;; bm
+;; (defhydra my-hydra-bm
+;;   (:hint nil)
+;;   "
+;;  Go to bookmark^^^^       Toggle^^                 Other^^
+;;  ──────────────^^^^─────  ──────^^───────────────  ─────^^───
+;;  [_n_/_N_] next/previous  [_t_] bookmark at point  [_q_] quit
+;; ^^^^                            ^^                 [_L_] List
+;; "
+;;   ("q" nil :exit t)
+;;   ("L" bm-show-all :exit t)
+;;   ;; Go to bookmark
+;;   ("n" bm-next)
+;;   ("N" bm-previous)
+;;   ;; Toggle
+;;   ("t" bm-toggle))

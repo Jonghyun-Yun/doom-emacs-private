@@ -162,3 +162,4 @@
 ;; (package! org-pretty-table
   ;; :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "474ad84a8f...")
 ;; (package! org-fragtog :pin "0151cabc7a...")
+(package! org-fancy-priorities :disable t)

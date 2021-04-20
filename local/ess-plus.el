@@ -44,12 +44,28 @@
 ;;           (lambda ()
 ;;             (ess-toggle-underscore nil)))
 
-(setq ess-eval-visibly 'nowait
-      inferior-R-args "--no-restore-history --no-save "
-      ess-ask-for-ess-directory nil
-      ;; ess-style 'RStudio
-      ;; ess-tab-complete-in-script t
-)
+(with-eval-after-load 'ess
+  (setq ess-eval-visibly 'nowait
+        inferior-R-args "--no-restore-history --no-save "
+        ess-ask-for-ess-directory nil
+        ;; ess-style 'RStudio
+        ;; ess-tab-complete-in-script t
+        )
+  (setq ess-R-font-lock-keywords
+        '((ess-R-fl-keyword:keywords . t)
+          (ess-R-fl-keyword:constants . t)
+          (ess-R-fl-keyword:modifiers . t)
+          (ess-R-fl-keyword:fun-defs . t)
+          (ess-R-fl-keyword:assign-ops . t)
+          (ess-R-fl-keyword:%op% . t)
+          (ess-fl-keyword:fun-calls . t)
+          ;; (ess-fl-keyword:numbers . t)
+          ;; (ess-fl-keyword:operators . t)
+          ;; (ess-fl-keyword:delimiters . t)
+          ;; (ess-fl-keyword:= . t)
+          ;; (ess-R-fl-keyword:F&T . t)
+          ))
+  )
 
 ;;; The following chunks are taken from https://github.com/vspinu/polymode
 ;;; MARKDOWN
@@ -142,21 +158,6 @@
 ;; Make RefTex aware of Snw and Rnw files
 (setq reftex-file-extensions
       '(("Snw" "Rnw" "nw" "tex" ".tex" ".ltx") ("bib" ".bib")))
-
-(setq ess-R-font-lock-keywords
-      '((ess-R-fl-keyword:keywords . t)
-        (ess-R-fl-keyword:constants . t)
-        (ess-R-fl-keyword:modifiers . t)
-        (ess-R-fl-keyword:fun-defs . t)
-        (ess-R-fl-keyword:assign-ops . t)
-        (ess-R-fl-keyword:%op% . t)
-        (ess-fl-keyword:fun-calls . t)
-        ;; (ess-fl-keyword:numbers . t)
-        ;; (ess-fl-keyword:operators . t)
-        ;; (ess-fl-keyword:delimiters . t)
-        ;; (ess-fl-keyword:= . t)
-        ;; (ess-R-fl-keyword:F&T . t)
-))
 
 (provide 'ess-plus)
 ;;; ess-plus.el ends here

@@ -125,11 +125,11 @@
               (local-set-key (kbd "<backtab>") 'shr-previous-link)))
 
 ;;; email send
-;; sending mail
-(setq sendmail-program "/usr/local/bin/msmtp"
-      message-send-mail-function 'message-send-mail-with-sendmail
-      ;; user-full-name "Jonghyun Yun")
-      )
+  ;; sending mail
+  (setq sendmail-program "/usr/local/bin/msmtp"
+        message-send-mail-function 'message-send-mail-with-sendmail
+        ;; user-full-name "Jonghyun Yun")
+        )
   ;; tell msmtp to choose the SMTP server according to the from field in the outgoing email
   (setq message-sendmail-extra-arguments '("--read-envelope-from")
         message-sendmail-f-is-evil 't)
@@ -345,7 +345,7 @@
   ;;      :prompt "*something"
   ;;      :action (mu4e-error "No action for deferred mark")))
 
-  ;;; mu4e-actions
+;;; mu4e-actions
   ;; overide default mu4e-action-view-as-pdf
   ;; msg2pdf isn't easy to make working
   (defvar mu4e-message-to-pdf-dir "~/Downloads/"
@@ -361,18 +361,18 @@
         (mu4e-warn "Failed to create PDF file"))
       (find-file pdf)))
 
-  ;; org-capture
+  ;;; org-capture
+  (defun mu4e-org-capture-message (MSG)
+    (interactive)
+    (progn
+      (setq jyun/target-mu4e-subject (mu4e-message-field MSG :subject))
+      (org-capture nil "ATE")))
 
-(defun mu4e-org-capture-message (MSG)
-  (interactive)
-  (progn
-    (setq jyun/target-mu4e-subject (mu4e-message-field MSG :subject))
-    (org-capture nil "ATE")))
-
-(add-to-list 'mu4e-view-actions
-             '("Capture to org-mode" . mu4e-org-capture-message))
+  (add-to-list 'mu4e-view-actions
+               '("Capture to org-mode" . mu4e-org-capture-message))
   )
 
+;;; alert
 (use-package mu4e-alert
   :defer t
   :init (with-eval-after-load 'mu4e
@@ -382,7 +382,7 @@
   ;; Enable Desktop notifications
   ;; (mu4e-alert-set-default-style 'notifications)) ; For linux
   ;; (mu4e-alert-set-default-style 'libnotify))  ; Alternative for linux
-  (mu4e-alert-set-default-style 'notifier)   ; For Mac OSX (through the terminal notifier app)
+  (mu4e-alert-set-default-style 'notifier) ; For Mac OSX (through the terminal notifier app)
   ;; (mu4e-alert-set-default-style 'growl))      ; Alternative for Mac OSX
 
   (setq mu4e-alert-interesting-mail-query

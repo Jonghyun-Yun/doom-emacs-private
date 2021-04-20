@@ -84,8 +84,7 @@
 (with-eval-after-load 'reftex
   (setq reftex-save-parse-info t
         reftex-use-multiple-selection-buffers t)
-(evil-set-initial-state 'reftex-select-bib-mode 'emacs)
-
+  (evil-set-initial-state 'reftex-select-bib-mode 'emacs)
   )
 
 ;; ;; RefTeX bindings
@@ -195,91 +194,90 @@
 ;;               ([(control return)] . nil)
 ;;               ))
 
-;; latexdiff
-(defun my-latexdiff-init ()
-  (require 'latexdiff)
-  (local-set-key (kbd "C-c d") 'latexdiff-vc))
-
-(add-hook 'LaTeX-mode-hook 'my-latexdiff-init)
-;; (add-hook 'latex-mode-hook 'my-latexdiff-init)
-
 (after! latex
-   (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★") ;; make \star bigger
- ;;   (map!
- ;;    :map LaTeX-mode-map
- ;;    :ei [C-return] #'LaTeX-insert-item)
- (setq TeX-electric-math '("\\(" . "")))
+;;; latexdiff
+  (defun my-latexdiff-init ()
+    (require 'latexdiff)
+    (local-set-key (kbd "C-c d") 'latexdiff-vc))
 
-(setq TeX-fold-math-spec-list
-      `(
-        ;; private macros
-        ("ℝ" ("RR"))
-        ("ℕ" ("NN"))
-        ("ℤ" ("ZZ"))
-        ("ℚ" ("QQ"))
-        ("ℂ" ("CC"))
-        ("ℙ" ("PP"))
-        ("ℍ" ("HH"))
-        ("𝔼" ("EE"))
-        ("𝑑" ("dd"))
-        ;; mathbb
-        ("ℝ" ("mathbb{R}"))
-        ("ℕ" ("mathbb{N}"))
-        ("ℤ" ("mathbb{Z}"))
-        ("ℚ" ("mathbb{Q}"))
-        ("ℂ" ("mathbb{C}"))
-        ("ℙ" ("mathbb{P}"))
-        ("ℍ" ("mathbb{H}"))
-        ("𝔼" ("mathbb{E}"))
-        ("𝑑" ("mathbb{d}"))
+  (add-hook 'LaTeX-mode-hook 'my-latexdiff-init)
+  ;; (add-hook 'latex-mode-hook 'my-latexdiff-init)
+  ;;   (map!
+  ;;    :map LaTeX-mode-map
+  ;;    :ei [C-return] #'LaTeX-insert-item)
+  (setq TeX-electric-math '("\\(" . ""))
+  ;;; tex-fold
+  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★") ;; make \star bigger
+  (setq TeX-fold-math-spec-list
+        `(
+          ;; private macros
+          ("ℝ" ("RR"))
+          ("ℕ" ("NN"))
+          ("ℤ" ("ZZ"))
+          ("ℚ" ("QQ"))
+          ("ℂ" ("CC"))
+          ("ℙ" ("PP"))
+          ("ℍ" ("HH"))
+          ("𝔼" ("EE"))
+          ("𝑑" ("dd"))
+          ;; mathbb
+          ("ℝ" ("mathbb{R}"))
+          ("ℕ" ("mathbb{N}"))
+          ("ℤ" ("mathbb{Z}"))
+          ("ℚ" ("mathbb{Q}"))
+          ("ℂ" ("mathbb{C}"))
+          ("ℙ" ("mathbb{P}"))
+          ("ℍ" ("mathbb{H}"))
+          ("𝔼" ("mathbb{E}"))
+          ("𝑑" ("mathbb{d}"))
 
-        ;; known commands
-        ;; ("" ("phantom"))
-         ;; (,(lambda (num den) (if (and (TeX-string-single-token-p num) (TeX-string-single-token-p den))
-         ;;                        (concat num "／" den)
-         ;;                      (concat "❪" num "／" den "❫"))) ("frac"))
-        ;; (,(lambda (arg) (concat "√" (TeX-fold-parenthesize-as-necessary arg))) ("sqrt"))
-        ;; (,(lambda (arg) (concat "⭡" (TeX-fold-parenthesize-as-necessary arg))) ("vec"))
-        ;; ("‘{1}’" ("text"))
-        ;; private commands
-        ("|{1}|" ("abs"))
-        ("‖{1}‖" ("norm"))
-        ("⌊{1}⌋" ("floor"))
-        ("⌈{1}⌉" ("ceil"))
-        ;; ("⌊{1}⌉" ("round"))
-        ("𝑑{1}/𝑑{2}" ("dv"))
-        ("∂{1}/∂{2}" ("pdv"))
-        ;; fancification
-        ;; ("{1}" ("mathrm"))
-        ;; (,(lambda (word) (string-offset-roman-chars 119743 word)) ("mathbf"))
-        ;; (,(lambda (word) (string-offset-roman-chars 119951 word)) ("mathcal"))
-        ;; (,(lambda (word) (string-offset-roman-chars 120003 word)) ("mathfrak"))
-        ;; (,(lambda (word) (string-offset-roman-chars 120055 word)) ("mathbb"))
-        ;; (,(lambda (word) (string-offset-roman-chars 120159 word)) ("mathsf"))
-        ;; (,(lambda (word) (string-offset-roman-chars 120367 word)) ("mathtt"))
-        )
-      TeX-fold-macro-spec-list
-      '(
-        ;; as the defaults
-        ("[f]" ("footnote" "marginpar"))
-        ("[c]" ("cite"))
-        ("[l]" ("label"))
-        ("[r]" ("ref" "pageref" "eqref"))
-        ("[i]" ("index" "glossary"))
-        ("..." ("dots"))
-        ;; tweaked defaults
-        ("©" ("copyright"))
-        ("®" ("textregistered"))
-        ("™"  ("texttrademark"))
-        ("[1]:||►" ("item"))
-        ("❡❡ {1}" ("part" "part*"))
-        ("❡ {1}" ("chapter" "chapter*"))
-        ("§ {1}" ("section" "section*"))
-        ("§§ {1}" ("subsection" "subsection*"))
-        ("§§§ {1}" ("subsubsection" "subsubsection*"))
-        ("¶ {1}" ("paragraph" "paragraph*"))
-        ("¶¶ {1}" ("subparagraph" "subparagraph*"))
-        ))
+          ;; known commands
+          ;; ("" ("phantom"))
+          ;; (,(lambda (num den) (if (and (TeX-string-single-token-p num) (TeX-string-single-token-p den))
+          ;;                        (concat num "／" den)
+          ;;                      (concat "❪" num "／" den "❫"))) ("frac"))
+          ;; (,(lambda (arg) (concat "√" (TeX-fold-parenthesize-as-necessary arg))) ("sqrt"))
+          ;; (,(lambda (arg) (concat "⭡" (TeX-fold-parenthesize-as-necessary arg))) ("vec"))
+          ;; ("‘{1}’" ("text"))
+          ;; private commands
+          ("|{1}|" ("abs"))
+          ("‖{1}‖" ("norm"))
+          ("⌊{1}⌋" ("floor"))
+          ("⌈{1}⌉" ("ceil"))
+          ;; ("⌊{1}⌉" ("round"))
+          ("𝑑{1}/𝑑{2}" ("dv"))
+          ("∂{1}/∂{2}" ("pdv"))
+          ;; fancification
+          ;; ("{1}" ("mathrm"))
+          ;; (,(lambda (word) (string-offset-roman-chars 119743 word)) ("mathbf"))
+          ;; (,(lambda (word) (string-offset-roman-chars 119951 word)) ("mathcal"))
+          ;; (,(lambda (word) (string-offset-roman-chars 120003 word)) ("mathfrak"))
+          ;; (,(lambda (word) (string-offset-roman-chars 120055 word)) ("mathbb"))
+          ;; (,(lambda (word) (string-offset-roman-chars 120159 word)) ("mathsf"))
+          ;; (,(lambda (word) (string-offset-roman-chars 120367 word)) ("mathtt"))
+          )
+        TeX-fold-macro-spec-list
+        '(
+          ;; as the defaults
+          ("[f]" ("footnote" "marginpar"))
+          ("[c]" ("cite"))
+          ("[l]" ("label"))
+          ("[r]" ("ref" "pageref" "eqref"))
+          ("[i]" ("index" "glossary"))
+          ("..." ("dots"))
+          ;; tweaked defaults
+          ("©" ("copyright"))
+          ("®" ("textregistered"))
+          ("™"  ("texttrademark"))
+          ("[1]:||►" ("item"))
+          ("❡❡ {1}" ("part" "part*"))
+          ("❡ {1}" ("chapter" "chapter*"))
+          ("§ {1}" ("section" "section*"))
+          ("§§ {1}" ("subsection" "subsection*"))
+          ("§§§ {1}" ("subsubsection" "subsubsection*"))
+          ("¶ {1}" ("paragraph" "paragraph*"))
+          ("¶¶ {1}" ("subparagraph" "subparagraph*"))
+          )))
 
 
 ;; Making \( \) less visible

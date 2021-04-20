@@ -57,7 +57,7 @@
 ;;   ;; (bind-keys ("C-c r s" . my-org-super-agenda-view))
 ;;   ;; (global-set-key (kbd "C-c r s") 'my-org-super-agenda-view)
 ;;   ;; (global-set-key (kbd "C-c r i") 'my-org-agenda-inbox)
-;;   ;; (load! "lisp/gtd-plus")
+;;   ;; (load! "local/gtd-plus")
 ;;   )
 
 (after! org
