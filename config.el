@@ -251,8 +251,6 @@
 
    ;; org export global setting
    org-export-with-toc nil
-   ;; custom_id -> \label
-   ;; org-latex-prefer-user-labels t
    org-log-done 'time
    ;; latex highlight
    ;; org-highlight-latex-and-related '(native)
@@ -294,45 +292,47 @@
 
   (defvar jyun/org-latex-preview-scale 1.5
     "A scaling factor for the size of images created from LaTeX fragments.")
-  (plist-put org-format-latex-options :scale jyun/org-latex-preview-scale)
+  (defun jyun/org-latex-set-options ()
+    (plist-put org-format-latex-options :scale jyun/org-latex-preview-scale))
+
+  ;; set default org-latex-preview size
+  (jyun/org-latex-set-options)
 
   ;; https://stackoverflow.com/questions/43149119/how-to-regenerate-latex-fragments-in-org-mode
-  (defun my/org-latex-set-options ()
-  (plist-put org-format-latex-options :scale jyun/org-latex-preview-scale))
-
   (defvar my/org-latex-toggle-fragment-has-been-called nil
     "Tracks if org-toggle-latex-fragment has ever been called (updated locally).")
 
   (defadvice org-toggle-latex-fragment (before my/latex-fragments-advice activate)
     "Keep Org LaTeX fragments in a directory with background color name."
-    (if (not my/org-latex-toggle-fragment-has-been-called) (my/org-latex-set-options))
+    (if (not my/org-latex-toggle-fragment-has-been-called) (jyun/org-latex-set-options))
     (setq-local my/org-latex-toggle-fragment-has-been-called t)
-    (my/org-latex-set-directory-name-to-background))
+    (jyun/org-latex-set-directory-color))
 
   (defadvice load-theme (after my/load-theme-advice-for-latex activate)
     "Conditionally update Org LaTeX fragments for current background."
-    (if my/org-latex-toggle-fragment-has-been-called (my/org-latex-update-fragments-for-background)))
+    (if my/org-latex-toggle-fragment-has-been-called (jyun/org-latex-update-fragments-color)))
 
   (defadvice disable-theme (after my/disable-theme-advice-for-latex activate)
     "Conditionally update Org LaTeX fragments for current background."
-    (if my/org-latex-toggle-fragment-has-been-called (my/org-latex-update-fragments-for-background)))
+    (if my/org-latex-toggle-fragment-has-been-called (jyun/org-latex-update-fragments-color)))
 
-  (defun my/org-latex-set-directory-name-to-background ()
-    "Set Org LaTeX directory name to background color name: c_Red_Green_Blue."
+  (defun jyun/org-latex-set-directory-color ()
+    "Set Org LaTeX directory name to default face"
+    (interactive)
     (setq org-preview-latex-image-directory
-          (concat "ltximg/c"
-                  (let ((color (color-values (alist-get 'background-color (frame-parameters)))))
+          (concat "ltximg/_" (alist-get 'foreground-color (frame-parameters))
+                  (let ((color (color-values (alist-get 'foreground-color (frame-parameters)))))
                     (apply 'concat (mapcar (lambda (x) (concat "_" x)) (mapcar 'int-to-string color))))
                   "/")))
 
-  (defun my/org-latex-update-fragments-for-background ()
-    "Remove Org LaTeX fragment layout, switch directory for background, turn fragments back on."
+  (defun jyun/org-latex-update-fragments-color ()
+    "Remove Org LaTeX fragment layout, switch directory for face color, turn fragments back on."
+    (interactive)
     ;; removes latex overlays in the whole buffer
     (org-remove-latex-fragment-image-overlays)
 
     ;; background directory switch
-    (my/org-latex-set-directory-name-to-background)
-
+    (jyun/org-latex-set-directory-color)
     ;; recreate overlay
     ;; Argument '(16) is same as prefix C-u C-u,
     ;; means create images in the whole buffer instead of just the current section.
@@ -381,6 +381,8 @@
 ;; (map! :leader "nrd" #'org-roam-dailies-map)
 
 ;;; misc
+(setq mac-right-option-modifier 'hyper)
+
 ;; ;; improve slow scrolling?
 ;; (use-package! hl-line+
 ;;   :config
@@ -488,9 +490,10 @@
    '(("" . "\\`+?evil[-:\\/]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
    '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
    )
+  ;; why I want this??
+  ;; (setq which-key-replacement-alist nil )
   )
 
-(setq which-key-replacement-alist nil)
 
 ;;; bibtex
 (setq! +biblio-pdf-library-dir "~/Zotero/storage/"
@@ -534,22 +537,23 @@
 ;; disable flycheck by default
 (remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
 ;; replace it to update all cursor colors
-(remove-hook 'doom-load-theme-hook '+evil-update-cursor-color-h)
+;; (remove-hook 'doom-load-theme-hook '+evil-update-cursor-color-h)
+
+;; overide the cursor color hook
+(defun +evil-update-cursor-color-h ()
+  (jyun/evil-state-cursors))
 
 ;; ;; thinning all faces
 (add-hook! 'doom-load-theme-hook
            ;; #'jyun/thin-all-faces
            #'jyun/doom-modeline-height
-           #'jyun/evil-state-cursors
+           ;; #'jyun/evil-state-cursors
            )
 
 (add-hook! 'window-setup-hook
            ;; #'jyun/thin-all-faces
            ;; #'jyun/evil-state-cursors
            #'jyun/doom-modeline-height)
-
-;; (add-hook! 'org-load-hook
-;;            #'jyun/thin-all-faces)
 
 ;;; Hangout
 (use-package jabber
@@ -584,11 +588,10 @@
 ;;         +notmuch-mail-folder "~/.mail/")
 ;;   )
 
-(add-to-list '+zen-mixed-pitch-modes 'latex-mode)
-(setq +zen-text-scale 0.8 ;; The text-scaling level for writeroom-mode
-      aw-scope 'global
-      doom-scratch-intial-major-mode 'lisp-interaction-mode
-      omnisharp-server-executable-path "/usr/local/bin/omnisharp")
+(setq
+ aw-scope 'global
+ doom-scratch-intial-major-mode 'lisp-interaction-mode
+ omnisharp-server-executable-path "/usr/local/bin/omnisharp")
 
 
 ;; OS X ls not working with --quoting-style=literal
@@ -601,6 +604,10 @@
 ;; ibuffer and R buffers need to be manually added
 (advice-add 'ibuffer :around #'jyun/persp-add-buffer)
 (advice-add 'R :around #'jyun/persp-add-buffer)
+
+;;; mixed pitch + zen
+(add-to-list '+zen-mixed-pitch-modes 'latex-mode)
+(setq +zen-text-scale 0.8) ;; The text-scaling level for writeroom-mode
 
 ;;; org-tree-slide
 (with-eval-after-load 'org-tree-slide
@@ -646,16 +653,16 @@ or `mixed-pitch-serif-mode' can be called afterward."
         (org-superstar-restart))
       ))
 
-(defun jyun/org-tree-slide (orig-fun &rest args)
-"Hide a few `org-element'. Then, do `org-tree-slide-mode'."
-  (progn
-    (jyun/org-present-hide)
-    (apply orig-fun args)
-))
-(advice-add 'org-tree-slide-mode :around #'jyun/org-tree-slide)
+  (defun jyun/org-tree-slide (orig-fun &rest args)
+    "Hide a few `org-element'. Then, do `org-tree-slide-mode'."
+    (progn
+      (jyun/org-present-hide)
+      (apply orig-fun args)
+      ))
+  (advice-add 'org-tree-slide-mode :around #'jyun/org-tree-slide)
 
   ;; cause errors in navigating slides
-  (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
+  ;; (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
   )
 
 ;;; ffip
@@ -772,6 +779,7 @@ or `mixed-pitch-serif-mode' can be called afterward."
   (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir)
         save-abbrevs 'silently))
 
+;;; online lookup
 (setq +lookup-provider-url-alist
       (append +lookup-provider-url-alist
               '(("Google Scholar"       "http://scholar.google.com/scholar?q=%s")
@@ -783,21 +791,43 @@ or `mixed-pitch-serif-mode' can be called afterward."
                 ("Thesaurus.com"   "http://www.thesaurus.com/browse/%s")
                 )))
 
-(setq mac-right-option-modifier 'hyper)
 
-;;; email send
-;; sending mail
-(setq sendmail-program "/usr/local/bin/msmtp"
-      message-send-mail-function 'message-send-mail-with-sendmail
-      ;; user-full-name "Jonghyun Yun")
-      )
+;; async-operations
+;; commented out, messages are not sent, disapper
+;; (require 'smtpmail-async)
+;; (setq send-mail-function         'async-smtpmail-send-it
+;; message-send-mail-function 'async-smtpmail-send-it)
 
-  ;; tell msmtp to choose the SMTP server according to the from field in the outgoing email
-  (setq message-sendmail-extra-arguments '("--read-envelope-from")
-        message-sendmail-f-is-evil 't)
+;; elfeed capture
+(add-to-list 'org-capture-templates
+             '("EFE" "Elfeed entry" entry
+               (file+headline "~/org/inbox.org" "Tasks")
+               "* TODO %(elfeed-entry-title jyun/target-elfeed-entry) :rss:
+:PROPERTIES:
+:CREATED: %U
+:LINK: %a
+:URL: %(elfeed-entry-link jyun/target-elfeed-entry)
+:END:
+%i \n%?"
+               :prepend t
+               ))
 
-  ;; async-operations
-  ;; commented out, messages are not sent, disapper
-  ;; (require 'smtpmail-async)
-  ;; (setq send-mail-function         'async-smtpmail-send-it
-  ;; message-send-mail-function 'async-smtpmail-send-it)
+;; email capture
+(add-to-list 'org-capture-templates
+             '("ATE" "Attention to Emails" entry
+               (file+headline "~/org/inbox.org" "Tasks")
+               "* TODO %(message jyun/target-mu4e-subject) :@email:
+:PROPERTIES:
+:CREATED: %U
+:LINK: %a
+:END:
+%i \n%?"
+               :prepend t
+               ))
+
+;; (map! :map mu4e-view-mode-map
+;;       :nme "H-c" #'(lambda ()
+;;                    (interactive)
+;;                    (let* ((mu4e-subject (mu4e-message-field-at-point :subject)))
+;;                      (setq jyun/target-mu4e-subject mu4e-subject)
+;;                      (org-capture nil "ATE"))))

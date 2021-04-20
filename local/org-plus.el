@@ -100,11 +100,24 @@
      (setq org-koma-letter-default-class "my-koma-letter")))
 
 (with-eval-after-load 'ox-latex
-  ;; code highlight
+  ;; do not put in \hypersetup. Use your own if you want it e.g.
+  ;; \hypersetup{pdfkeywords={%s},\n pdfsubject={%s},\n pdfcreator={%}}
+  (setq org-latex-hyperref-template nil)
+
+  ;; this is for code syntax highlighting in export. you need to use
+  ;; -shell-escape with latex, and install pygments.
   (setq org-latex-listings 'minted)
   (setq org-latex-minted-options
         '(("frame" "lines")
-          ("linenos" "true")))
+          ("fontsize" "\\scriptsize")
+          ("linenos" "")))
+
+  ;; avoid getting \maketitle right after begin{document}
+  ;; you should put \maketitle if and where you want it.
+  (setq org-latex-title-command "\\maketitle")
+
+  ;; custom_id -> \label
+  (setq org-latex-prefer-user-labels t)
 
   ;; highlight lco file
   (add-to-list 'auto-mode-alist '("\\.lco" . LaTeX-mode))

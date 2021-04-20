@@ -64,7 +64,7 @@
 
 ;;* Customization variables
 
-(defcustom scimax-autoformat-superscripts t
+(defcustom scimax-autoformat-superscripts nil
   "Determines if words ending in a number should be superscripted."
   :group 'scimax-autoformat
   :type 'boolean)

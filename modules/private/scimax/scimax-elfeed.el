@@ -49,10 +49,10 @@
 
 (after! elfeed
 ;; scimax
-(define-key elfeed-show-mode-map (kbd "e") 'email-elfeed-entry)
-(define-key elfeed-show-mode-map (kbd "p") 'elfeed-show-pdf)
-(define-key elfeed-show-mode-map (kbd "c") (lambda () (interactive) (org-capture nil "e")))
-;; (define-key elfeed-show-mode-map (kbd "d") 'doi-utils-add-entry-from-elfeed-entry)
+;; (define-key elfeed-show-mode-map (kbd "e") 'email-elfeed-entry)
+;; (define-key elfeed-show-mode-map (kbd "p") 'elfeed-show-pdf)
+;; (define-key elfeed-show-mode-map (kbd "c") (lambda () (interactive) (org-capture nil "e")))
+;; ;; (define-key elfeed-show-mode-map (kbd "d") 'doi-utils-add-entry-from-elfeed-entry)
 
 ;; help me alternate fingers in marking entries as read
 (define-key elfeed-search-mode-map (kbd "f") 'elfeed-search-untag-all-unread)

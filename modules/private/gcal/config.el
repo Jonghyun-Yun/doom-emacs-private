@@ -32,7 +32,7 @@
 (remove-hook 'org-capture-before-finalize-hook #'org-gcal--capture-post)
 (add-hook 'org-capture-after-finalize-hook #'sync-gcal-after-capture)
 
-(run-with-idle-timer 1800 t 'org-gcal-fetch)
+(run-with-idle-timer 3600 t 'org-gcal-fetch)
 
 ;; (with-eval-after-load 'org-capture
 ;;   (add-to-list 'org-capture-templates org-gcal-capture-templates)

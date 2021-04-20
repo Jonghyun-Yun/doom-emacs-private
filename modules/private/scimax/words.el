@@ -39,11 +39,11 @@
 ;; - words/body will open a "hydra" menu.
 
 ;;; Code:
-(require 'hydra)
-(require 'url)
-(require 'xml)
+;; (require 'hydra)
+;; (require 'url)
+;; (require 'xml)
 
-(setq hydra-is-helpful nil)
+;; (setq hydra-is-helpful t)
 
 ;; to quiet byte-compile error
 (defvar url-http-end-of-headers)
@@ -67,49 +67,49 @@
     (thing-at-point 'word))))
 
 
-(defun words-atd ()
-  "Send paragraph at point to After the deadline for spell and grammar checking."
-  (interactive)
+;; (defun words-atd ()
+;;   "Send paragraph at point to After the deadline for spell and grammar checking."
+;;   (interactive)
 
-  (let* ((url-request-method "POST")
-	 (text (if (region-active-p)
-		   (buffer-substring (region-beginning) (region-end))
-		 (thing-at-point 'paragraph)))
-	 (url-request-data (format
-			    "key=some-random-text-&data=%s"
-			    (url-hexify-string
-			     text)))
-	 (xml  (with-current-buffer
-		   (url-retrieve-synchronously
-		    "http://service.afterthedeadline.com/checkDocument")
-		 (xml-parse-region url-http-end-of-headers (point-max))))
-	 (results (car xml))
-	 (errors (xml-get-children results 'error)))
+;;   (let* ((url-request-method "POST")
+;; 	 (text (if (region-active-p)
+;; 		   (buffer-substring (region-beginning) (region-end))
+;; 		 (thing-at-point 'paragraph)))
+;; 	 (url-request-data (format
+;; 			    "key=some-random-text-&data=%s"
+;; 			    (url-hexify-string
+;; 			     text)))
+;; 	 (xml  (with-current-buffer
+;; 		   (url-retrieve-synchronously
+;; 		    "http://service.afterthedeadline.com/checkDocument")
+;; 		 (xml-parse-region url-http-end-of-headers (point-max))))
+;; 	 (results (car xml))
+;; 	 (errors (xml-get-children results 'error)))
 
-    (pop-to-buffer "*ATD*")
-    (erase-buffer)
-    (dolist (err errors)
-      (let* ((children (xml-node-children err))
-	     ;; for some reason I could not get the string out, and had to do this.
-	     (s (car (last (nth 1 children))))
-	     ;; the last/car stuff doesn't seem right. there is probably
-	     ;; a more idiomatic way to get this
-	     (desc (last (car (xml-get-children children 'description))))
-	     (type (last (car (xml-get-children children 'type))))
-	     (suggestions (xml-get-children children 'suggestions))
-	     (options (xml-get-children (xml-node-name suggestions) 'option))
-	     (opt-string  (mapconcat
-			   (lambda (el)
-			     (when (listp el)
-			       (car (last el))))
-			   options
-			   " ")))
+;;     (pop-to-buffer "*ATD*")
+;;     (erase-buffer)
+;;     (dolist (err errors)
+;;       (let* ((children (xml-node-children err))
+;; 	     ;; for some reason I could not get the string out, and had to do this.
+;; 	     (s (car (last (nth 1 children))))
+;; 	     ;; the last/car stuff doesn't seem right. there is probably
+;; 	     ;; a more idiomatic way to get this
+;; 	     (desc (last (car (xml-get-children children 'description))))
+;; 	     (type (last (car (xml-get-children children 'type))))
+;; 	     (suggestions (xml-get-children children 'suggestions))
+;; 	     (options (xml-get-children (xml-node-name suggestions) 'option))
+;; 	     (opt-string  (mapconcat
+;; 			   (lambda (el)
+;; 			     (when (listp el)
+;; 			       (car (last el))))
+;; 			   options
+;; 			   " ")))
 
-	(insert (format "** %s ** %s
-Description: %s
-Suggestions: %s
+;; 	(insert (format "** %s ** %s
+;; Description: %s
+;; Suggestions: %s
 
-" s type desc opt-string))))))
+;; " s type desc opt-string))))))
 
 
 ;; * Web functions
@@ -149,30 +149,30 @@ Suggestions: %s
       (thing-at-point 'word)))))
 
 
-(defun words-wos ()
-  "Open the word at point or selection in Web of Science."
-  ;; the url was derived from this page: http://wokinfo.com/webtools/searchbox/
-  (interactive)
-  (browse-url
-   (format "http://gateway.webofknowledge.com/gateway/Gateway.cgi?topic=%s&GWVersion=2&SrcApp=WEB&SrcAuth=HSB&DestApp=UA&DestLinkType=GeneralSearchSummary"
-    (if (region-active-p)
-	(mapconcat 'identity (split-string
-			      (buffer-substring (region-beginning)
-						(region-end))) "+")
-      (thing-at-point 'word)))))
+;; (defun words-wos ()
+;;   "Open the word at point or selection in Web of Science."
+;;   ;; the url was derived from this page: http://wokinfo.com/webtools/searchbox/
+;;   (interactive)
+;;   (browse-url
+;;    (format "http://gateway.webofknowledge.com/gateway/Gateway.cgi?topic=%s&GWVersion=2&SrcApp=WEB&SrcAuth=HSB&DestApp=UA&DestLinkType=GeneralSearchSummary"
+;;     (if (region-active-p)
+;; 	(mapconcat 'identity (split-string
+;; 			      (buffer-substring (region-beginning)
+;; 						(region-end))) "+")
+;;       (thing-at-point 'word)))))
 
 
-(defun words-scopus ()
-  "Scopus the word at point or selection."
-  (interactive)
-  (browse-url
-   (format
-    "http://www.scopus.com//search/submit/basic.url?field1=TITLE-ABS-KEY&searchterm1=%s"
-    (if (region-active-p)
-	(mapconcat 'identity (split-string
-			      (buffer-substring (region-beginning)
-						(region-end))) "+")
-      (thing-at-point 'word)))))
+;; (defun words-scopus ()
+;;   "Scopus the word at point or selection."
+;;   (interactive)
+;;   (browse-url
+;;    (format
+;;     "http://www.scopus.com//search/submit/basic.url?field1=TITLE-ABS-KEY&searchterm1=%s"
+;;     (if (region-active-p)
+;; 	(mapconcat 'identity (split-string
+;; 			      (buffer-substring (region-beginning)
+;; 						(region-end))) "+")
+;;       (thing-at-point 'word)))))
 
 
 (defun words-crossref ()
@@ -298,16 +298,19 @@ Suggestions: %s
   "List of cons cells (language . code).")
 
 (defvar words-speakers
-  '(("Korean" . "Yuna")
+  '(
+    ("Korean" . "Yuna")
     ("German" . "Anna")
-    ("Chinese" . "Ting-Ting"))
+    ("Chinese" . "Ting-Ting")
+    )
   "Speakers for different languages.")
 
 (setq words-languages  '(("Korean" . "ko")
-                         ("German" . "de")
-			 ("Italian" . "it")
-			 ("Chinese" . "zh")
-			 ("Spanish" . "es")))
+                         ;; ("German" . "de")
+			 ;; ("Italian" . "it")
+			 ;; ("Chinese" . "zh")
+			 ;; ("Spanish" . "es")
+                         ))
 
 (defun words-translate (to-language)
   "Translate word at point or selection TO-LANGUAGE.

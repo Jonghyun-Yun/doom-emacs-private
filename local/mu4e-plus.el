@@ -90,13 +90,16 @@
   ;; open message in external browse if it's too long
   (defun jyun/mu4e-html2text (msg)
     "My html2text function; shows short message inline, show
-long messages in some external browser (see `browse-url-generic-program')."
+  long messages in some external browser (see `browse-url-generic-program')."
     (let ((html (or (mu4e-message-field msg :body-html) "")))
-      (if (> (length html) 50000)
-          (progn
-            (mu4e-action-view-in-browser msg)
-            "[Viewing message in external browser]")
-        (mu4e-shr2text msg))))
+      (if (< (length html) 50000)
+          (mu4e-shr2text msg)
+        (if (yes-or-no-p "View in external browser? ")
+            (progn
+              (mu4e-action-view-in-browser msg)
+              "[Viewing message in external browser]")
+          (mu4e-shr2text msg)
+          ))))
 
   (setq mu4e-html2text-command 'jyun/mu4e-html2text)
 
@@ -121,12 +124,22 @@ long messages in some external browser (see `browse-url-generic-program')."
               (local-set-key (kbd "<tab>") 'shr-next-link)
               (local-set-key (kbd "<backtab>") 'shr-previous-link)))
 
-  ;; Borrowed from http://ionrock.org/emacs-email-and-mu.html
-  ;; Choose account label to feed msmtp -a option based on From header
-  ;; in Message buffer; This function must be added to
-  ;; message-send-mail-hook for on-the-fly change of From address before
-  ;; sending message since message-send-mail-hook is processed right
-  ;; before sending message.
+;;; email send
+;; sending mail
+(setq sendmail-program "/usr/local/bin/msmtp"
+      message-send-mail-function 'message-send-mail-with-sendmail
+      ;; user-full-name "Jonghyun Yun")
+      )
+  ;; tell msmtp to choose the SMTP server according to the from field in the outgoing email
+  (setq message-sendmail-extra-arguments '("--read-envelope-from")
+        message-sendmail-f-is-evil 't)
+
+  ;; ;; Borrowed from http://ionrock.org/emacs-email-and-mu.html
+  ;; ;; Choose account label to feed msmtp -a option based on From header
+  ;; ;; in Message buffer; This function must be added to
+  ;; ;; message-send-mail-hook for on-the-fly change of From address before
+  ;; ;; sending message since message-send-mail-hook is processed right
+  ;; ;; before sending message.
   ;; (defun choose-msmtp-account
   ;;     ()
   ;;   (if (message-mail-p)
@@ -142,12 +155,11 @@ long messages in some external browser (see `browse-url-generic-program')."
   ;;                ((string-match "jonghyun.yun@uta.edu" from) "uta")
   ;;                )))
   ;;           (setq message-sendmail-extra-arguments (list '"-a" account))))))
-
   ;; ;; (setq message-sendmail-envelope-from 'header)
   ;; (add-hook 'message-send-mail-hook 'choose-msmtp-account)
 
   ;; ;; email attachment from dired: C-c RET C-a
-  ;; (require 'gnus-dired)
+  (require 'gnus-dired)
   ;; ;; make the `gnus-dired-mail-buffers' function also work on
   ;; ;; message-mode derived modes, such as mu4e-compose-mode
   ;; (defun gnus-dired-mail-buffers ()
@@ -161,8 +173,8 @@ long messages in some external browser (see `browse-url-generic-program')."
   ;;           (push (buffer-name buffer) buffers))))
   ;;     (nreverse buffers)))
 
-  ;; (setq gnus-dired-mail-mode 'mu4e-user-agent)
-  ;; (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
+  (setq gnus-dired-mail-mode 'mu4e-user-agent)
+  (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
   (require 'mu4e-context)
   (setq mu4e-contexts
@@ -333,6 +345,32 @@ long messages in some external browser (see `browse-url-generic-program')."
   ;;      :prompt "*something"
   ;;      :action (mu4e-error "No action for deferred mark")))
 
+  ;;; mu4e-actions
+  ;; overide default mu4e-action-view-as-pdf
+  ;; msg2pdf isn't easy to make working
+  (defvar mu4e-message-to-pdf-dir "~/Downloads/"
+    "A directory to save messages in PDF.")
+  (defun mu4e-action-view-as-pdf (msg)
+    (let* ((date (mu4e-message-field msg :date))
+           (infile (mu4e~write-body-to-html msg))
+           (pdf (concat mu4e-message-to-pdf-dir (format-time-string "mu4e_%Y-%m-%d_%H%M%S_%Z.pdf" date))))
+      (with-temp-buffer
+        (shell-command
+         (format "wkhtmltopdf %s %s" infile pdf) "*mu4e-to-pdf*"))
+      (unless (and pdf (file-exists-p pdf))
+        (mu4e-warn "Failed to create PDF file"))
+      (find-file pdf)))
+
+  ;; org-capture
+
+(defun mu4e-org-capture-message (MSG)
+  (interactive)
+  (progn
+    (setq jyun/target-mu4e-subject (mu4e-message-field MSG :subject))
+    (org-capture nil "ATE")))
+
+(add-to-list 'mu4e-view-actions
+             '("Capture to org-mode" . mu4e-org-capture-message))
   )
 
 (use-package mu4e-alert

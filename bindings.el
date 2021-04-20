@@ -86,12 +86,15 @@
            ("P" . org-gcal-post-at-point))
 
 (map!
- (:map cfw:calendar-mode-map
-  :e "R" #'cfw:hide-routines)
+ :map cfw:calendar-mode-map
+ :g  "R" #'cfw:hide-routines
+ :g  "C" #'cfw:org-capture ;; c and C for capture
+)
 
- ;; (:map inferior-ess-mode-map
-  ;; "tab" #'completion-at-point)
+;; (:map inferior-ess-mode-map
+;; "tab" #'completion-at-point)
 
+(map!
  :n "C-t"   nil
  :n "C-S-t" nil
  :g "M-1"   #'winum-select-window-1
@@ -127,7 +130,7 @@
  :g "s-7"   #'+workspace/switch-to-6
  :g "s-8"   #'+workspace/switch-to-7
  :g "s-9"   #'+workspace/switch-to-8
- :g "s-0"   #'+workspace/switch-to-final)
+:g "s-0"   #'+workspace/switch-to-final)
 
 
 (map! :g "C-c s t" #'+lookup/dictionary-definition
@@ -208,3 +211,44 @@
  :g "C-?" #'org-tree-slide-content
  :g "C-:" #'jyun/org-present-latex-preview
  )
+
+(map! :map elfeed-search-mode-map
+      :after elfeed-search
+      ;; [remap kill-this-buffer] "q"
+      ;; [remap kill-buffer] "q"
+      ;; :n doom-leader-key nil
+      ;; :n "q" #'+rss/quit
+      ;; :n "U" #'elfeed-search-untag-all-unread
+      ;; :n "u" #'elfeed-search-tag-all-unread
+      ;; :n "s" #'elfeed-search-live-filter
+      :ne "RET" #'+rss/open
+      :ne "p" #'elfeed-show-pdf
+      ;; :n "+" #'elfeed-search-tag-all
+      ;; :n "-" #'elfeed-search-untag-all
+      ;; :n "S" #'elfeed-search-set-filter
+      ;; :n "M-RET" #'elfeed-search-browse-url
+      ;; :n "y" #'elfeed-search-yank
+      )
+(map! :map elfeed-show-mode-map
+      :after elfeed-show
+      ;; [remap kill-this-buffer] "q"
+      ;; [remap kill-buffer] "q"
+      ;; :n doom-leader-key nil
+      :nme "q" #'+rss/delete-pane
+      :nme "e" #'email-elfeed-entry
+      ;; :nm "o" #'ace-link-elfeed
+      ;; :nm "RET" #'org-ref-elfeed-add
+      ;; [remap elfeed-show-next] #'+rss/next
+      ;; [remap elfeed-show-prev] #'rss/previous ;;error
+      :nme "p" #'elfeed-show-pdf
+      :nme "C" #'(lambda ()
+                   (interactive)
+                   (progn
+                     (setq jyun/target-elfeed-entry elfeed-show-entry)
+                     (org-capture nil "EFE"))
+                   )
+      ;; :nm "+" #'elfeed-show-tag
+      ;; :nm "-" #'elfeed-show-untag
+      ;; :nm "s" #'elfeed-show-new-live-search
+      ;; :nm "y" #'elfeed-show-yank
+      )
