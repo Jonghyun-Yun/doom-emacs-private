@@ -111,11 +111,11 @@
                       org-fontify-whole-heading-line t
                       org-hide-emphasis-markers t
                       )
-                (when (featurep 'org-superstar)
+                (when (require 'org-superstar)
                   (setq-local org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
                               ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
                               org-superstar-remove-leading-stars t)
-                  (org-superstar-restart))
+                  (org-superstar-mode 1))
                 (setq +zen--original-org-indent-mode-p org-indent-mode)
                 (org-indent-mode -1)
                 )))
@@ -155,4 +155,62 @@
   :config
   (add-hook 'Info-selection-hook 'info-colors-fontify-node)
   ;; (add-hook 'Info-mode-hook #'mixed-pitch-mode)
+  )
+
+;;; org-tree-slide
+(with-eval-after-load 'org-tree-slide
+  (defvar +org-present-hide-properties t
+    "Whether to hide property draws in `org-tree-slide'.")
+  (defvar +org-present-hide-tags t
+    "Whether to hide tags in `org-tree-slide'.")
+  (defvar +org-present-format-latex-scale 2.5
+    "A local variable to be used as `org-latex-preview-scale' in `org-tree-slide'.")
+  (setq org-tree-slide-header nil
+        org-tree-slide-skip-outline-level 5
+        org-tree-slide-heading-emphasis nil
+        +org-present-text-scale 4)
+
+  ;; (remove-hook 'org-tree-slide-mode-hook
+  ;;              #'+org-present-hide-blocks-h
+  ;;              #'+org-present-prettify-slide-h
+
+  ;; `jyun/org-present-hide' needs some functions in `contrib-present.el'
+  ;; these functions are not autoloaded.
+  (load (expand-file-name "modules/lang/org/autoload/contrib-present" doom-emacs-dir))
+  (add-hook! 'org-tree-slide-mode-hook
+             ;; #'jyun/org-present-hide
+             #'jyun/org-present-mixed-pitch-setup
+             )
+  (defun jyun/org-present-mixed-pitch-setup ()
+    "Visual enchancement for `org-tree-slide'. `mixed-pitch-mode'
+or `mixed-pitch-serif-mode' can be called afterward."
+    (progn
+      (require 'mixed-pitch)
+      (setq-local
+       ;; visual-fill-column-width 60
+       ;; org-adapt-indentation nil
+       org-fontify-quote-and-verse-blocks t
+       org-fontify-whole-heading-line t
+       org-hide-emphasis-markers t
+       mixed-pitch-set-height nil
+       )
+      (when (require 'org-superstar)
+        (setq-local org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
+                    ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
+                    org-superstar-remove-leading-stars t)
+        ;; (org-superstar-restart)
+        (org-superstar-mode 1)
+        )
+      ))
+
+  (defun jyun/org-tree-slide (orig-fun &rest args)
+    "Hide a few `org-element'. Then, do `org-tree-slide-mode'."
+    (progn
+      (jyun/org-present-hide)
+      (apply orig-fun args)
+      ))
+  (advice-add 'org-tree-slide-mode :around #'jyun/org-tree-slide)
+
+  ;; cause errors in navigating slides
+  (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
   )

@@ -309,6 +309,34 @@
            )
           ))
 
+
+;; elfeed capture
+(add-to-list 'org-capture-templates
+             '("EFE" "Elfeed entry" entry
+               (file+headline "~/org/inbox.org" "Tasks")
+               "* TODO %(elfeed-entry-title jyun/target-elfeed-entry) :rss:
+:PROPERTIES:
+:CREATED: %U
+:LINK: %a
+:URL: %(elfeed-entry-link jyun/target-elfeed-entry)
+:END:
+%i \n%?"
+               :prepend t
+               ))
+
+;; email capture
+(add-to-list 'org-capture-templates
+             '("ATE" "Attention to Emails" entry
+               (file+headline "~/org/inbox.org" "Tasks")
+               "* TODO %(message jyun/target-mu4e-subject) :@email:
+:PROPERTIES:
+:CREATED: %U
+:LINK: %a
+:END:
+%i \n%?"
+               :prepend t
+               ))
+
   (add-to-list 'org-capture-templates
                '("GSA" "General Skim Annotation" entry
                  (file+function (lambda () (buffer-file-name)) +org-move-point-to-heading)
@@ -721,44 +749,44 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
   ;;     )
 
 
-
   (map! :map org-mode-map
         :localleader
         :desc "View exported file" "v" #'org-view-output-file)
-
-  (defun org-view-output-file (&optional org-file-path)
-    "Visit buffer open on the first output file (if any) found, using `org-view-output-file-extensions'"
-    (interactive)
-    (let* ((org-file-path (or org-file-path (buffer-file-name) ""))
-           (dir (file-name-directory org-file-path))
-           (basename (file-name-base org-file-path))
-           (output-file nil))
-      (dolist (ext org-view-output-file-extensions)
-        (unless output-file
-          (when (file-exists-p
-                 (concat dir basename "." ext))
-            (setq output-file (concat dir basename "." ext)))))
-      (if output-file
-          (if (member (file-name-extension output-file) org-view-external-file-extensions)
-              (browse-url output-file)
-            (pop-to-buffer (or (find-buffer-visiting output-file)
-                               (find-file-noselect output-file))))
-        (message "No exported file found"))))
-
-  (defvar org-view-output-file-extensions '("pdf" "md" "rst" "txt" "tex" "html")
+  (defvar org-view-output-file-extensions '("pdf" "md" "docx" "rst" "txt" "tex" "html")
     "Search for output files with these extensions, in order, viewing the first that matches")
-  (defvar org-view-external-file-extensions '("html")
+  (defvar org-view-external-file-extensions '("html" "docx")
     "File formats that should be opened externally.")
 
-  (defun org-syntax-convert-keyword-case-to-lower ()
-    "Convert all #+KEYWORDS to #+keywords."
-    (interactive)
-    (save-excursion
-      (goto-char (point-min))
-      (let ((count 0)
-            (case-fold-search nil))
-        (while (re-search-forward "^[ \t]*#\\+[A-Z_]+" nil t)
-          (unless (s-matches-p "RESULTS" (match-string 0))
-            (replace-match (downcase (match-string 0)) t)
-            (setq count (1+ count))))
-        (message "Replaced %d occurances" count)))))
+(defun org-syntax-convert-keyword-case-to-lower ()
+  "Convert all #+KEYWORDS to #+keywords."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((count 0)
+          (case-fold-search nil))
+      (while (re-search-forward "^[ \t]*#\\+[A-Z_]+" nil t)
+        (unless (s-matches-p "RESULTS" (match-string 0))
+          (replace-match (downcase (match-string 0)) t)
+          (setq count (1+ count))))
+      (message "Replaced %d occurances" count))))
+
+
+(defun org-view-output-file (&optional org-file-path)
+  "Visit buffer open on the first output file (if any) found, using `org-view-output-file-extensions'"
+  (interactive)
+  (let* ((org-file-path (or org-file-path (buffer-file-name) ""))
+         (dir (file-name-directory org-file-path))
+         (basename (file-name-base org-file-path))
+         (output-file nil))
+    (dolist (ext org-view-output-file-extensions)
+      (unless output-file
+        (when (file-exists-p
+               (concat dir basename "." ext))
+          (setq output-file (concat dir basename "." ext)))))
+    (if output-file
+        (if (member (file-name-extension output-file) org-view-external-file-extensions)
+            (browse-url output-file)
+          (pop-to-buffer (or (find-buffer-visiting output-file)
+                             (find-file-noselect output-file))))
+      (message "No exported file found"))))
+  )

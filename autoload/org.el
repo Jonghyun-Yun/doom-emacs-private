@@ -42,26 +42,26 @@
               "^\\*+.*?\\([ \t]+:[[:alnum:]_@#%:]+:\\)[ \r\n]"
               nil t)
         (+org-present--make-invisible (match-beginning 1) (1- (match-end 1)))))
-      ;; hide properties
-      (when +org-present-hide-properties
-        (goto-char (point-min))
-        (while (re-search-forward org-drawer-regexp nil t)
-          (let ((beg (match-beginning 0))
-                (end (re-search-forward
-                      "^[ \t]*:END:[ \r\n]*"
-                      (save-excursion (outline-next-heading) (point)) t)))
-            (+org-present--make-invisible beg (- end 2)))))))
-  ;; (dolist (el '("title" "author" "date"))
-  ;;   (goto-char (point-min))
-  ;;   (when (re-search-forward (format "^\\(#\\+%s:[ \t]*\\)[ \t]*\\(.*\\)$" el) nil t)
-  ;;     (+org-present--make-invisible (match-beginning 1) (match-end 1))
-  ;;     (push (make-overlay (match-beginning 2) (match-end 2)) +org-present--overlays)
-  ;;     ))
+    ;; hide properties
+    (when +org-present-hide-properties
+      (goto-char (point-min))
+      (while (re-search-forward org-drawer-regexp nil t)
+        (let ((beg (match-beginning 0))
+              (end (re-search-forward
+                    "^[ \t]*:END:[ \r\n]*"
+                    (save-excursion (outline-next-heading) (point)) t)))
+          (+org-present--make-invisible beg (- end 2)))))))
+;; (dolist (el '("title" "author" "date"))
+;;   (goto-char (point-min))
+;;   (when (re-search-forward (format "^\\(#\\+%s:[ \t]*\\)[ \t]*\\(.*\\)$" el) nil t)
+;;     (+org-present--make-invisible (match-beginning 1) (match-end 1))
+;;     (push (make-overlay (match-beginning 2) (match-end 2)) +org-present--overlays)
+;;     ))
 
 
 ;;;###autoload
 (defun jyun/org-present-latex-preview ()
-"Render LaTeX fragments in a buffer. The size of image is determned by `+org-present-format-latex-scale'."
+  "Render LaTeX fragments in a buffer. The size of image is determned by `+org-present-format-latex-scale'."
   (interactive)
   (condition-case ex
       (let ((org-format-latex-options

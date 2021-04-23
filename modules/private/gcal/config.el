@@ -6,13 +6,20 @@
 ;; just leave this as it is. once I fetch the calendar, it doesn't ask me to update the token.
 ;; although I cannot see these passworkd related variables using SPC h v.
 
+;; (after! org-gcal
+;;   (after! pass
+;;     (setq org-gcal-client-id (password-store-get "org-gcal/client-id")
+;;           org-gcal-client-secret (password-store-get "org-gcal/client-secret")
+;;           )
+;;     )
+;;   )
+
 (after! org-gcal
-  (after! pass
-    (setq org-gcal-client-id (password-store-get "org-gcal/client-id")
-          org-gcal-client-secret (password-store-get "org-gcal/client-secret")
-          )
-    )
+  (setq org-gcal-client-id (funcall #'password-store-get "org-gcal/client-id")
+        org-gcal-client-secret (funcall #'password-store-get "org-gcal/client-secret")
+        )
   )
+
 
 ;; sync gcal.org and google calendar
 (setq org-gcal-file-alist '(

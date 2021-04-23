@@ -11,11 +11,14 @@
 ;;   )
 
 ;;; scimax
-(load! "words")                         ;; bibtex search
+;; (load! "words")                         ;; bibtex search
 (load! "scimax-elfeed")                 ;; email elfeed
-(load! "scimax-hydra")                  ;; my hydra to review
+;; (load! "scimax-hydra")                  ;; my hydra to review
 (load! "scimax-autoformat-abbrev")      ;; abbrev
 (load! "scimax-yas")      ;; abbrev
+
+;; (use-package! ox-word
+  ;; :after ox)
 
 ;; (scimax-ivy-yas)
 ;; (scimax-autoformat-mode)

@@ -68,7 +68,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-nord-light)
+(setq doom-theme 'doom-one-light)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -97,7 +97,16 @@
 ;; they are implemented.
 
 ;; passwords to be accessible
-(use-package! pass)
+;; (use-package! pass)
+
+;; org -> latex -> md -> docx
+;; to properly generate cross references
+;; https://github.com/lierdakil/pandoc-crossref
+(use-package! md-word
+  :load-path "local/"
+  :after ox
+  :config
+  (add-to-list 'org-pandoc-valid-options 'citeproc))
 
 ;;; load lisp
 (with-eval-after-load 'hydra
@@ -105,12 +114,11 @@
 (load! "bindings")
 (load! "local/mu4e-plus")
 (load! "local/org-plus")
-(when (featurep! :ui ligatures +extra)
-  (load! "local/ligature"))
+;; (when (featurep! :ui ligatures +extra)
+;;   (load! "local/ligature"))
 (load! "local/ess-plus")
 (load! "local/latex-plus")
 (load! "local/visual-plus")
-(load! "local/elfeed")
 
 (after! projectile
   (projectile-add-known-project "~/Dropbox/research/lsjm-art")
@@ -200,7 +208,7 @@
 (setq auto-save-default t
       create-lockfiles t
       make-backup-files nil
-      truncate-string-ellipsis "…"      ; Unicode ellispis are nicer than "...", and also save /precious/ space
+      ;; truncate-string-ellipsis "…"      ; Unicode ellispis are nicer than "...", and also save /precious/ space
       yas-triggers-in-field t           ; snippets inside snippets
       )
 
@@ -215,15 +223,6 @@
 ;; company memory
 (setq-default history-length 500)
 (setq-default prescient-history-length 500)
-
-;; defer font-locking
-(defun locally-defer-font-lock ()
-  "Set jit-lock defer and stealth, when buffer is over a certain size."
-  (when (> (buffer-size) 50000)
-    (setq-local jit-lock-defer-time 0.05
-                jit-lock-stealth-time 1)))
-
-;; (add-hook 'org-mode-hook #'locally-defer-font-lock)
 
 ;;; org-mode
 (after! org
@@ -244,14 +243,11 @@
 
    org-fontify-quote-and-verse-blocks nil
    org-fontify-whole-heading-line nil
-
-   org-journal-encrypt-journal t
    ;; org-hide-leading-stars t
-   ;; org-startup-indented nil
-
-   ;; org-ellipsis " ▾ "
-   ;; org-ellipsis "  ⏷  "
    org-ellipsis " ▼ "
+
+   ;; org-startup-indented nil
+   org-journal-encrypt-journal t
 
    org-indent-indentation-per-level 1
    org-adapt-indentation nil
@@ -259,13 +255,13 @@
    ;; tag indent
    ;; org-tags-column -77
 
+   org-log-done 'time
+   ;; don't ask to follow elisp link
+   org-confirm-elisp-link-function nil
+
    ;; org export global setting
    org-export-with-toc nil
-   org-log-done 'time
-   ;; latex highlight
-   ;; org-highlight-latex-and-related '(native)
-   ;; don't ask to follow elisp link
-   org-confirm-elisp-link-function nil)
+   org-export-with-tags nil)
 
   ;; (setq org-insert-heading-respect-content nil)
 
@@ -278,7 +274,8 @@
   (remove-hook 'org-tab-first-hook #'+org-yas-expand-maybe-h)
 
   ;; insert-mode tab binds back to org-cycle
-  (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h))
+  (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h)
+  )
 
 ;;;; org-latex
 (after! org
@@ -362,7 +359,7 @@
 (after! ox
   (setq org-beamer-theme "[progressbar=foot]metropolis"
         org-beamer-frame-level 4
-        org-latex-tables-booktabs t
+        org-latex-tables-booktabs nil
         ))
 ;; ;; Github flavored markdown exporter
 ;; (eval-after-load 'ox
@@ -618,64 +615,6 @@
 (add-to-list '+zen-mixed-pitch-modes 'latex-mode)
 (setq +zen-text-scale 0.8) ;; The text-scaling level for writeroom-mode
 
-;;; org-tree-slide
-(with-eval-after-load 'org-tree-slide
-  (defvar +org-present-hide-properties t
-    "Whether to hide property draws in `org-tree-slide'.")
-  (defvar +org-present-hide-tags t
-    "Whether to hide tags in `org-tree-slide'.")
-  (defvar +org-present-format-latex-scale 2.5
-    "A local variable to be used as `org-latex-preview-scale' in `org-tree-slide'.")
-  (setq org-tree-slide-header nil
-        org-tree-slide-skip-outline-level 5
-        org-tree-slide-heading-emphasis nil
-        +org-present-text-scale 3)
-
-  ;; (remove-hook 'org-tree-slide-mode-hook
-  ;;              #'+org-present-hide-blocks-h
-  ;;              #'+org-present-prettify-slide-h
-
-  ;; `jyun/org-present-hide' needs some functions in `contrib-present.el'
-  ;; these functions are not autoloaded.
-  (load (expand-file-name "modules/lang/org/autoload/contrib-present" doom-emacs-dir))
-  (add-hook! 'org-tree-slide-mode-hook
-             ;; #'jyun/org-present-hide
-             #'jyun/org-present-mixed-pitch-setup
-             )
-  (defun jyun/org-present-mixed-pitch-setup ()
-    "Visual enchancement for `org-tree-slide'. `mixed-pitch-mode'
-or `mixed-pitch-serif-mode' can be called afterward."
-    (progn
-      (require 'mixed-pitch)
-      (setq-local
-       ;; visual-fill-column-width 60
-       ;; org-adapt-indentation nil
-       org-fontify-quote-and-verse-blocks t
-       org-fontify-whole-heading-line t
-       org-hide-emphasis-markers t
-       mixed-pitch-set-height nil
-       )
-      (when (require 'org-superstar)
-        (setq-local org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
-                    ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
-                    org-superstar-remove-leading-stars t)
-        ;; (org-superstar-restart)
-        (org-superstar-mode 1)
-        )
-      ))
-
-  (defun jyun/org-tree-slide (orig-fun &rest args)
-    "Hide a few `org-element'. Then, do `org-tree-slide-mode'."
-    (progn
-      (jyun/org-present-hide)
-      (apply orig-fun args)
-      ))
-  (advice-add 'org-tree-slide-mode :around #'jyun/org-tree-slide)
-
-  ;; cause errors in navigating slides
-  (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
-  )
-
 ;;; ffip
 ;; for doom-modeline
 (use-package! find-file-in-project
@@ -796,45 +735,13 @@ or `mixed-pitch-serif-mode' can be called afterward."
               '(("Google Scholar"       "http://scholar.google.com/scholar?q=%s")
                 ("Crossref"             "http://search.crossref.org/?q=%s")
                 ("PubMed"               "http://www.ncbi.nlm.nih.gov/pubmed/?term=%s")
-                ("arXiv"     "https://arxiv.org/search/?query=%s&searchtype=all&abstracts=show&order=-announced_date_first&size=50")
+                ("arXiv"                "https://arxiv.org/search/?query=%s&searchtype=all&abstracts=show&order=-announced_date_first&size=50")
                 ("Semantic Scholar"     "https://www.semanticscholar.org/search?q=%s")
-                ("Dictionary.com"     "http://dictionary.reference.com/browse/%s?s=t")
-                ("Thesaurus.com"   "http://www.thesaurus.com/browse/%s")
+                ("Dictionary.com"       "http://dictionary.reference.com/browse/%s?s=t")
+                ("Thesaurus.com"        "http://www.thesaurus.com/browse/%s")
+                ("Merriam-Webster"      "https://www.merriam-webster.com/dictionary/%s")
                 )))
 
-
-;; async-operations
-;; commented out, messages are not sent, disapper
-;; (require 'smtpmail-async)
-;; (setq send-mail-function         'async-smtpmail-send-it
-;; message-send-mail-function 'async-smtpmail-send-it)
-
-;; elfeed capture
-(add-to-list 'org-capture-templates
-             '("EFE" "Elfeed entry" entry
-               (file+headline "~/org/inbox.org" "Tasks")
-               "* TODO %(elfeed-entry-title jyun/target-elfeed-entry) :rss:
-:PROPERTIES:
-:CREATED: %U
-:LINK: %a
-:URL: %(elfeed-entry-link jyun/target-elfeed-entry)
-:END:
-%i \n%?"
-               :prepend t
-               ))
-
-;; email capture
-(add-to-list 'org-capture-templates
-             '("ATE" "Attention to Emails" entry
-               (file+headline "~/org/inbox.org" "Tasks")
-               "* TODO %(message jyun/target-mu4e-subject) :@email:
-:PROPERTIES:
-:CREATED: %U
-:LINK: %a
-:END:
-%i \n%?"
-               :prepend t
-               ))
 
 ;; (map! :map mu4e-view-mode-map
 ;;       :nme "H-c" #'(lambda ()
@@ -842,3 +749,96 @@ or `mixed-pitch-serif-mode' can be called afterward."
 ;;                    (let* ((mu4e-subject (mu4e-message-field-at-point :subject)))
 ;;                      (setq jyun/target-mu4e-subject mu4e-subject)
 ;;                      (org-capture nil "ATE"))))
+
+(use-package! lexic
+  :commands lexic-search lexic-list-dictionary
+  :config
+  (setq lexic-dictionary-path  (expand-file-name "~/Dropbox/emacs/stardict/dic/"))
+  (map! :map lexic-mode-map
+        :n "q" #'lexic-return-from-lexic
+        :nv "RET" #'lexic-search-word-at-point
+        :n "a" #'outline-show-all
+        :n "h" (cmd! (outline-hide-sublevels 3))
+        :n "o" #'lexic-toggle-entry
+        :n "n" #'lexic-next-entry
+        :n "N" (cmd! (lexic-next-entry t))
+        :n "p" #'lexic-previous-entry
+        :n "P" (cmd! (lexic-previous-entry t))
+        :n "E" (cmd! (lexic-return-from-lexic) ; expand
+                     (switch-to-buffer (lexic-get-buffer)))
+        :n "M" (cmd! (lexic-return-from-lexic) ; minimise
+                     (lexic-goto-lexic))
+        :n "C-p" #'lexic-search-history-backwards
+        :n "C-n" #'lexic-search-history-forwards
+        :n "/" (cmd! (call-interactively #'lexic-search))))
+
+;;; elfeed
+;;;
+;;; elfeed
+;; (evil-set-initial-state 'elfeed-search-mode 'emacs)
+;; (evil-set-initial-state 'elfeed-show-mode 'emacs)
+
+(after! elfeed
+  (run-at-time nil (* 8 60 60) #'elfeed-update)
+  (setq elfeed-search-title-max-width 100
+        elfeed-search-title-min-width 20
+        elfeed-search-filter "@2-week-ago"
+        elfeed-show-entry-switch #'pop-to-buffer
+        elfeed-show-entry-delete #'+rss/delete-pane))
+
+(use-package elfeed-score
+  :after elfeed
+  :init
+  (setq elfeed-score-score-file (expand-file-name "elfeed.score" doom-private-dir))
+  :config
+  (progn
+    (elfeed-score-enable)
+    (define-key elfeed-search-mode-map "=" elfeed-score-map)
+    ;; scores displayed in the search buffer
+    (setq elfeed-search-print-entry-function #'elfeed-score-print-entry)))
+
+;;; get pdf from elfeed entry
+;; https://tecosaur.github.io/emacs-config/config.html
+(after! elfeed-show
+  (require 'url)
+
+  (defvar elfeed-pdf-dir
+    (expand-file-name "pdfs/"
+                      (file-name-directory (directory-file-name elfeed-enclosure-default-dir))))
+
+  (defvar elfeed-link-pdfs
+    '(("https://www.jstatsoft.org/index.php/jss/article/view/v0\\([^/]+\\)" . "https://www.jstatsoft.org/index.php/jss/article/view/v0\\1/v\\1.pdf")
+      ("http://arxiv.org/abs/\\([^/]+\\)" . "https://arxiv.org/pdf/\\1.pdf"))
+    "List of alists of the form (REGEX-FOR-LINK . FORM-FOR-PDF)")
+
+  (defun elfeed-show-pdf (entry)
+    (interactive
+     (list (or elfeed-show-entry (elfeed-search-selected :ignore-region))))
+    (let ((link (elfeed-entry-link entry))
+          (feed-name (plist-get (elfeed-feed-meta (elfeed-entry-feed entry)) :title))
+          (title (elfeed-entry-title entry))
+          (file-view-function
+           (lambda (f)
+             (when elfeed-show-entry
+               (elfeed-kill-buffer))
+             (pop-to-buffer (find-file-noselect f))))
+          pdf)
+
+      (let ((file (expand-file-name
+                   (concat (subst-char-in-string ?/ ?, title) ".pdf")
+                   (expand-file-name (subst-char-in-string ?/ ?, feed-name)
+                                     elfeed-pdf-dir))))
+        (if (file-exists-p file)
+            (funcall file-view-function file)
+          (dolist (link-pdf elfeed-link-pdfs)
+            (when (and (string-match-p (car link-pdf) link)
+                       (not pdf))
+              (setq pdf (replace-regexp-in-string (car link-pdf) (cdr link-pdf) link))))
+          (if (not pdf)
+              (message "No associated PDF for entry")
+            (message "Fetching %s" pdf)
+            (unless (file-exists-p (file-name-directory file))
+              (make-directory (file-name-directory file) t))
+            (url-copy-file pdf file)
+            (funcall file-view-function file))))))
+  )

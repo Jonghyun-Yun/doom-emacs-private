@@ -1,11 +1,11 @@
 ;;; private/gtd/config.el -*- lexical-binding: t; -*-
 
 ;;; org-pretty-tags
-(use-package org-pretty-tags
+(use-package! org-pretty-tags
   :config
   (setq org-pretty-tags-surrogate-strings
         `(
-          ("@home"       . ,(all-the-icons-octicon   "home"          :face 'all-the-icons-orange  :v-adjust 0.01))
+          ("@home"       . ,(all-the-icons-octicon  "home"          :face 'all-the-icons-orange  :v-adjust 0.01))
           ("@work"       . ,(all-the-icons-faicon   "building-o"     :face 'all-the-icons-orange  :v-adjust 0.01))
           ("@email"      . ,(all-the-icons-faicon   "envelope-o"     :face 'all-the-icons-orange  :v-adjust 0.01))
           ("@phone"      . ,(all-the-icons-faicon   "phone"          :face 'all-the-icons-orange  :v-adjust 0.01))
@@ -36,10 +36,11 @@
           ("info"        . ,(all-the-icons-faicon   "info-circle"    :face 'all-the-icons-blue    :v-adjust 0.01))
           ("someday"     . ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
           ("idea"        . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
-          ("ATTACH"      . ,(all-the-icons-faicon  "paperclip"      :face 'all-the-icons-yellow  :v-adjust 0.01))
-          ("ARCHIVE"     . ,(all-the-icons-octicon  "file-zip"      :face 'all-the-icons-gray  :v-adjust 0.01))
+          ("ATTACH"      . ,(all-the-icons-faicon  "paperclip"       :face 'all-the-icons-yellow  :v-adjust 0.01))
+          ("ARCHIVE"     . ,(all-the-icons-octicon  "file-zip"       :face 'all-the-icons-gray    :v-adjust 0.01))
           ))
-  (org-pretty-tags-global-mode))
+  (org-pretty-tags-global-mode)
+  )
 
 (use-package org-super-agenda
   :defer t

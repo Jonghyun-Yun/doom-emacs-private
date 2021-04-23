@@ -1,23 +1,4 @@
-;;; latex-plus.el --- description -*- lexical-binding: t; -*-
-;;
-;; Copyright (C) 2020 Jonghyun Yun
-;;
-;; Author: Jonghyun Yun <http://github/yunj>
-;; Maintainer: Jonghyun Yun <jonghyun.yun@gmail.com>
-;; Created: June 08, 2020
-;; Modified: June 08, 2020
-;; Version: 0.0.1
-;; Keywords:
-;; Homepage: https://github.com/yunj/latex-plus
-;; Package-Requires: ((emacs 27.0.91) (cl-lib "0.5"))
-;;
-;; This file is not part of GNU Emacs.
-;;
-;;; Commentary:
-;;
-;;  description
-;;
-;;; Code:
+;;; ../Dropbox/emacs/.doom.d/local/latex-plus.el -*- lexical-binding: t; -*-
 
 ;;; skip ispelling
 (with-eval-after-load 'latex
@@ -37,17 +18,17 @@
             ))
          (cadr ispell-tex-skip-alists)))
 
-;; make AUCTeX save files without asking
-(setq TeX-save-query nil)
+  ;; make AUCTeX save files without asking
+  (setq TeX-save-query nil)
 
-;; define math environment for font-lock
-(setq font-latex-math-environments
-      (quote
-       ("display" "displaymath" "equation" "eqnarray" "gather" "math" "multline"
-       "align" "alignat" "align*" "xalignat" "xxalignat" "flalign")))
+  ;; define math environment for font-lock
+  (setq font-latex-math-environments
+        (quote
+         ("display" "displaymath" "equation" "eqnarray" "gather" "math" "multline"
+          "align" "alignat" "align*" "xalignat" "xxalignat" "flalign")))
 
-(evil-set-initial-state 'TeX-output-mode 'emacs)
-(evil-set-initial-state 'TeX-special-mode 'emacs)
+  (evil-set-initial-state 'TeX-output-mode 'emacs)
+  (evil-set-initial-state 'TeX-special-mode 'emacs)
 
   )
 
@@ -295,6 +276,3 @@
 ;;  'latex-mode
 ;;  `((,"\\\\[[:word:]]+" 0 'font-lock-keyword-face prepend))
 ;;  'end)
-
-(provide 'latex-plus)
-;;; latex-plus.el ends here

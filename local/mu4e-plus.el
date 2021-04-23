@@ -1,23 +1,4 @@
-;;; mu4e-plus.el --- description -*- lexical-binding: t; -*-
-;;
-;; Copyright (C) 2020 Jonghyun Yun
-;;
-;; Author: Jonghyun Yun <http://github/yunj>
-;; Maintainer: Jonghyun Yun <jonghyun.yun@gmail.com>
-;; Created: June 08, 2020
-;; Modified: June 08, 2020
-;; Version: 0.0.1
-;; Keywords:
-;; Homepage: https://github.com/yunj/ess-plus
-;; Package-Requires: ((emacs 27.0.91) (cl-lib "0.5"))
-;;
-;; This file is not part of GNU Emacs.
-;;
-;;; Commentary:
-;;
-;;  description
-;;
-;;; Code:
+;;; ../Dropbox/emacs/.doom.d/local/mu4e-plus.el -*- lexical-binding: t; -*-
 
 ;; no accumulating drafts
 (add-hook 'mu4e-compose-mode-hook #'(lambda () (auto-save-visited-mode -1)))
@@ -133,6 +114,12 @@
   ;; tell msmtp to choose the SMTP server according to the from field in the outgoing email
   (setq message-sendmail-extra-arguments '("--read-envelope-from")
         message-sendmail-f-is-evil 't)
+
+;; async-operations
+;; commented out, messages are not sent, disapper
+;; (require 'smtpmail-async)
+;; (setq send-mail-function         'async-smtpmail-send-it
+;; message-send-mail-function 'async-smtpmail-send-it)
 
   ;; ;; Borrowed from http://ionrock.org/emacs-email-and-mu.html
   ;; ;; Choose account label to feed msmtp -a option based on From header

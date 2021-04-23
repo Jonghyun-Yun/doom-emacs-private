@@ -1,23 +1,4 @@
-;;; ess-plus.el --- description -*- lexical-binding: t; -*-
-;;
-;; Copyright (C) 2020 Jonghyun Yun
-;;
-;; Author: Jonghyun Yun <http://github/yunj>
-;; Maintainer: Jonghyun Yun <jonghyun.yun@gmail.com>
-;; Created: June 08, 2020
-;; Modified: June 08, 2020
-;; Version: 0.0.1
-;; Keywords:
-;; Homepage: https://github.com/yunj/ess-plus
-;; Package-Requires: ((emacs 27.0.91) (cl-lib "0.5"))
-;;
-;; This file is not part of GNU Emacs.
-;;
-;;; Commentary:
-;;
-;;  description
-;;
-;;; Code:
+;;; ../Dropbox/emacs/.doom.d/local/ess-plus.el -*- lexical-binding: t; -*-
 
 ;; ;; language server w/o launching R
 ;; (with-eval-after-load 'lsp-mode
@@ -158,6 +139,3 @@
 ;; Make RefTex aware of Snw and Rnw files
 (setq reftex-file-extensions
       '(("Snw" "Rnw" "nw" "tex" ".tex" ".ltx") ("bib" ".bib")))
-
-(provide 'ess-plus)
-;;; ess-plus.el ends here

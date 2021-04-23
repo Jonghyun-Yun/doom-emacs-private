@@ -1,5 +1,6 @@
+;;; ../Dropbox/emacs/.doom.d/local/visual-plus.el -*- lexical-binding: t; -*-
+
 (with-eval-after-load 'doom-themes
-  :config
   ;; Global settings (defaults)
   ;; (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
   ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
@@ -28,6 +29,12 @@
 ;;; doom-modeline
 ;; https://github.com/seagle0128/doom-modeline
 (with-eval-after-load 'doom-modeline
+;; The right side of the modeline is cut off
+  (setq all-the-icons-scale-factor 1.1)
+  ;; (doom-modeline-def-modeline 'main
+  ;;                             '(bar matches buffer-info remote-host buffer-position parrot selection-info)
+  ;;                             '(misc-info minor-modes checker input-method buffer-encoding major-mode process vcs "  ")) ; <-- added padding here
+
   ;; How tall the mode-line should be. It's only respected in GUI.
   ;; If the actual char height is larger, it respects the actual height.
   (setq doom-modeline-height 24)

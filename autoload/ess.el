@@ -1,7 +1,6 @@
 ;;; ~/.doom.d/autoload/ess.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! :lang ess)
 
-
 ;;;###autoload
 (defun Sweave-mode ()
   "ESS Sweave mode for Rnw files."
@@ -41,8 +40,7 @@
 
   (mapc (lambda (suffix)
           (add-to-list 'reftex-file-extensions suffix))
-        '(("nw") ("Snw") ("Rnw")))
-  )
+        '(("nw") ("Snw") ("Rnw"))))
 
 ;; ESS's equivalent of RStudio's `clean and rebuild'
 ;;;###autoload
@@ -54,8 +52,8 @@ TRUE, upgrade = FALSE, build = FALSE. On prefix ARG
 `devtools::install()' arguments."
   (interactive "P")
   (progn
-  (ess-r-package-eval-linewise "Rcpp::compileAttributes(%s)")
-  (ess-r-package-eval-linewise
-   "devtools::install(%s)\n" "Installing %s" arg
-   '("quick = TRUE, build = FALSE, upgrade = FALSE, keep_source = TRUE"
-     (read-string "Arguments: " "keep_source = TRUE, force = TRUE")))))
+    (ess-r-package-eval-linewise "Rcpp::compileAttributes(%s)")
+    (ess-r-package-eval-linewise
+     "devtools::install(%s)\n" "Installing %s" arg
+     '("quick = TRUE, build = FALSE, upgrade = FALSE, keep_source = TRUE"
+       (read-string "Arguments: " "keep_source = TRUE, force = TRUE")))))

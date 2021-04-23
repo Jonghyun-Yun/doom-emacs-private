@@ -158,8 +158,14 @@
 ;; mixed-pitch-face available
 (package! mixed-pitch :pin "519e05f74825abf04b7d2e0e38ec040d013a125a")
 
-(package! org-pretty-tags :pin "5c7521651b35ae9a7d3add4a66ae8cc176ae1c76")
 ;; (package! org-pretty-table
   ;; :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "474ad84a8f...")
 ;; (package! org-fragtog :pin "0151cabc7a...")
 (package! org-fancy-priorities :disable t)
+
+;; (package! pandoc-mode)
+;;
+
+(package! lexic
+  :pin "4ded6be2ce3e8dadc5635a534827181a8c8ab602"
+  :disable t)

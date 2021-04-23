@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; ../Dropbox/emacs/.doom.d/local/ligature.el
+;;; ../Dropbox/emacs/.doom.d/local/ligature.el -*- lexical-binding: t; -*-
 
 ;;; ess
 (after! ess-r-mode
