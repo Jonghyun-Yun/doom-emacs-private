@@ -106,9 +106,11 @@
   :load-path "local/"
   :after ox
   :config
-  (add-to-list 'org-pandoc-valid-options 'citeproc))
+  (after! ox-pandoc
+    (add-to-list 'org-pandoc-valid-options 'citeproc))
+  )
 
-;; ;;; load lisp
+;;; load lisp
 (with-eval-after-load 'hydra
   (load! "local/hydra-plus"))
 (load! "bindings")

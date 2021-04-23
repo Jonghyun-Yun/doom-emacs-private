@@ -27,6 +27,7 @@
 
 (require 'org-ref)
 (require 'ox)
+(require 'ox-latex)
 
 (defvar md-word-fix-author-yaml-header nil
   "Fix yaml header.
