@@ -373,10 +373,10 @@
 
 ;;; youtube link + SPC m v
 (with-eval-after-load 'org
-  ;; (setq org-export-headline-levels 5) ; I like nesting
-  ;; ignore heading not content
-  (require 'ox-extra)
-  (ox-extras-activate '(ignore-headlines))
+  ;; ;; (setq org-export-headline-levels 5) ; I like nesting
+  ;; ;; ignore heading not content
+  ;; (require 'ox-extra)
+  ;; (ox-extras-activate '(ignore-headlines))
 
   ;; embed youtube in exported html
   (org-link-set-parameters "yt" :export #'+org-export-yt)
@@ -469,8 +469,6 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
               )
     )
 
-  (setq org-highlight-latex-and-related '(native))
-
   ;; org-mode and knitr
   ;; (require 'ox-md) ;; required to markdown export
   ;; (require 'ox-ravel)
@@ -560,9 +558,7 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
 
   ;; Org-mode: Source block doesn't respect parent buffer indentation
   ;; http://emacs.stackexchange.com/questions/9472/org-mode-source-block-doesnt-respect-parent-buffer-indentation
-  (setq org-edit-src-content-indentation 0
-        ;; org-src-preserve-indentation nil
-        )
+  (setq org-edit-src-content-indentation 0)
 
   ;; no extra indentation in the source blocks
   (setq org-src-preserve-indentation t)
@@ -757,36 +753,36 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
   (defvar org-view-external-file-extensions '("html" "docx")
     "File formats that should be opened externally.")
 
-(defun org-syntax-convert-keyword-case-to-lower ()
-  "Convert all #+KEYWORDS to #+keywords."
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (let ((count 0)
-          (case-fold-search nil))
-      (while (re-search-forward "^[ \t]*#\\+[A-Z_]+" nil t)
-        (unless (s-matches-p "RESULTS" (match-string 0))
-          (replace-match (downcase (match-string 0)) t)
-          (setq count (1+ count))))
-      (message "Replaced %d occurances" count))))
+  (defun org-syntax-convert-keyword-case-to-lower ()
+    "Convert all #+KEYWORDS to #+keywords."
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (let ((count 0)
+            (case-fold-search nil))
+        (while (re-search-forward "^[ \t]*#\\+[A-Z_]+" nil t)
+          (unless (s-matches-p "RESULTS" (match-string 0))
+            (replace-match (downcase (match-string 0)) t)
+            (setq count (1+ count))))
+        (message "Replaced %d occurances" count))))
 
 
-(defun org-view-output-file (&optional org-file-path)
-  "Visit buffer open on the first output file (if any) found, using `org-view-output-file-extensions'"
-  (interactive)
-  (let* ((org-file-path (or org-file-path (buffer-file-name) ""))
-         (dir (file-name-directory org-file-path))
-         (basename (file-name-base org-file-path))
-         (output-file nil))
-    (dolist (ext org-view-output-file-extensions)
-      (unless output-file
-        (when (file-exists-p
-               (concat dir basename "." ext))
-          (setq output-file (concat dir basename "." ext)))))
-    (if output-file
-        (if (member (file-name-extension output-file) org-view-external-file-extensions)
-            (browse-url output-file)
-          (pop-to-buffer (or (find-buffer-visiting output-file)
-                             (find-file-noselect output-file))))
-      (message "No exported file found"))))
+  (defun org-view-output-file (&optional org-file-path)
+    "Visit buffer open on the first output file (if any) found, using `org-view-output-file-extensions'"
+    (interactive)
+    (let* ((org-file-path (or org-file-path (buffer-file-name) ""))
+           (dir (file-name-directory org-file-path))
+           (basename (file-name-base org-file-path))
+           (output-file nil))
+      (dolist (ext org-view-output-file-extensions)
+        (unless output-file
+          (when (file-exists-p
+                 (concat dir basename "." ext))
+            (setq output-file (concat dir basename "." ext)))))
+      (if output-file
+          (if (member (file-name-extension output-file) org-view-external-file-extensions)
+              (browse-url output-file)
+            (pop-to-buffer (or (find-buffer-visiting output-file)
+                               (find-file-noselect output-file))))
+        (message "No exported file found"))))
   )

@@ -108,14 +108,14 @@
   :config
   (add-to-list 'org-pandoc-valid-options 'citeproc))
 
-;;; load lisp
+;; ;;; load lisp
 (with-eval-after-load 'hydra
   (load! "local/hydra-plus"))
 (load! "bindings")
 (load! "local/mu4e-plus")
 (load! "local/org-plus")
-;; (when (featurep! :ui ligatures +extra)
-;;   (load! "local/ligature"))
+;; ;; (when (featurep! :ui ligatures +extra)
+;; ;;   (load! "local/ligature"))
 (load! "local/ess-plus")
 (load! "local/latex-plus")
 (load! "local/visual-plus")
