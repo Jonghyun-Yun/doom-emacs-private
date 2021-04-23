@@ -37,6 +37,7 @@
           ("someday"     . ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
           ("idea"        . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
           ("ATTACH"      . ,(all-the-icons-faicon  "paperclip"      :face 'all-the-icons-yellow  :v-adjust 0.01))
+          ("ARCHIVE"     . ,(all-the-icons-octicon  "file-zip"      :face 'all-the-icons-gray  :v-adjust 0.01))
           ))
   (org-pretty-tags-global-mode))
 

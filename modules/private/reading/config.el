@@ -1,7 +1,7 @@
 ;;; private/reading/config.el -*- lexical-binding: t; -*-
 
 ;;; speed reading
-(use-package spray
+(use-package! spray
   :defer t
   :commands spray-mode
   :init
@@ -12,9 +12,8 @@
       (evil-insert-state)
       (spray-mode t)
       (internal-show-cursor (selected-window) nil))
-
+    ;; key map
     (map! :leader "ars" #'speed-reading/start-spray)
-
     (defadvice spray-quit (after speed-reading//quit-spray activate)
       "Correctly quit spray."
       (internal-show-cursor (selected-window) t)

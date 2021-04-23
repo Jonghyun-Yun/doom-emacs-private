@@ -43,7 +43,7 @@
        hydra
        ;;indent-guides     ; highlighted indent columns
        (ligatures         ; ligatures and symbols to make your code pretty again
-        +extra
+        ;; +extra        ; FIXME: slow down associated modes with extra symbols
         )
        ;;minimap           ; show a map of the code on the side
        modeline          ; snazzy, Atom-inspired modeline, plus API
@@ -173,7 +173,7 @@
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org               ; organize your plain life in plain text
-        +pretty           ; yessss my pretties! (nice unicode symbols)
+        +pretty           ; FIXME: slow down Emacs. use only if very necessary
         +dragndrop        ; drag & drop files/images into org buffers
         +hugo             ; Enables integration with hugo to export from Emacs well-formed
         +journal          ; Enables org-journal integration.
@@ -189,7 +189,8 @@
        (python            ; beautiful is better than ugly
         +lsp
         +pyright
-        +conda)
+        +conda
+        )
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6
@@ -234,5 +235,5 @@
        grammar
        ;; outshine
        reading
-       ;; scimax
+       scimax
        )

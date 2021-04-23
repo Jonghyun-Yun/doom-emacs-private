@@ -1,23 +1,4 @@
-;;; org-plus.el --- description -*- lexical-binding: t; -*-
-;;
-;; Copyright (C) 2020 Jonghyun Yun
-;;
-;; Author: Jonghyun Yun <http://github/yunj>
-;; Maintainer: Jonghyun Yun <jonghyun.yun@gmail.com>
-;; Created: June 08, 2020
-;; Modified: June 08, 2020
-;; Version: 0.0.1
-;; Keywords:
-;; Homepage: https://github.com/yunj/org-plus
-;; Package-Requires: ((emacs 27.0.91) (cl-lib "0.5"))
-;;
-;; This file is not part of GNU Emacs.
-;;
-;;; Commentary:
-;;
-;;  description
-;;
-;;; Code:
+;;; ../Dropbox/emacs/.doom.d/local/org-plus.el -*- lexical-binding: t; -*-
 
 ;; https://gitlab.com/oer/org-re-reveal-ref/-/blob/master/org-re-reveal-ref.el
 ;; it changes some of org-ref custom variables
@@ -364,7 +345,6 @@
 
 ;;; youtube link + SPC m v
 (with-eval-after-load 'org
-;;;
   ;; (setq org-export-headline-levels 5) ; I like nesting
   ;; ignore heading not content
   (require 'ox-extra)
@@ -782,6 +762,3 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
             (replace-match (downcase (match-string 0)) t)
             (setq count (1+ count))))
         (message "Replaced %d occurances" count)))))
-
-(provide 'org-plus)
-;;; org-plus.el ends here

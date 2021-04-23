@@ -9,40 +9,40 @@
               :assign "⟵"
               ;; :multiply "×"
               ;; greek
-              :alpha   #X3B1
-              :beta    #X3B2
-              :chi     #X3C7
-              :delta   #X3B4
-              :epsilon #X3F5
-              :eta     #X3B7
-              :gamma   #X3B3
-              :iota    #X3B9
-              :kappa   #X3BA
-              :lambda  #X3BB
-              :mu      #X3BC
-              :nu      #X3BD
-              :omega   #X3C9
-              :phi     #X3D5
-              :pi      #X3C0
-              :psi     #X3C8
-              :rho     #X3C1
-              :sigma   #X3C3
-              :tau     #X3C4
-              :theta   #X3B8
-              :upsilon #X3C5
-              :xi      #X3BE
-              :zeta    #X3B6
-              :Delta   #X394
-              :Gamma   #X393
-              :Lambda  #X39B
-              :Omega   #X3A9
-              :Phi     #X3A6
-              :Pi      #X3A0
-              :Psi     #X3A8
-              :Sigma   #X3A3
-              :Theta   #X398
-              :Upsilon #X3D2
-              :Xi      #X39E
+              ;; :alpha   #X3B1
+              ;; :beta    #X3B2
+              ;; :chi     #X3C7
+              ;; :delta   #X3B4
+              ;; :epsilon #X3F5
+              ;; :eta     #X3B7
+              ;; :gamma   #X3B3
+              ;; :iota    #X3B9
+              ;; :kappa   #X3BA
+              ;; :lambda  #X3BB
+              ;; :mu      #X3BC
+              ;; :nu      #X3BD
+              ;; :omega   #X3C9
+              ;; :phi     #X3D5
+              ;; :pi      #X3C0
+              ;; :psi     #X3C8
+              ;; :rho     #X3C1
+              ;; :sigma   #X3C3
+              ;; :tau     #X3C4
+              ;; :theta   #X3B8
+              ;; :upsilon #X3C5
+              ;; :xi      #X3BE
+              ;; :zeta    #X3B6
+              ;; :Delta   #X394
+              ;; :Gamma   #X393
+              ;; :Lambda  #X39B
+              ;; :Omega   #X3A9
+              ;; :Phi     #X3A6
+              ;; :Pi      #X3A0
+              ;; :Psi     #X3A8
+              ;; :Sigma   #X3A3
+              ;; :Theta   #X398
+              ;; :Upsilon #X3D2
+              ;; :Xi      #X39E
               )
             )
   (set-ligatures! 'ess-r-mode
@@ -66,40 +66,40 @@
     :assign      "<-"
     ;; :multiply "%*%"
     ;; greek
-    :alpha       "alpha"
-    :beta        "beta"
-    :chi         "chi"
-    :delta       "delta"
-    :epsilon     "epsilon"
-    :eta         "eta"
-    :gamma       "gamma"
-    :iota        "iota"
-    :kappa       "kappa"
-    :lambda      "lambda"
-    :mu          "mu"
-    :nu          "nu"
-    :omega       "omega"
-    :phi         "phi"
-    :pi          "pi"
-    :psi         "psi"
-    :rho         "rho"
-    :sigma       "sigma"
-    :tau         "tau"
-    :theta       "theta"
-    :upsilon     "upsilon"
-    :xi          "xi"
-    :zeta        "zeta"
-    :Delta       "Delta"
-    :Gamma       "Gamma"
-    :Lambda      "Lambda"
-    :Omega       "Omega"
-    :Phi         "Phi"
-    :Pi          "Pi"
-    :Psi         "Psi"
-    :Sigma       "Sigma"
-    :Theta       "Theta"
-    :Upsilon     "Upsilon"
-    :Xi          "Xi"
+    ;; :alpha       "alpha"
+    ;; :beta        "beta"
+    ;; :chi         "chi"
+    ;; :delta       "delta"
+    ;; :epsilon     "epsilon"
+    ;; :eta         "eta"
+    ;; :gamma       "gamma"
+    ;; :iota        "iota"
+    ;; :kappa       "kappa"
+    ;; :lambda      "lambda"
+    ;; :mu          "mu"
+    ;; :nu          "nu"
+    ;; :omega       "omega"
+    ;; :phi         "phi"
+    ;; :pi          "pi"
+    ;; :psi         "psi"
+    ;; :rho         "rho"
+    ;; :sigma       "sigma"
+    ;; :tau         "tau"
+    ;; :theta       "theta"
+    ;; :upsilon     "upsilon"
+    ;; :xi          "xi"
+    ;; :zeta        "zeta"
+    ;; :Delta       "Delta"
+    ;; :Gamma       "Gamma"
+    ;; :Lambda      "Lambda"
+    ;; :Omega       "Omega"
+    ;; :Phi         "Phi"
+    ;; :Pi          "Pi"
+    ;; :Psi         "Psi"
+    ;; :Sigma       "Sigma"
+    ;; :Theta       "Theta"
+    ;; :Upsilon     "Upsilon"
+    ;; :Xi          "Xi"
     )
   )
 

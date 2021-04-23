@@ -228,7 +228,7 @@
 ;;   )
 
 ;;; string-inflection
-(use-package string-inflection
+(use-package! string-inflection
   :defer t
   :commands
   (my-hydra-string-inflection/body)
