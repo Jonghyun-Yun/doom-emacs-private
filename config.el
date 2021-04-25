@@ -193,9 +193,14 @@
   ;;           #'(lambda () (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign)))
   )
 
+;;; plantuml
+;; jar configuration needs for math typesetting.
+;; version is pinned (brew pin plantuml)
 (after! plantuml-mode
-  (setq plantuml-jar-path "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar"
-        org-plantuml-jar-path plantuml-jar-path))
+  (setq plantuml-jar-path "/usr/local/Cellar/plantuml/1.2021.4/libexec/plantuml.jar"
+        plantuml-default-exec-mode 'jar
+        org-plantuml-jar-path plantuml-jar-path)
+  )
 
 ;; prevent some cases of Emacs flickering
 (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
@@ -210,8 +215,8 @@
 (setq auto-save-default t
       create-lockfiles t
       make-backup-files nil
-      ;; truncate-string-ellipsis "…"      ; Unicode ellispis are nicer than "...", and also save /precious/ space
-      yas-triggers-in-field t           ; snippets inside snippets
+      ; truncate-string-ellipsis "…"      ; Unicode ellispis are nicer than "...", and also save /precious/ space
+      yas-triggers-in-field t           ; snippets inside snippets. some need this
       )
 
 ;;; company
@@ -775,8 +780,6 @@
         :n "/" (cmd! (call-interactively #'lexic-search))))
 
 ;;; elfeed
-;;;
-;;; elfeed
 ;; (evil-set-initial-state 'elfeed-search-mode 'emacs)
 ;; (evil-set-initial-state 'elfeed-show-mode 'emacs)
 
@@ -844,3 +847,113 @@
             (url-copy-file pdf file)
             (funcall file-view-function file))))))
   )
+
+;;; org-roam-server
+ (use-package org-roam-server
+   ;; :after (org-roam server)
+   :defer t
+   :config
+   (setq org-roam-server-host "127.0.0.1"
+         org-roam-server-port 8080
+         org-roam-server-authenticate nil
+         org-roam-server-export-inline-images t
+         ;; org-roam-server-serve-files nil
+         ;; org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
+         ;; org-roam-server-network-poll t
+         ;; org-roam-server-network-arrows nil
+         org-roam-server-network-label-truncate t
+         org-roam-server-network-label-truncate-length 60
+         org-roam-server-network-label-wrap-length 20)
+   :init
+   (defun org-roam-server-open ()
+     "Ensure the server is active, then open the roam graph."
+     (interactive)
+     (progn
+       (if org-roam-server-mode t (org-roam-server-mode 1))
+       (browse-url (format "http://localhost:%d" org-roam-server-port))))
+   (map!
+    :leader "nrs" #'org-roam-server-open))
+
+
+;;; org-roam
+(after! org-roam
+  (setq org-roam-graph-executable
+        ;; "circo"
+        ;; "neato"
+        ;; "twopi"
+        ;; "circo"
+        "fdp"
+        ;; "sfdp"
+        ;; "patchwork"
+        ;; "osage"
+        )
+  (setq org-roam-graph-node-extra-config
+        '(("shape"      . "underline")
+          ("style"      . "rounded,filled")
+          ("fillcolor"  . "#EEEEEE")
+          ("color"      . "#C9C9C9")
+          ("fontcolor"  . "#111111")
+          ("fontname"   . "Overpass")))
+
+  (setq +org-roam-graph--html-template
+        (replace-regexp-in-string "%\\([^s]\\)" "%%\\1"
+                                  (f-read-text (concat doom-private-dir "misc/org-roam-template.html"))))
+
+  (defadvice! +org-roam-graph--build-html (&optional node-query callback)
+    "Generate a graph showing the relations between nodes in NODE-QUERY. HTML style."
+    :override #'org-roam-graph--build
+    (unless (stringp org-roam-graph-executable)
+      (user-error "`org-roam-graph-executable' is not a string"))
+    (unless (executable-find org-roam-graph-executable)
+      (user-error (concat "Cannot find executable %s to generate the graph.  "
+                          "Please adjust `org-roam-graph-executable'")
+                  org-roam-graph-executable))
+    (let* ((node-query (or node-query
+                           `[:select [file title] :from titles
+                             ,@(org-roam-graph--expand-matcher 'file t)]))
+           (graph      (org-roam-graph--dot node-query))
+           (temp-dot   (make-temp-file "graph." nil ".dot" graph))
+           (temp-graph (make-temp-file "graph." nil ".svg"))
+           (temp-html  (make-temp-file "graph." nil ".html")))
+      (org-roam-message "building graph")
+      (make-process
+       :name "*org-roam-graph--build-process*"
+       :buffer "*org-roam-graph--build-process*"
+       :command `(,org-roam-graph-executable ,temp-dot "-Tsvg" "-o" ,temp-graph)
+       :sentinel (progn
+                   (lambda (process _event)
+                     (when (= 0 (process-exit-status process))
+                       (write-region (format +org-roam-graph--html-template (f-read-text temp-graph)) nil temp-html)
+                       (when callback
+                         (funcall callback temp-html))))))))
+
+  ;; no numbers in org-roam buffers
+  (defadvice! doom-modeline--buffer-file-name-roam-aware-a (orig-fun)
+    :around #'doom-modeline-buffer-file-name ; takes no args
+    (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+        (replace-regexp-in-string
+         "\\(?:^\\|.*/\\)\\([0-9]\\{4\\}\\)\\([0-9]\\{2\\}\\)\\([0-9]\\{2\\}\\)[0-9]*-"
+         "🢔(\\1-\\2-\\3) "
+         (subst-char-in-string ? ?  buffer-file-name)
+         )
+      (funcall orig-fun)))
+  )
+
+;;; dired "J"
+;; replace `dired-goto-file' with equivalent helm and ivy functions:
+;; `helm-find-files' fuzzy matching and other features
+;; `counsel-find-file' more `M-o' actions
+(with-eval-after-load 'dired
+  (evil-define-key 'normal dired-mode-map "J"
+    (cond ((featurep! :completion helm) 'helm-find-files)
+          ((featurep! :completion ivy) 'counsel-find-file))))
+
+(after! ivy-posframe
+  (setq ivy-posframe-parameters
+        `((min-width . ;; 90
+                     20          )
+          (min-height . ,ivy-height)
+          ;; (left-fringe . 8)
+          ;; (right-fringe . 8)
+          )
+        ))

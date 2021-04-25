@@ -169,3 +169,8 @@
 (package! lexic
   :pin "4ded6be2ce3e8dadc5635a534827181a8c8ab602"
   :disable t)
+
+(package! org-roam-server :pin "2122a61e9e9be205355c7e2c1e4b65986d6985a5")
+
+;; elfeed hydra depends on
+;; (package! pretty-hydra :pin "84c1929a5153be169ca5c36737439d51dffde505")

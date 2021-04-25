@@ -422,6 +422,7 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
           ("\\.mm\\'" . default)
           ("\\.x?html?\\'" . default)
           ("\\.pdf\\'" . "open -a Skim %s")
+          ;; ("\\.pdf\\'" . default)
           ;; ("\\.pdf\\'" . emacs)
           ("\\.docx\\'" . default)
           ))
@@ -753,20 +754,6 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
   (defvar org-view-external-file-extensions '("html" "docx")
     "File formats that should be opened externally.")
 
-  (defun org-syntax-convert-keyword-case-to-lower ()
-    "Convert all #+KEYWORDS to #+keywords."
-    (interactive)
-    (save-excursion
-      (goto-char (point-min))
-      (let ((count 0)
-            (case-fold-search nil))
-        (while (re-search-forward "^[ \t]*#\\+[A-Z_]+" nil t)
-          (unless (s-matches-p "RESULTS" (match-string 0))
-            (replace-match (downcase (match-string 0)) t)
-            (setq count (1+ count))))
-        (message "Replaced %d occurances" count))))
-
-
   (defun org-view-output-file (&optional org-file-path)
     "Visit buffer open on the first output file (if any) found, using `org-view-output-file-extensions'"
     (interactive)
@@ -785,4 +772,17 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
             (pop-to-buffer (or (find-buffer-visiting output-file)
                                (find-file-noselect output-file))))
         (message "No exported file found"))))
+
+  (defun org-syntax-convert-keyword-case-to-lower ()
+    "Convert all #+KEYWORDS to #+keywords."
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (let ((count 0)
+            (case-fold-search nil))
+        (while (re-search-forward "^[ \t]*#\\+[A-Z_]+" nil t)
+          (unless (s-matches-p "RESULTS" (match-string 0))
+            (replace-match (downcase (match-string 0)) t)
+            (setq count (1+ count))))
+        (message "Replaced %d occurances" count))))
   )

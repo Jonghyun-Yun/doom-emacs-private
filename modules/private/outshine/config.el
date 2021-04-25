@@ -69,10 +69,11 @@ Navigate headings^^^^      Move subtrees^^^^               Other^^
 
 (use-package outorg
   :defer t
+  :after outshine
   :config
   (map!
    :leader
-   "aOc"  'outorg-copy-edits-and-exit
+   ;; "aOc"  'outorg-copy-edits-and-exit
    "aOe"  'outorg-edit-as-org))
 
 ;;; config.el ends here

@@ -26,6 +26,16 @@
 
 (after! org
   (load! "scimax-org") ;; org mark-up
+  (defun org-inline-math-region-or-point ()
+    "Mark the region, word or character at point as inline math.
+This function tries to do what you mean:
+1. If you select a region, markup the region.
+2. If in a word, markup the word.
+3. Otherwise wrap the character at point in the markup.
+Repeated use of the function slurps the next word into the markup."
+    (interactive)
+    (org-markup-region-or-point 'math "\\(" "\\)"))
+  ;; key bindings
   (bind-keys :map org-mode-map
              ("H--" . org-subscript-region-or-point)
              ("H-=" . org-superscript-region-or-point)
@@ -38,7 +48,8 @@
              ("H-4" . org-latex-math-region-or-point)
              ("H-e" . ivy-insert-org-entity)
              ("H-\"" . org-double-quote-region-or-point)
-             ("H-'" . org-single-quote-region-or-point))
+             ("H-'" . org-single-quote-region-or-point)
+             ("H-m" . org-inline-math-region-or-point))
   ;; (add-hook! 'org-mode-hook #'scimax-autoformat-mode)
 
 

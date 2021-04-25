@@ -234,7 +234,8 @@
        stan
        gtd
        grammar
-       ;; outshine
+       outshine
        reading
        scimax
+       ;; xkcd
        )

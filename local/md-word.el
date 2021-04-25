@@ -46,8 +46,7 @@ author: auth1, auth2, ...
 
 (defun ox-export-via-latex-pandoc-to-docx-and-open (&optional async subtreep visible-only body-only options)
   (interactive)
-  (let* (
-         (biblio (or (cdar (org-collect-keywords '("bibliography"))) (cdar (org-collect-keywords '("BIBLIOGRAPHY")))))
+  (let* ((biblio (or (cdar (org-collect-keywords '("bibliography"))) (cdar (org-collect-keywords '("BIBLIOGRAPHY")))))
          (bibfiles (if biblio biblio (mapcar 'expand-file-name (org-ref-find-bibliography))))
          (temp-bib)
          (bibtex-entries)
@@ -118,7 +117,7 @@ author: auth1, auth2, ...
     ;; (message (apply #'concatenate 'string md-word-args))
 
     (org-latex-export-to-latex async subtreep visible-only body-only options)
-    (shell-command (format "pandoc -s %s -o %s" tex-file md-file)) ; -s for --standalone (need to get yaml header)
+    (shell-command (format "pandoc -f latex -t markdown -s %s -o %s" tex-file md-file)) ; -s for --standalone (need to get yaml header)
 
     ;; post-processing Md
     ;; fix author header
