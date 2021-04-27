@@ -136,7 +136,7 @@
 (after! mixed-pitch
   (setq mixed-pitch-set-height t)
   (append mixed-pitch-fixed-pitch-faces
-          '(org-drawer org-todo))
+          '(org-drawer org-todo example-block))
   (defface variable-pitch-serif
     '((t (:family "serif")))
     "A variable-pitch face with serifs."

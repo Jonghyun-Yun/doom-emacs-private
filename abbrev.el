@@ -1,6 +1,7 @@
 ;;-*-coding: utf-8;-*-
 (define-abbrev-table 'global-abbrev-table
   '(
+    ("estiamte" "estimate" nil :count 2)
     ("mon" "mon" nil :count 0)
    ))
 

@@ -28,7 +28,7 @@
        (ivy                ; a search engine for love and life
         +fuzzy
         +prescient
-        ;; +childframe
+        +childframe
         ;; +icons
        )
 
@@ -42,12 +42,10 @@
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        hydra
        ;;indent-guides     ; highlighted indent columns
-       (ligatures         ; ligatures and symbols to make your code pretty again
-        ;; +extra        ; FIXME: slow down associated modes with extra symbols
-        )
+       ligatures         ; ligatures and symbols to make your code pretty again
+                         ; FIXME: +extra slow down associated modes with extra symbols
        ;;minimap           ; show a map of the code on the side
-       (modeline          ; snazzy, Atom-inspired modeline, plus API
-        )
+       modeline          ; snazzy, Atom-inspired modeline, plus API
        ;;nav-flash         ; blink cursor line after big motions
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints           ; highlight the region an operation acts on
@@ -140,7 +138,7 @@
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
        ;;csharp              ; unity, .NET, and mono shenanigans
-       ;;data              ; config/data formats
+       data              ; config/data formats
        ;;(dart +flutter)   ; paint ui and not much else
        ;;elixir            ; erlang done right
        ;;elm               ; care for a cup of TEA?
@@ -190,7 +188,7 @@
        (python            ; beautiful is better than ugly
         +lsp
         +pyright
-        +conda
+        ;; +conda          ; move to config.el
         )
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
@@ -238,4 +236,4 @@
        reading
        scimax
        ;; xkcd
-       )
+)

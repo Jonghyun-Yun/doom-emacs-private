@@ -71,8 +71,8 @@
 ;; (package! wordnut :pin "feac531404041855312c1a046bde7ea18c674915")
 ;; (package! synosaurus :pin "14d34fc92a77c3a916b4d58400424c44ae99cd81")
 
-;; (package! org-pdftools)
-;; (package! org-noter-pdftools)
+;; (package! org-pdftools :pin "a5b61bca3f8c91b0859bb0df1a929f9a31a57b99")
+;; (package! org-noter-pdftools :pin "a5b61bca3f8c91b0859bb0df1a929f9a31a57b99")
 
 ;; ;; export doesn't work. problem in compiling; defmacro and marco eval in the same file
 ;; ;; ;; Load it localy
@@ -174,3 +174,7 @@
 
 ;; elfeed hydra depends on
 ;; (package! pretty-hydra :pin "84c1929a5153be169ca5c36737439d51dffde505")
+
+(package! ess-view-data :pin "283251e8ac19ac0c0f89a4b0f0eb38482167e52b")
+
+(package! conda :pin "dce431b25f5a13af58cc7cacfa7968b5a888609c")

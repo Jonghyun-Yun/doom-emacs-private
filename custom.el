@@ -42,6 +42,10 @@
       (:session . "*R-Org*")
       (:export . "both")
       (:results . "output replace"))
+     (org-babel-default-header-args:R
+      (:session . "*R-PIACC*")
+      (:export . "both")
+      (:results . "output replace"))
      (TeX-engine . xetex))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

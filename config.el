@@ -221,7 +221,7 @@
 
 ;;; company
 (after! company
-  (setq company-idle-delay 1
+  (setq company-idle-delay 2
         company-minimum-prefix-length 2
         company-tooltip-limit 10
         ;; company-box-enable-icon nil ; disable all-the-icons
@@ -250,10 +250,10 @@
 
    org-fontify-quote-and-verse-blocks nil
    org-fontify-whole-heading-line nil
-   ;; org-hide-leading-stars t
+   org-hide-leading-stars nil
+   org-startup-indented t
    org-ellipsis " ▼ "
 
-   ;; org-startup-indented nil
    org-journal-encrypt-journal t
 
    org-indent-indentation-per-level 1
@@ -293,7 +293,11 @@
 
   (setq org-highlight-latex-and-related '(native script entities))
   (setq org-format-latex-options
-        (plist-put org-format-latex-options :background "Transparent"))
+        (plist-put org-format-latex-options :background
+                   ;; "Transparent"
+                   'default
+                   )
+        )
   (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
 
   ;; cdltaex will ignore inline math $...$
@@ -310,47 +314,6 @@
 
   ;; set default org-latex-preview size
   (jyun/org-latex-set-options)
-
-  ;; https://stackoverflow.com/questions/43149119/how-to-regenerate-latex-fragments-in-org-mode
-  (defvar my/org-latex-toggle-fragment-has-been-called nil
-    "Tracks if org-toggle-latex-fragment has ever been called (updated locally).")
-
-  (defadvice org-toggle-latex-fragment (before my/latex-fragments-advice activate)
-    "Keep Org LaTeX fragments in a directory with background color name."
-    (if (not my/org-latex-toggle-fragment-has-been-called) (jyun/org-latex-set-options))
-    (setq-local my/org-latex-toggle-fragment-has-been-called t)
-    (jyun/org-latex-set-directory-color))
-
-  (defadvice load-theme (after my/load-theme-advice-for-latex activate)
-    "Conditionally update Org LaTeX fragments for current background."
-    (if my/org-latex-toggle-fragment-has-been-called (jyun/org-latex-update-fragments-color)))
-
-  (defadvice disable-theme (after my/disable-theme-advice-for-latex activate)
-    "Conditionally update Org LaTeX fragments for current background."
-    (if my/org-latex-toggle-fragment-has-been-called (jyun/org-latex-update-fragments-color)))
-
-  (defun jyun/org-latex-set-directory-color ()
-    "Set Org LaTeX directory name to default face"
-    (interactive)
-    (setq org-preview-latex-image-directory
-          (concat "ltximg/_" (alist-get 'foreground-color (frame-parameters))
-                  (let ((color (color-values (alist-get 'foreground-color (frame-parameters)))))
-                    (apply 'concat (mapcar (lambda (x) (concat "_" x)) (mapcar 'int-to-string color))))
-                  "/")))
-
-  (defun jyun/org-latex-update-fragments-color ()
-    "Remove Org LaTeX fragment layout, switch directory for face color, turn fragments back on."
-    (interactive)
-    ;; removes latex overlays in the whole buffer
-    (org-remove-latex-fragment-image-overlays)
-
-    ;; background directory switch
-    (jyun/org-latex-set-directory-color)
-    ;; recreate overlay
-    ;; Argument '(16) is same as prefix C-u C-u,
-    ;; means create images in the whole buffer instead of just the current section.
-    ;; For many new images this will take time.
-    (org-toggle-latex-fragment '(16)))
   )
 
 ;;;; org-pretty
@@ -687,28 +650,30 @@
   )
 
 ;;;; conda
-(with-eval-after-load 'conda
-  (setq conda-anaconda-home "/opt/intel/oneapi/intelpython/latest"
-        conda-env-home-directory "/Users/yunj/.conda")
-  ;; (conda-env-initialize-interactive-shells)
-  ;; (conda-env-initialize-eshell)
-  )
+;; (with-eval-after-load 'conda
+;;   ;; (require 'conda)
+;;   (setq-default conda-anaconda-home "/opt/intel/oneapi/intelpython/latest"
+;;                 conda-env-home-directory "/Users/yunj/.conda"
+;;         )
+;;   ;; (conda-env-initialize-interactive-shells)
+;;   ;; (conda-env-initialize-eshell)
+;;   )
 ;; (setq conda-env-autoactivate-mode t)
 
 ;;;; debugging
 ;; set this variable again after lsp
 ;; otherwise the default evn-home will be used
-(when (featurep! :tools debugger +lsp)
-  (with-eval-after-load 'lsp-mode
-    (setq conda-env-home-directory "/Users/yunj/.conda")
-    ))
+;; (when (featurep! :tools debugger +lsp)
+;;   (with-eval-after-load 'lsp-mode
+;;     (setq conda-env-home-directory "/Users/yunj/.conda")
+;;     ))
 
 ;; information for debugging authentication in *Messages* buffer
 ;; (setq auth-source-debug t)
 
 ;;; languagetool
 ;; (setq langtool-bin "languagetool")
-(setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/*/libexec/languagetool-server.jar")
+(setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/5.3/libexec/languagetool-server.jar")
 ;; (setq langtool-http-server-host "localhost"
 ;;       langtool-http-server-port 8081)
 
@@ -957,3 +922,37 @@
           ;; (right-fringe . 8)
           )
         ))
+
+;;; conda
+(use-package! conda
+  :after python
+  :config
+  (setq conda-anaconda-home (expand-file-name "/opt/intel/oneapi/intelpython/latest")
+        conda-env-home-directory (expand-file-name "~/.conda"))
+
+  ;; integration with term/eshell
+  (conda-env-initialize-interactive-shells)
+  (after! eshell (conda-env-initialize-eshell))
+
+  (add-to-list 'global-mode-string
+               '(conda-env-current-name (" conda:" conda-env-current-name " "))
+               'append)
+  :init
+;;;###autoload
+  (defun +python/set-conda-home ()
+    "Set `conda-anaconda-home' (ANACONDA_HOME).
+
+Usually it's `~/.anaconda3' on local machine, but it can be set to a remote
+directory using TRAMP syntax, e.g. `/ssh:host:/usr/bin/anaconda3'. This way, you
+can use a remote conda environment, including the corresponding remote python
+executable and packages."
+    (interactive)
+    (require 'conda)
+    (when-let (home (read-directory-name "Set conda home: " "~" nil nil conda-anaconda-home))
+      (setq conda-anaconda-home home)
+      (message "Successfully changed conda home to: %s" (abbreviate-file-name home))))
+  )
+
+;; ;; ;; ;; python lsp
+;; (after! lsp-python-ms
+;;   (set-lsp-priority! 'mspyls 1))

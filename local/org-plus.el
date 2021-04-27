@@ -59,13 +59,13 @@
               #'my-org-protocol-focus-advice)
   (advice-add 'org-protocol-capture :around
               #'my-org-protocol-focus-advice)
-)
+  )
 
 (eval-after-load 'ox-html
   (progn
-  ;; inderting <kbd> tags interactively
-  ;; If you prefer to use ~ for <code> tags. Replace "code" with
-  ;; "verbatim" here, and replace "~" with "=" below.
+    ;; inderting <kbd> tags interactively
+    ;; If you prefer to use ~ for <code> tags. Replace "code" with
+    ;; "verbatim" here, and replace "~" with "=" below.
     '(push '(code . "<kbd>%s</kbd>") org-html-text-markup-alist)
     ;; table to html
     (setq org-html-table-row-close-tag "</tr align=\"right\">"
@@ -81,7 +81,7 @@
                   '("my-koma-letter"
                     "\\documentclass\{scrlttr2\}
 \[NO-DEFAULT-PACKAGES]
-\[PACKAGES]
+\[NO-PACKAGES]
 \[EXTRA]"))
 
      (setq org-koma-letter-default-class "my-koma-letter")))
@@ -115,79 +115,91 @@
   ;; (add-to-list 'org-latex-packages-alist
   ;;              '("AUTO" "polyglossia" t ("xelatex" "lualatex")))
 
-;;   (setq org-latex-default-packages-alist
-;;       '(("AUTO" "inputenc" t)
+;;; org-latex-packages
+  ;; `t' means the package also needs to be included compiling LaTeX snippets
+  ;;   into images for inclusion into when non-LaTeX output.
+  (setq org-latex-default-packages-alist
+        '(
+          ("utf8" "inputenc" t
+           ("pdflatex"))
+          ("T1" "fontenc" t
+           ("pdflatex"))
+          ("" "graphicx" t)
+          ("" "longtable" nil)
+          ("" "wrapfig" nil)
+          ("" "rotating" nil)
+          ("normalem" "ulem" t)
+          ("" "amsmath" t)
+          ("" "textcomp" t)
+          ("" "amssymb" t)
+          ("" "capt-of" nil)
+          ("" "hyperref" nil)
+          ))
+                                        ;
+  (setq org-latex-packages-alist
+        '(
+          ;;   ("AUTO" "inputenc" t ("pdflatex")) ; for basic font and character selection
 
-;; 	;; this is for having good fonts
-;; 	("" "lmodern" nil)
+          ;; ;; This is for handling accented characters
+          ;; ("T1" "fontenc" t ("pdflatex"))
 
-;; 	;; This is for handling accented characters
-;; 	("T1" "fontenc" t)
+          ;; ("" "lmodern" nil)            ;
 
-;; 	;; This makes standard margins
-;; 	("top=1in, bottom=1.in, left=1in, right=1in" "geometry" nil)
-;; 	("" "graphicx" t)
-;; 	("" "longtable" nil)
-;; 	("" "booktabs" nil)
-;; 	("" "float" nil)
-;; 	("" "wrapfig" nil)	  ;makes it possible to wrap text around figures
-;; 	("" "rotating" nil)
-;; 	("normalem" "ulem" t)
+          ("AUTO" "babel" t ("pdflatex"))
+          ("AUTO" "polyglossia" t ("xelatex" "lualatex"))
+          ("" "csquotes" t)            ; Context sensitive quotation facil ities
 
-;; 	;; These provide math symbols
-;; 	("" "amsmath" t)
-;; 	("" "textcomp" t)
-;; 	("" "marvosym" t)
-;; 	("" "wasysym" t)
-;; 	("" "amssymb" t)
-;; 	("" "amsmath" t)
-;; 	("theorems, skins" "tcolorbox" t)
+          ;; This makes standard margins
+          ("top=1in, bottom=1.in, left=1in, right=1in" "geometry" nil)
 
-;; 	;; used for marking up chemical formulars
-;; 	("version=3" "mhchem" t)
+          ;; 	("" "graphicx" t)
+          ;; 	("" "longtable" nil) ; For multipage tables
+          ;; 	("" "wrapfig" nil)	  ;makes it possible to wrap text around figures
+          ;; 	("" "rotating" nil)
+          ;; 	("normalem" "ulem" t) ; for underline and strike-through
+          ("" "booktabs" nil)
+          ("" "float" nil)
+          ("" "subfig" nil)
 
-;; 	("numbers,super,sort&compress" "natbib" nil)
-;; 	("" "natmove" nil)
+          ;; 	;; These provide math symbols
+          ;; 	("" "amsmath" t)
+          ;; 	("" "amssymb" t)
+          ;; 	("" "textcomp" t)
+          ("" "marvosym" t)
+          ;; 	("" "wasysym" t)
+          ;; ("" "amsbsy" t)
+          ("" "bm" t ("pdflatex"))      ; doesn't work well with unicode-math
+          ("" "cool" t)         ; for math operators & symbols e.g. partial diff
+          ("" "mathtools" t)    ; for math aligning & spacing
+          ("" "physics" t)      ; derivative, dx, operators
+          ("" "cancel" t)
+          ("theorems, skins" "tcolorbox" t)
+          ("mathbf=sym" "unicode-math" t ("xelatex" "lualatex"))
 
-;; 	("" "url" nil)
-;; 	;; this is used for syntax highlighting of code
-;; 	("cache=false" "minted" nil)
+          ;; 	("numbers,super,sort&compress" "natbib" nil)
+          ;; 	("" "natmove" nil)
 
-;; 	;; this allows you to use underscores in places like filenames. I still
-;; 	;; wouldn't do it.
-;; 	("strings" "underscore" nil)
-;; 	("linktocpage,pdfstartview=FitH,colorlinks,
-;; linkcolor=blue,anchorcolor=blue,
-;; citecolor=blue,filecolor=blue,menucolor=blue,urlcolor=blue"
-;; 	 "hyperref" nil)
+          ("" "url" nil)
+          ;; this is used for syntax highlighting of code
+          ("cache=false" "minted" nil)
 
-;; 	;; enables you to embed files in pdfs
-;; 	("" "attachfile" nil)
+          ;; 	;; enables you to embed files in pdfs
+          ;; 	("" "attachfile" nil)
 
-;; 	;; set default spacing
-;; 	("" "setspace" nil)
+          ;; 	;; set default spacing
+          ;; 	("" "setspace" nil)
 
-;; 	))
+          ;; what engine am i using?
+          ("" "iftex" t)
+          ))
 
   ;; Bare-bones template
   (add-to-list 'org-latex-classes
                '("no-article"
                  "\\documentclass{article}
-\[NO-DEFAULT-PACKAGES]
-\[PACKAGES]
-\[EXTRA]
-\\usepackage{graphicx}
-\\usepackage{subfigure}
-%%\\usepackage{grffile} % Extended file name support for graphics (legacy package)
-\\usepackage{float} % Fix figures and tables by [H]
-\\usepackage{longtable}
-\\usepackage{wrapfig}
-\\usepackage{rotating}
-\\usepackage[normalem]{ulem}
-\\usepackage{textcomp}
-\\usepackage{capt-of}
-\\usepackage{hyperref}
-"
+\[DEFAULT-PACKAGES]
+\[NO-PACKAGES]
+\[EXTRA]"
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -203,6 +215,14 @@
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
+  (add-to-list 'org-latex-classes
+               '("scr-report"
+                 "\\documentclass{scrreprt}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
   ;; org-export: Remove additional latex temporary files.
   (setq org-latex-logfiles-extensions
@@ -277,65 +297,64 @@
           ;;  (file+headline +org-capture-project-notes-file "Inbox")
           ;;  "* %U %?\n%i\n%a" :prepend t)
           ;; ("pc" "Project-local changelog" entry  ; {project-root}/changelog.org"
-          ;;  (file+headline +org-capture-project-changelog-file "Unreleased")
-          ;;  "* %U %?\n%i\n%a" :prepend t)
+                                           ;;  (file+headline +org-capture-project-changelog-file "Unreleased")
+                                           ;;  "* %U %?\n%i\n%a" :prepend t)
 
-          ;; Will use {org-directory}/{+org-capture-projects-file} and store
-          ;; these under {ProjectName}/{Tasks,Notes,Changelog} headings. They
-          ;; support `:parents' to specify what headings to put them under, e.g.
-          ;; :parents ("Projects")
-          ("p" "Templates for projects")
-          ("pt" "Project todo" entry
-           (function +org-capture-central-project-todo-file)
-           "* TODO %^{Todo for...} \n:PROPERTIES: \n:CAPTURED: %U \n:LINK: %a \n:END: \n%i \n%?"
-           :heading "Tasks"
-           :prepend nil)
-          ("pn" "Project notes" entry
-           (function +org-capture-central-project-notes-file)
-           "* %U %^{Note for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
-           :heading "Notes"
-           :prepend t
-           )
-          ("pc" "Project changelog" entry
-           (function +org-capture-central-project-changelog-file)
-           "* %U %^{Changelog for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
-           :heading "Changelog"
-           :prepend t
-           )
-          ("pp" "New Project" entry
-           (file+headline +org-capture-todo-file "Projects")
-           "* %^{Project for...} [/] %^{GOAL}p \n:PROPERTIES:\n:CAPTURED: %U \n:END: \n%i \n%?"
-           :prepend t
-           )
-          ))
+                                           ;; Will use {org-directory}/{+org-capture-projects-file} and store
+                                           ;; these under {ProjectName}/{Tasks,Notes,Changelog} headings. They
+                                           ;; support `:parents' to specify what headings to put them under, e.g.
+                                           ;; :parents ("Projects")
+                 ("p" "Templates for projects")
+                 ("pt" "Project todo" entry
+                  (function +org-capture-central-project-todo-file)
+                  "* TODO %^{Todo for...} \n:PROPERTIES: \n:CAPTURED: %U \n:LINK: %a \n:END: \n%i \n%?"
+                  :heading "Tasks"
+                  :prepend nil)
+                 ("pn" "Project notes" entry
+                  (function +org-capture-central-project-notes-file)
+                  "* %U %^{Note for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
+                  :heading "Notes"
+                  :prepend t
+                  )
+                 ("pc" "Project changelog" entry
+                  (function +org-capture-central-project-changelog-file)
+                  "* %U %^{Changelog for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
+                  :heading "Changelog"
+                  :prepend t
+                  )
+                 ("pp" "New Project" entry
+                  (file+headline +org-capture-todo-file "Projects")
+                  "* %^{Project for...} [/] %^{GOAL}p \n:PROPERTIES:\n:CAPTURED: %U \n:END: \n%i \n%?"
+                  :prepend t
+                  )))
 
 
-;; elfeed capture
-(add-to-list 'org-capture-templates
-             '("EFE" "Elfeed entry" entry
-               (file+headline "~/org/inbox.org" "Tasks")
-               "* TODO %(elfeed-entry-title jyun/target-elfeed-entry) :rss:
+  ;; elfeed capture
+  (add-to-list 'org-capture-templates
+               '("EFE" "Elfeed entry" entry
+                 (file+headline "~/org/inbox.org" "Tasks")
+                 "* TODO %(elfeed-entry-title jyun/target-elfeed-entry) :rss:
 :PROPERTIES:
 :CREATED: %U
 :LINK: %a
 :URL: %(elfeed-entry-link jyun/target-elfeed-entry)
 :END:
 %i \n%?"
-               :prepend t
-               ))
+                 :prepend t
+                 ))
 
-;; email capture
-(add-to-list 'org-capture-templates
-             '("ATE" "Attention to Emails" entry
-               (file+headline "~/org/inbox.org" "Tasks")
-               "* TODO %(message jyun/target-mu4e-subject) :@email:
+  ;; email capture
+  (add-to-list 'org-capture-templates
+               '("ATE" "Attention to Emails" entry
+                 (file+headline "~/org/inbox.org" "Tasks")
+                 "* TODO %(message jyun/target-mu4e-subject) :@email:
 :PROPERTIES:
 :CREATED: %U
 :LINK: %a
 :END:
 %i \n%?"
-               :prepend t
-               ))
+                 :prepend t
+                 ))
 
   (add-to-list 'org-capture-templates
                '("GSA" "General Skim Annotation" entry
@@ -371,7 +390,7 @@
     (setq cfw:org-capture-template org-gcal-capture-templates)
     ))
 
-;;; youtube link + SPC m v
+;;; youtube link + SPC m v + update latex frag
 (with-eval-after-load 'org
   ;; ;; (setq org-export-headline-levels 5) ; I like nesting
   ;; ;; ignore heading not content
@@ -392,8 +411,10 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
           (t (format "https://youtu.be/%s" path))))
 
 ;;; program for org latex preview
+  ;; ;; fast, no unicode-math
   ;; (setq org-preview-latex-default-process 'dvipng)
-  (setq org-preview-latex-default-process 'dvisvgm)
+  ;; ;; slow, supprts unicode-math
+  ;; (setq org-preview-latex-default-process 'dvisvgm)
 
   ;; get unicode math work!
   (setq org-latex-inputenc-alist '(("utf8" . "utf8x")))
@@ -785,4 +806,46 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
             (replace-match (downcase (match-string 0)) t)
             (setq count (1+ count))))
         (message "Replaced %d occurances" count))))
+
+  ;; https://stackoverflow.com/questions/43149119/how-to-regenerate-latex-fragments-in-org-mode
+  (defvar my/org-latex-toggle-fragment-has-been-called nil
+    "Tracks if org-toggle-latex-fragment has ever been called (updated locally).")
+
+  (defadvice org-toggle-latex-fragment (before my/latex-fragments-advice activate)
+    "Keep Org LaTeX fragments in a directory with background color name."
+    (if (not my/org-latex-toggle-fragment-has-been-called) (jyun/org-latex-set-options))
+    (setq-local my/org-latex-toggle-fragment-has-been-called t)
+    (jyun/org-latex-set-directory-color))
+
+  (defadvice load-theme (after my/load-theme-advice-for-latex activate)
+    "Conditionally update Org LaTeX fragments for current background."
+    (if my/org-latex-toggle-fragment-has-been-called (jyun/org-latex-update-fragments-color)))
+
+  (defadvice disable-theme (after my/disable-theme-advice-for-latex activate)
+    "Conditionally update Org LaTeX fragments for current background."
+    (if my/org-latex-toggle-fragment-has-been-called (jyun/org-latex-update-fragments-color)))
+
+  (defun jyun/org-latex-set-directory-color ()
+    "Set Org LaTeX directory name to default face"
+    (interactive)
+    (setq org-preview-latex-image-directory
+          (concat "ltximg/" (s-replace "#" "HEX" (alist-get 'foreground-color (frame-parameters)))
+                  ;; (let ((color (color-values (alist-get 'foreground-color (frame-parameters)))))
+                  ;;   (apply 'concat (mapcar (lambda (x) (concat "_" x)) (mapcar 'int-to-string color)))
+                  ;;   )
+                  "/")))
+
+  (defun jyun/org-latex-update-fragments-color ()
+    "Remove Org LaTeX fragment layout, switch directory for face color, turn fragments back on."
+    (interactive)
+    ;; removes latex overlays in the whole buffer
+    (org-remove-latex-fragment-image-overlays)
+
+    ;; background directory switch
+    (jyun/org-latex-set-directory-color)
+    ;; recreate overlay
+    ;; Argument '(16) is same as prefix C-u C-u,
+    ;; means create images in the whole buffer instead of just the current section.
+    ;; For many new images this will take time.
+    (org-toggle-latex-fragment '(16)))
   )
