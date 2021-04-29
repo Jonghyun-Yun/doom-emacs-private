@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: name-caption-figure
 # key: ncf
+# condition: (looking-back "^ncf" 4)
 # contributor: John Kitchin <jkitchin@andrew.cmu.edu>
 # --
 #+name: ${1:name}

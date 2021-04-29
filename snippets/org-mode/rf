@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: read-file-name
+# key: rf
+# condition: (looking-back "^rf" 3)
+# --
+[[${1:file}:${2:`(read-file-name "File: ")`}]]$0
