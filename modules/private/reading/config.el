@@ -139,8 +139,11 @@
 
 (after! mixed-pitch
   (setq mixed-pitch-set-height t)
-  (append mixed-pitch-fixed-pitch-faces
-          '(org-drawer org-todo example-block))
+  (pushnew! mixed-pitch-fixed-pitch-faces
+            'org-drawer
+            'org-todo
+            'example-block
+            )
   (defface variable-pitch-serif
     '((t (:family "serif")))
     "A variable-pitch face with serifs."
@@ -152,6 +155,13 @@
       (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
       (let ((mixed-pitch-face 'variable-pitch-serif))
         (mixed-pitch-mode (or arg 'toggle))))))
+
+;; company faces?
+(after! mixed-pitch
+  (dolist (f (-filter (lambda (sym)
+                        (s-prefix? "company-" (symbol-name sym)))
+                      (face-list)))
+    (pushnew! mixed-pitch-fixed-pitch-faces f)))
 
 ;;; info-colors
 (use-package! info-colors
