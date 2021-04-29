@@ -945,4 +945,7 @@
 ;; (after! lsp-python-ms
 ;;   (set-lsp-priority! 'mspyls 1))
 
-  ;; (advice-remove 'org-capture #'+file-templates-inhibit-in-org-capture-a)
+;;; no evil-snipe
+(after! evil-snipe
+  (pushnew! evil-snipe-disabled-modes 'ibuffer-mode 'dired-mode))
+
