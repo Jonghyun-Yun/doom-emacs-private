@@ -120,3 +120,9 @@ In case of directory the path must end with a slash."
 
 \n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
              :unnarrowed t)))))
+
+;;; citeproc-org
+(use-package! citeproc-org
+  :after org
+  :config
+  (citeproc-org-setup))

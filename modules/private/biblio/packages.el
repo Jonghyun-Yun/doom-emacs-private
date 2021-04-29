@@ -17,3 +17,5 @@
 ;; )
 (when (featurep! +roam-bibtex)
   (package! org-roam-bibtex :pin "a9a7d232ce25d06880aa2ed16148615af7e551a7"))
+
+(package! citeproc-org :pin "22a759c4f0ec80075014dcc594baa4d1b470d995")
