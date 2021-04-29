@@ -358,6 +358,8 @@
 
 ;;; misc
 (setq mac-right-option-modifier 'hyper)
+;; (setq mac-right-command-modifier 'hyper)
+;; (setq mac-right-option-modifier 'super)
 
 ;; ;; improve slow scrolling?
 ;; (use-package! hl-line+

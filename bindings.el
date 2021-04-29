@@ -247,15 +247,3 @@
       ;; :nm "s" #'elfeed-show-new-live-search
       ;; :nm "y" #'elfeed-show-yank
       )
-
-(after! ibuffer
-  (map! :map ibuffer-mode-map
-        :n "S" #'ibuffer-do-save))
-
-
-;; (map!
-;;  (:map ibuffer-mode-map
-;;   ;;  ;; :map ibuffer-mode-map
-;;   :n
-;;   ;;  :prefix-map ibuffer--filter-map
-;;   :prefix ("s" . "ibuffer--filter-map")))
