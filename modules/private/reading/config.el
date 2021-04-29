@@ -91,12 +91,14 @@
             (setq +zen--original-solaire-mode-p solaire-mode)
             (solaire-mode -1)
             (setq +zen--original-mixed-pitch-mode-p mixed-pitch-mode)
-            (funcall (if +zen-serif-p #'mixed-pitch-serif-mode #'mixed-pitch-mode) 1))
+            (funcall (if +zen-serif-p #'mixed-pitch-serif-mode #'mixed-pitch-mode) 1)
+            )
         (funcall #'mixed-pitch-mode (if +zen--original-mixed-pitch-mode-p 1 -1))
         (when +zen--original-solaire-mode-p (solaire-mode 1)))))
   (pushnew! writeroom--local-variables
             'display-line-numbers
             'visual-fill-column-width
+            'org-hide-emphasis-markers
             'org-adapt-indentation
             'org-superstar-headline-bullets-list
             'org-superstar-remove-leading-stars)
@@ -119,6 +121,8 @@
                 (setq +zen--original-org-indent-mode-p org-indent-mode)
                 (org-indent-mode -1)
                 )))
+  (add-hook 'writeroom-mode-hook (lambda ()
+                                   (when (eq major-mode 'org-mode) (org-appear-mode))))
   (add-hook 'writeroom-mode-disable-hook
             (defun +zen-nonprose-org-h ()
               "Reverse the effect of `+zen-prose-org'."
@@ -180,6 +184,7 @@
   (add-hook! 'org-tree-slide-mode-hook
              ;; #'jyun/org-present-hide
              #'jyun/org-present-mixed-pitch-setup
+             #'org-appear-mode
              )
   (defun jyun/org-present-mixed-pitch-setup ()
     "Visual enchancement for `org-tree-slide'. `mixed-pitch-mode'
@@ -202,11 +207,16 @@ or `mixed-pitch-serif-mode' can be called afterward."
         (org-superstar-mode 1)
         )
       ))
-
   (defun jyun/org-tree-slide (orig-fun &rest args)
     "Hide a few `org-element'. Then, do `org-tree-slide-mode'."
     (progn
       (jyun/org-present-hide)
+      ;; set default org-latex-preview size
+      ;; (setq-local org-format-latex-options '(:foreground default :background default :scale ttt :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+      ;; (setq-local org-format-latex-options (plist-put org-format-latex-options :scale +org-present-format-latex-scale))
+      (setq-local org-format-latex-options
+                           (plist-put (copy-tree org-format-latex-options)
+                                      :scale +org-present-format-latex-scale))
       (apply orig-fun args)
       ))
   (advice-add 'org-tree-slide-mode :around #'jyun/org-tree-slide)

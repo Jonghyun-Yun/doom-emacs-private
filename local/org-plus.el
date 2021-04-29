@@ -9,7 +9,8 @@
   )
 
 (use-package! org-appear
-  :hook (org-mode . org-appear-mode)
+  ;; :hook (org-mode . org-appear-mode)
+  :defer t
   :config
   (setq org-appear-autoemphasis t
         org-appear-autosubmarkers t
@@ -133,6 +134,7 @@
           ("" "textcomp" t)
           ("" "amssymb" t)
           ("" "capt-of" nil)
+          ("" "xcolor" t)
           ("" "hyperref" nil)
           ))
                                         ;
@@ -169,7 +171,7 @@
           ;; 	("" "wasysym" t)
           ;; ("" "amsbsy" t)
           ("" "bm" t ("pdflatex"))      ; doesn't work well with unicode-math
-          ("" "cool" t)         ; for math operators & symbols e.g. partial diff
+          ;; ("" "cool" t)         ; for math operators & symbols e.g. partial diff FIXME: conflict with another package
           ("" "mathtools" t)    ; for math aligning & spacing
           ("" "physics" t)      ; derivative, dx, operators
           ("" "cancel" t)
@@ -340,8 +342,7 @@
 :URL: %(elfeed-entry-link jyun/target-elfeed-entry)
 :END:
 %i \n%?"
-                 :prepend t
-                 ))
+                 :prepend t))
 
   ;; email capture
   (add-to-list 'org-capture-templates

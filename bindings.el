@@ -69,7 +69,6 @@
 (bind-keys* :prefix-map gtd-mode-map
             :prefix "C-c g")
 
-
 (bind-keys :map gtd-mode-map
            ("i" . my-org-agenda-inbox)
            ("s" . my-org-super-agenda-view)
@@ -248,3 +247,15 @@
       ;; :nm "s" #'elfeed-show-new-live-search
       ;; :nm "y" #'elfeed-show-yank
       )
+
+(after! ibuffer
+  (map! :map ibuffer-mode-map
+        :n "S" #'ibuffer-do-save))
+
+
+;; (map!
+;;  (:map ibuffer-mode-map
+;;   ;;  ;; :map ibuffer-mode-map
+;;   :n
+;;   ;;  :prefix-map ibuffer--filter-map
+;;   :prefix ("s" . "ibuffer--filter-map")))
