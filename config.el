@@ -169,11 +169,36 @@
 ;; (add-hook! 'LaTeX-mode-hook #'(lambda () (rainbow-delimiters-mode -1)))
 ;; (remove-hook 'TeX-update-style-hook #'rainbow-delimiters-mode)
 
+;; (after! cdlatex
+;;   (setq cdlatex-math-symbol-alist
+;;         '((?: ("\\cdots" "\\ldots"))
+;;           )
+;;         ))
+
 (after! cdlatex
   (setq cdlatex-math-symbol-alist
-        '((?: ("\\cdots" "\\ldots"))
-          )
-        ))
+        '(
+          (?: ("\\cdots" "\\ldots"))
+          ;;   (?_    ("\\downarrow"  ""           "\\inf"))
+          ;;   (?2    ("^2"           "\\sqrt{?}"     ""     ))
+          ;;   (?3    ("^3"           "\\sqrt[3]{?}"  ""     ))
+          ;;   (?^    ("\\uparrow"    ""           "\\sup"))
+          ;;   (?k    ("\\kappa"      ""           "\\ker"))
+          ;;   (?m    ("\\mu"         ""           "\\lim"))
+          ;;   (?c    (""             "\\circ"     "\\cos"))
+          ;;   (?d    ("\\delta"      "\\partial"  "\\dim"))
+          ;;   (?D    ("\\Delta"      "\\nabla"    "\\deg"))
+          ;;   ;; no idea why \Phi isnt on 'F' in first place, \phi is on 'f'.
+          (?F    ("\\Phi"))
+          (?V    (""))
+          ;;   ;; now just convenience
+          ;;   (?.    ("\\cdot" "\\dots"))
+          ;;   (?:    ("\\vdots" "\\ddots"))
+          ;;   (?*    ("\\times" "\\star" "\\ast"))
+          ) ;
+        cdlatex-math-modify-alist
+        '((?B    "\\mathbb"        nil          t    nil  nil)
+          (?a    "\\abs"           nil          t    nil  nil))))
 
 ;;; ess
 (with-eval-after-load 'ess
@@ -235,10 +260,13 @@
 
 ;;; org-mode
 (after! org
+  (setq org-src-window-setup 'current-window ; 'other-window
+        ;; org-return-follows-link t
+        org-use-speed-commands t
+        org-log-into-drawer t)
   ;; rendering when not at point
   ;; (use-package! org-fragtog
   ;; :hook (org-mode . org-fragtog-mode))
-
   (when (featurep! :lang org +pretty)
     (remove-hook 'org-mode-hook 'org-superstar-mode) ; manually turn it on!
     (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
@@ -283,8 +311,7 @@
   (remove-hook 'org-tab-first-hook #'+org-yas-expand-maybe-h)
 
   ;; insert-mode tab binds back to org-cycle
-  (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h)
-  )
+  (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h))
 
 ;;;; org-latex
 (after! org
@@ -850,7 +877,6 @@
         ;; "circo"
         ;; "neato"
         ;; "twopi"
-        ;; "circo"
         "fdp"
         ;; "sfdp"
         ;; "patchwork"
