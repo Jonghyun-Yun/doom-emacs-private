@@ -15,7 +15,7 @@
 ;; + `doom-font'
 ;; + `doom-variable-pitch-font'
 ;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
+;;   presentations or streaming
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
@@ -42,6 +42,8 @@
 ;;  doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
 
 (setq
+ ;; doom-font (font-spec :family "Roboto Mono" :size 24 :weight 'light)
+ ;; doom-big-font (font-spec :family "Roboto Mono" :size 36 :weight 'light)
  doom-font (font-spec :family "JetBrains Mono" :size 24 :weight 'light)
  doom-big-font (font-spec :family "JetBrains Mono" :size 36 :weight 'light)
  ;; doom-font (font-spec :family "Fira Code" :size 24 :weight 'light)
@@ -949,3 +951,61 @@
 (after! evil-snipe
   (pushnew! evil-snipe-disabled-modes 'ibuffer-mode 'dired-mode))
 
+;;; org-noter
+(after! org-noter
+  org-noter-doc-split-fraction '(0.57 0.43))
+
+(use-package! ctrlf
+  :hook
+  (after-init . ctrlf-mode))
+
+(use-package! easy-kill
+  :bind*
+  (([remap kill-ring-save] . easy-kill)))
+
+(map!
+   (:when (featurep! :editor multiple-cursors)
+    :nv "C-M-d" nil
+    :nv "C-M-S-d" #'evil-multiedit-restore
+    ))
+
+(map!
+ (:after smartparens
+  :map smartparens-mode-map
+  "C-M-f" #'sp-forward-sexp
+  "C-M-b" #'sp-backward-sexp
+  "C-M-u" #'sp-backward-up-sexp
+  "C-M-d" #'sp-down-sexp
+  "C-M-p" #'sp-backward-down-sexp
+  "C-M-n" #'sp-up-sexp
+  "C-M-s" #'sp-splice-sexp
+  "C-)" #'sp-forward-slurp-sexp
+  "C-}" #'sp-forward-barf-sexp
+  "C-(" #'sp-backward-slurp-sexp
+  "C-{" #'sp-backward-barf-sexp))
+
+;;; ???
+;; (use-package! org-clock-convenience
+;;   :bind (:map org-agenda-mode-map
+;;          ("<S-up>" . org-clock-convenience-timestamp-up)
+;;          ("<S-down>" . org-clock-convenience-timestamp-down)
+;;          ("o" . org-clock-convenience-fill-gap)
+;;          ("e" . org-clock-convenience-fill-gap-both)))
+
+(after! avy  
+  ;; (setq avy-keys '(?a ?s ?d ?f ?j ?k ?l ?\;))
+  ;; home row priorities: 8 6 4 5 - - 1 2 3 7
+  (setq avy-keys '(?n ?e ?i ?s ?t ?r ?i ?a))
+  (setq lispy-avy-keys avy-keys))
+
+(after! recentf 
+  ;; (setq recentf-auto-cleanup 60)
+  (add-to-list 'recentf-exclude 'file-remote-p)
+  (add-to-list 'recentf-exclude ".*Cellar.*"))
+
+;;; ref documents in org
+(use-package! org-transclusion
+  :defer t
+  :commands (org-transclusion-mode)
+  :config
+  (setq org-transclusion-exclude-elements nil))

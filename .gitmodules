@@ -1,3 +1,6 @@
 [submodule "ox-ravel"]
 	path = packages/ox-ravel
 	url = https://github.com/Jonghyun-Yun/ox-ravel.git
+[submodule "local/org-noter"]
+	path = local/org-noter
+	url = https://github.com/jonghyun-yun/org-noter

@@ -4,8 +4,8 @@
 ;;
 ;; Author: Jonghyun Yun <https://github.com/jonghyun-yun>
 ;; Maintainer: Jonghyun Yun <jonghyun.yun@gmail.com>
-;; Created: April 22, 2021
-;; Modified: April 22, 2021
+;; Created: April 29, 2021
+;; Modified: April 29, 2021
 ;; Version: 0.0.1
 ;; Keywords: Symbol’s value as variable is void: finder-known-keywords
 ;; Homepage: https://github.com/yunj/md-word

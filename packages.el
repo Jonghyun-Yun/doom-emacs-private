@@ -164,17 +164,38 @@
 (package! org-fancy-priorities :disable t)
 
 ;; (package! pandoc-mode)
-;;
 
-(package! lexic
-  :pin "4ded6be2ce3e8dadc5635a534827181a8c8ab602"
-  :disable t)
-
-(package! org-roam-server :pin "2122a61e9e9be205355c7e2c1e4b65986d6985a5")
-
-;; elfeed hydra depends on
+;; hydra depends on
 ;; (package! pretty-hydra :pin "84c1929a5153be169ca5c36737439d51dffde505")
 
 (package! ess-view-data :pin "283251e8ac19ac0c0f89a4b0f0eb38482167e52b")
 
 (package! conda :pin "dce431b25f5a13af58cc7cacfa7968b5a888609c")
+
+;; annotation in symlinked doc
+(package! org-noter :recipe (:local-repo "local/org-noter"
+                             :branch "patch"))
+
+;; useful!
+(package! ctrlf)
+(package! deadgrep)
+(package! easy-kill)
+
+(package! org-roam-server :pin "2122a61e9e9be205355c7e2c1e4b65986d6985a5")
+
+(package! org-transclusion
+  :recipe (:host github :repo "nobiot/org-transclusion"))
+;; (package! org-clock-budget
+;;   :recipe (:host github :repo "Fuco1/org-clock-budget"))
+
+
+;; disabled, use lispyville
+;; (package! lispy :disable t)
+;; (package! lispyville :disable t)
+
+;; need review
+(package! org-clock-convenience)
+(package! company-posframe :disable t)
+(package! lexic
+  :pin "4ded6be2ce3e8dadc5635a534827181a8c8ab602"
+  :disable t)
