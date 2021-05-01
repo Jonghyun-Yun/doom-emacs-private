@@ -376,8 +376,8 @@
 ;; (map! :leader "nrd" #'org-roam-dailies-map)
 
 ;;; misc
-(setq mac-right-option-modifier 'hyper)
-;; (setq mac-right-command-modifier 'hyper)
+;; (setq mac-right-option-modifier 'hyper)
+(setq mac-right-command-modifier 'hyper)
 ;; (setq mac-right-option-modifier 'super)
 
 ;; ;; improve slow scrolling?
