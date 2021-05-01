@@ -26,15 +26,6 @@ Call asynchronous magit processes to commit and push staged files (if exist) to 
     (magit-run-git-async "pull" "origin" "master"))
   ))
 
-;;;###autoload
-(defun jethro/enable-smerge-maybe ()
-  "Auto-enable `smerge-mode' when merge conflict is detected."
-  (save-excursion
-    (goto-char (point-min))
-    (when (re-search-forward "^<<<<<<< " nil :noerror)
-      (smerge-mode 1))))
-
-
 ;; Ediff the init.example.el and my init.el
 ;;;###autoload
 (defun ediff-init-files ()

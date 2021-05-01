@@ -4,3 +4,9 @@
 [submodule "local/org-noter"]
 	path = local/org-noter
 	url = https://github.com/jonghyun-yun/org-noter
+[submodule "local/scimax"]
+	path = local/scimax
+	url = https://github.com/Jonghyun-Yun/scimax.git
+[submodule "local/nano-emacs"]
+	path = local/nano-emacs
+	url = https://github.com/Jonghyun-Yun/nano-emacs.git

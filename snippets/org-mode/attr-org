@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: org attribute
+# name: attr_org
 # key: ao
 # condition: (looking-back "^ao" 3)
 # --
