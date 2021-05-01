@@ -142,10 +142,6 @@
                 (add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory)))
                 )))
 
-;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
-;; (remove-hook 'ivy-mode-hook #'ivy-rich-mode)
-;; (setq ivy-height 15)
-
 ;;; LaTeX
 ;; (setq +latex-viewers '(skim pdf-tools))
 (setq +latex-viewers '(pdf-tools skim))
@@ -429,6 +425,11 @@
 ;; problems with remote files
 ;; (setq recentf-auto-cleanup 'never)
 ;; (setq recentf-auto-cleanup 300)         ;; long recentf slow down emacs
+
+(after! recentf
+  (setq recentf-auto-cleanup 600)
+  (add-to-list 'recentf-exclude 'file-remote-p)
+  (add-to-list 'recentf-exclude ".*Cellar.*"))
 
 ;; Delete duplicated entries in autosaves of minibuffer history
 ;; (setq history-delete-duplicates t)
@@ -937,15 +938,24 @@
     (cond ((featurep! :completion helm) 'helm-find-files)
           ((featurep! :completion ivy) 'counsel-find-file))))
 
+;;; ivy
+;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
+;; (remove-hook 'ivy-mode-hook #'ivy-rich-mode)
+;; (setq ivy-height 15)
 (after! ivy-posframe
   (setq ivy-posframe-parameters
         `((min-width . ;; 90
-                     20          )
+                     20)
           (min-height . ,ivy-height)
           ;; (left-fringe . 8)
           ;; (right-fringe . 8)
-          )
-        ))
+          ))
+;; (setq ivy-posframe-height-alist '((swiper . 10)))
+  (pushnew! ivy-posframe-display-functions-alist
+            '(counsel-M-x . ivy-display-function-fallback)
+            '(counsel-describe-variable . ivy-display-function-fallback)
+            '(swiper . ivy-display-function-fallback))
+  )
 
 ;;; conda
 (use-package! conda
@@ -1018,14 +1028,32 @@
   (setq avy-keys '(?n ?e ?i ?s ?t ?r ?i ?a))
   (setq lispy-avy-keys avy-keys))
 
-(after! recentf 
-  ;; (setq recentf-auto-cleanup 60)
-  (add-to-list 'recentf-exclude 'file-remote-p)
-  (add-to-list 'recentf-exclude ".*Cellar.*"))
-
 ;;; ref documents in org
 (use-package! org-transclusion
   :defer t
   :commands (org-transclusion-mode)
   :config
   (setq org-transclusion-exclude-elements nil))
+
+;;; org-noter fit
+(after! org-noter
+  (setq org-noter-always-create-frame t
+        org-noter-auto-save-last-location t)
+  (defun org-noter-init-pdf-view ()
+    (progn
+      (pdf-view-fit-width-to-window)
+      (pdf-view-auto-slice-minor-mode)))
+  (add-hook 'pdf-view-mode-hook 'org-noter-init-pdf-view))
+
+(use-package! git-link
+    :commands
+    (git-link git-link-commit git-link-homepage)
+    :custom
+    (git-link-use-commit t))
+
+(use-package! lorem-ipsum
+  :defer t
+  :commands (lorem-ipsum-insert-paragraphs
+             lorem-ipsum-insert-sentences
+             lorem-ipsum-insert-list
+             ))
