@@ -1015,12 +1015,12 @@
   "C-{" #'sp-backward-barf-sexp))
 
 ;;; ???
-;; (use-package! org-clock-convenience
-;;   :bind (:map org-agenda-mode-map
-;;          ("<S-up>" . org-clock-convenience-timestamp-up)
-;;          ("<S-down>" . org-clock-convenience-timestamp-down)
-;;          ("o" . org-clock-convenience-fill-gap)
-;;          ("e" . org-clock-convenience-fill-gap-both)))
+(use-package! org-clock-convenience
+  :bind (:map org-agenda-mode-map
+         ("<S-up>" . org-clock-convenience-timestamp-up)
+         ("<S-down>" . org-clock-convenience-timestamp-down)
+         ("H-o" . org-clock-convenience-fill-gap)
+         ("H-e" . org-clock-convenience-fill-gap-both)))
 
 (after! avy  
   ;; (setq avy-keys '(?a ?s ?d ?f ?j ?k ?l ?\;))

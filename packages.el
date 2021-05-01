@@ -188,6 +188,7 @@
 ;; (package! org-clock-budget
 ;;   :recipe (:host github :repo "Fuco1/org-clock-budget"))
 
+(package! git-link :pin "2b510cf3f28bed842853294fc4ee23c7f8b6435a")
 
 ;; disabled, use lispyville
 ;; (package! lispy :disable t)
@@ -199,3 +200,31 @@
 (package! lexic
   :pin "4ded6be2ce3e8dadc5635a534827181a8c8ab602"
   :disable t)
+
+;; (package! yaml-mode)
+;; (package! anki-editor)
+;; (package! ox-texinfo+
+  ;; :recipe (:host github :repo "tarsius/ox-texinfo-plus"))
+
+(package! lorem-ipsum)
+
+
+;;; scimax
+(package! scimax :recipe (:local-repo "local/scimax"
+                          :files (
+                                  "scimax-org.el"
+                                  "scimax-stealing.el"
+                                  "scimax-elfeed.el"                 ;; email elfeed
+                                  "scimax-autoformat-abbrev.el"      ;; abbrev
+                                  "emacs-keybinding-command-tooltip-mode.el"
+                                  ;; "scimax-hydra.el"
+                                  )
+                          :branch "patch"))
+
+;;; mu4e
+(package! svg-tag-mode :recipe (:repo "rougier/svg-tag-mode"
+                                :host github))
+(package! mu4e-thread-folding :recipe (:repo "rougier/mu4e-thread-folding"
+                                       :host github))
+(package! mu4e-dashboard :recipe (:repo "rougier/mu4e-dashboard"
+                                  :host github))
