@@ -1,48 +1,48 @@
 ;;; lisp/hydra-plus.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! :ui hydra)
 
-;;; smerge
-;; (add-hook 'find-file-hook #'jethro/enable-smerge-maybe :append)
-(defhydra my-hydra-smerge (
-                           :hint nil
-                           :pre (smerge-mode 1)
-                           ;; Disable `smerge-mode' when quitting hydra if
-                           ;; no merge conflicts remain.
-                           :post (smerge-auto-leave))
-  "
- Movement^^^^         Merge Action^^        Diff^^            Other
- ---------------^^^^  ------------------^^  --------------^^  ---------------------------^^
- [_n_]^^   next hunk  [_b_] keep base       [_<_] upper/base  [_C_] combine curr/next hunks
- [_N_/_p_] prev hunk  [_u_] keep upper      [_=_] upper/lower [_u_] undo
- [_j_]^^   next line  [_a_] keep all        [_>_] base/lower  [_q_] quit
- [_k_]^^   prev line  [_l_] keep lower      [_R_] refine      ^^
- ^^^^                 [_c_] keep current    [_E_] ediff       ^^
- ^^^^                 [_K_] kill current"
-  ;; move
-  ("n" smerge-next)
-  ("N" smerge-prev)
-  ("p" smerge-prev)
-  ("j" evil-next-line)
-  ("k" evil-previous-line)
-  ;; merge action (mine = upper, other = lower)
-  ("b" smerge-keep-base)
-  ("u" smerge-keep-upper)
-  ("a" smerge-keep-all)
-  ("l" smerge-keep-lower)
-  ("c" smerge-keep-current)
-  ;; diff
-  ("<" smerge-diff-base-upper)
-  ("=" smerge-diff-upper-lower)
-  (">" smerge-diff-base-lower)
-  ("R" smerge-refine)
-  ("E" smerge-ediff :exit t)
-  ;; other
-  ("C" smerge-combine-with-next)
-  ("K" smerge-kill-current)
-  ("u" undo-fu-only-undo)
-  ("q" nil :exit t)
-  ;; ("?" spacemacs//smerge-ts-toggle-hint)
-  )
+;; ;;; smerge
+;; ;; (add-hook 'find-file-hook #'jethro/enable-smerge-maybe :append)
+;; (defhydra my-hydra-smerge (:color red
+;;                            :hint nil
+;;                            :pre (smerge-mode 1)
+;;                            ;; Disable `smerge-mode' when quitting hydra if
+;;                            ;; no merge conflicts remain.
+;;                            :post (smerge-auto-leave))
+;;   "
+;;  Movement^^^^         Merge Action^^        Diff^^            Other
+;;  ---------------^^^^  ------------------^^  --------------^^  ---------------------------^^
+;;  [_n_]^^   next hunk  [_b_] keep base       [_<_] upper/base  [_C_] combine curr/next hunks
+;;  [_N_/_p_] prev hunk  [_u_] keep upper <<   [_=_] upper/lower [_u_] undo
+;;  [_j_]^^   next line  [_a_] keep all        [_>_] base/lower  [_q_] quit
+;;  [_k_]^^   prev line  [_l_] keep lower >>   [_R_] refine      ^^
+;;  ^^^^                 [_c_] keep current    [_E_] ediff       ^^
+;;  ^^^^                 [_K_] kill current"
+;;   ;; move
+;;   ("n" smerge-next)
+;;   ("N" smerge-prev)
+;;   ("p" smerge-prev)
+;;   ("j" evil-next-line)
+;;   ("k" evil-previous-line)
+;;   ;; merge action (mine = upper, other = lower)
+;;   ("b" smerge-keep-base)
+;;   ("u" smerge-keep-upper)
+;;   ("a" smerge-keep-all)
+;;   ("l" smerge-keep-lower)
+;;   ("c" smerge-keep-current)
+;;   ;; diff
+;;   ("<" smerge-diff-base-upper)
+;;   ("=" smerge-diff-upper-lower)
+;;   (">" smerge-diff-base-lower)
+;;   ("R" smerge-refine)
+;;   ("E" smerge-ediff :exit t)
+;;   ;; other
+;;   ("C" smerge-combine-with-next)
+;;   ("K" smerge-kill-current)
+;;   ("u" undo-fu-only-undo)
+;;   ("q" nil :exit t)
+;;   ;; ("?" spacemacs//smerge-ts-toggle-hint)
+;;   )
 
 ;;; org-babel
 (defhydra my-hydra-org-babel
@@ -412,37 +412,37 @@ _hp_: set priority    ^^                          _S_:  delete all filters    _L
   ;; Other
   ("q" nil :exit t))
 
-;;; VCS Hydra
-(defhydra my-hydra-vcs
-  (:hint nil
-   ;; :pre (git-gutter-mode 1)
-   )
- "
- Hunk Commands^^^^^^                 Magit Commands^^^^^^                             Others
-----------------------------^^^^^^  ------------------------------------------^^^^^^  ------------^^
- [_n_]^^^^      next hunk            [_w_/_u_]^^    stage/unstage in current file     [_z_] recenter
- [_N_/_p_]^^    previous hunk        [_c_/_C_]^^    commit with popup/direct commit   [_q_] quit
- [_r_/_s_/_h_]  revert/stage/show    [_f_/_F_/_P_]  fetch/pull/push popup
- [_t_]^^^^      toggle diff signs    [_l_/_D_]^^    log/diff popup"
-  ("C" magit-commit :exit t)
-  ("d" magit-ediff :exit t)
-  ("D" magit-diff-unstaged :exit t)
-  ("F" magit-pull :exit t)
-  ("P" magit-push :exit t)
-  ("c" magit-commit :exit t)
-  ("f" magit-fetch :exit t)
-  ("l" magit-log :exit t)
-  ("u" magit-unstage-file)
-  ("w" magit-stage-file)
-  ("n" git-gutter:next-hunk)
-  ("N" git-gutter:previous-hunk)
-  ("p" git-gutter:previous-hunk)
-  ("r" git-gutter:revert-hunk)
-  ("s" git-gutter:stage-hunk)
-  ("h" git-gutter:show-hunk)
-  ("t" git-gutter-mode)
-  ("z" recenter-top-bottom)
-  ("q" nil :exit t))
+;; ;;; VCS Hydra
+;; (defhydra my-hydra-vcs
+;;   (:hint nil
+;;    ;; :pre (git-gutter-mode 1)
+;;    )
+;;  "
+;;  Hunk Commands^^^^^^                 Magit Commands^^^^^^                             Others
+;; ----------------------------^^^^^^  ------------------------------------------^^^^^^  ------------^^
+;;  [_n_]^^^^      next hunk            [_w_/_u_]^^    stage/unstage in current file     [_z_] recenter
+;;  [_N_/_p_]^^    previous hunk        [_c_/_C_]^^    commit with popup/direct commit   [_q_] quit
+;;  [_r_/_s_/_h_]  revert/stage/show    [_f_/_F_/_P_]  fetch/pull/push popup
+;;  [_t_]^^^^      toggle diff signs    [_l_/_D_]^^    log/diff popup"
+;;   ("C" magit-commit :exit t)
+;;   ("d" magit-ediff :exit t)
+;;   ("D" magit-diff-unstaged :exit t)
+;;   ("F" magit-pull :exit t)
+;;   ("P" magit-push :exit t)
+;;   ("c" magit-commit :exit t)
+;;   ("f" magit-fetch :exit t)
+;;   ("l" magit-log :exit t)
+;;   ("u" magit-unstage-file)
+;;   ("w" magit-stage-file)
+;;   ("n" git-gutter:next-hunk)
+;;   ("N" git-gutter:previous-hunk)
+;;   ("p" git-gutter:previous-hunk)
+;;   ("r" git-gutter:revert-hunk)
+;;   ("s" git-gutter:stage-hunk)
+;;   ("h" git-gutter:show-hunk)
+;;   ("t" git-gutter-mode)
+;;   ("z" recenter-top-bottom)
+;;   ("q" nil :exit t))
 
 ;;; layout
 (defhydra my-hydra-layouts
