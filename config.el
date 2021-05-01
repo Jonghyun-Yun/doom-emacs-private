@@ -28,12 +28,6 @@
 ;; "Iosevka SS13" ;; Monospace, Lucida Style
 
 ;; (setq
-;;  doom-font (font-spec :family "Iosevka SS08" :size 28 :weight 'light :width 'expanded)
-;;  doom-variable-pitch-font (font-spec :family "Iosevka Sparkle" :weight 'light :width 'expanded)
-;;  ;; doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light :width 'expanded)
-;;  )
-
-;; (setq
 ;;  doom-font (font-spec :family "Iosevka SS08" :size 24 :weight 'light)
 ;;  doom-big-font (font-spec :family "Iosevka SS08" :size 36 :weight 'light)
 ;;  ;; doom-variable-pitch-font (font-spec :family "Iosevka Etoile" :weight 'light)
@@ -42,10 +36,10 @@
 ;;  doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
 
 (setq
- ;; doom-font (font-spec :family "Roboto Mono" :size 24 :weight 'light)
- ;; doom-big-font (font-spec :family "Roboto Mono" :size 36 :weight 'light)
- doom-font (font-spec :family "JetBrains Mono" :size 24 :weight 'light)
- doom-big-font (font-spec :family "JetBrains Mono" :size 36 :weight 'light)
+ doom-font (font-spec :family "RobotoMono Nerd Font" :size 24 :weight 'light)
+ doom-big-font (font-spec :family "RobotoMono Nerd Font" :size 36 :weight 'light)
+ ;; doom-font (font-spec :family "JetBrains Mono" :size 24 :weight 'light)
+ ;; doom-big-font (font-spec :family "JetBrains Mono" :size 36 :weight 'light)
  ;; doom-font (font-spec :family "Fira Code" :size 24 :weight 'light)
  ;; doom-big-font (font-spec :family "Fira Code" :size 36 :weight 'light)
  doom-variable-pitch-font (font-spec :family "Overpass" :size 24 :weight 'light)
