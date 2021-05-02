@@ -7,6 +7,6 @@
 [submodule "local/scimax"]
 	path = local/scimax
 	url = https://github.com/Jonghyun-Yun/scimax.git
-[submodule "local/nano-emacs"]
-	path = local/nano-emacs
-	url = https://github.com/Jonghyun-Yun/nano-emacs.git
+[submodule "local/ox-hugo"]
+	path = local/ox-hugo
+	url = https://github.com/Jonghyun-Yun/ox-hugo.git

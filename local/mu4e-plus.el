@@ -29,8 +29,8 @@
   (setq mu4e-maildirs-extension-action-key ""
         mu4e-maildirs-extension-action-text nil)
 
-  ;; set a full-path of mu binary
-  (setq mu4e-mu-binary "/usr/local/bin/mu")
+  ;; ;; set a full-path of mu binary
+  ;; (setq mu4e-mu-binary "/usr/local/bin/mu")
 
   ;; to use mu4e-headers-mark-all
   (require 'mu4e-contrib)

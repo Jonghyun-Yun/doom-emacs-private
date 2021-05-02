@@ -32,7 +32,7 @@
 ;;; ox-ravel
 ;; `ox-hugo' depends on this
 (use-package ox-ravel
-  :load-path "~/.doom.d/packages/ox-ravel"
+  :load-path "~/.doom.d/local/ox-ravel"
   :after ox
   :config
   ;; (require 'ob-R)
