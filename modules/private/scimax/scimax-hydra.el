@@ -142,7 +142,7 @@ This is a macro so I don't have to quote the hydra name."
   ;; d ?
   ("e" (scimax-open-hydra scimax-errors/body) "Edit/Errors")
   ("f" (scimax-open-hydra scimax-files/body) "Files")
-  ("g" (scimax-open-hydra scimax-google/body) "Google")
+  ;; ("g" (scimax-open-hydra scimax-google/body) "Google")
   ("h" (scimax-open-hydra scimax-help/body) "Help")
   ("i" (scimax-open-hydra scimax-insert/body) "Insert")
   ("j" (scimax-open-hydra scimax-jump/body) "Jump")
@@ -322,19 +322,19 @@ _p_: ffap
 
 
 ;;** google
-(defhydra scimax-google (:color blue :inherit (scimax-base/heads) :columns 3)
-  "google"
-  ("e" google-this-error "Error")
-  ("f" google-this-forecast "Forecast")
-  ("g" google-this-region "Region")
-  ("k" google-this-lucky-search "Lucky")
-  ("l" google-this-line "Line")
-  ("m" google-maps "Maps")
-  ("r" google-this-ray "Ray")
-  ("s" google-this-search "Search")
-  ("t" google-this "This")
-  ("w" google-this-word "Word")
-  ("y" google-this-symbol "Symbol"))
+;; (defhydra scimax-google (:color blue :inherit (scimax-base/heads) :columns 3)
+;;   "google"
+;;   ("e" google-this-error "Error")
+;;   ("f" google-this-forecast "Forecast")
+;;   ("g" google-this-region "Region")
+;;   ("k" google-this-lucky-search "Lucky")
+;;   ("l" google-this-line "Line")
+;;   ("m" google-maps "Maps")
+;;   ("r" google-this-ray "Ray")
+;;   ("s" google-this-search "Search")
+;;   ("t" google-this "This")
+;;   ("w" google-this-word "Word")
+;;   ("y" google-this-symbol "Symbol"))
 
 ;;** help
 

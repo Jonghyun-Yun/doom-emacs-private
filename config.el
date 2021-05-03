@@ -36,30 +36,23 @@
 ;;  doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
 
 (setq
- doom-font (font-spec :family "RobotoMono Nerd Font" :size 24 :weight 'light)
- doom-big-font (font-spec :family "RobotoMono Nerd Font" :size 36 :weight 'light)
+ doom-font (font-spec :family "Roboto Mono" :size 24 :weight 'light)
+ doom-big-font (font-spec :family "Roboto Mono" :size 36 :weight 'light)
  ;; doom-font (font-spec :family "JetBrains Mono" :size 24 :weight 'light)
  ;; doom-big-font (font-spec :family "JetBrains Mono" :size 36 :weight 'light)
- ;; doom-font (font-spec :family "Fira Code" :size 24 :weight 'light)
- ;; doom-big-font (font-spec :family "Fira Code" :size 36 :weight 'light)
- doom-variable-pitch-font (font-spec :family "Overpass" :size 24 :weight 'light)
+ doom-variable-pitch-font (font-spec :family "Roboto" :size 24 :weight 'light)
+ ;; doom-variable-pitch-font (font-spec :family "Overpass" :size 24 :weight 'light)
  doom-unicode-font (font-spec :family "JuliaMono" :weight 'light)
- doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light)
- )
+ doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
-(setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
-;; (setq variable-pitch-serif-font (font-spec :family "Libre Baskerville" :size 23))
+;; (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27 :weight 'light))
+;; (setq variable-pitch-serif-font (font-spec :family "Roboto Slab" :size 24 :weight 'light))
+(setq variable-pitch-serif-font (font-spec :family "Libre Baskerville" :size 23 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Libertinus Serif" :size 27))
 
 ;; missing out on the following Alegreya ligatures:
-(set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
-(set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
-
-;; (setq
-;;  doom-font (font-spec :family "Fira Code" :size 24 :weight 'light)
-;;  doom-variable-pitch-font (font-spec :family "FiraGO" :weight 'light)
-;;  doom-unicode-font (font-spec :family "Noto Serif CJK KR" :weight 'light)
-;;  )
+;; (set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
+;; (set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
