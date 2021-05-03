@@ -156,6 +156,7 @@
     "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
     (interactive)
     (progn
+      (setq-local line-spacing 2)
       (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
       (let ((mixed-pitch-face 'variable-pitch-serif))
         (mixed-pitch-mode (or arg 'toggle))))))

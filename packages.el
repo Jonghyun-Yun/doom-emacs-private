@@ -83,8 +83,12 @@
 ;;            )
 ;;   )
 
+;; (package! ox-hugo
+;;   :recipe (:host github :repo "jonghyun-yun/ox-hugo" :nonrecursive t))
+
 (package! ox-hugo
-  :recipe (:host github :repo "jonghyun-yun/ox-hugo" :nonrecursive t))
+  :recipe (:local-repo "local/ox-hugo"
+           :branch "patch"))
 
 ;; (package! org-cv
 ;;   :recipe (:host github
@@ -201,6 +205,7 @@
   :pin "4ded6be2ce3e8dadc5635a534827181a8c8ab602"
   :disable t)
 
+;; (package! orderless)
 ;; (package! yaml-mode)
 ;; (package! anki-editor)
 ;; (package! ox-texinfo+
@@ -221,10 +226,14 @@
                                   )
                           :branch "patch"))
 
-;;; mu4e
-(package! svg-tag-mode :recipe (:repo "rougier/svg-tag-mode"
-                                :host github))
-(package! mu4e-thread-folding :recipe (:repo "rougier/mu4e-thread-folding"
-                                       :host github))
-(package! mu4e-dashboard :recipe (:repo "rougier/mu4e-dashboard"
-                                  :host github))
+;;; nano-mu4e
+;; (package! svg-tag-mode :recipe (:repo "rougier/svg-tag-mode"
+;;                                 :host github))
+;; (package! mu4e-thread-folding :recipe (:repo "rougier/mu4e-thread-folding"
+;;                                        :host github))
+;; (package! mu4e-dashboard :recipe (:repo "rougier/mu4e-dashboard"
+;;                                   :host github))
+
+;;; nano-emacs
+(package! nano-emacs :recipe (:repo "jonghyun-yun/nano-emacs"
+                              :host github))

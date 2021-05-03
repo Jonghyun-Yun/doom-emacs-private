@@ -1,19 +1,19 @@
 ;;; private/scimax/config.el -*- lexical-binding: t; -*-
 
 ;; ;; google-this
-(use-package google-this
-  :config
-  (google-this-mode 1)
-  ;; (setq google-this-base-url "https://duckduckgo.")
-;; (defun google-this-url ()
-;;   "URL for google searches.
-;;   (concat google-this-base-url google-this-location-suffix "/?q=%s"))
-  )
+;; (use-package! google-this
+;;   :config
+;;   (google-this-mode 1)
+;;   ;; (setq google-this-base-url "https://duckduckgo.")
+;; ;; (defun google-this-url ()
+;; ;;   "URL for google searches.
+;; ;;   (concat google-this-base-url google-this-location-suffix "/?q=%s"))
+;;   )
 
 (after! elfeed
   (require 'scimax-elfeed))
 
-(use-package! "scimax-autoformat-abbrev")      ;; abbrev
+(use-package! scimax-autoformat-abbrev)      ;; abbrev
 
 ;;; scimax
 ;; (load! "words")                         ;; bibtex search
@@ -76,5 +76,3 @@
 
   (add-hook! 'org-mode-hook (lambda () (if (not (get 'scimax-org-renumber-environment 'enabled))
                                            (scimax-toggle-latex-equation-numbering)))))
-
-
