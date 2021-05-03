@@ -97,7 +97,7 @@
   :config
   (after! ox-pandoc
     (add-to-list 'org-pandoc-valid-options 'citeproc))
-  )
+ )
 
 ;;; load lisp
 (with-eval-after-load 'hydra
@@ -225,7 +225,7 @@
 (setq auto-save-default t
       create-lockfiles t
       make-backup-files nil
-      ; truncate-string-ellipsis "…"      ; Unicode ellispis are nicer than "...", and also save /precious/ space
+      ;; truncate-string-ellipsis "…"
       yas-triggers-in-field t           ; snippets inside snippets. some need this
       )
 
@@ -247,54 +247,43 @@
         ;; org-return-follows-link t
         org-use-speed-commands t
         org-log-into-drawer t)
-  ;; rendering when not at point
-  ;; (use-package! org-fragtog
-  ;; :hook (org-mode . org-fragtog-mode))
-  (when (featurep! :lang org +pretty)
+ (when (featurep! :lang org +pretty)
     (remove-hook 'org-mode-hook 'org-superstar-mode) ; manually turn it on!
     (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
           org-superstar-remove-leading-stars nil
           ))
-
-  ;; background color for org-latex
-  ;; (+org-refresh-latex-background-h)
-  (setq
-   ;; org-export-in-background t                  ; async export by default
-
-   org-fontify-quote-and-verse-blocks nil
-   org-fontify-whole-heading-line nil
-   org-hide-leading-stars nil
-   org-startup-indented t
-   org-ellipsis " ▼ "
-
-   org-journal-encrypt-journal t
-
-   org-indent-indentation-per-level 1
-   org-adapt-indentation nil
-
-   ;; tag indent
-   ;; org-tags-column -77
-
-   org-log-done 'time
-   ;; don't ask to follow elisp link
-   org-confirm-elisp-link-function nil
-
-   ;; org export global setting
-   org-export-with-toc nil
-   org-export-with-tags nil)
-
-  ;; (setq org-insert-heading-respect-content nil)
-
-  ;; default attach folder
-  ;; (after! org-attach
-  ;;   (setq
-  ;;    org-attach-id-dir "data/"))
-
-  ;; visual-mode tab binds back to org-cycle
-  (remove-hook 'org-tab-first-hook #'+org-yas-expand-maybe-h)
-
-  ;; insert-mode tab binds back to org-cycle
-  (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h))
+ (setq
+   ;; " ▾ " ; FiraGo
+   ;; " ▼ " ; Alegreya Sans
+   ;; " ⬎ " ; IBM Plex Mono
+   ;; " ↩ " ; firacode
+   ;; " ⤶ " ; juliamono
+ org-ellipsis " ……")
+ (setq
+  ;; org-export-in-background t                  ; async export by default
+  org-fontify-quote-and-verse-blocks nil
+  org-fontify-whole-heading-line nil
+  org-hide-leading-stars nil
+  org-startup-indented t
+  org-habit-show-habits-only-for-today t
+  org-journal-encrypt-journal t
+  org-indent-indentation-per-level 1
+  org-adapt-indentation nil
+  ;; tag indent
+  ;; org-tags-column -77
+  org-log-done 'time
+  ;; don't ask to follow elisp link
+  org-confirm-elisp-link-function nil
+  ;; org export global setting
+  org-export-with-toc nil
+  org-export-with-tags nil)
+ ;; org-insert-heading-respect-content nil
+ ;; default attach folder
+ ;;    org-attach-id-dir "data/"
+ ;; visual-mode tab binds back to org-cycle
+ (remove-hook 'org-tab-first-hook #'+org-yas-expand-maybe-h)
+ ;; insert-mode tab binds back to org-cycle
+ (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h))
 
 ;;;; org-latex
 (after! org
@@ -307,12 +296,11 @@
   (setq org-format-latex-options
         (plist-put org-format-latex-options :background
                    ;; "Transparent"
-                   'default
-                   )
-        )
+                   'default             ; work better with dvipng
+                   ))
   (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
 
-  ;; cdltaex will ignore inline math $...$
+  ;; cdlatex will ignore inline math $...$
   ;; (plist-put org-format-latex-options :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")) ;; drop "$"
 
   (setq org-preview-latex-image-directory "ltximg/"
@@ -349,24 +337,6 @@
 (use-package ox-gfm
   :defer t
   :after ox)
-
-;;; org-roam
-(with-eval-after-load 'org-roam
-  (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
-        +org-roam-open-buffer-on-find-file nil)
-  ;; (setq org-roam-graph-executable "neato")
-  ;; (setq org-roam-graph-extra-config '(("overlap" . "false")))
-  (setq org-roam-dailies-capture-templates
-        '(("d" "default" entry
-           #'org-roam-capture--get-point
-           "* %?"
-           :file-name "daily/%<%Y-%m-%d_%A>"
-           :head "#+TITLE: %<%Y-%m-%d %A>\n\n[[roam:%<%Y-%m %B>]]\n\n")))
-  )
-
-;; this should work, and it actually bind keys
-;; but it cannot override default binding's description
-;; (map! :leader "nrd" #'org-roam-dailies-map)
 
 ;;; misc
 ;; (setq mac-right-option-modifier 'hyper)
@@ -636,6 +606,10 @@
 ;; (with-eval-after-load 'lsp-mode
 ;;   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.ccls-cache\\'")
 ;;   )
+;;
+
+(setq search-highlight t
+      search-whitespace-regexp ".*?")
 
 ;;;; matlab
 (use-package matlab-mode
@@ -833,43 +807,55 @@
   )
 
 ;;; org-roam-server
- (use-package org-roam-server
-   ;; :after (org-roam server)
-   :defer t
-   :config
-   (setq org-roam-server-host "127.0.0.1"
-         org-roam-server-port 8080
-         org-roam-server-authenticate nil
-         org-roam-server-export-inline-images t
-         ;; org-roam-server-serve-files nil
-         ;; org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
-         ;; org-roam-server-network-poll t
-         ;; org-roam-server-network-arrows nil
-         org-roam-server-network-label-truncate t
-         org-roam-server-network-label-truncate-length 60
-         org-roam-server-network-label-wrap-length 20)
-   :init
-   (defun org-roam-server-open ()
-     "Ensure the server is active, then open the roam graph."
-     (interactive)
-     (progn
-       (if org-roam-server-mode t (org-roam-server-mode 1))
-       (browse-url (format "http://localhost:%d" org-roam-server-port))))
-   (map!
-    :leader "nrs" #'org-roam-server-open))
-
+(use-package org-roam-server
+  ;; :after (org-roam server)
+  :defer t
+  :config
+  (setq org-roam-server-host "127.0.0.1"
+        org-roam-server-port 8080
+        org-roam-server-authenticate nil
+        org-roam-server-export-inline-images t
+        ;; org-roam-server-serve-files nil
+        ;; org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
+        ;; org-roam-server-network-poll t
+        ;; org-roam-server-network-arrows nil
+        org-roam-server-network-label-truncate t
+        org-roam-server-network-label-truncate-length 60
+        org-roam-server-network-label-wrap-length 20)
+  :init
+  (defun org-roam-server-open ()
+    "Ensure the server is active, then open the roam graph."
+    (interactive)
+    (progn
+      (if org-roam-server-mode t (org-roam-server-mode 1))
+      (browse-url (format "http://localhost:%d" org-roam-server-port))))
+  (map!
+   :leader "nrs" #'org-roam-server-open))
 
 ;;; org-roam
 (after! org-roam
+  (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
+        +org-roam-open-buffer-on-find-file nil)
+  ;; (setq org-roam-graph-executable "neato")
+  ;; (setq org-roam-graph-extra-config '(("overlap" . "false")))
+  (setq org-roam-dailies-capture-templates
+        '(("d" "default" entry
+           #'org-roam-capture--get-point
+           "* %?"
+           :file-name "daily/%<%Y-%m-%d_%A>"
+           :head "#+TITLE: %<%Y-%m-%d %A>\n\n[[roam:%<%Y-%m %B>]]\n\n")))
+  ;; the below bind `spare-keymap'. However, it cannot override default doom's binding
+  ;; (map! :leader "nrd" #'org-roam-dailies-map)
   (setq org-roam-graph-executable
         ;; "circo"
         ;; "neato"
         ;; "twopi"
-        "fdp"
+        "fdp"                           ; best for a large graph
         ;; "sfdp"
         ;; "patchwork"
         ;; "osage"
         )
+  ;; customizing graphs (from TEC)
   (setq org-roam-graph-node-extra-config
         '(("shape"      . "underline")
           ("style"      . "rounded,filled")
@@ -877,11 +863,9 @@
           ("color"      . "#C9C9C9")
           ("fontcolor"  . "#111111")
           ("fontname"   . "Overpass")))
-
   (setq +org-roam-graph--html-template
         (replace-regexp-in-string "%\\([^s]\\)" "%%\\1"
                                   (f-read-text (concat doom-private-dir "misc/org-roam-template.html"))))
-
   (defadvice! +org-roam-graph--build-html (&optional node-query callback)
     "Generate a graph showing the relations between nodes in NODE-QUERY. HTML style."
     :override #'org-roam-graph--build
@@ -943,7 +927,7 @@
           ;; (left-fringe . 8)
           ;; (right-fringe . 8)
           ))
-;; (setq ivy-posframe-height-alist '((swiper . 10)))
+  ;; (setq ivy-posframe-height-alist '((swiper . 10)))
   (pushnew! ivy-posframe-display-functions-alist
             '(counsel-M-x . ivy-display-function-fallback)
             '(counsel-describe-variable . ivy-display-function-fallback)
@@ -974,10 +958,6 @@
 (after! evil-snipe
   (pushnew! evil-snipe-disabled-modes 'ibuffer-mode 'dired-mode))
 
-;;; org-noter
-(after! org-noter
-  org-noter-doc-split-fraction '(0.57 0.43))
-
 (use-package! ctrlf
   :hook
   (after-init . ctrlf-mode))
@@ -987,11 +967,12 @@
   (([remap kill-ring-save] . easy-kill)))
 
 (map!
-   (:when (featurep! :editor multiple-cursors)
-    :nv "C-M-d" nil
-    :nv "C-M-S-d" #'evil-multiedit-restore
-    ))
+ (:when (featurep! :editor multiple-cursors)
+  :nv "C-M-d" nil
+  :nv "C-M-S-d" #'evil-multiedit-restore
+  ))
 
+;;; smartparen bindings
 (map!
  (:after smartparens
   :map smartparens-mode-map
@@ -1007,19 +988,47 @@
   "C-(" #'sp-backward-slurp-sexp
   "C-{" #'sp-backward-barf-sexp))
 
-;;; ???
+;;; easy clock correction
 (use-package! org-clock-convenience
+  :commands (org-clock-convenience-timestamp-up
+             org-clock-convenience-timestamp-down
+             org-clock-convenience-fill-gap
+             org-clock-convenience-fill-gap-both)
   :bind (:map org-agenda-mode-map
          ("<S-up>" . org-clock-convenience-timestamp-up)
          ("<S-down>" . org-clock-convenience-timestamp-down)
          ("H-o" . org-clock-convenience-fill-gap)
          ("H-e" . org-clock-convenience-fill-gap-both)))
 
+;;; avy
 (after! avy  
   ;; (setq avy-keys '(?a ?s ?d ?f ?j ?k ?l ?\;))
   ;; home row priorities: 8 6 4 5 - - 1 2 3 7
-  (setq avy-keys '(?n ?e ?i ?s ?t ?r ?i ?a))
-  (setq lispy-avy-keys avy-keys))
+  (setq avy-keys '(?n ?e ?j ?s ?t ?r ?l ?a))
+  (setq lispy-avy-keys avy-keys)
+  )
+
+;;; ace
+(after! ace-window
+  (setq aw-scope 'global
+        aw-dispatch-always t
+        ;; aw-keys avy-keys
+        ))
+;; C-w C-w ? to aw-show-dispath-help
+;; (defvar aw-dispatch-alist
+;;   '((?x aw-delete-window "Delete Window")
+;; 	(?m aw-swap-window "Swap Windows")
+;; 	(?M aw-move-window "Move Window")
+;; 	(?c aw-copy-window "Copy Window")
+;; 	(?j aw-switch-buffer-in-window "Select Buffer")
+;; 	(?n aw-flip-window)
+;; 	(?u aw-switch-buffer-other-window "Switch Buffer Other Window")
+;; 	(?c aw-split-window-fair "Split Fair Window")
+;; 	(?v aw-split-window-vert "Split Vert Window")
+;; 	(?b aw-split-window-horz "Split Horz Window")
+;; 	(?o delete-other-windows "Delete Other Windows")
+;; 	(?? aw-show-dispatch-help))
+;;   "List of actions for `aw-dispatch-default'.")
 
 ;;; ref documents in org
 (use-package! org-transclusion
@@ -1028,8 +1037,9 @@
   :config
   (setq org-transclusion-exclude-elements nil))
 
-;;; org-noter fit
+;;; org-noter
 (after! org-noter
+  (org-noter-doc-split-fraction '(0.57 0.43))
   (setq org-noter-always-create-frame t
         org-noter-auto-save-last-location t)
   (defun org-noter-init-pdf-view ()
@@ -1039,10 +1049,10 @@
   (add-hook 'pdf-view-mode-hook 'org-noter-init-pdf-view))
 
 (use-package! git-link
-    :commands
-    (git-link git-link-commit git-link-homepage)
-    :custom
-    (git-link-use-commit t))
+  :commands
+  (git-link git-link-commit git-link-homepage)
+  :custom
+  (git-link-use-commit t))
 
 (use-package! lorem-ipsum
   :defer t
@@ -1050,3 +1060,9 @@
              lorem-ipsum-insert-sentences
              lorem-ipsum-insert-list
              ))
+
+;; Kill current buffer (instead of asking first buffer name)
+;; (global-set-key (kbd "C-x k") 'kill-current-buffer)
+
+;; (setq  outshine-use-speed-commands t)
+;; (outshine-speed-command-help)

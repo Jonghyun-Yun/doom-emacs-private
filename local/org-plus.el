@@ -398,18 +398,19 @@
   ;; (require 'ox-extra)
   ;; (ox-extras-activate '(ignore-headlines))
 
-  ;; embed youtube in exported html
-  (org-link-set-parameters "yt" :export #'+org-export-yt)
-  (defun +org-export-yt (path desc backend _com)
-    (cond ((org-export-derived-backend-p backend 'html)
-           (format "<iframe width='440' \
-height='335' \
-src='https://www.youtube.com/embed/%s' \
-frameborder='0' \
-allowfullscreen>%s</iframe>" path (or "" desc)))
-          ((org-export-derived-backend-p backend 'latex)
-           (format "\\href{https://youtu.be/%s}{%s}" path (or desc "youtube")))
-          (t (format "https://youtu.be/%s" path))))
+  ;;   ;; doom implemented this already
+  ;;   ;; embed youtube in exported html
+  ;;   (org-link-set-parameters "yt" :export #'+org-export-yt)
+  ;;   (defun +org-export-yt (path desc backend _com)
+  ;;     (cond ((org-export-derived-backend-p backend 'html)
+  ;;            (format "<iframe width='440' \
+  ;; height='335' \
+  ;; src='https://www.youtube.com/embed/%s' \
+  ;; frameborder='0' \
+  ;; allowfullscreen>%s</iframe>" path (or "" desc)))
+  ;;           ((org-export-derived-backend-p backend 'latex)
+  ;;            (format "\\href{https://youtu.be/%s}{%s}" path (or desc "youtube")))
+  ;;           (t (format "https://youtu.be/%s" path))))
 
 ;;; program for org latex preview
   ;; ;; fast, no unicode-math
