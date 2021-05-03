@@ -83,6 +83,7 @@
   (defvar-local +zen--original-mixed-pitch-mode-p nil)
   (defvar-local +zen--original-solaire-mode-p nil)
   (defvar-local +zen--original-org-pretty-table-mode-p nil)
+  (defvar-local +zen--original-org-appear-mode-p nil)
   (defun +zen-enable-mixed-pitch-mode-h ()
     "Enable `mixed-pitch-mode' when in `+zen-mixed-pitch-modes'."
     (when (apply #'derived-mode-p +zen-mixed-pitch-modes)
@@ -120,6 +121,8 @@
                   (org-superstar-mode 1))
                 (setq +zen--original-org-indent-mode-p org-indent-mode)
                 (org-indent-mode -1)
+                (setq +zen--original-org-appear-mode-p org-appear-mode)
+                (org-appear-mode 1)
                 )))
   (add-hook 'writeroom-mode-hook (lambda ()
                                    (when (eq major-mode 'org-mode) (org-appear-mode))))
@@ -130,6 +133,7 @@
                 (when (featurep 'org-superstar)
                   (org-superstar-restart))
                 (when +zen--original-org-indent-mode-p (org-indent-mode 1))
+                (when +zen--original-org-appear-mode-p (org-appear-mode 1))
                 )))
   )
 
@@ -177,7 +181,7 @@
     "Whether to hide property draws in `org-tree-slide'.")
   (defvar +org-present-hide-tags t
     "Whether to hide tags in `org-tree-slide'.")
-  (defvar +org-present-format-latex-scale 2.5
+  (defvar +org-present-format-latex-scale 3
     "A local variable to be used as `org-latex-preview-scale' in `org-tree-slide'.")
   (setq org-tree-slide-header nil
         org-tree-slide-skip-outline-level 5
@@ -232,5 +236,6 @@ or `mixed-pitch-serif-mode' can be called afterward."
   (advice-add 'org-tree-slide-mode :around #'jyun/org-tree-slide)
 
   ;; cause errors in navigating slides
-  (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
+  ;; (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
+  (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--hide-first-heading-maybe-a)
   )

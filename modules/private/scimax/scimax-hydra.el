@@ -142,7 +142,7 @@ This is a macro so I don't have to quote the hydra name."
   ;; d ?
   ("e" (scimax-open-hydra scimax-errors/body) "Edit/Errors")
   ("f" (scimax-open-hydra scimax-files/body) "Files")
-  ;; ("g" (scimax-open-hydra scimax-google/body) "Google")
+  ("g" (scimax-open-hydra scimax-google/body) "Google")
   ("h" (scimax-open-hydra scimax-help/body) "Help")
   ("i" (scimax-open-hydra scimax-insert/body) "Insert")
   ("j" (scimax-open-hydra scimax-jump/body) "Jump")
@@ -322,19 +322,19 @@ _p_: ffap
 
 
 ;;** google
-;; (defhydra scimax-google (:color blue :inherit (scimax-base/heads) :columns 3)
-;;   "google"
-;;   ("e" google-this-error "Error")
-;;   ("f" google-this-forecast "Forecast")
-;;   ("g" google-this-region "Region")
-;;   ("k" google-this-lucky-search "Lucky")
-;;   ("l" google-this-line "Line")
-;;   ("m" google-maps "Maps")
-;;   ("r" google-this-ray "Ray")
-;;   ("s" google-this-search "Search")
-;;   ("t" google-this "This")
-;;   ("w" google-this-word "Word")
-;;   ("y" google-this-symbol "Symbol"))
+(defhydra scimax-google (:color blue :inherit (scimax-base/heads) :columns 3)
+  "google"
+  ("e" google-this-error "Error")
+  ("f" google-this-forecast "Forecast")
+  ("g" google-this-region "Region")
+  ("k" google-this-lucky-search "Lucky")
+  ("l" google-this-line "Line")
+  ("m" google-maps "Maps")
+  ("r" google-this-ray "Ray")
+  ("s" google-this-search "Search")
+  ("t" google-this "This")
+  ("w" google-this-word "Word")
+  ("y" google-this-symbol "Symbol"))
 
 ;;** help
 
@@ -362,8 +362,6 @@ _p_: ffap
 
 ;;** insert
 
-
-;;** jump
 (defhydra scimax-insert (:color blue :inherit (scimax-base/heads) :columns 3)
   "insert stuff"
   ("b" insert-buffer "Buffer")
@@ -377,8 +375,9 @@ _p_: ffap
   ("t" org-time-stamp-inactive "Inactive [timestamp]")
   ("T" org-time-stamp "Active <timestamp>")
   ;; ("k" org-inlinetask-insert-task "org task")
-  ("y" yas-insert-snippet "yasnippet")
-  )
+  ("y" yas-insert-snippet "yasnippet"))
+
+;;** jump
 
 (defhydra scimax-jump (:color blue :inherit (scimax-base/heads) :columns 3)
   "jump"
@@ -592,8 +591,8 @@ _<tab>_: %(ring-ref scimax-hydra-modes (+ 1 scimax-hydra-mode-counter)) _S-<tab>
 
 
 (defhydra scimax-nav-word (:color red :inherit (scimax-base/heads)
-			   :columns 4 :hint nil
-			   :pre (setq scimax-hydra-mode-counter 1))
+				  :columns 4 :hint nil
+				  :pre (setq scimax-hydra-mode-counter 1))
   "
 word navigation
 ----------------------------
@@ -906,8 +905,7 @@ _C-a_ Async export: %`hydra-ox/async-export
 
 ;;** registers/resume/replace
 
-(defhydra scimax-registers (:hint nil
-                            :color blue :inherit (scimax-base/heads) :columns 3)
+(defhydra scimax-registers (:color blue :inherit (scimax-base/heads) :columns 3)
   "
 register/resume/replace
 Register                     Resume             Replace
