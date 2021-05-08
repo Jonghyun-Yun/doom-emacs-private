@@ -13,14 +13,14 @@
 (after! elfeed
   (require 'scimax-elfeed))
 
-(use-package! scimax-autoformat-abbrev)      ;; abbrev
+(use-package! scimax-autoformat-abbrev
+    :ensure nil)      ;; abbrev
 
 ;;; scimax
 ;; (load! "words")                         ;; bibtex search
 ;; (load! "scimax-elfeed")                 ;; email elfeed
 ;; (load! "scimax-hydra")                 ;; my hydra to review
 ;; (load! "scimax-autoformat-abbrev")      ;; abbrev
-;; (load! "scimax-yas")      ;; abbrev
 
 (defvar scimax-dir
   (expand-file-name (concat doom-private-dir "local/scimax"))
@@ -28,18 +28,20 @@
   )
 
 (use-package! scimax-hydra
-  :defer t
+  :ensure nil
   :load-path scimax-dir
   :commands (scimax-dispatch-mode-hydra
              scimax/body)
   :init
+  ;; (require 'cl)
   (map! :g
         "s-m" #'scimax-dispatch-mode-hydra
         "s-," #'scimax/body)
   :config
   (require 'emacs-keybinding-command-tooltip-mode)
-  (add-hook 'find-file-hook #'my-enable-smerge-maybe))
+  )
 
+(add-hook 'find-file-hook #'my-enable-smerge-maybe)
 (defun my-enable-smerge-maybe ()
   (when (and buffer-file-name (vc-backend buffer-file-name))
     (save-excursion
