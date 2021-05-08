@@ -10,3 +10,6 @@
 [submodule "local/ox-hugo"]
 	path = local/ox-hugo
 	url = https://github.com/Jonghyun-Yun/ox-hugo.git
+[submodule "local/ox-ravel"]
+	path = local/ox-ravel
+	url = https://github.com/Jonghyun-Yun/ox-ravel.git
