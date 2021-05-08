@@ -299,36 +299,36 @@
           ;;  (file+headline +org-capture-project-notes-file "Inbox")
           ;;  "* %U %?\n%i\n%a" :prepend t)
           ;; ("pc" "Project-local changelog" entry  ; {project-root}/changelog.org"
-                                           ;;  (file+headline +org-capture-project-changelog-file "Unreleased")
-                                           ;;  "* %U %?\n%i\n%a" :prepend t)
+          ;;  (file+headline +org-capture-project-changelog-file "Unreleased")
+          ;;  "* %U %?\n%i\n%a" :prepend t)
 
-                                           ;; Will use {org-directory}/{+org-capture-projects-file} and store
-                                           ;; these under {ProjectName}/{Tasks,Notes,Changelog} headings. They
-                                           ;; support `:parents' to specify what headings to put them under, e.g.
-                                           ;; :parents ("Projects")
-                 ("p" "Templates for projects")
-                 ("pt" "Project todo" entry
-                  (function +org-capture-central-project-todo-file)
-                  "* TODO %^{Todo for...} \n:PROPERTIES: \n:CAPTURED: %U \n:LINK: %a \n:END: \n%i \n%?"
-                  :heading "Tasks"
-                  :prepend nil)
-                 ("pn" "Project notes" entry
-                  (function +org-capture-central-project-notes-file)
-                  "* %U %^{Note for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
-                  :heading "Notes"
-                  :prepend t
-                  )
-                 ("pc" "Project changelog" entry
-                  (function +org-capture-central-project-changelog-file)
-                  "* %U %^{Changelog for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
-                  :heading "Changelog"
-                  :prepend t
-                  )
-                 ("pp" "New Project" entry
-                  (file+headline +org-capture-todo-file "Projects")
-                  "* %^{Project for...} [/] %^{GOAL}p \n:PROPERTIES:\n:CAPTURED: %U \n:END: \n%i \n%?"
-                  :prepend t
-                  )))
+          ;; Will use {org-directory}/{+org-capture-projects-file} and store
+          ;; these under {ProjectName}/{Tasks,Notes,Changelog} headings. They
+          ;; support `:parents' to specify what headings to put them under, e.g.
+          ;; :parents ("Projects")
+          ("p" "Templates for projects")
+          ("pt" "Project todo" entry
+           (function +org-capture-central-project-todo-file)
+           "* TODO %^{Todo for...} \n:PROPERTIES: \n:CAPTURED: %U \n:LINK: %a \n:END: \n%i \n%?"
+           :heading "Tasks"
+           :prepend nil)
+          ("pn" "Project notes" entry
+           (function +org-capture-central-project-notes-file)
+           "* %U %^{Note for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
+           :heading "Notes"
+           :prepend t
+           )
+          ("pc" "Project changelog" entry
+           (function +org-capture-central-project-changelog-file)
+           "* %U %^{Changelog for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
+           :heading "Changelog"
+           :prepend t
+           )
+          ("pp" "New Project" entry
+           (file+headline +org-capture-todo-file "Projects")
+           "* %^{Project for...} [/] %^{GOAL}p \n:PROPERTIES:\n:CAPTURED: %U \n:END: \n%i \n%?"
+           :prepend t
+           )))
 
 
   ;; elfeed capture

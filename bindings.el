@@ -216,6 +216,7 @@
       ;; :n "U" #'elfeed-search-untag-all-unread
       ;; :n "u" #'elfeed-search-tag-all-unread
       ;; :n "s" #'elfeed-search-live-filter
+      :ne "c" #'elfeed-search-clear-filter
       :ne "RET" #'+rss/open
       :ne "p" #'elfeed-show-pdf
       ;; :n "+" #'elfeed-search-tag-all

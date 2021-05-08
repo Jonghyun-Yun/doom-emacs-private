@@ -152,7 +152,8 @@
 ;; https://github.com/emacsmirror/org-gcal
 ;; (package! org-gcal :pin "52b7f8f7654e391f51e8d6d40506c8c170a5be20")
 
-;; (package! visual-regexp)
+(package! visual-regexp :pin "48457d42a5e0fe10fa3a9c15854f1f127ade09b5")
+;; (package! visual-regexp-steroids :pin "a6420b25ec0fbba43bf57875827092e1196d8a9e")
 
 ;; (package! info-colors :pin "47ee73cc19...")
 
@@ -165,7 +166,7 @@
 ;; (package! org-pretty-table
   ;; :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "474ad84a8f...")
 ;; (package! org-fragtog :pin "0151cabc7a...")
-(package! org-fancy-priorities :disable t)
+(package! org-fancy-priorities :disable t) ; slowdown emacs
 
 ;; (package! pandoc-mode)
 
@@ -184,6 +185,7 @@
 (package! ctrlf)
 (package! deadgrep)
 (package! easy-kill)
+(package! git-link :pin "2b510cf3f28bed842853294fc4ee23c7f8b6435a")
 
 (package! org-roam-server :pin "2122a61e9e9be205355c7e2c1e4b65986d6985a5")
 
@@ -192,7 +194,6 @@
 ;; (package! org-clock-budget
 ;;   :recipe (:host github :repo "Fuco1/org-clock-budget"))
 
-(package! git-link :pin "2b510cf3f28bed842853294fc4ee23c7f8b6435a")
 
 ;; disabled, use lispyville
 ;; (package! lispy :disable t)
@@ -211,20 +212,19 @@
 ;; (package! ox-texinfo+
   ;; :recipe (:host github :repo "tarsius/ox-texinfo-plus"))
 
-(package! lorem-ipsum)
-
-
 ;;; scimax
+;; keep it here (not in scimax module)
 (package! scimax :recipe (:local-repo "local/scimax"
                           :files (
                                   "scimax-org.el"
                                   "scimax-stealing.el"
-                                  "scimax-elfeed.el"                 ;; email elfeed
-                                  "scimax-autoformat-abbrev.el"      ;; abbrev
+                                  "scimax-elfeed.el"            ;; email elfeed
+                                  "scimax-autoformat-abbrev.el" ;; abbrev
                                   "emacs-keybinding-command-tooltip-mode.el"
                                   ;; "scimax-hydra.el"
                                   )
                           :branch "patch"))
+(package! lorem-ipsum)
 
 ;;; nano-mu4e
 ;; (package! svg-tag-mode :recipe (:repo "rougier/svg-tag-mode"
@@ -237,3 +237,8 @@
 ;;; nano-emacs
 (package! nano-emacs :recipe (:repo "jonghyun-yun/nano-emacs"
                               :host github))
+
+(package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")
+
+(package! keycast :pin "a3a0798349..." :disable t)
+(package! gif-screencast :pin "fa81e915c2..." :disable t) ;; error during cropping using "mogrify"

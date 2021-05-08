@@ -121,7 +121,7 @@
                   (org-superstar-mode 1))
                 (setq +zen--original-org-indent-mode-p org-indent-mode)
                 (org-indent-mode -1)
-                (setq +zen--original-org-appear-mode-p org-appear-mode)
+                (setq +zen--original-org-appear-mode-p (bound-and-true-p org-appear-mode))
                 (org-appear-mode 1)
                 )))
   (add-hook 'writeroom-mode-hook (lambda ()
