@@ -47,8 +47,8 @@
 
 ;; (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Roboto Slab" :size 24 :weight 'light))
-(setq variable-pitch-serif-font (font-spec :family "Libre Baskerville" :size 23 :weight 'light))
-;; (setq variable-pitch-serif-font (font-spec :family "Libertinus Serif" :size 27))
+;; (setq variable-pitch-serif-font (font-spec :family "Libre Baskerville" :size 23 :weight 'light))
+(setq variable-pitch-serif-font (font-spec :family "Libertinus Serif" :size 27))
 
 ;; missing out on the following Alegreya ligatures:
 ;; (set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
@@ -85,8 +85,7 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 
-;; passwords to be accessible
-;; (use-package! pass)
+(setq load-prefer-newer t)
 
 ;; org -> latex -> md -> docx
 ;; to properly generate cross references
@@ -97,7 +96,7 @@
   :config
   (after! ox-pandoc
     (add-to-list 'org-pandoc-valid-options 'citeproc))
- )
+  )
 
 ;;; load lisp
 (with-eval-after-load 'hydra
@@ -252,13 +251,15 @@
     (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
           org-superstar-remove-leading-stars nil
           ))
- (setq
-   ;; " ▾ " ; FiraGo
+ (setq org-ellipsis
+   " ▾ " ; FiraGo
    ;; " ▼ " ; Alegreya Sans
    ;; " ⬎ " ; IBM Plex Mono
    ;; " ↩ " ; firacode
    ;; " ⤶ " ; juliamono
- org-ellipsis " ……")
+   ;; " … "
+ org-cycle-separator-lines 2            ; -1 or 1 to use unicode org-ellipsis
+ )
  (setq
   ;; org-export-in-background t                  ; async export by default
   org-fontify-quote-and-verse-blocks nil
@@ -338,10 +339,14 @@
   :defer t
   :after ox)
 
+;;; modifier
+;; NOTE: KARABINER
+;; caps_lock: esc if alone, right_ctrl if hold_down
+;; return: return if alone, right_ctrl if hold_down
+(setq mac-right-option-modifier 'meta)
+(setq mac-right-control-modifier 'hyper)
+
 ;;; misc
-;; (setq mac-right-option-modifier 'hyper)
-(setq mac-right-command-modifier 'hyper)
-;; (setq mac-right-option-modifier 'super)
 
 ;; ;; improve slow scrolling?
 ;; (use-package! hl-line+
@@ -363,8 +368,8 @@
 ;; set korean keyboard layout
 ;; C-\ to switch input-method
 (setq default-input-method "korean-hangul390")
-(global-set-key (kbd "s-j s-k") 'evil-escape)
-(global-set-key (kbd "s-j k") 'evil-escape)
+;; (global-set-key (kbd "s-j s-k") 'evil-escape)
+;; (global-set-key (kbd "s-j k") 'evil-escape)
 ;; (key-chord-define-global "45" 'evil-escape)
 
 ;; emacs-mode shift can be used for C-SPC
@@ -384,27 +389,28 @@
 
 ;; (setq save-place-forget-unreadable-files t) ;; emacs is slow to exit after enabling saveplace
 
-;; disable recentf-cleanup on Emacs start, because it can cause
-;; problems with remote files
+;;; recentf
+;; ;; https://github.com/kaz-yos/emacs/blob/master/init.d/500_recentf-related.el
+;; (setq recentf-max-saved-items 300)
+;; (setq recentf-max-menu-items 0)
+
+;; disable recentf-cleanup on Emacs start, because it can cause problems with remote files
 ;; (setq recentf-auto-cleanup 'never)
 ;; (setq recentf-auto-cleanup 300)         ;; long recentf slow down emacs
-
 (after! recentf
   (setq recentf-auto-cleanup 600)
-  (add-to-list 'recentf-exclude 'file-remote-p)
-  (add-to-list 'recentf-exclude ".*Cellar.*"))
+  (setq recentf-exclude '("recentf_.*$"
+                          ;; ".*/elpa/.*"
+                          ".*\\.maildir.*"
+                          "/var/folders/.*"
+                          ".*company-statistics.*"
+                          ".*Cellar.*"
+                          ".*\\.orhc-bibtex-cache"))
+  ;; (add-to-list 'recentf-exclude 'file-remote-p)
+  )
 
 ;; Delete duplicated entries in autosaves of minibuffer history
 ;; (setq history-delete-duplicates t)
-
-;; ;; https://github.com/kaz-yos/emacs/blob/master/init.d/500_recentf-related.el
-;; (setq recentf-max-saved-items 300)
-;; (setq recentf-max-menu-items 15)
-(setq recentf-exclude '("recentf_.*$"
-                        ;; ".*/elpa/.*"
-                        ".*\\.maildir.*"
-                        "/var/folders/.*"
-                        ".*company-statistics.*"))
 
 ;; ;; speed up comint
 ;; (setq gud-gdb-command-name "gdb --annotate=1"
@@ -741,8 +747,11 @@
 ;; (evil-set-initial-state 'elfeed-search-mode 'emacs)
 ;; (evil-set-initial-state 'elfeed-show-mode 'emacs)
 
+;; A snippet for periodic update for feeds (10 mins since Emacs start, then every
+;; two hour)
+(run-at-time (* 10 60) (* 2 60 60) #'elfeed-update)
 (after! elfeed
-  (run-at-time nil (* 8 60 60) #'elfeed-update)
+  ;; (run-at-time nil (* 8 60 60) #'elfeed-update)
   (setq elfeed-search-title-max-width 100
         elfeed-search-title-min-width 20
         elfeed-search-filter "@2-week-ago"
@@ -964,7 +973,14 @@
 
 (use-package! easy-kill
   :bind*
-  (([remap kill-ring-save] . easy-kill)))
+  (([remap kill-ring-save] . easy-kill) ; M-w   
+   ([remap mark-sexp] . easy-mark)))  ; C-M-S @
+
+;; no S-delete can be mapped in MAC
+;; C-backspace should be mapped using C-DEL
+(map! :g "<C-backspace>" #'kill-region)
+(map! :map easy-kill-base-map
+      :g "C-w" #'easy-kill-region)
 
 (map!
  (:when (featurep! :editor multiple-cursors)
@@ -994,11 +1010,12 @@
              org-clock-convenience-timestamp-down
              org-clock-convenience-fill-gap
              org-clock-convenience-fill-gap-both)
-  :bind (:map org-agenda-mode-map
-         ("<S-up>" . org-clock-convenience-timestamp-up)
-         ("<S-down>" . org-clock-convenience-timestamp-down)
-         ("H-o" . org-clock-convenience-fill-gap)
-         ("H-e" . org-clock-convenience-fill-gap-both)))
+  :init
+  (map! (:map org-agenda-mode-map
+         "<S-up>" #'org-clock-convenience-timestamp-up
+         "<S-down>" #'org-clock-convenience-timestamp-down
+         "H-o" #'org-clock-convenience-fill-gap
+         "H-e" #'org-clock-convenience-fill-gap-both)))
 
 ;;; avy
 (after! avy  
@@ -1039,7 +1056,7 @@
 
 ;;; org-noter
 (after! org-noter
-  (org-noter-doc-split-fraction '(0.57 0.43))
+  ;; (org-noter-doc-split-fraction '(0.57 0.43))
   (setq org-noter-always-create-frame t
         org-noter-auto-save-last-location t)
   (defun org-noter-init-pdf-view ()
@@ -1066,3 +1083,61 @@
 
 ;; (setq  outshine-use-speed-commands t)
 ;; (outshine-speed-command-help)
+
+;;; graphviz
+(use-package! graphviz-dot-mode
+  :commands graphviz-dot-mode
+  :mode ("\\.dot\\'" "\\.gz\\'")
+  :init
+  (after! org
+    (setcdr (assoc "dot" org-src-lang-modes)
+            'graphviz-dot)))
+
+(use-package! company-graphviz-dot
+  :after graphviz-dot-mode)
+
+(use-package! visual-regexp
+  ;; :commands (vr/replace vr/query-replace vr/isearch-backward vr/isearch-forward)
+  :commands (vr/replace vr/query-replace)
+  ;; :config (require 'visual-regexp)
+  :init
+  (define-key global-map (kbd "C-c r") 'vr/replace)
+  (define-key global-map (kbd "C-c q") 'vr/query-replace)
+  ;; if you use multiple-cursors, this is for you:
+  ;; (define-key global-map (kbd "C-c m") 'vr/mc-mark)
+  ;; to use visual-regexp-steroids's isearch instead of the built-in regexp isearch, also include the following lines:
+  ;; (define-key esc-map (kbd "C-r") 'vr/isearch-backward) ;; C-M-r
+  ;; (define-key esc-map (kbd "C-s") 'vr/isearch-forward) ;; C-M-s)
+  )
+
+;;; keycast
+(use-package! keycast
+ :commands keycast-mode
+ :config
+ (define-minor-mode keycast-mode
+   "Show current command and its key binding in the mode line."
+   :global t
+   (if keycast-mode
+       (progn
+         (add-hook 'pre-command-hook 'keycast--update t)
+         (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+     (remove-hook 'pre-command-hook 'keycast--update)
+     (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
+ (custom-set-faces!
+   '(keycast-command :inherit doom-modeline-debug
+                     :height 0.9)
+   '(keycast-key :inherit custom-modified
+                 :height 1.1
+                 :weight bold)))
+
+
+;;; disable popup
+(after! warnings
+  (add-to-list 'warning-suppress-types '(undo discard-info)))
+
+;;; emacs binding in insert mode
+;;; don't work. doom emacs probably override this
+;; (after! evil
+;;   ;; use emacs bindings in insert-mode
+;;   (setq evil-disable-insert-state-bindings t
+;;         evil-want-keybinding nil))
