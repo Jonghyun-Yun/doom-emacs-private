@@ -230,11 +230,11 @@
 
 ;;; company
 (after! company
-  (setq company-idle-delay 2
+  (setq company-idle-delay 5
         company-minimum-prefix-length 2
-        company-tooltip-limit 10
         ;; company-box-enable-icon nil ; disable all-the-icons
-        ))
+        company-tooltip-limit 10)
+        )
 
 ;; company memory
 (setq-default history-length 500)
@@ -1029,7 +1029,7 @@
 (after! ace-window
   (setq aw-scope 'global
         aw-dispatch-always t
-        ;; aw-keys avy-keys
+        aw-keys avy-keys
         ))
 ;; C-w C-w ? to aw-show-dispath-help
 ;; (defvar aw-dispatch-alist
@@ -1136,8 +1136,21 @@
   (add-to-list 'warning-suppress-types '(undo discard-info)))
 
 ;;; emacs binding in insert mode
-;;; don't work. doom emacs probably override this
+;;; don't work. probably should be used override this
 ;; (after! evil
 ;;   ;; use emacs bindings in insert-mode
 ;;   (setq evil-disable-insert-state-bindings t
 ;;         evil-want-keybinding nil))
+
+(map! :i "C-p" 'previous-line
+      :i "C-n" 'next-line
+      ;; :i "C-u" 'universal-argument
+      )
+
+(after! org
+  ;; https://github.com/hlissner/doom-emacs/issues/3185
+  (defadvice! no-errors/+org-inline-image-data-fn (_protocol link _description)
+  :override #'+org-inline-image-data-fn
+  "Interpret LINK as base64-encoded image data. Ignore all errors."
+  (ignore-errors
+    (base64-decode-string link))))

@@ -13,8 +13,7 @@
 (after! elfeed
   (require 'scimax-elfeed))
 
-(use-package! scimax-autoformat-abbrev
-    :ensure nil)      ;; abbrev
+(use-package! scimax-autoformat-abbrev)
 
 ;;; scimax
 ;; (load! "words")                         ;; bibtex search
@@ -28,7 +27,6 @@
   )
 
 (use-package! scimax-hydra
-  :ensure nil
   :load-path scimax-dir
   :commands (scimax-dispatch-mode-hydra
              scimax/body)
