@@ -25,6 +25,8 @@
 ;; #+PANDOC_OPTIONS: csl:/Users/yunj/Zotero/styles/ieee.csl
 ;; #+PANDOC_OPTIONS: biblatex:t natbib:t
 
+(eval-when-compile (require 'cl))
+(require 'cl-lib)
 (require 'org-ref)
 (require 'ox)
 (require 'ox-latex)
@@ -187,7 +189,7 @@ author: auth1, auth2, ...
     ;; go pandoc
     (message "Running pandoc with args: %s" md-word-args)
     (when (file-exists-p docx-file) (delete-file docx-file))
-    (shell-command (concat "pandoc" (apply #'concatenate 'string md-word-args)))
+    (shell-command (concat "pandoc" (apply #'cl-concatenate 'string md-word-args)))
     (when (file-exists-p temp-bib)
       (delete-file temp-bib))
     (when md-word-delete-temp-files
