@@ -45,10 +45,11 @@
  doom-unicode-font (font-spec :family "JuliaMono" :weight 'light)
  doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
-;; (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27 :weight 'light))
+(setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Roboto Slab" :size 24 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Libre Baskerville" :size 23 :weight 'light))
-(setq variable-pitch-serif-font (font-spec :family "Libertinus Serif" :size 27))
+(setq variable-pitch-serif-font (font-spec :family "Libertinus Serif" :size 27 :weight 'light))
+;; (setq variable-pitch-serif-font (font-spec :family "Merriweather" :size 24 :weight 'light))
 
 ;; missing out on the following Alegreya ligatures:
 ;; (set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
@@ -58,6 +59,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-one-light)
+;; (load-theme 'modus-operandi-theme t)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -110,13 +112,13 @@
 (load! "local/latex-plus")
 (load! "local/visual-plus")
 
-(after! projectile
-  (projectile-add-known-project "~/Dropbox/research/lsjm-art")
-  (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
-  (projectile-add-known-project "~/OneDrive/research/lapf")
-  ;; (projectile-add-known-project "~/research/s.ham/RAS")
-  (projectile-add-known-project "~/research/mj.jeon")
-  )
+;; (after! projectile
+;;   (projectile-add-known-project "~/Dropbox/research/lsjm-art")
+;;   (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
+;;   (projectile-add-known-project "~/OneDrive/research/lapf")
+;;   ;; (projectile-add-known-project "~/research/s.ham/RAS")
+;;   ;; (projectile-add-known-project "~/research/mj.jeon")
+;;   )
 
 ;; riksy local variables
 ;; old tricks stopped working. risky variables are ignored (doom updates)
@@ -158,6 +160,8 @@
 ;;         ))
 
 (after! cdlatex
+  (map! :map cdlatex-mode-map
+        :nive "\"" #'cdlatex-math-modify)
   (setq cdlatex-math-symbol-alist
         '(
           (?: ("\\cdots" "\\ldots"))
@@ -240,51 +244,74 @@
 (setq-default history-length 500)
 (setq-default prescient-history-length 500)
 
+;;; outline faces
+(custom-set-faces!
+  '(outline-1 :weight semi-bold :height 1.25)
+  '(outline-2 :weight semi-bold :height 1.15)
+  '(outline-3 :weight semi-bold :height 1.12)
+  '(outline-4 :weight semi-bold :height 1.09)
+  '(outline-5 :weight semi-bold :height 1.06)
+  '(outline-6 :weight semi-bold :height 1.03)
+  '(outline-8 :weight semi-bold)
+  '(outline-9 :weight semi-bold))
+;; title
+(custom-set-faces!
+  '(org-document-title :height 1.2))
+;; deadlines in the error face when they're passed.
+(setq org-agenda-deadline-faces
+      '((1.001 . error)
+        (1.0 . org-warning)
+        (0.5 . org-upcoming-deadline)
+        (0.0 . org-upcoming-distant-deadline)))
+
 ;;; org-mode
 (after! org
   (setq org-src-window-setup 'current-window ; 'other-window
         ;; org-return-follows-link t
-        org-use-speed-commands t
+        org-use-speed-commands nil
         org-log-into-drawer t)
- (when (featurep! :lang org +pretty)
+  ;; (org-speed-command-help)
+  (when (featurep! :lang org +pretty)
     (remove-hook 'org-mode-hook 'org-superstar-mode) ; manually turn it on!
     (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
           org-superstar-remove-leading-stars nil
           ))
- (setq org-ellipsis
-   " ▾ " ; FiraGo
-   ;; " ▼ " ; Alegreya Sans
-   ;; " ⬎ " ; IBM Plex Mono
-   ;; " ↩ " ; firacode
-   ;; " ⤶ " ; juliamono
-   ;; " … "
- org-cycle-separator-lines 2            ; -1 or 1 to use unicode org-ellipsis
- )
- (setq
-  ;; org-export-in-background t                  ; async export by default
-  org-fontify-quote-and-verse-blocks nil
-  org-fontify-whole-heading-line nil
-  org-hide-leading-stars nil
-  org-startup-indented t
-  org-habit-show-habits-only-for-today t
-  org-journal-encrypt-journal t
-  org-indent-indentation-per-level 1
-  org-adapt-indentation nil
-  ;; tag indent
-  ;; org-tags-column -77
-  org-log-done 'time
-  ;; don't ask to follow elisp link
-  org-confirm-elisp-link-function nil
-  ;; org export global setting
-  org-export-with-toc nil
-  org-export-with-tags nil)
- ;; org-insert-heading-respect-content nil
- ;; default attach folder
- ;;    org-attach-id-dir "data/"
- ;; visual-mode tab binds back to org-cycle
- (remove-hook 'org-tab-first-hook #'+org-yas-expand-maybe-h)
- ;; insert-mode tab binds back to org-cycle
- (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h))
+  (setq org-ellipsis
+        ;; " ▾ " ; FiraGo
+        ;; " ▼ " ; Alegreya Sans
+        ;; " ⬎ " ; IBM Plex Mono
+        ;; " ↩ " ; firacode
+        ;; " ⤶ " ; juliamono
+        " ⤵ "
+        ;; "… "
+        ;; "↴", "⤷"
+        org-cycle-separator-lines 2     ; -1 or 1 to use unicode org-ellipsis
+        )
+  (setq
+   ;; org-export-in-background t                  ; async export by default
+   org-fontify-quote-and-verse-blocks nil
+   org-fontify-whole-heading-line nil
+   org-hide-leading-stars nil
+   org-startup-indented t
+   org-habit-show-habits-only-for-today t
+   org-journal-encrypt-journal t
+   org-indent-indentation-per-level 1
+   org-adapt-indentation nil
+   ;; tag indent
+   ;; org-tags-column -77
+   org-log-done 'time
+   ;; don't ask to follow elisp link
+   org-confirm-elisp-link-function nil
+   ;; org export global setting
+   org-export-with-toc nil
+   org-export-with-tags nil)
+  ;; org-insert-heading-respect-content nil
+  ;; default attach folder
+  ;;    org-attach-id-dir "data/"
+  ;; visual-mode tab binds back to org-cycle
+  (remove-hook 'org-tab-first-hook #'+org-yas-expand-maybe-h)
+  ;; insert-mode tab binds back to org-cycle
+  (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h))
 
 ;;;; org-latex
 (after! org
@@ -345,6 +372,7 @@
 ;; return: return if alone, right_ctrl if hold_down
 (setq mac-right-option-modifier 'meta)
 (setq mac-right-control-modifier 'hyper)
+;; (setq mac-function-modifier 'hyper)  ; make Fn key do Hyper
 
 ;;; misc
 
@@ -471,7 +499,7 @@
        +biblio-default-bibliography-files '("~/Zotero/myref.bib")
        ;; a single file for one long note / directory for many note files
        +biblio-notes-path "~/org/refnotes.org"
-       ;; org-ref-notes-directory "~/org/"
+       ;; org-ref-notes-directory "~/org/notes/"
        )
 (unless (featurep! :private biblio +roam-bibtex)
   ;; error when org-ref-notes-directory is nil and no roam-bibtex is loaded
@@ -747,11 +775,15 @@
 ;; (evil-set-initial-state 'elfeed-search-mode 'emacs)
 ;; (evil-set-initial-state 'elfeed-show-mode 'emacs)
 
-;; A snippet for periodic update for feeds (10 mins since Emacs start, then every
-;; two hour)
-(run-at-time (* 10 60) (* 2 60 60) #'elfeed-update)
+;; ;; A snippet for periodic update for feeds (10 mins since Emacs start, then every
+;; ;; two hour)
+;; (run-at-time (* 10 60) (* 2 60 60) #'(lambda () (progn
+;;                                              (elfeed-set-max-connections 3)
+;;                                              (elfeed-update))))
 (after! elfeed
-  ;; (run-at-time nil (* 8 60 60) #'elfeed-update)
+  ;; number of concurrent fetches
+  (elfeed-set-max-connections 3)
+  (run-at-time nil (* 4 60 60) #'elfeed-update)
   (setq elfeed-search-title-max-width 100
         elfeed-search-title-min-width 20
         elfeed-search-filter "@2-week-ago"
@@ -971,38 +1003,17 @@
   :hook
   (after-init . ctrlf-mode))
 
+;; https://github.com/leoliu/easy-kill
 (use-package! easy-kill
   :bind*
-  (([remap kill-ring-save] . easy-kill) ; M-w   
+  (([remap kill-ring-save] . easy-kill) ; M-w
    ([remap mark-sexp] . easy-mark)))  ; C-M-S @
 
 ;; no S-delete can be mapped in MAC
 ;; C-backspace should be mapped using C-DEL
-(map! :g "<C-backspace>" #'kill-region)
-(map! :map easy-kill-base-map
+(map! :g "<C-backspace>" #'kill-region
+      :map easy-kill-base-map
       :g "C-w" #'easy-kill-region)
-
-(map!
- (:when (featurep! :editor multiple-cursors)
-  :nv "C-M-d" nil
-  :nv "C-M-S-d" #'evil-multiedit-restore
-  ))
-
-;;; smartparen bindings
-(map!
- (:after smartparens
-  :map smartparens-mode-map
-  "C-M-f" #'sp-forward-sexp
-  "C-M-b" #'sp-backward-sexp
-  "C-M-u" #'sp-backward-up-sexp
-  "C-M-d" #'sp-down-sexp
-  "C-M-p" #'sp-backward-down-sexp
-  "C-M-n" #'sp-up-sexp
-  "C-M-s" #'sp-splice-sexp
-  "C-)" #'sp-forward-slurp-sexp
-  "C-}" #'sp-forward-barf-sexp
-  "C-(" #'sp-backward-slurp-sexp
-  "C-{" #'sp-backward-barf-sexp))
 
 ;;; easy clock correction
 (use-package! org-clock-convenience
@@ -1081,7 +1092,7 @@
 ;; Kill current buffer (instead of asking first buffer name)
 ;; (global-set-key (kbd "C-x k") 'kill-current-buffer)
 
-;; (setq  outshine-use-speed-commands t)
+(setq outshine-use-speed-commands nil)
 ;; (outshine-speed-command-help)
 
 ;;; graphviz
@@ -1131,26 +1142,40 @@
                  :weight bold)))
 
 
-;;; disable popup
-(after! warnings
-  (add-to-list 'warning-suppress-types '(undo discard-info)))
+;; ;;; disable popup
+;; (after! warnings
+;;   (add-to-list 'warning-suppress-types '(undo discard-info)))
 
 ;;; emacs binding in insert mode
 ;;; don't work. probably should be used override this
 ;; (after! evil
 ;;   ;; use emacs bindings in insert-mode
 ;;   (setq evil-disable-insert-state-bindings t
-;;         evil-want-keybinding nil))
+        ;; evil-want-keybinding nil))
 
 (map! :i "C-p" 'previous-line
       :i "C-n" 'next-line
       ;; :i "C-u" 'universal-argument
       )
 
+;;; temporary fixes
 (after! org
   ;; https://github.com/hlissner/doom-emacs/issues/3185
   (defadvice! no-errors/+org-inline-image-data-fn (_protocol link _description)
-  :override #'+org-inline-image-data-fn
-  "Interpret LINK as base64-encoded image data. Ignore all errors."
-  (ignore-errors
-    (base64-decode-string link))))
+    :override #'+org-inline-image-data-fn
+    "Interpret LINK as base64-encoded image data. Ignore all errors."
+    (ignore-errors
+      (base64-decode-string link))))
+
+;; https://github.com/hlissner/doom-emacs/issues/4832
+(advice-add #'org-capture :around
+            (lambda (fun &rest args)
+              (letf! ((#'+org--restart-mode-h #'ignore))
+                (apply fun args))))
+
+
+;; ;; https://github.com/org-roam/org-roam-bibtex/pull/87
+;; (after! org-roam-bibtex
+;;   (remove-hook 'org-capture-after-finalize-hook
+;;                #'org-roam-capture--find-file-h)
+;   )

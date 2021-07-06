@@ -1,4 +1,5 @@
 ;;; ~/Dropbox/emacs/.doom.d/bindings.el -*- lexical-binding: t; -*-
+
 ;; (map! :map org-mode-map
 ;;       :nivme "TAB" #'org-cycle
 ;;       :nivme "S-TAB" #'org-shifttab
@@ -6,6 +7,7 @@
 ;;       :nivme "<S-tab>" #'org-shifttab
 ;; )
 
+;;; org
 (after! evil-org
   (map!  (:map evil-org-mode-map
           ;; disabling navigate table cells (from insert-mode)
@@ -13,38 +15,7 @@
           :i  "C-h"    nil
           :i  "C-k"    nil
           :i  "C-j"    nil)))
-
 (map!
- ;; C-x C-b to ibuffer
- [remap list-buffers] #'ibuffer
- ;; window management (prefix "C-w")
- (:map evil-window-map
-  ;; Navigation
-  "C-h"            nil
-  "C-j"            nil
-  "C-k"            nil
-  "C-l"            nil
-  "<left>"            #'evil-window-left
-  "<down>"            #'evil-window-down
-  "<up>"              #'evil-window-up
-  "<right>"           #'evil-window-right)
-
- 
- (:map cdlatex-mode-map
-  :ie "TAB"           #'cdlatex-tab)
-
- (:map dired-mode-map
-  :nvme "S" #'dired-do-symlink
-  :nvme [tab] #'dired-subtree-toggle)
-
-
- ;; gl for evil-org-mode
- :nv "gl"    nil
- :nv "gL"    nil
- ;; evil-lion
- :nv "gLl"            #'evil-lion-left
- :nv "gLr"            #'evil-lion-right
-
  (:map org-mode-map
   :n "C-k"       #'org-kill-line
   :n "C-j"       #'org-return)
@@ -55,17 +26,10 @@
  ;; Org commands
  :g "C-c a"           #'org-agenda
  :g "C-c c"           #'org-capture
- :g "C-c l"           #'org-store-link)
+ :g "C-c l"           #'org-store-link
+ )
 
- ;; ;; elfeed-score
- ;; (:map elfeed-search-mode-map
- ;;  :e "="      #'elfeed-score-map)
-
-
-;; (when (featurep! :lang org +roam)
-;;   (global-set-key (kbd "C-c l") #'org-roam-store-link)
-;;   )
-
+;;; gtd
 (bind-keys* :prefix-map gtd-mode-map
             :prefix "C-c g")
 
@@ -84,15 +48,54 @@
            ("D" . org-gcal-delete-at-point)
            ("P" . org-gcal-post-at-point))
 
+
+
+;;; evil
+(map!
+;;;; gl for evil-org-mode
+ :nv "gl"    nil
+ :nv "gL"    nil
+ ;; evil-lion
+ :nv "gLl"            #'evil-lion-left
+ :nv "gLr"            #'evil-lion-right
+
+;;;; Navigation
+ (:map evil-window-map
+  "C-h"            nil
+  "C-j"            nil
+  "C-k"            nil
+  "C-l"            nil
+  "<left>"            #'evil-window-left
+  "<down>"            #'evil-window-down
+  "<up>"              #'evil-window-up
+  "<right>"           #'evil-window-right)
+ )
+
+;;; misc
+(map!
+ ;; C-x C-b to ibuffer
+ [remap list-buffers] #'ibuffer
+ ;; window management (prefix "C-w")
+
+ (:map cdlatex-mode-map
+  :ie "TAB"           #'cdlatex-tab)
+
+ (:map dired-mode-map
+  :nvme "S" #'dired-do-symlink
+  :nvme [tab] #'dired-subtree-toggle)
+ )
+
+;;; calendar
 (map!
  :map cfw:calendar-mode-map
  :g  "R" #'cfw:hide-routines
  :g  "C" #'cfw:org-capture ;; c and C for capture
-)
+ )
 
 ;; (:map inferior-ess-mode-map
 ;; "tab" #'completion-at-point)
 
+;;; window management
 (map!
  :n "C-t"   nil
  :n "C-S-t" nil
@@ -129,13 +132,14 @@
  :g "s-7"   #'+workspace/switch-to-6
  :g "s-8"   #'+workspace/switch-to-7
  :g "s-9"   #'+workspace/switch-to-8
-:g "s-0"   #'+workspace/switch-to-final)
+ :g "s-0"   #'+workspace/switch-to-final)
 
-
+;;; mathpix
 (map! :g "C-c s t" #'+lookup/dictionary-definition
       :leader
       "i m" #'mathpix-screenshot)
 
+;;; dictionary
 (when (featurep! :private write)
   (map!
    :g "C-c s T" #'wordnut-lookup-current-word
@@ -147,17 +151,7 @@
    :g "C-c s r" #'synosaurus-choose-and-replace
    :g "C-c s i" #'synosaurus-choose-and-insert))
 
-;; org-roam-dailies
-(map! :leader
-      (:prefix-map ("n" . "notes")
-       (:when (featurep! :lang org +roam)
-        (:prefix ("r" . "roam")
-         (:prefix ("d" . "by date")
-          "." #'org-roam-dailies-find-directory
-          "b" #'org-roam-dailies-find-previous-note
-          "f" #'org-roam-dailies-find-next-note
-          "n" #'org-roam-dailies-capture-today
-          "v" #'org-roam-dailies-capture-date)))))
+;;; hydra key bindings
 
 ;; hydra key bindings
 ;; these keymaps are activated after the packages loading.
@@ -169,37 +163,35 @@
   (map! (:map git-timemachine-mode-map
          :desc "Git Timemachine Hydra"
          :nv "gt." #'my-hydra-timemachine/body)))
-
-
-;; hydra key bindings
 (map!
  (:leader
- :desc "Switch workspace"
- "TAB e" #'+workspace/switch-to
- :desc "Layouts Hydra"
- "TAB ." #'my-hydra-layouts/body
- "TAB c" #'jyun/workspace-create
+  :desc "Switch workspace"
+  "TAB e" #'+workspace/switch-to
+  :desc "Layouts Hydra"
+  "TAB ." #'my-hydra-layouts/body
+  "TAB c" #'jyun/workspace-create
   :desc "Code Fold Hydra" "z." #'my-hydra-fold/body)
  (:map pdf-view-mode-map
   :localleader
   :desc "PDF View Hydra" "." #'my-hydra-pdf-tools/body)
  (:map org-mode-map
   :desc "Org Babel Hydra"
-  :g "C-c C-v ." #'my-hydra-org-babel/body)
+  :g "C-c C-v ." #'scimax-src-block-hydra/body)
  (:map org-agenda-mode-map
   :localleader
   :desc "Org Agenda Hydra" "." #'my-hydra-org-agenda/body))
 
-;; langtool
+;;; langtool
 (map!
  :leader
  "sgc" 'langtool-correct-buffer
  "sgs" 'langtool-check
  "sgd" 'langtool-check-done)
 
+;;; ess
 (map! (:map ess-r-package-dev-map
-      "I" #'ess-r-devtools-clean-and-rebuild-package
-      ))
+       "I" #'ess-r-devtools-clean-and-rebuild-package
+       ))
 
 (map!
  :map org-tree-slide-mode-map
@@ -207,23 +199,27 @@
  :g "C-:" #'jyun/org-present-latex-preview
  )
 
-(map! :map elfeed-search-mode-map
-      :after elfeed-search
-      ;; [remap kill-this-buffer] "q"
-      ;; [remap kill-buffer] "q"
-      ;; :n doom-leader-key nil
-      ;; :n "q" #'+rss/quit
-      ;; :n "U" #'elfeed-search-untag-all-unread
-      ;; :n "u" #'elfeed-search-tag-all-unread
-      ;; :n "s" #'elfeed-search-live-filter
-      :ne "c" #'elfeed-search-clear-filter
-      :ne "RET" #'+rss/open
-      :ne "p" #'elfeed-show-pdf
-      ;; :n "+" #'elfeed-search-tag-all
-      ;; :n "-" #'elfeed-search-untag-all
-      ;; :n "S" #'elfeed-search-set-filter
-      ;; :n "M-RET" #'elfeed-search-browse-url
-      ;; :n "y" #'elfeed-search-yank
+;;; elfedd
+(map! (:map elfeed-search-mode-map
+       :after elfeed-search
+       ;; [remap kill-this-buffer] "q"
+       ;; [remap kill-buffer] "q"
+       ;; :n doom-leader-key nil
+       ;; :n "q" #'+rss/quit
+       ;; :n "U" #'elfeed-search-untag-all-unread
+       ;; :n "u" #'elfeed-search-tag-all-unread
+       ;; :n "s" #'elfeed-search-live-filter
+       :ne "c" #'elfeed-search-clear-filter
+       :ne "RET" #'+rss/open
+       ;; :n "+" #'elfeed-search-tag-all
+       ;; :n "-" #'elfeed-search-untag-all
+       ;; :n "S" #'elfeed-search-set-filter
+       ;; :n "M-RET" #'elfeed-search-browse-url
+       ;; :n "y" #'elfeed-search-yank
+       :ne "p" #'elfeed-show-pdf)
+;;;; elfeed-score
+      (:map elfeed-search-mode-map
+       :e "="      #'elfeed-score-map)
       )
 (map! :map elfeed-show-mode-map
       :after elfeed-show
@@ -248,3 +244,53 @@
       ;; :nm "s" #'elfeed-show-new-live-search
       ;; :nm "y" #'elfeed-show-yank
       )
+
+;;; scimax
+(map!
+ :g "C-c ! ." #'scimax-error/body
+ "s-<up>" #'beginning-of-buffer
+ "s-<down>" #'end-of-buffer)
+
+;;; org-roam
+(map!
+ :g "C-c n l" #'org-roam
+ "C-c n f" #'org-roam-find-file
+ "C-c n g" #'org-roam-graph
+ (:map org-mode-map
+  :g
+  "C-c n i" #'org-roam-insert
+  "C-c n I" #'org-roam-insert-immediate))
+
+;;;; org-roam-dailies
+(map! :leader
+      (:prefix-map ("n" . "notes")
+       (:when (featurep! :lang org +roam)
+        (:prefix ("r" . "roam")
+         (:prefix ("d" . "by date")
+          "." #'org-roam-dailies-find-directory
+          "b" #'org-roam-dailies-find-previous-note
+          "f" #'org-roam-dailies-find-next-note
+          "n" #'org-roam-dailies-capture-today
+          "v" #'org-roam-dailies-capture-date)))))
+
+;;; smartparen bindings
+(map!
+ (:after smartparens
+  :map smartparens-mode-map
+  "C-M-f" #'sp-forward-sexp
+  "C-M-b" #'sp-backward-sexp
+  "C-M-u" #'sp-backward-up-sexp
+  "C-M-d" #'sp-down-sexp
+  "C-M-p" #'sp-backward-down-sexp
+  "C-M-n" #'sp-up-sexp
+  "C-M-s" #'sp-splice-sexp
+  "C-)" #'sp-forward-slurp-sexp
+  "C-}" #'sp-forward-barf-sexp
+  "C-(" #'sp-backward-slurp-sexp
+  "C-{" #'sp-backward-barf-sexp))
+
+;;; multiple-cursours
+(map!
+ (:when (featurep! :editor multiple-cursors)
+  :nv "C-M-d" nil
+  :nv "C-M-S-d" #'evil-multiedit-restore))
