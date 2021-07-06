@@ -44,23 +44,28 @@
 ;;   ;; ("?" spacemacs//smerge-ts-toggle-hint)
 ;;   )
 
-;;; org-babel
-(defhydra my-hydra-org-babel
-  (:hint nil)
-  "
-[_n_/_p_] navigate src blocks  [_z_] recenter screen  [_e_] execute src block
-[_g_]^^   goto named block     [_f_] format block     [_'_] edit src block
-[_k_]^^   kill result          ^^                     [_q_] quit"
-  ;; bindings
-  ("q" nil :exit t)
-  ("n" org-babel-next-src-block)
-  ("p" org-babel-previous-src-block)
-  ("k" org-babel-remove-result)
-  ("g" org-babel-goto-named-src-block)
-  ("z" recenter-top-bottom)
-  ("e" org-babel-execute-maybe)
-  ("f" jyun/format-org-babel)
-  ("'" org-edit-special :exit t))
+;; ;;; org-babel
+;; (defhydra my-hydra-org-babel
+;;   (:hint nil)
+;;   "
+;; [_n_/_p_] navigate src blocks  [_z_] recenter screen  [_e_] execute src block
+;; [_g_]^^   goto named block     [_f_] format block     [_'_] edit src block
+;; [_k_]^^   kill result          [_-_] split block      [_q_] quit
+;; [_t_]^^   tangle related"
+;;   ;; bindings
+;;   ("q" nil :exit t)
+;;   ("n" org-babel-next-src-block)
+;;   ("p" org-babel-previous-src-block)
+;;   ("k" org-babel-remove-result)
+;;   ("g" org-babel-goto-named-src-block)
+;;   ("z" recenter-top-bottom)
+;;   ("e" org-babel-execute-maybe)
+;;   ("-" org-babel-demarcate-block :color blue)
+;;   ("f" jyun/format-org-babel)
+;;   ("t" (lambda ()
+;;          (interactive)
+;;          (org-babel-tangle '(16))))
+;;   ("'" org-edit-special :exit t))
 
 ;;; time-machine
 (defhydra my-hydra-timemachine
@@ -295,8 +300,8 @@ _dd_: kill            _TAB_: & go to location     _ss_: limit                 _c
 _hr_: refile          _RET_: & del other windows  _sc_: by category           _cd_: set deadline      _zA_: archive        _zt_: fortnight    _cc_: cancel   _gd_: go to date
 _dA_: archive         _o_:   link                 _sh_: by top headline       _cD_: remove deadline   _cr_: clock report   _zm_: month        _cg_: jump     ^^
 _ct_: set tags        ^^                          _sr_: by regexp             _p_:  timestamp         _cs_: clock issues   _zy_: year         ^^             ^^
-_hp_: set priority    ^^                          _S_:  delete all filters    _L_:  do later          _zD_: diaries        _[_/_]_: prev/next ^^             _q_: quit
-^^                    ^^                          ^^                          _H_:  do earlier        ^^                   _zr_: reset        ^^             ^^
+_hp_: set priority    ^^                          _S_:  delete all filters    _L_:  do later          _zD_: diaries        _[_/_]_: prev/next ^^             ^^
+^^                    ^^                          ^^                          _H_:  do earlier        ^^                   _zr_: reset        ^^             _q_: quit
 "
   ;; Entry
   ("ht" org-agenda-todo)
@@ -516,21 +521,18 @@ _hp_: set priority    ^^                          _S_:  delete all filters    _L
  ;;   )
 
 ;;; error
-(defhydra my-hydra-error
-  (:hint nil
-   :pre (unless (bound-and-true-p flycheck-mode) (flycheck-mode 1))
-   :foreign-keys run)
-  "
-_n_: next error  _N_/_p_: prev error  _z_: recenter  _q_: quit"
-  ("n" flycheck-next-error)
-  ("p" flycheck-previous-error)
-  ("N" flycheck-previous-error)
-  ("z" recenter-top-bottom)
-  ("q" nil :exit t)
-  )
-(map!
- :g "C-c ! ." #'my-hydra-error/body
- )
+;; (defhydra my-hydra-error
+;;   (:hint nil
+;;    :pre (unless (bound-and-true-p flycheck-mode) (flycheck-mode 1))
+;;    :foreign-keys run)
+;;   "
+;; _n_: next error  _N_/_p_: prev error  _z_: recenter  _q_: quit"
+;;   ("n" flycheck-next-error)
+;;   ("p" flycheck-previous-error)
+;;   ("N" flycheck-previous-error)
+;;   ("z" recenter-top-bottom)
+;;   ("q" nil :exit t)
+;;   )
 
 ;; ;;; bm
 ;; (defhydra my-hydra-bm
