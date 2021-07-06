@@ -81,5 +81,6 @@
   (let ((height doom-modeline-height))
     (set-face-attribute 'mode-line nil :height (* 10 height))
     (set-face-attribute 'mode-line-inactive nil :height (* 10 height))
-    (doom/reset-font-size)
-    ))
+    ;; (doom/reset-font-size)
+    )
+  )

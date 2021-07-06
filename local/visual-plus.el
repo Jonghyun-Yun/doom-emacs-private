@@ -1,10 +1,27 @@
 ;;; ../Dropbox/emacs/.doom.d/local/visual-plus.el -*- lexical-binding: t; -*-
 
+;; (use-package modus-themes
+;;   :ensure                               ; omit this to use the built-in themes
+;;   :init
+;;   ;; Add all your customizations prior to loading the themes
+;;   (setq modus-themes-slanted-constructs t
+;;         modus-themes-bold-constructs nil
+;;         modus-themes-region 'no-extend)
+;;   ;; Load the theme files before enabling a theme (else you get an error).
+;;   (modus-themes-load-themes)
+;;   :config
+;;   ;; Load the theme of your choice:
+;;   (modus-themes-load-operandi)
+;;   ;; (modus-themes-load-vivendi)
+;;   )
+
 (with-eval-after-load 'doom-themes
   ;; Global settings (defaults)
   ;; (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
   ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  ;; (load-theme doom-theme t)
+  (load-theme doom-theme t)
+  ;; (load-theme 'modus-operandi-theme t)
+  ;; (load-theme 'modus-vivendi-theme t)
 
   ;; Enable flashing mode-line on errors
   ;; (doom-themes-visual-bell-config)
@@ -112,14 +129,21 @@
 ;;; evil-cursor
 (defun jyun/evil-state-cursors ()
   ;; doom-modeline
-  (setq +evil--default-cursor-color (face-attribute 'success :foreground))
-  (setq +evil--insert-cursor-color (face-attribute 'font-lock-keyword-face :foreground))
-  (setq +evil--emacs-cursor-color (face-attribute 'font-lock-builtin-face :foreground))
-  (setq +evil--replace-cursor-color (face-attribute 'error :foreground))
-  (setq +evil--visual-cursor-color (face-attribute 'warning :foreground))
-  (setq +evil--motion-cursor-color (face-attribute 'font-lock-doc-face :foreground))
+  ;; (setq +evil--default-cursor-color (face-attribute 'success :foreground))
+  ;; (setq +evil--insert-cursor-color (face-attribute 'font-lock-keyword-face :foreground))
+  ;; (setq +evil--emacs-cursor-color (face-attribute 'font-lock-builtin-face :foreground))
+  ;; (setq +evil--replace-cursor-color (face-attribute 'error :foreground))
+  ;; (setq +evil--visual-cursor-color (face-attribute 'warning :foreground))
+  ;; (setq +evil--motion-cursor-color (face-attribute 'font-lock-doc-face :foreground))
 
-  ;;; modal icon face color should be found here
+  (put 'cursor 'evil-normal-color (face-attribute 'success :foreground))
+  (put 'cursor 'evil-insert-color (face-attribute 'font-lock-keyword-face :foreground))
+  (put 'cursor 'evil-emacs-color (face-attribute 'font-lock-builtin-face :foreground))
+  (put 'cursor 'evil-replace-color (face-attribute 'error :foreground))
+  (put 'cursor 'evil-visual-color (face-attribute 'warning :foreground))
+  (put 'cursor 'evil-motion-color (face-attribute 'font-lock-doc-face :foreground))
+
+;;; modal icon face color should be found here
   ;; doom-modeline-evil-normal-state
   ;; doom-modeline-evil-insert-state
   ;; doom-modeline-evil-emacs-state
@@ -138,21 +162,37 @@
  evil-visual-state-cursor '(+evil-visual-cursor-fn (hbar . 2))
  evil-motion-state-cursor '(+evil-motion-cursor-fn box))
 
-(setq +evil--default-cursor-color "DarkGoldenrod2")
-(setq +evil--emacs-cursor-color "SkyBlue2")
-(defvar +evil--insert-cursor-color "chartreuse3")
-(defvar +evil--replace-cursor-color "chocolate")
-(defvar +evil--visual-cursor-color "gray")
-(defvar +evil--motion-cursor-color "plum3")
+;; (setq +evil--default-cursor-color )
+;; (setq +evil--emacs-cursor-color "SkyBlue2")
+;; (defvar +evil--insert-cursor-color "chartreuse3")
+;; (defvar +evil--replace-cursor-color "chocolate")
+;; (defvar +evil--visual-cursor-color "gray")
+;; (defvar +evil--motion-cursor-color "plum3")
+
+(put 'cursor 'evil-normal-color "DarkGoldenrod2")
+(put 'cursor 'evil-insert-color "SkyBlue2")
+(put 'cursor 'evil-emacs-color "chartreuse3")
+(put 'cursor 'evil-replace-color "chocolate")
+(put 'cursor 'evil-visual-color "gray")
+(put 'cursor 'evil-motion-color "plum3")
+
+;; (defun +evil-insert-cursor-fn ()
+;;   (evil-set-cursor-color +evil--insert-cursor-color))
+;; (defun +evil-replace-cursor-fn ()
+;;   (evil-set-cursor-color +evil--replace-cursor-color))
+;; (defun +evil-visual-cursor-fn ()
+;;   (evil-set-cursor-color +evil--visual-cursor-color))
+;; (defun +evil-motion-cursor-fn ()
+;;   (evil-set-cursor-color +evil--motion-cursor-color))
 
 (defun +evil-insert-cursor-fn ()
-  (evil-set-cursor-color +evil--insert-cursor-color))
+  (evil-set-cursor-color (get 'cursor 'evil-insert-color)))
 (defun +evil-replace-cursor-fn ()
-  (evil-set-cursor-color +evil--replace-cursor-color))
+  (evil-set-cursor-color (get 'cursor 'evil-replace-color)))
 (defun +evil-visual-cursor-fn ()
-  (evil-set-cursor-color +evil--visual-cursor-color))
+  (evil-set-cursor-color (get 'cursor 'evil-visual-color)))
 (defun +evil-motion-cursor-fn ()
-  (evil-set-cursor-color +evil--motion-cursor-color))
+  (evil-set-cursor-color (get 'cursor 'evil-motion-color)))
 
 ;; (use-package visual-regexp
 ;;   :defer t
