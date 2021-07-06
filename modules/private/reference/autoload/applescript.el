@@ -203,3 +203,36 @@
   (let* ((keystring (+reference/skim-get-bibtex-key)))
     (+reference/org-ref-find-entry-in-notes
      keystring)))
+
+;;;###autoload
+(defun +reference/orb-find-entry-in-notes (key)
+  "Find or create bib note for KEY"
+  (let* ((entry (bibtex-completion-get-entry
+                 key)))
+    (widen)
+    (goto-char (point-min))
+    (unless (derived-mode-p 'org-mode)
+      (error
+       "Target buffer \"%s\" for jww/find-journal-tree should be in Org mode"
+       (current-buffer)))
+    (let* ((headlines (org-element-map
+                          (org-element-parse-buffer)
+                          'headline
+                        'identity))
+           )
+      ;; put new entry in notes if we don't find it.
+      (progn
+        (org-link-open-from-string
+         (format "[[#%s]]" key))
+        (lambda nil
+          (cond ((org-at-heading-p)
+                 (org-beginning-of-line))
+                (t
+                 (org-previous-visible-heading
+                  1))))))))
+
+;;;###autoload
+(defun +reference/org-roam-bibtex-move-point-to-capture-skim-annotation ()
+  (let* ((keystring (+reference/skim-get-bibtex-key)))
+    (+reference/orb-find-entry-in-notes
+     keystring)))

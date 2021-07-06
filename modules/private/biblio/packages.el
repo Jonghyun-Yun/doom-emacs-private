@@ -15,7 +15,9 @@
 ;;   ;; (package! org-ref :pin "75d83ea014e530591cfdafc591b9b1c44509d035")
 ;; ;; (package! org-ref :pin "9ab74270c1543e4743ca0436de567d8205403b43") ; https://github.com/jkitchin/org-ref/commit/9ab74270c1543e4743ca0436de567d8205403b43
 ;; )
+
+;; https://github.com/org-roam/org-roam-bibtex/pull/87
 (when (featurep! +roam-bibtex)
-  (package! org-roam-bibtex :pin "a9a7d232ce25d06880aa2ed16148615af7e551a7"))
+  (package! org-roam-bibtex :pin "741d592bf3188e8558744e7dc6f30f8ba76e5abe"))
 
 (package! citeproc-org :pin "22a759c4f0ec80075014dcc594baa4d1b470d995")
