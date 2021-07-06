@@ -231,45 +231,62 @@
         (append '("dvi" "bbl") org-latex-logfiles-extensions))
   )
 
+
+(defvar +org-capture-inbox-file "inbox.org"
+  "Default target for todo entries.
+
+Is relative to `org-directory', unless it is absolute. Is used in Doom's default
+`org-capture-templates'.")
+
+;;;###autoload
+(defun +org-capture-inbox-file ()
+  "Expand `+org-capture-inbox-file' from `org-directory'.
+If it is an absolute path return `+org-capture-inbox-file' verbatim."
+  (expand-file-name +org-capture-inbox-file org-directory))
+
+(defvar +org-capture-tickler-file "tickler.org"
+  "Default target for todo entries.
+
+Is relative to `org-directory', unless it is absolute. Is used in Doom's default
+`org-capture-templates'.")
+
+;;;###autoload
+(defun +org-capture-tickler-file ()
+  "Expand `+org-capture-tickler-file' from `org-directory'.
+If it is an absolute path return `+org-capture-tickler-file' verbatim."
+  (expand-file-name +org-capture-tickler-file org-directory))
+
 ;;; Org capture templates
 (with-eval-after-load 'org-capture
   ;; sheduleing
   (setq org-capture-templates
         '(
           ("r" "Reminder" entry
-           (file+headline "~/org/tickler.org" "Reminders")
-           "* TODO %^{Reminder for...} \nSCHEDULED: %^t \n:PROPERTIES: \n:CREATED: %U \n:LINK: %a \n:END: \n%i \n%?"
-           :prepend t
-           )
-          ("a" "Attach as a subtask" entry
-           (file+function buffer-name org-back-to-heading)
-           "* %?\n :PROPERTIES: \n:CREATED: %U \n:END: \n%i \n")
+           (file+headline +org-capture-tickler-file "Reminders")
+           "* TODO %^{Reminder for...} \nSCHEDULED: %^t \n:PROPERTIES: \n:CREATED: %U \n:END: \n%i \n%a"
+           :prepend t)
           ("t" "Templates for todos")
           ("tt" "Todo" entry
-           (file+headline "~/org/inbox.org" "Tasks")
-           "* TODO %^{Todo for...} \n:PROPERTIES: \n:CAPTURED: %U \n:LINK: %a \n:END: \n%i \n%?"
-           :prepend t
-           )
+           (file+headline +org-capture-inbox-file "Tasks")
+           "* TODO %? \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a"
+           :prepend t)
           ("td" "Todo deadline" entry
-           (file+headline "~/org/inbox.org" "Task Deadlines")
-           "* TODO %^{Deadline for...} \nDEADLINE: %^t \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
-           :prepend t
-           )
+           (file+headline +org-capture-inbox-file "Task Deadlines")
+           "* TODO %? \nDEADLINE: %^t \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a"
+           :prepend t)
           ("tr" "Rapid task" entry
-           (file+headline "~/org/inbox.org" "Rapid Tasks")
-           "* TODO %^{Rapid task for...} \nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+1d\")) \n%i \n%a \n%?"
-           :prepend t
-           )
+           (file+headline +org-capture-inbox-file "Rapid Tasks")
+           "* TODO %? \nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+1d\")) \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a"
+           :prepend t)
           ("ts" "Clocked entry subtask" entry (clock)
-           "* TODO %^{Clocked entry subtask for...} \n:PROPERTIES: \n:CAPTURED: %U \n:LINK: %a \n:END: \n%i \n%?")
+           "* TODO %? \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a")
           ("n" "Note" entry
            (file+headline +org-capture-notes-file "Inbox")
-           "* %u %^{Note for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
-           :prepend t
-           )
+           "* %u %? \n%i \n%a"
+           :prepend t)
           ("j" "Journal" entry
            (file+olp+datetree +org-capture-journal-file)
-           "* %U %^{Journal for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
+           "* %U %? \n%i \n%a"
            :prepend t
            ;; :tree-type week
            ;; :clock-in :clock-resume
@@ -308,33 +325,30 @@
           ;; :parents ("Projects")
           ("p" "Templates for projects")
           ("pt" "Project todo" entry
-           (function +org-capture-central-project-todo-file)
-           "* TODO %^{Todo for...} \n:PROPERTIES: \n:CAPTURED: %U \n:LINK: %a \n:END: \n%i \n%?"
+           #'+org-capture-central-project-todo-file
+           "* TODO %? \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a"
            :heading "Tasks"
            :prepend nil)
           ("pn" "Project notes" entry
-           (function +org-capture-central-project-notes-file)
-           "* %U %^{Note for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
+           #'+org-capture-central-project-notes-file
+           "* %U %? \n%i \n%a"
            :heading "Notes"
-           :prepend t
-           )
+           :prepend t)
           ("pc" "Project changelog" entry
-           (function +org-capture-central-project-changelog-file)
-           "* %U %^{Changelog for...} \n:PROPERTIES: \n:LINK: %a \n:END: \n%i \n%?"
+           #'+org-capture-central-project-changelog-file
+           "* %U %? \n%i \n%a"
            :heading "Changelog"
-           :prepend t
-           )
+           :prepend t)
           ("pp" "New Project" entry
            (file+headline +org-capture-todo-file "Projects")
-           "* %^{Project for...} [/] %^{GOAL}p \n:PROPERTIES:\n:CAPTURED: %U \n:END: \n%i \n%?"
-           :prepend t
-           )))
+           "* %^{Project for...} [/] %^{GOAL}p \n:PROPERTIES:\n:CAPTURED: %U \n:END: \n%i"
+           :prepend t)))
 
 
   ;; elfeed capture
   (add-to-list 'org-capture-templates
                '("EFE" "Elfeed entry" entry
-                 (file+headline "~/org/inbox.org" "Tasks")
+                 (file+headline +org-capture-inbox-file "Tasks")
                  "* TODO %(elfeed-entry-title jyun/target-elfeed-entry) :rss:
 :PROPERTIES:
 :CREATED: %U
@@ -342,12 +356,13 @@
 :URL: %(elfeed-entry-link jyun/target-elfeed-entry)
 :END:
 %i \n%?"
-                 :prepend t))
+                 :prepend t
+                 :immediate-finish t))
 
   ;; email capture
   (add-to-list 'org-capture-templates
                '("ATE" "Attention to Emails" entry
-                 (file+headline "~/org/inbox.org" "Tasks")
+                 (file+headline +org-capture-inbox-file "Tasks")
                  "* TODO %(message jyun/target-mu4e-subject) :@email:
 :PROPERTIES:
 :CREATED: %U
@@ -355,34 +370,78 @@
 :END:
 %i \n%?"
                  :prepend t
-                 ))
+                 :immediate-finish t))
 
   (add-to-list 'org-capture-templates
                '("GSA" "General Skim Annotation" entry
                  (file+function (lambda () (buffer-file-name)) +org-move-point-to-heading)
-                 "* %^{Note for...}
+                 "* %?
    :PROPERTIES:
    :CREATED: %U
    :SKIM_NOTE: %(+reference/skim-get-annotation)
    :SKIM_PAGE: %(+reference/get-skim-page-number)
    :END:
-   %i \n%?"))
+   %i"))
 
-  (add-to-list 'org-capture-templates
-               '("SA" "Skim Annotation" entry
-                 (file+function org-ref-bibliography-notes +reference/org-move-point-to-capture-skim-annotation)
-                 "* %^{Note for...}
+  (after! org-ref
+    (if (equal org-ref-notes-function #'org-ref-notes-function-one-file)
+        (add-to-list 'org-capture-templates
+                     '("SA" "Skim Annotation" entry
+                       (file+function org-ref-bibliography-notes +reference/org-move-point-to-capture-skim-annotation)
+                       "* %?
    :PROPERTIES:
    :CREATED: %U
    :CITE: cite:%(+reference/skim-get-bibtex-key)
    :SKIM_NOTE: %(+reference/skim-get-annotation)
    :SKIM_PAGE: %(+reference/get-skim-page-number)
    :END:
-   %i \n%?"))
+   %i"))
+      )
+
+    ;; (if (equal org-ref-notes-function #'orb-notes-fn)
+  ;;       (add-to-list 'org-capture-templates
+  ;;                    '("SA" "Skim Annotation" entry
+  ;;                      (function (lambda () (progn (orb-notes-fn (+reference/skim-get-bibtex-key))
+  ;;                                             (+reference/org-move-point-to-capture-skim-annotation)
+  ;;                                             ;; (+org-move-point-to-heading)
+  ;;                                             ;; (cond ((org-at-heading-p)
+  ;;                                             ;;        (org-beginning-of-line))
+  ;;                                             ;;       (t
+  ;;                                             ;;        (org-previous-visible-heading
+  ;;                                             ;;         1)))
+  ;;                                             )))
+  ;;                      "* %?
+  ;; :PROPERTIES:
+  ;; :CREATED: %U
+  ;; :SKIM_NOTE: %(+reference/skim-get-annotation)
+  ;; :SKIM_PAGE: %(+reference/get-skim-page-number)
+  ;; :END:
+  ;; %i")))
+
+    (if (equal org-ref-notes-function #'orb-notes-fn)
+      (add-to-list 'org-capture-templates
+                   '("SA" "Skim Annotation" entry
+                     (function (lambda () (progn (orb-notes-fn (+reference/skim-get-bibtex-key))
+                                            (+reference/org-roam-bibtex-move-point-to-capture-skim-annotation)
+                                            ;; (+org-move-point-to-heading)
+                                            ;; (cond ((org-at-heading-p)
+                                            ;;        (org-beginning-of-line))
+                                            ;;       (t
+                                            ;;        (org-previous-visible-heading
+                                            ;;         1)))
+                                            )))
+                     "* %?
+  :PROPERTIES:
+  :CREATED: %U
+  :SKIM_NOTE: %(+reference/skim-get-annotation)
+  :SKIM_PAGE: %(+reference/get-skim-page-number)
+  :END:
+  %i")))
+    )
 
   (setq org-gcal-capture-templates
         '("s" "Scedule an event" entry
-          (file "~/org/gcal.org")
+          (file +org-capture-inbox-file)
           "* %^{Scheduling...} \n:PROPERTIES: \n:calendar-id: jonghyun.yun@gmail.com \n:LOCATION: %^{Location} \n:END: \n:org-gcal: \n%^T \n%i\n%? \n:END:\n\n"
           :prepend t))
 
