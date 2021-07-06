@@ -9,7 +9,7 @@
   ;; create org-id for skim to org jump
   (add-hook 'org-capture-prepare-finalize-hook #'+reference/append-org-id-to-skim-hook)
 
-  ;;;; org-ref-note-title-format
+;;;; org-ref-note-title-format
   (setq org-ref-note-title-format
         "** %y - %t
  :PROPERTIES:
@@ -29,40 +29,38 @@
   ;; (setq org-ref-notes-function #'org-ref-notes-function-one-file)
   ;; (setq org-ref-notes-function #'org-ref-notes-function-many-files)
 
-
-
   ;; override functions in org-ref
   ;; b/c these functions are loaded before loading org-ref
   (load! "bibtex-pdf")
 
-;;   ;; https://github.com/jkitchin/org-ref/blob/master/org-ref.org
-;;   (defun org-ref-open-pdf-at-point ()
-;;     "Open the pdf for bibtex key under point if it exists."
-;;     (interactive)
-;;     (let* ((results (org-ref-get-bibtex-key-and-file))
-;;            (key (car results))
-;;            (pdf-file (car (bibtex-completion-find-pdf key))))
-;;       ;; (pdf-file (car (bibtex-completion-find-pdf-in-field key))))
-;;       (if (file-exists-p pdf-file)
-;;           (org-open-file pdf-file)
-;;         (message "No PDF found for %s" key))))
+  ;;   ;; https://github.com/jkitchin/org-ref/blob/master/org-ref.org
+  ;;   (defun org-ref-open-pdf-at-point ()
+  ;;     "Open the pdf for bibtex key under point if it exists."
+  ;;     (interactive)
+  ;;     (let* ((results (org-ref-get-bibtex-key-and-file))
+  ;;            (key (car results))
+  ;;            (pdf-file (car (bibtex-completion-find-pdf key))))
+  ;;       ;; (pdf-file (car (bibtex-completion-find-pdf-in-field key))))
+  ;;       (if (file-exists-p pdf-file)
+  ;;           (org-open-file pdf-file)
+  ;;         (message "No PDF found for %s" key))))
 
-;;   ;; Override this function in org-ref.
-;;   (defun org-ref-open-bibtex-pdf ()
-;;     "Open pdf for a bibtex entry, if it exists.
-;; assumes point is in
-;; the entry of interest in the bibfile.  but does not check that."
-;;     (interactive)
-;;     (save-excursion
-;;       (bibtex-beginning-of-entry)
-;;       (let* ((bibtex-expand-strings t)
-;;              (entry (bibtex-parse-entry t))
-;;              (key (reftex-get-bib-field "=key=" entry))
-;;              (pdf-file (car (bibtex-completion-find-pdf-in-field key))))
-;;         (if (file-exists-p pdf-file)
-;;             (call-process "open" nil 0 nil "-a" "Skim" pdf-file)
-;;           (message "No PDF found for %s" key)))))
-)
+  ;;   ;; Override this function in org-ref.
+  ;;   (defun org-ref-open-bibtex-pdf ()
+  ;;     "Open pdf for a bibtex entry, if it exists.
+  ;; assumes point is in
+  ;; the entry of interest in the bibfile.  but does not check that."
+  ;;     (interactive)
+  ;;     (save-excursion
+  ;;       (bibtex-beginning-of-entry)
+  ;;       (let* ((bibtex-expand-strings t)
+  ;;              (entry (bibtex-parse-entry t))
+  ;;              (key (reftex-get-bib-field "=key=" entry))
+  ;;              (pdf-file (car (bibtex-completion-find-pdf-in-field key))))
+  ;;         (if (file-exists-p pdf-file)
+  ;;             (call-process "open" nil 0 nil "-a" "Skim" pdf-file)
+  ;;           (message "No PDF found for %s" key)))))
+  )
 
 (with-eval-after-load 'bibtex-completion
   (setq bibtex-completion-pdf-open-function

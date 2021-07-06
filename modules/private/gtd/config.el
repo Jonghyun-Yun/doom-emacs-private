@@ -49,6 +49,7 @@
   ;; :config
   ;; (org-super-agenda-mode)
 )
+
 ;; (use-package! org-super-agenda
 ;;   :after org-agenda
 ;;   :init

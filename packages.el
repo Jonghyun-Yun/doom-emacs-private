@@ -240,5 +240,8 @@
 
 (package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")
 
-(package! keycast :pin "a3a0798349..." :disable t)
+;; (package! keycast :pin "a3a0798349...")
 (package! gif-screencast :pin "fa81e915c2..." :disable t) ;; error during cropping using "mogrify"
+
+;;; fun
+(package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa")

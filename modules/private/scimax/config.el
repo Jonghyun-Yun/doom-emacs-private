@@ -29,15 +29,16 @@
 (use-package! scimax-hydra
   :load-path scimax-dir
   :commands (scimax-dispatch-mode-hydra
+             scimax-error/body
+             scimax-src-block-hydra/body
              scimax/body)
   :init
   ;; (require 'cl)
   (map! :g
-        "s-m" #'scimax-dispatch-mode-hydra
+        "s-." #'scimax-dispatch-mode-hydra
         "s-," #'scimax/body)
   :config
-  (require 'emacs-keybinding-command-tooltip-mode)
-  )
+  (require 'emacs-keybinding-command-tooltip-mode))
 
 (add-hook 'find-file-hook #'my-enable-smerge-maybe)
 (defun my-enable-smerge-maybe ()
