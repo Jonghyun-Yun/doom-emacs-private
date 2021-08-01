@@ -124,11 +124,11 @@
 ;; (package! highlight-numbers-mode)
 (package! highlight-parentheses)
 
-(package! spacemacs-theme)
+(package! spacemacs-theme :disable t)
 (package! modus-themes)
 
 ;; bump org-ref (set in biblio)
-(package! org-ref :pin "1936720c2377d8af9a5edb0d252f881c0ec24918")
+;; (package! org-ref :pin "1936720c2377d8af9a5edb0d252f881c0ec24918")
 
 ;; (package! valign :pin "6b0345e29cdec8526c9c19b73bdea53295ec998e")
 
@@ -236,7 +236,8 @@
 
 ;;; nano-emacs
 (package! nano-emacs :recipe (:repo "jonghyun-yun/nano-emacs"
-                              :host github))
+                              :host github)
+  :disable t)
 
 (package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")
 
@@ -244,4 +245,5 @@
 (package! gif-screencast :pin "fa81e915c2..." :disable t) ;; error during cropping using "mogrify"
 
 ;;; fun
-(package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa")
+(package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa"
+  :disable t)
