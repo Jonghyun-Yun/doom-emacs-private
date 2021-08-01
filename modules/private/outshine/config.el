@@ -26,21 +26,21 @@
     (spacemacs|hide-lighter outshine-mode)
     (map! :leader
           (:when (featurep! :private outshine)
-           (:prefix-map ("aO" . "out(line/org/shine)")
-            "."  'outshine-hydra/body
-            "S"  'outline-show-all
-            "I"  'outshine-imenu
-            "K"  'outline-move-subtree-up
-            "J"  'outline-move-subtree-down
-            ">"  'outline-demote
-            "<"  'outline-promote
+           (:prefix-map ("o O" . "out(line/org/shine)")
+            "."  #'outshine-hydra/body
+            "S"  #'outline-show-all
+            "I"  #'outshine-imenu
+            "K"  #'outline-move-subtree-up
+            "J"  #'outline-move-subtree-down
+            ">"  #'outline-demote
+            "<"  #'outline-promote
             (:prefix ("g" . "goto")
-             "u" 'outline-up-heading
-             "n" 'outline-next-heading
-             "j" 'outline-forward-same-level
-             "k" 'outline-backward-same-level))
-           (:prefix ("aOi" . "insert")
-            "h" 'outline-insert-heading)))
+             "u" #'outline-up-heading
+             "n" #'outline-next-heading
+             "j" #'outline-forward-same-level
+             "k" #'outline-backward-same-level))
+           (:prefix ("o O i" . "insert")
+            "h" #'outline-insert-heading)))
     (defhydra outshine-hydra (:hint nil)
       "
 Navigate headings^^^^      Move subtrees^^^^               Other^^
@@ -73,7 +73,8 @@ Navigate headings^^^^      Move subtrees^^^^               Other^^
   :config
   (map!
    :leader
-   ;; "aOc"  'outorg-copy-edits-and-exit
-   "aOe"  'outorg-edit-as-org))
+   ;; "a O c"  'outorg-copy-edits-and-exit
+   "o O e"  #'outorg-edit-as-org)
+  )
 
 ;;; config.el ends here
