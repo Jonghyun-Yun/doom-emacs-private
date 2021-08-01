@@ -266,7 +266,8 @@
 
 ;;; org-mode
 (after! org
-  (setq org-src-window-setup 'current-window ; 'other-window
+  (setq  ;; org-src-window-setup 'current-window
+        org-src-window-setup 'other-window
         ;; org-return-follows-link t
         org-use-speed-commands nil
         org-log-into-drawer t)
@@ -282,9 +283,10 @@
         ;; " ⬎ " ; IBM Plex Mono
         ;; " ↩ " ; firacode
         ;; " ⤶ " ; juliamono
-        " ⤵ "
+        ;; " ⤵ "
         ;; "… "
-        ;; "↴", "⤷"
+        ;; " ↴ "
+        " ⤷ "
         org-cycle-separator-lines 2     ; -1 or 1 to use unicode org-ellipsis
         )
   (setq
