@@ -25,12 +25,10 @@
         )
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       (ivy                ; a search engine for love and life
-        +fuzzy
-        +prescient
-        ;; +childframe
-        ;; +icons
-       )
+       ;; (ivy                ; a search engine for love and life
+       ;;  +fuzzy
+       ;;  +prescient)
+       vertico           ; the search engine of the future
 
        :ui
        deft              ; notational velocity for Emacs
@@ -38,7 +36,6 @@
        ;;doom-dashboard    ; a nifty splash screen for Emacs
        ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
        ;;(emoji +unicode)  ; 🙂
-       ;;fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        hydra
        ;;indent-guides     ; highlighted indent columns
@@ -50,16 +47,14 @@
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints           ; highlight the region an operation acts on
        (popup            ; tame sudden yet inevitable temporary windows
-        +defaults
-        ;; +all
-        )
+        +defaults)
        ;;tabs              ; a tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
        ;; unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
-       (window-select
-        +numbers)        ; visually switch windows
+       (window-select      ; visually switch windows
+        +numbers)
        workspaces        ; tab emulation, persistence & separate workspaces
        zen               ; distraction-free coding or writing
 
@@ -82,7 +77,7 @@
        :emacs
        (dired             ; making dired pretty [functional]
         +icons)
-       ;; electric          ; smarter, keyword-based electric-indent
+       electric          ; smarter, keyword-based electric-indent
        (ibuffer           ; interactive buffer management
        +icons)
        undo              ; persistent, smarter undo for your inevitable mistakes
@@ -113,8 +108,7 @@
        ;;gist              ; interacting with github gists
        (lookup             ; navigate your code and its documentation
         +dictionary)
-       (lsp
-        +peek)
+       (lsp +peek)
        (magit +forge)    ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        (pass +auth)        ; password manager for nerds
@@ -211,14 +205,14 @@
        ;;zig               ; C, but simpler
 
        :email
-       (mu4e +gmail)
+       (mu4e +gmail +org)
        ;; notmuch
        ;;(wanderlust +gmail)
 
        :app
        calendar
        ;;emms
-       ;;everywhere        ; *leave* Emacs!? You must be joking
+       everywhere        ; *leave* Emacs!? You must be joking
        ;;irc               ; how neckbeards socialize
        (rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
@@ -242,4 +236,4 @@
        reading
        scimax
        ;; xkcd
-)
+       )
