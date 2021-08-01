@@ -76,9 +76,11 @@ In case of directory the path must end with a slash."
   :preface
   ;; This need to be set before the package is loaded, because org-ref will
   ;; automatically `require' an associated package during its loading.
-  (setq org-ref-completion-library (cond ((featurep! :completion ivy)  #'org-ref-ivy-cite)
-                                         ((featurep! :completion helm) #'org-ref-helm-bibtex)
-                                         (t                            #'org-ref-reftex)))
+  ;; (setq org-ref-completion-library (cond ((featurep! :completion ivy)  #'org-ref-ivy-cite)
+  ;;                                        ((featurep! :completion helm) #'org-ref-helm-bibtex)
+  ;;                                        (t                            #'org-ref-reftex)))
+  (setq org-ref-completion-library #'org-ref-ivy-cite)
+  ;; (require 'org-ref-ivy-cite)
   :config
   ;; Although the name is helm-bibtex, it is actually a bibtex-completion function
   ;; it is the legacy naming of the project helm-bibtex that causes confusion.
@@ -113,7 +115,7 @@ In case of directory the path must end with a slash."
           '(("r" "ref" plain (function org-roam-capture--get-point)
              ""
              :file-name "${slug}"
-             :head "#+TITLE: ${=key=}: ${title}\n#+ROAM_KEY: ${ref}
+             :head "#+TITLE: ${=key=}: ${title}\n#+roam_key: ${ref}\n#+roam_tags: lit
 
 - tags ::
 - keywords :: ${keywords}
@@ -121,8 +123,64 @@ In case of directory the path must end with a slash."
 \n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
              :unnarrowed t)))))
 
-;;; citeproc-org
 (use-package! citeproc-org
   :after org
   :config
   (citeproc-org-setup))
+
+;; (use-package! bibtex-completion
+;;   :defer t
+;;   :config
+;;   (setq bibtex-completion-additional-search-fields '(keywords)
+;;         bibtex-completion-pdf-field "file"));; This tell bibtex-completion to look at the File field of the bibtex to figure out which pdf to open
+
+;; (use-package! ivy-bibtex
+;;   :when (featurep! :completion ivy)
+;;   :defer t
+;;   :config
+;;   (add-to-list 'ivy-re-builders-alist '(ivy-bibtex . ivy--regex-plus)))
+
+;; (use-package! bibtex-actions
+;;   :when (featurep! :completion vertico)
+;;   :after embark
+;;   :defer t
+;;   :config
+;;   (add-to-list 'embark-keymap-alist '(bibtex . bibtex-actions-map)))
+
+;; (use-package! citeproc
+;;   :defer t)
+
+;; ;;; Org-Cite configuration
+
+;; (use-package! oc
+;;   :after org
+;;   :config
+;;   (setq org-cite-global-bibliography '("~/bib/references.bib"))
+;;   ;; setup export processor; default csl/citeproc-el, with biblatex for latex
+;;   (setq org-cite-export-processors
+;;         '((latex natbib)
+;;           (t csl))))
+
+;; (use-package! oc-bibtex-actions
+;;   :when (featurep! :completion vertico)
+;;   :after (oc bibtex-actions)
+;;   :config
+;;   (setq org-cite-insert-processor 'oc-bibtex-actions
+;;         org-cite-follow-processor 'oc-bibtex-actions))
+
+;;   ;;; Org-cite processors
+;; (use-package! oc-basic
+;;   :after oc)
+
+;; (use-package! oc-biblatex
+;;   :after oc)
+
+;; (use-package! oc-csl
+;;   :after oc
+;;   :config
+;;   ;; REVIEW optional; add to docs instead?
+;;   (setq org-cite-csl-styles-dir "~/.local/share/csl/styles")
+;;   (setq org-cite-csl-locales-dir "~/.local/share/csl/locales"))
+
+;; (use-package! oc-natbib
+;;   :after oc)
