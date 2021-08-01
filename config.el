@@ -1175,9 +1175,33 @@
               (letf! ((#'+org--restart-mode-h #'ignore))
                 (apply fun args))))
 
-
 ;; ;; https://github.com/org-roam/org-roam-bibtex/pull/87
 ;; (after! org-roam-bibtex
 ;;   (remove-hook 'org-capture-after-finalize-hook
 ;;                #'org-roam-capture--find-file-h)
 ;   )
+
+;;; Disabling cursor movement when exiting insert mode
+;; Vim (and evil) move the cursor one character back when exiting insert mode. If you prefer that it didn’t, set:
+;; (setq evil-move-cursor-back nil)
+
+;;; bibtex-actions (for vertigo)
+(defvar jyun/bibs '("~/Zotero/myref.bib"))
+(after! org (setq org-cite-global-bibliography jyun/bibs))
+
+;; (use-package bibtex-actions
+;;   :bind (("C-c b" . bibtex-actions-insert-citation)
+;;          :map minibuffer-local-map
+;;          ("M-b" . bibtex-actions-insert-preset))
+;;   :after embark
+;;   :config
+;;   ;; Make the 'bibtex-actions' bindings and targets available to `embark'.
+;;   (add-to-list 'embark-target-finders 'bibtex-actions-citation-key-at-point)
+;;   (add-to-list 'embark-keymap-alist '(bibtex . bibtex-actions-map))
+;;   (add-to-list 'embark-keymap-alist '(citation-key . bibtex-actions-buffer-map))
+;;   ;; Make sure to set this to ensure 'bibtex-actions-open-link' command works correctly.
+;;   (bibtex-completion-additional-search-fields '(doi url))
+;;   (bibtex-completion-bibliography jyun/bibliography))
+
+;; ;; use consult-completing-read for enhanced interface
+;; (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
