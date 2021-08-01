@@ -390,7 +390,7 @@
 
 ;; no key stroke for exiting INSERT mode: doom default jk
 (setq evil-escape-key-sequence "jk"
-      evil-escape-delay 0.1)
+      evil-escape-delay 0.15)
 ;; to escape from emacs state
 (key-chord-mode 1)
 (key-chord-define evil-emacs-state-map evil-escape-key-sequence 'evil-escape)
