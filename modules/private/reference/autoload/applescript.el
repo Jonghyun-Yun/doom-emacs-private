@@ -221,15 +221,17 @@
                         'identity))
            )
       ;; put new entry in notes if we don't find it.
-      (progn
-        (org-link-open-from-string
-         (format "[[#%s]]" key))
-        (lambda nil
-          (cond ((org-at-heading-p)
-                 (org-beginning-of-line))
-                (t
-                 (org-previous-visible-heading
-                  1))))))))
+      ;; disabled for org-roam-bibtex associated with org-roam V2
+      ;; (progn
+      ;;   (org-link-open-from-string
+      ;;    (format "[[#%s]]" key))
+      ;;   (lambda nil
+      ;;     (cond ((org-at-heading-p)
+      ;;            (org-beginning-of-line))
+      ;;           (t
+      ;;            (org-previous-visible-heading
+      ;;             1)))))
+      )))
 
 ;;;###autoload
 (defun +reference/org-roam-bibtex-move-point-to-capture-skim-annotation ()

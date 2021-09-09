@@ -37,9 +37,13 @@
 ;; (when (featurep! +roam-bibtex)
   ;; (package! org-roam-bibtex :pin "58b052e1246a990965c1a46343245cd57af92c30"))
 
-;; lastes with roam v1
+;; ;; lastes with roam v1
+;; (when (featurep! +roam-bibtex)
+;;   (package! org-roam-bibtex :pin "c9865196efe7cfdfcced0d47ea3e5b39bdddd162"))
+
+;; org-roam V2
 (when (featurep! +roam-bibtex)
-  (package! org-roam-bibtex :pin "c9865196efe7cfdfcced0d47ea3e5b39bdddd162"))
+  (package! org-roam-bibtex :pin "9675eee4183301b16eb27776dae93e8c0b99eb07"))
 
 (package! citeproc-org :pin "22a759c4f0ec80075014dcc594baa4d1b470d995")
 (package! citeproc :pin "0857973409e3ef2ef0238714f2ef7ff724230d1c")

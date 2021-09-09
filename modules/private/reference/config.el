@@ -29,6 +29,9 @@
   ;; (setq org-ref-notes-function #'org-ref-notes-function-one-file)
   ;; (setq org-ref-notes-function #'org-ref-notes-function-many-files)
 
+  (if (featurep! :private biblio +roam-bibtex)
+      (setq org-ref-notes-function #'orb-org-ref-edit-note))
+
   ;; override functions in org-ref
   ;; b/c these functions are loaded before loading org-ref
   (load! "bibtex-pdf")

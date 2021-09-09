@@ -865,32 +865,47 @@
   )
 
 ;;; org-roam-server
-(use-package org-roam-server
-  ;; :after (org-roam server)
-  :defer t
-  :config
-  (setq org-roam-server-host "127.0.0.1"
-        org-roam-server-port 8080
-        org-roam-server-authenticate nil
-        org-roam-server-export-inline-images t
-        ;; org-roam-server-serve-files nil
-        ;; org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
-        ;; org-roam-server-network-poll t
-        ;; org-roam-server-network-arrows nil
-        org-roam-server-network-label-truncate t
-        org-roam-server-network-label-truncate-length 60
-        org-roam-server-network-label-wrap-length 20)
-  :init
-  (defun org-roam-server-open ()
-    "Ensure the server is active, then open the roam graph."
-    (interactive)
-    (progn
-      (if org-roam-server-mode t (org-roam-server-mode 1))
-      (browse-url (format "http://localhost:%d" org-roam-server-port))))
-  (map!
-   :leader "nrs" #'org-roam-server-open))
+;; (use-package org-roam-server
+;;   ;; :after (org-roam server)
+;;   :defer t
+;;   :config
+;;   (setq org-roam-server-host "127.0.0.1"
+;;         org-roam-server-port 8080
+;;         org-roam-server-authenticate nil
+;;         org-roam-server-export-inline-images t
+;;         ;; org-roam-server-serve-files nil
+;;         ;; org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
+;;         ;; org-roam-server-network-poll t
+;;         ;; org-roam-server-network-arrows nil
+;;         org-roam-server-network-label-truncate t
+;;         org-roam-server-network-label-truncate-length 60
+;;         org-roam-server-network-label-wrap-length 20)
+;;   :init
+;;   (defun org-roam-server-open ()
+;;     "Ensure the server is active, then open the roam graph."
+;;     (interactive)
+;;     (progn
+;;       (if org-roam-server-mode t (org-roam-server-mode 1))
+;;       (browse-url (format "http://localhost:%d" org-roam-server-port))))
+;;   (map!
+;;    :leader "nrs" #'org-roam-server-open))
 
 ;;; org-roam
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+  :after org-roam
+  :commands org-roam-ui-open
+  :hook (org-roam . org-roam-ui-mode)
+  :config
+  (require 'org-roam) ; in case autoloaded
+  (defun org-roam-ui-open ()
+    "Ensure the server is active, then open the roam graph."
+    (interactive)
+    (unless org-roam-ui-mode (org-roam-ui-mode 1))
+    (browse-url (format "http://localhost:%d" org-roam-ui-port))))
+
 (after! org-roam
   (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
         +org-roam-open-buffer-on-find-file nil)
@@ -913,44 +928,6 @@
         ;; "patchwork"
         ;; "osage"
         )
-  ;; customizing graphs (from TEC)
-  (setq org-roam-graph-node-extra-config
-        '(("shape"      . "underline")
-          ("style"      . "rounded,filled")
-          ("fillcolor"  . "#EEEEEE")
-          ("color"      . "#C9C9C9")
-          ("fontcolor"  . "#111111")
-          ("fontname"   . "Overpass")))
-  (setq +org-roam-graph--html-template
-        (replace-regexp-in-string "%\\([^s]\\)" "%%\\1"
-                                  (f-read-text (concat doom-private-dir "misc/org-roam-template.html"))))
-  (defadvice! +org-roam-graph--build-html (&optional node-query callback)
-    "Generate a graph showing the relations between nodes in NODE-QUERY. HTML style."
-    :override #'org-roam-graph--build
-    (unless (stringp org-roam-graph-executable)
-      (user-error "`org-roam-graph-executable' is not a string"))
-    (unless (executable-find org-roam-graph-executable)
-      (user-error (concat "Cannot find executable %s to generate the graph.  "
-                          "Please adjust `org-roam-graph-executable'")
-                  org-roam-graph-executable))
-    (let* ((node-query (or node-query
-                           `[:select [file title] :from titles
-                             ,@(org-roam-graph--expand-matcher 'file t)]))
-           (graph      (org-roam-graph--dot node-query))
-           (temp-dot   (make-temp-file "graph." nil ".dot" graph))
-           (temp-graph (make-temp-file "graph." nil ".svg"))
-           (temp-html  (make-temp-file "graph." nil ".html")))
-      (org-roam-message "building graph")
-      (make-process
-       :name "*org-roam-graph--build-process*"
-       :buffer "*org-roam-graph--build-process*"
-       :command `(,org-roam-graph-executable ,temp-dot "-Tsvg" "-o" ,temp-graph)
-       :sentinel (progn
-                   (lambda (process _event)
-                     (when (= 0 (process-exit-status process))
-                       (write-region (format +org-roam-graph--html-template (f-read-text temp-graph)) nil temp-html)
-                       (when callback
-                         (funcall callback temp-html))))))))
 
   ;; no numbers in org-roam buffers
   (defadvice! doom-modeline--buffer-file-name-roam-aware-a (orig-fun)
@@ -1242,3 +1219,117 @@
 
 ;; ;; use consult-completing-read for enhanced interface
 ;; (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
+
+
+;;; mu4e fixes
+;; (after! mu4e
+;;   (remove-hook 'kill-emacs-hook #'+mu4e-lock-file-delete-maybe)
+;;   (advice-remove 'mu4e~start #'+mu4e-lock-start)
+;;   (advice-remove 'mu4e-quit #'+mu4e-lock-file-delete-maybe))
+
+;; https://github.com/hlissner/doom-emacs/issues/5027
+(map! :map mu4e-view-mode-map
+      :ne "A" #'mu4e-view-mime-part-action
+      ;; :ne "p" #'mu4e-view-save-attachments
+      )
+
+;;; dap-mode
+;; rigger the hydra when the program hits a breakpoint
+(add-hook 'dap-stopped-hook
+          (lambda (arg) (call-interactively #'dap-hydra)))
+
+;;; your.gg
+(load! "local/gg-plus")
+
+;;; mw-dict
+(use-package mw-learner
+  :defer t
+  :commands (mw-learner-lookup-at-point))
+(use-package mw-collegiate
+  :defer t
+  :commands (mw-collegiate-lookup-at-point))
+
+;;; outline regexp (not working)
+;; (defun jyun/cc-mode-outline-regexp ()
+;;   (set (make-local-variable 'outline-regexp "//\\(?:/[^#]\\\)"))
+;;   )
+
+;; (add-hook! 'c-mode-hook #'jyun/cc-mode-outline-regexp)
+;; (add-hook! 'c++-mode-hook #'jyun/cc-mode-outline-regexp)
+
+;;; lsp
+;; https://github.com/hlissner/doom-emacs/issues/5424
+(defadvice! +lsp-diagnostics--flycheck-buffer ()
+  :override #'lsp-diagnostics--flycheck-buffer
+  "Trigger flycheck on buffer."
+  (remove-hook 'lsp-on-idle-hook #'lsp-diagnostics--flycheck-buffer t)
+  (when (bound-and-true-p flycheck-mode)
+    (flycheck-buffer)))
+
+;;; ox-hugo
+(after! ox-hugo
+  (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "csv"))
+
+;;; treemac
+(after! treemacs
+  (defvar treemacs-file-ignore-extensions '()
+    "File extension which `treemacs-ignore-filter' will ensure are ignored")
+  (defvar treemacs-file-ignore-globs '()
+    "Globs which will are transformed to `treemacs-file-ignore-regexps' which `treemacs-ignore-filter' will ensure are ignored")
+  (defvar treemacs-file-ignore-regexps '()
+    "RegExps to be tested to ignore files, generated from `treeemacs-file-ignore-globs'")
+  (defun treemacs-file-ignore-generate-regexps ()
+    "Generate `treemacs-file-ignore-regexps' from `treemacs-file-ignore-globs'"
+    (setq treemacs-file-ignore-regexps (mapcar 'dired-glob-regexp treemacs-file-ignore-globs)))
+  (if (equal treemacs-file-ignore-globs '()) nil (treemacs-file-ignore-generate-regexps))
+  (defun treemacs-ignore-filter (file full-path)
+    "Ignore files specified by `treemacs-file-ignore-extensions', and `treemacs-file-ignore-regexps'"
+    (or (member (file-name-extension file) treemacs-file-ignore-extensions)
+        (let ((ignore-file nil))
+          (dolist (regexp treemacs-file-ignore-regexps ignore-file)
+            (setq ignore-file (or ignore-file (if (string-match-p regexp full-path) t nil)))))))
+  (add-to-list 'treemacs-ignored-file-predicates #'treemacs-ignore-filter)
+  (setq treemacs-file-ignore-extensions
+        '(;; LaTeX
+          "aux"
+          "ptc"
+          "fdb_latexmk"
+          "fls"
+          "synctex.gz"
+          "toc"
+          ;; LaTeX - glossary
+          "glg"
+          "glo"
+          "gls"
+          "glsdefs"
+          "ist"
+          "acn"
+          "acr"
+          "alg"
+          ;; LaTeX - pgfplots
+          "mw"
+          ;; LaTeX - pdfx
+          "pdfa.xmpi"
+          ))
+  (setq treemacs-file-ignore-globs
+        '(;; LaTeX
+          "*/_minted-*"
+          ;; AucTeX
+          "*/.auctex-auto"
+          "*/_region_.log"
+          "*/_region_.tex")))
+
+;;; orb
+;; https://github.com/org-roam/org-roam-bibtex/blob/master/doc/orb-manual.org
+(after! org-roam
+  (setq orb-note-actions-interface 'hydra)
+  (setq orb-preformat-keywords
+        '("citekey" "title" "url" "author-or-editor" "keywords" "file")
+        orb-process-file-keyword t
+        orb-file-field-extensions '("pdf"))
+  (add-to-list 'org-roam-capture-templates
+               '("r" "bibliography reference" plain "%?"
+                 :if-new
+                 (file+head "references/${citekey}.org" "#+title: ${title}\n")
+                 :unnarrowed t))
+  )
