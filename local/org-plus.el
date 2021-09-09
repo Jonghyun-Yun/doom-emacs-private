@@ -384,59 +384,60 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
    %i"))
 
   (after! org-ref
-    (if (equal org-ref-notes-function #'org-ref-notes-function-one-file)
+    ;; (if (equal org-ref-notes-function #'orb-notes-fn)
+    ;;       (add-to-list 'org-capture-templates
+    ;;                    '("SA" "Skim Annotation" entry
+    ;;                      (function (lambda () (progn (orb-notes-fn (+reference/skim-get-bibtex-key))
+    ;;                                             (+reference/org-move-point-to-capture-skim-annotation)
+    ;;                                             ;; (+org-move-point-to-heading)
+    ;;                                             ;; (cond ((org-at-heading-p)
+    ;;                                             ;;        (org-beginning-of-line))
+    ;;                                             ;;       (t
+    ;;                                             ;;        (org-previous-visible-heading
+    ;;                                             ;;         1)))
+    ;;                                             )))
+    ;;                      "* %?
+    ;; :PROPERTIES:
+    ;; :CREATED: %U
+    ;; :SKIM_NOTE: %(+reference/skim-get-annotation)
+    ;; :SKIM_PAGE: %(+reference/get-skim-page-number)
+    ;; :END:
+    ;; %i")))
+    (if (featurep! :private biblio +roam-bibtex)
         (add-to-list 'org-capture-templates
                      '("SA" "Skim Annotation" entry
-                       (file+function org-ref-bibliography-notes +reference/org-move-point-to-capture-skim-annotation)
+                       (function (lambda () (progn (;; orb-notes-fn
+                                               orb-edit-note (+reference/skim-get-bibtex-key))
+                                              (+reference/org-roam-bibtex-move-point-to-capture-skim-annotation)
+                                              ;; (+org-move-point-to-heading)
+                                              ;; (cond ((org-at-heading-p)
+                                              ;;        (org-beginning-of-line))
+                                              ;;       (t
+                                              ;;        (org-previous-visible-heading
+                                              ;;         1)))
+                                              )))
                        "* %?
-   :PROPERTIES:
-   :CREATED: %U
-   :CITE: cite:%(+reference/skim-get-bibtex-key)
-   :SKIM_NOTE: %(+reference/skim-get-annotation)
-   :SKIM_PAGE: %(+reference/get-skim-page-number)
-   :END:
-   %i"))
-      )
-
-    ;; (if (equal org-ref-notes-function #'orb-notes-fn)
-  ;;       (add-to-list 'org-capture-templates
-  ;;                    '("SA" "Skim Annotation" entry
-  ;;                      (function (lambda () (progn (orb-notes-fn (+reference/skim-get-bibtex-key))
-  ;;                                             (+reference/org-move-point-to-capture-skim-annotation)
-  ;;                                             ;; (+org-move-point-to-heading)
-  ;;                                             ;; (cond ((org-at-heading-p)
-  ;;                                             ;;        (org-beginning-of-line))
-  ;;                                             ;;       (t
-  ;;                                             ;;        (org-previous-visible-heading
-  ;;                                             ;;         1)))
-  ;;                                             )))
-  ;;                      "* %?
-  ;; :PROPERTIES:
-  ;; :CREATED: %U
-  ;; :SKIM_NOTE: %(+reference/skim-get-annotation)
-  ;; :SKIM_PAGE: %(+reference/get-skim-page-number)
-  ;; :END:
-  ;; %i")))
-
-    (if (equal org-ref-notes-function #'orb-notes-fn)
-      (add-to-list 'org-capture-templates
-                   '("SA" "Skim Annotation" entry
-                     (function (lambda () (progn (orb-notes-fn (+reference/skim-get-bibtex-key))
-                                            (+reference/org-roam-bibtex-move-point-to-capture-skim-annotation)
-                                            ;; (+org-move-point-to-heading)
-                                            ;; (cond ((org-at-heading-p)
-                                            ;;        (org-beginning-of-line))
-                                            ;;       (t
-                                            ;;        (org-previous-visible-heading
-                                            ;;         1)))
-                                            )))
-                     "* %?
   :PROPERTIES:
   :CREATED: %U
   :SKIM_NOTE: %(+reference/skim-get-annotation)
   :SKIM_PAGE: %(+reference/get-skim-page-number)
   :END:
-  %i")))
+  %i"))
+      ;; else
+      (if (equal org-ref-notes-function #'org-ref-notes-function-one-file)
+          (add-to-list 'org-capture-templates
+                       '("SA" "Skim Annotation" entry
+                         (file+function org-ref-bibliography-notes +reference/org-move-point-to-capture-skim-annotation)
+                         "* %?
+    :PROPERTIES:
+    :CREATED: %U
+    :CITE: cite:%(+reference/skim-get-bibtex-key)
+    :SKIM_NOTE: %(+reference/skim-get-annotation)
+    :SKIM_PAGE: %(+reference/get-skim-page-number)
+    :END:
+    %i"))
+        )
+      )
     )
 
   (setq org-gcal-capture-templates
