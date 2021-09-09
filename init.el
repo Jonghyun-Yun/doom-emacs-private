@@ -21,8 +21,7 @@
 
        :completion
        (company           ; the ultimate code completion backend
-        +childframe
-        )
+        +childframe)
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;; (ivy                ; a search engine for love and life
@@ -43,7 +42,7 @@
                          ; FIXME: +extra slow down associated modes with extra symbols
        ;;minimap           ; show a map of the code on the side
        modeline          ; snazzy, Atom-inspired modeline, plus API
-       nav-flash         ; blink cursor line after big motions
+       ;;nav-flash         ; blink cursor line after big motions
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints           ; highlight the region an operation acts on
        (popup            ; tame sudden yet inevitable temporary windows
@@ -108,7 +107,8 @@
        ;;gist              ; interacting with github gists
        (lookup             ; navigate your code and its documentation
         +dictionary)
-       (lsp +peek)
+       (lsp
+        +peek)
        (magit +forge)    ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        (pass +auth)        ; password manager for nerds
@@ -127,7 +127,7 @@
        :lang
        ;;agda              ; types of types of types of types...
        ;;beancount         ; mind the GAAP
-       (cc +lsp)           ; C/C++/Obj-C madness
+       (cc +lsp)           ; C > C++ == 1
        ;;clojure           ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
@@ -135,6 +135,7 @@
        ;;csharp            ; unity, .NET, and mono shenanigans
        data              ; config/data formats
        ;;(dart +flutter)   ; paint ui and not much else
+       ;;dhall
        ;;elixir            ; erlang done right
        ;;elm               ; care for a cup of TEA?
        emacs-lisp        ; drown in parentheses
@@ -177,14 +178,14 @@
         +pandoc           ; export-with-pandoc support
         +pomodoro         ; be fruitful with the tomato technique
         +present          ; using org-mode for presentations
-        +roam)             ; Enables org-roam integration
+        +roam2)           ; Enables org-roam integration
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
        (python            ; beautiful is better than ugly
         +lsp
         +pyright
-        ;; +conda          ; move to config.el
+        ;; +conda          ; moved to config.el
         )
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
@@ -201,12 +202,12 @@
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
        ;;web               ; the tubes
-       ;;yaml              ; JSON, but readable
+       yaml              ; JSON, but readable
        ;;zig               ; C, but simpler
 
        :email
-       (mu4e +gmail +org)
-       ;; notmuch
+       (mu4e +gmail)
+       ;;notmuch
        ;;(wanderlust +gmail)
 
        :app

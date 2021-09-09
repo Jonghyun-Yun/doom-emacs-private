@@ -1,5 +1,59 @@
 ;;; ../Dropbox/emacs/.doom.d/local/mu4e-plus.el -*- lexical-binding: t; -*-
 
+(set-email-account! "Gmail"
+                    '(
+                      ( user-mail-address  . "jonghyun.yun@gmail.com"  )
+                      ;; ( mu4e-sent-messages-behavior 'delete)
+                      ( mu4e-sent-folder   . "/gmail/[Gmail]/Sent Mail")
+                      ( mu4e-drafts-folder . "/gmail/[Gmail]/Drafts")
+                      ( mu4e-trash-folder  . "/gmail/[Gmail]/Trash")
+                      ( mu4e-refile-folder . "/gmail/[Gmail]/Starred")
+                      ( user-full-name     . "Jonghyun Yun" )
+                      ( mu4e-compose-signature .  (concat
+                                                   "Jonghyun Yun, PhD\n"
+                                                   "Statistical Data Scientist\n"
+                                                   "https://jyun.rbind.io\n"
+                                                   )))
+                    t)                  ; default email
+
+(set-email-account! "UTA"
+                    '(
+                      ( user-mail-address  . "j.yun@uta.edu" )
+                      ;; (mu4e-sent-messages-behavior delete)
+                      ( mu4e-sent-folder   . "/uta/Sent")
+                      ( mu4e-drafts-folder . "/uta/Drafts")
+                      ( mu4e-trash-folder  . "/uta/Trash")
+                      ( mu4e-refile-folder . "/uta/Archive")
+                      ( user-full-name     . "Jonghyun Yun" )
+                      ( mu4e-compose-signature . (concat
+                                                  "Jonghyun Yun, Ph.D.\n"
+                                                  "Assistant Professor\n"
+                                                  "UT Arlington, Dept. of Mathematics\n\n"
+                                                  "655 W Mitchell St, SEIR 218\n"
+                                                  "Arlington, TX 76010\n"
+                                                  "Phone: 817-272-9045\n"
+                                                  "Fax: 817-272-5802\n")))
+                    nil)
+
+  ;;; email attachment from dired: C-c RET C-a
+(after! dired
+  (require 'gnus-dired)
+  ;; ;; make the `gnus-dired-mail-buffers' function also work on
+  ;; ;; message-mode derived modes, such as mu4e-compose-mode
+  ;; (defun gnus-dired-mail-buffers ()
+  ;;   "Return a list of active message buffers."
+  ;;   (let (buffers)
+  ;;     (save-current-buffer
+  ;;       (dolist (buffer (buffer-list t))
+  ;;         (set-buffer buffer)
+  ;;         (when (and (derived-mode-p 'message-mode)
+  ;;                    (null message-sent-message-via))
+  ;;           (push (buffer-name buffer) buffers))))
+  ;;     (nreverse buffers)))
+
+  (setq gnus-dired-mail-mode 'mu4e-user-agent)
+  (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode))
+
 ;; no accumulating drafts
 (add-hook 'mu4e-compose-mode-hook #'(lambda () (auto-save-visited-mode -1)))
 
@@ -99,120 +153,62 @@
   (setq shr-color-visible-luminance-min 80
         shr-color-visible-distance-min 5)
 
-  (add-hook 'mu4e-view-mode-hook
-            (lambda()
-              ;; try to emulate some of the eww key-bindings
-              (local-set-key (kbd "<tab>") 'shr-next-link)
-              (local-set-key (kbd "<backtab>") 'shr-previous-link)))
+  ;; (add-hook 'mu4e-view-mode-hook
+  ;;           (lambda()
+  ;;             ;; try to emulate some of the eww key-bindings
+  ;;             (local-set-key (kbd "<tab>") 'shr-next-link)
+  ;;             (local-set-key (kbd "<backtab>") 'shr-previous-link)))
 
-;;; email send
-  ;; sending mail
-  (setq sendmail-program "/usr/local/bin/msmtp"
-        message-send-mail-function 'message-send-mail-with-sendmail
-        ;; user-full-name "Jonghyun Yun")
-        )
-  ;; tell msmtp to choose the SMTP server according to the from field in the outgoing email
-  (setq message-sendmail-extra-arguments '("--read-envelope-from")
-        message-sendmail-f-is-evil 't)
-
-;; async-operations
-;; commented out, messages are not sent, disapper
-;; (require 'smtpmail-async)
-;; (setq send-mail-function         'async-smtpmail-send-it
-;; message-send-mail-function 'async-smtpmail-send-it)
-
-  ;; ;; Borrowed from http://ionrock.org/emacs-email-and-mu.html
-  ;; ;; Choose account label to feed msmtp -a option based on From header
-  ;; ;; in Message buffer; This function must be added to
-  ;; ;; message-send-mail-hook for on-the-fly change of From address before
-  ;; ;; sending message since message-send-mail-hook is processed right
-  ;; ;; before sending message.
-  ;; (defun choose-msmtp-account
-  ;;     ()
-  ;;   (if (message-mail-p)
-  ;;       (save-excursion
-  ;;         (let*
-  ;;             ((from (save-restriction
-  ;;                      (message-narrow-to-headers)
-  ;;                      (message-fetch-field "from")))
-  ;;              (account
-  ;;               (cond
-  ;;                ((string-match "jonghyun.yun@gmail.com" from) "gmail")
-  ;;                ((string-match "j.yun@uta.edu" from) "uta")
-  ;;                ((string-match "jonghyun.yun@uta.edu" from) "uta")
-  ;;                )))
-  ;;           (setq message-sendmail-extra-arguments (list '"-a" account))))))
-  ;; ;; (setq message-sendmail-envelope-from 'header)
-  ;; (add-hook 'message-send-mail-hook 'choose-msmtp-account)
-
-  ;; ;; email attachment from dired: C-c RET C-a
-  (require 'gnus-dired)
-  ;; ;; make the `gnus-dired-mail-buffers' function also work on
-  ;; ;; message-mode derived modes, such as mu4e-compose-mode
-  ;; (defun gnus-dired-mail-buffers ()
-  ;;   "Return a list of active message buffers."
-  ;;   (let (buffers)
-  ;;     (save-current-buffer
-  ;;       (dolist (buffer (buffer-list t))
-  ;;         (set-buffer buffer)
-  ;;         (when (and (derived-mode-p 'message-mode)
-  ;;                    (null message-sent-message-via))
-  ;;           (push (buffer-name buffer) buffers))))
-  ;;     (nreverse buffers)))
-
-  (setq gnus-dired-mail-mode 'mu4e-user-agent)
-  (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
-
-  (require 'mu4e-context)
-  (setq mu4e-contexts
-        `(
-          ,(make-mu4e-context
-            :name "Gmail"
-            :enter-func (lambda () (mu4e-message "Switch to the Gmail context"))
-            ;; leave-func not defined
-            :match-func (lambda (msg)
-                          (when msg
-                            ;; (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
-                            (mu4e-message-contact-field-matches msg
-                                                                :to "jonghyun.yun@gmail.com")))
-            :vars '(  ( user-mail-address      . "jonghyun.yun@gmail.com"  )
-                      ;; ( mu4e-sent-messages-behavior 'delete)
-                      ( mu4e-sent-folder . "/gmail/[Gmail]/Sent Mail")
-                      ( mu4e-drafts-folder . "/gmail/[Gmail]/Drafts")
-                      ( mu4e-trash-folder . "/gmail/[Gmail]/Trash")
-                      ( mu4e-refile-folder . "/gmail/[Gmail]/Starred")
-                      ( user-full-name     . "Jonghyun Yun" )
-                      ( mu4e-compose-signature .  (concat
-                                                   "Jonghyun Yun, PhD\n"
-                                                   "Statistical Data Scientist\n"
-                                                   "https://jyun.rbind.io\n"))
-                      ;; "Phone: 217-621-6163"))
-                      ))
-          ,(make-mu4e-context
-            :name "UTA"
-            :enter-func (lambda () (mu4e-message "Switch to the UTA context"))
-            ;; leave-fun not defined
-            :match-func (lambda (msg)
-                          (when msg
-                            ;; (string-prefix-p "/uta" (mu4e-message-field msg :maildir))))
-                            (mu4e-message-contact-field-matches msg
-                                                                :to "j.yun@uta.edu")))
-            :vars '(  ( user-mail-address      . "j.yun@uta.edu" )
-                      ;; (mu4e-sent-messages-behavior delete)
-                      ( mu4e-sent-folder . "/uta/Sent")
-                      ( mu4e-drafts-folder . "/uta/Drafts")
-                      ( mu4e-trash-folder . "/uta/Trash")
-                      ( mu4e-refile-folder . "/uta/Archive")
-                      ( user-full-name     . "Jonghyun Yun" )
-                      ( mu4e-compose-signature . (concat
-                                                  "Jonghyun Yun, Ph.D.\n"
-                                                  "Assistant Professor\n"
-                                                  "UT Arlington, Dept. of Mathematics\n\n"
-                                                  "655 W Mitchell St, SEIR 218\n"
-                                                  "Arlington, TX 76010\n"
-                                                  "Phone: 817-272-9045\n"
-                                                  "Fax: 817-272-5802\n"))))
-          ))
+  ;; (require 'mu4e-context)
+  ;; (setq mu4e-contexts
+  ;;       `(
+  ;;         ,(make-mu4e-context
+  ;;           :name "Gmail"
+  ;;           :enter-func (lambda () (mu4e-message "Switch to the Gmail context"))
+  ;;           ;; leave-func not defined
+  ;;           :match-func (lambda (msg)
+  ;;                         (when msg
+  ;;                           ;; (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+  ;;                           (mu4e-message-contact-field-matches msg
+  ;;                                                               :to "jonghyun.yun@gmail.com")))
+  ;;           :vars '(  ( user-mail-address      . "jonghyun.yun@gmail.com"  )
+  ;;                     ;; ( mu4e-sent-messages-behavior 'delete)
+  ;;                     ( mu4e-sent-folder . "/gmail/[Gmail]/Sent Mail")
+  ;;                     ( mu4e-drafts-folder . "/gmail/[Gmail]/Drafts")
+  ;;                     ( mu4e-trash-folder . "/gmail/[Gmail]/Trash")
+  ;;                     ( mu4e-refile-folder . "/gmail/[Gmail]/Starred")
+  ;;                     ( user-full-name     . "Jonghyun Yun" )
+  ;;                     ( mu4e-compose-signature .  (concat
+  ;;                                                  "Jonghyun Yun, PhD\n"
+  ;;                                                  "Statistical Data Scientist\n"
+  ;;                                                  "https://jyun.rbind.io\n"
+  ;;                                                  ))))
+  ;;         ,(make-mu4e-context
+  ;;           :name "UTA"
+  ;;           :enter-func (lambda () (mu4e-message "Switch to the UTA context"))
+  ;;           ;; leave-fun not defined
+  ;;           :match-func (lambda (msg)
+  ;;                         (when msg
+  ;;                           ;; (string-prefix-p "/uta" (mu4e-message-field msg :maildir))))
+  ;;                           (mu4e-message-contact-field-matches msg
+  ;;                                                               :to "j.yun@uta.edu")))
+  ;;           :vars '(  ( user-mail-address      . "j.yun@uta.edu" )
+  ;;                     ;; (mu4e-sent-messages-behavior delete)
+  ;;                     ( mu4e-sent-folder . "/uta/Sent")
+  ;;                     ( mu4e-drafts-folder . "/uta/Drafts")
+  ;;                     ( mu4e-trash-folder . "/uta/Trash")
+  ;;                     ( mu4e-refile-folder . "/uta/Archive")
+  ;;                     ( user-full-name     . "Jonghyun Yun" )
+  ;;                     ( mu4e-compose-signature . (concat
+  ;;                                                 "Jonghyun Yun, Ph.D.\n"
+  ;;                                                 "Assistant Professor\n"
+  ;;                                                 "UT Arlington, Dept. of Mathematics\n\n"
+  ;;                                                 "655 W Mitchell St, SEIR 218\n"
+  ;;                                                 "Arlington, TX 76010\n"
+  ;;                                                 "Phone: 817-272-9045\n"
+  ;;                                                 "Fax: 817-272-5802\n"))
+  ;;                     ))
+  ;;         ))
 
   ;; set `mu4e-context-policy` and `mu4e-compose-policy` to tweak when mu4e should
   ;; guess or ask the correct context, e.g.
@@ -223,7 +219,10 @@
 
   ;; compose with the current context is no context matches;
   ;; default is to ask
-  (setq mu4e-compose-context-policy nil)
+  (setq mu4e-compose-context-policy
+        nil
+        ;; 'always-ask
+        )
 
   ;; setup some handy shortcuts
   ;; you can quickly switch to your Inbox -- press ``jg'' or ``ju''
@@ -233,6 +232,7 @@
         '(("/gmail/INBOX" . ?g)
           ("/uta/INBOX" . ?u)
           ))
+
   ;; move to trash
   ;; (fset 'mu4e-move-to-trash "mt")
   ;; (define-key mu4e-headers-mode-map (kbd "d") 'mu4e-move-to-trash)
@@ -348,7 +348,7 @@
         (mu4e-warn "Failed to create PDF file"))
       (find-file pdf)))
 
-  ;;; org-capture
+;;; org-capture
   (defun mu4e-org-capture-message (MSG)
     (interactive)
     (progn
@@ -357,6 +357,14 @@
 
   (add-to-list 'mu4e-view-actions
                '("Capture to org-mode" . mu4e-org-capture-message))
+
+;;; email send
+  (setq sendmail-program "/usr/local/bin/msmtp"
+        message-send-mail-function 'message-send-mail-with-sendmail
+        ;; user-full-name "Jonghyun Yun")
+        ;; tell msmtp to choose the SMTP server according to the from field in the outgoing email
+        message-sendmail-extra-arguments '("--read-envelope-from")
+        message-sendmail-f-is-evil 't)
   )
 
 ;;; alert
@@ -383,5 +391,4 @@
 
   (setq mu4e-alert-email-notification-types '(count)))
 
-(provide 'mu4e-plus)
 ;;; mu4e-plus.el ends here

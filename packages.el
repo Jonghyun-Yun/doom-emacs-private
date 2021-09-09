@@ -187,7 +187,10 @@
 (package! easy-kill)
 (package! git-link :pin "2b510cf3f28bed842853294fc4ee23c7f8b6435a")
 
-(package! org-roam-server :pin "2122a61e9e9be205355c7e2c1e4b65986d6985a5")
+;; roam
+(package! org-roam-server :pin "2122a61e9e9be205355c7e2c1e4b65986d6985a5" :disable t)
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "c745d07018a46b1a20b9f571d999ecf7a092c2e1")
+(package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
 
 (package! org-transclusion
   :recipe (:host github :repo "nobiot/org-transclusion"))
@@ -247,3 +250,7 @@
 ;;; fun
 (package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa"
   :disable t)
+
+;;; dict
+(package! mw-dictionaries-emacs
+  :recipe (:host github :repo "tongjie-chen/mw-dictionaries-emacs"))

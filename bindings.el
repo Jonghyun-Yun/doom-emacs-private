@@ -255,7 +255,9 @@
 (map!
  :g "C-c n l" #'org-roam
  "C-c n f" #'org-roam-find-file
+ "C-c n u" #'org-roam-ui-open
  "C-c n g" #'org-roam-graph
+ :leader "n r u" #'org-roam-ui-open
  (:map org-mode-map
   :g
   "C-c n i" #'org-roam-insert
