@@ -58,8 +58,13 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one-light)
+;; (setq doom-theme 'doom-one-light)
+;; (setq doom-theme 'doom-nord)
 ;; (load-theme 'modus-operandi-theme t)
+(setq doom-theme 'doom-vibrant)
+(remove-hook 'window-setup-hook #'doom-init-theme-h)
+(add-hook 'after-init-hook #'doom-init-theme-h 'append)
+(delq! t custom-theme-load-path)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -112,13 +117,17 @@
 (load! "local/latex-plus")
 (load! "local/visual-plus")
 
-;; (after! projectile
-;;   (projectile-add-known-project "~/Dropbox/research/lsjm-art")
-;;   (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
-;;   (projectile-add-known-project "~/OneDrive/research/lapf")
-;;   ;; (projectile-add-known-project "~/research/s.ham/RAS")
-;;   ;; (projectile-add-known-project "~/research/mj.jeon")
-;;   )
+(after! projectile
+  (projectile-add-known-project "/Users/yunj/Dropbox/emacs/.doom.d/")
+  (projectile-add-known-project "~/Dropbox/research/hnet-irt")
+  (projectile-add-known-project "~/Dropbox/research/hnet-irt/GEPS")
+  (projectile-add-known-project "/Users/yunj/Dropbox/research/lsjm-art/lsjm-draft/")
+  ;; (projectile-add-known-project "~/Dropbox/research/lsjm-art")
+  ;; (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
+  ;; (projectile-add-known-project "~/OneDrive/research/lapf")
+  ;; (projectile-add-known-project "~/research/s.ham/RAS")
+  ;; (projectile-add-known-project "~/research/mj.jeon")
+  )
 
 ;; riksy local variables
 ;; old tricks stopped working. risky variables are ignored (doom updates)
@@ -193,15 +202,15 @@
   (setq flycheck-lintr-linters
         "with_defaults(line_length_linter(120), assignment_linter = NULL, object_name_linter = NULL)")
 
-  (evil-set-initial-state 'inferior-ess-r-mode 'emacs)
-  (setq ess-assign-list '(" <- " " = " " -> ")
-        ess-r-smart-operators t)
-  ;; ess-assign
-  (defvar ess-assign-key "\M--"
-    "Call `ess-insert-assign'.")
+  ;; (evil-set-initial-state 'inferior-ess-r-mode 'emacs)
+  ;; (setq ess-assign-list '(" <- " " = " " -> ")
+  ;;       ess-r-smart-operators t)
+  ;; ;; ess-assign
+  ;; (defvar ess-assign-key "\M--"
+  ;;   "Call `ess-insert-assign'.")
 
-  (with-eval-after-load 'ess-r-mode
-    (define-key ess-r-mode-map ess-assign-key #'ess-insert-assign))
+  ;; (with-eval-after-load 'ess-r-mode
+  ;;   (define-key ess-r-mode-map ess-assign-key #'ess-insert-assign))
   ;; (add-hook 'inferior-ess-r-mode-hook
   ;;           #'(lambda () (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign)))
   )
@@ -357,10 +366,12 @@
 
 ;;; ox
 (after! ox
-  (setq org-beamer-theme "[progressbar=foot]metropolis"
-        org-beamer-frame-level 4
-        org-latex-tables-booktabs nil
-        ))
+  (setq
+   org-beamer-theme "[progressbar=foot]metropolis"
+   ;; org-beamer-theme "default"
+   org-beamer-frame-level 4
+   org-latex-tables-booktabs nil
+   ))
 ;; ;; Github flavored markdown exporter
 ;; (eval-after-load 'ox
 ;;   '(require 'ox-gfm nil t))
@@ -648,6 +659,10 @@
       search-whitespace-regexp ".*?")
 
 ;;;; matlab
+(after! all-the-icons
+  (setcdr (assoc "m" all-the-icons-extension-icon-alist)
+          (cdr (assoc "matlab" all-the-icons-extension-icon-alist))))
+
 (use-package matlab-mode
   :defer t
   :commands
@@ -784,8 +799,8 @@
 ;;                                              (elfeed-update))))
 (after! elfeed
   ;; number of concurrent fetches
-  (elfeed-set-max-connections 3)
-  (run-at-time nil (* 4 60 60) #'elfeed-update)
+  (elfeed-set-max-connections 5)
+  ;; (run-at-time nil (* 4 60 60) #'elfeed-update)
   (setq elfeed-search-title-max-width 100
         elfeed-search-title-min-width 20
         elfeed-search-filter "@2-week-ago"
@@ -956,7 +971,8 @@
 (with-eval-after-load 'dired
   (evil-define-key 'normal dired-mode-map "J"
     (cond ((featurep! :completion helm) 'helm-find-files)
-          ((featurep! :completion ivy) 'counsel-find-file))))
+          ((featurep! :completion ivy) 'counsel-find-file)
+          ((featurep! :completion vertico) 'find-file))))
 
 ;;; ivy
 ;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
@@ -1082,7 +1098,8 @@
   :commands
   (git-link git-link-commit git-link-homepage)
   :custom
-  (git-link-use-commit t))
+  (git-link-use-commit t)
+  (git-link-open-in-browser t))
 
 (use-package! lorem-ipsum
   :defer t
@@ -1148,12 +1165,19 @@
 ;; (after! warnings
 ;;   (add-to-list 'warning-suppress-types '(undo discard-info)))
 
+;;; evil
+(after! evil
+  (setq ;; evil-ex-substitute-global t     ; I like my s/../.. to by global by default
+        evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
+        ;; evil-kill-on-visual-paste nil
+        )) ; Don't put overwritten text in the kill ring
+
 ;;; emacs binding in insert mode
 ;;; don't work. probably should be used override this
 ;; (after! evil
 ;;   ;; use emacs bindings in insert-mode
 ;;   (setq evil-disable-insert-state-bindings t
-        ;; evil-want-keybinding nil))
+;; evil-want-keybinding nil))
 
 (map! :i "C-p" 'previous-line
       :i "C-n" 'next-line
@@ -1161,6 +1185,15 @@
       )
 
 ;;; temporary fixes
+
+;; eldoc error
+;; https://github.com/hlissner/doom-emacs/issues/2972
+(defadvice! +org--suppress-mode-hooks-a (orig-fn &rest args)
+  :around #'org-eldoc-get-mode-local-documentation-function
+  (delay-mode-hooks (apply orig-fn args)))
+(after! org-eldoc
+  (puthash "R" #'ignore org-eldoc-local-functions-cache))
+
 (after! org
   ;; https://github.com/hlissner/doom-emacs/issues/3185
   (defadvice! no-errors/+org-inline-image-data-fn (_protocol link _description)
@@ -1175,11 +1208,15 @@
               (letf! ((#'+org--restart-mode-h #'ignore))
                 (apply fun args))))
 
+;; https://github.com/hlissner/doom-emacs/issues/5374
+;; key-binding conflict
+(setq iedit-toggle-key-default nil)
+
 ;; ;; https://github.com/org-roam/org-roam-bibtex/pull/87
 ;; (after! org-roam-bibtex
 ;;   (remove-hook 'org-capture-after-finalize-hook
 ;;                #'org-roam-capture--find-file-h)
-;   )
+                                        ;   )
 
 ;;; Disabling cursor movement when exiting insert mode
 ;; Vim (and evil) move the cursor one character back when exiting insert mode. If you prefer that it didn’t, set:
@@ -1187,7 +1224,7 @@
 
 ;;; bibtex-actions (for vertigo)
 (defvar jyun/bibs '("~/Zotero/myref.bib"))
-(after! org (setq org-cite-global-bibliography jyun/bibs))
+;; (after! org (setq org-cite-global-bibliography jyun/bibs))
 
 ;; (use-package bibtex-actions
 ;;   :bind (("C-c b" . bibtex-actions-insert-citation)
