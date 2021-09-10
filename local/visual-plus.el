@@ -1,6 +1,30 @@
 ;;; ../Dropbox/emacs/.doom.d/local/visual-plus.el -*- lexical-binding: t; -*-
 
 ;; (use-package modus-themes
+;;   :ensure
+;;   :init
+;;   ;; Add all your customizations prior to loading the themes
+;;   (setq modus-themes-italic-constructs t
+;;         modus-themes-completions 'opinionated
+;;         modus-themes-variable-pitch-headings t
+;;         modus-themes-scale-headings t
+;;         modus-themes-variable-pitch-ui t
+;;         modus-themes-org-agenda
+;;         '((header-block . (variable-pitch scale-title))
+;;           (header-date . (grayscale bold-all)))
+;;         modus-themes-org-blocks
+;;         '(grayscale)
+;;         modus-themes-mode-line
+;;         '(borderless)
+;;         modus-themes-region '(bg-only no-extend))
+
+;;   ;; Load the theme files before enabling a theme
+;;   (modus-themes-load-themes)
+;;   :config
+;;   (modus-themes-load-operandi)
+;;   :bind ("<f5>" . modus-themes-toggle))
+
+;; (use-package modus-themes
 ;;   :ensure                               ; omit this to use the built-in themes
 ;;   :init
 ;;   ;; Add all your customizations prior to loading the themes
