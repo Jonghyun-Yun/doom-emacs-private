@@ -253,27 +253,31 @@
 
 ;;; org-roam
 (map!
- :g "C-c n l" #'org-roam
- "C-c n f" #'org-roam-find-file
+ :g
+ "C-c n r" #'org-roam-buffer-toggle
+ "C-c n f" #'org-roam-node-find
  "C-c n u" #'org-roam-ui-open
  "C-c n g" #'org-roam-graph
+ "C-c n i" #'org-roam-node-insert
  :leader "n r u" #'org-roam-ui-open
- (:map org-mode-map
-  :g
-  "C-c n i" #'org-roam-insert
-  "C-c n I" #'org-roam-insert-immediate))
+ ;; (:map org-mode-map
+ ;;  :g
+ ;;  ;; "C-c n I" #'org-roam-insert-immediate
+ ;;  )
+ )
 
 ;;;; org-roam-dailies
-(map! :leader
-      (:prefix-map ("n" . "notes")
-       (:when (featurep! :lang org +roam)
-        (:prefix ("r" . "roam")
-         (:prefix ("d" . "by date")
-          "." #'org-roam-dailies-find-directory
-          "b" #'org-roam-dailies-find-previous-note
-          "f" #'org-roam-dailies-find-next-note
-          "n" #'org-roam-dailies-capture-today
-          "v" #'org-roam-dailies-capture-date)))))
+;; deprecated: use default one
+;; (map! :leader
+;;       (:prefix-map ("n" . "notes")
+;;        (:when (featurep! :lang org +roam)
+;;         (:prefix ("r" . "roam")
+;;          (:prefix ("d" . "by date")
+;;           "." #'org-roam-dailies-find-directory
+;;           "b" #'org-roam-dailies-find-previous-note
+;;           "f" #'org-roam-dailies-find-next-note
+;;           "n" #'org-roam-dailies-capture-today
+;;           "v" #'org-roam-dailies-capture-date)))))
 
 ;;; smartparen bindings
 (map!

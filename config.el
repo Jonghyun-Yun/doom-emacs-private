@@ -3,7 +3,6 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Jonghyun Yun"
@@ -35,36 +34,38 @@
 ;;  doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
 ;;  doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
 
-(setq
- doom-font (font-spec :family "Roboto Mono" :size 24 :weight 'light)
- doom-big-font (font-spec :family "Roboto Mono" :size 36 :weight 'light)
- ;; doom-font (font-spec :family "JetBrains Mono" :size 24 :weight 'light)
- ;; doom-big-font (font-spec :family "JetBrains Mono" :size 36 :weight 'light)
- doom-variable-pitch-font (font-spec :family "Roboto" :size 24 :weight 'light)
- ;; doom-variable-pitch-font (font-spec :family "Overpass" :size 24 :weight 'light)
- doom-unicode-font (font-spec :family "JuliaMono" :weight 'light)
- doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
+;; (setq
+;;  doom-font (font-spec :family "Roboto Mono" :size 24 :weight 'light)
+;;  doom-big-font (font-spec :family "Roboto Mono" :size 36 :weight 'light)
+;;  ;; doom-font (font-spec :family "JetBrains Mono" :size 24 :weight 'light)
+;;  ;; doom-big-font (font-spec :family "JetBrains Mono" :size 36 :weight 'light)
+;;  doom-variable-pitch-font (font-spec :family "Roboto" :size 24 :weight 'light)
+;;  ;; doom-variable-pitch-font (font-spec :family "Overpass" :size 24 :weight 'light)
+;;  doom-unicode-font (font-spec :family "JuliaMono" :weight 'light)
+;;  doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
+
+(setq doom-font (font-spec :family "JetBrains Mono" :size 24)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 36)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 24)
+      doom-unicode-font (font-spec :family "JuliaMono")
+      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
 (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Roboto Slab" :size 24 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Libre Baskerville" :size 23 :weight 'light))
-(setq variable-pitch-serif-font (font-spec :family "Libertinus Serif" :size 27 :weight 'light))
+;; (setq variable-pitch-serif-font (font-spec :family "Libertinus Serif" :size 27 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Merriweather" :size 24 :weight 'light))
 
 ;; missing out on the following Alegreya ligatures:
-;; (set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
-;; (set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
+(set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
+(set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-;; (setq doom-theme 'doom-one-light)
+(setq doom-theme 'doom-one-light)
 ;; (setq doom-theme 'doom-nord)
 ;; (load-theme 'modus-operandi-theme t)
-(setq doom-theme 'doom-vibrant)
-(remove-hook 'window-setup-hook #'doom-init-theme-h)
-(add-hook 'after-init-hook #'doom-init-theme-h 'append)
-(delq! t custom-theme-load-path)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -202,7 +203,7 @@
   (setq flycheck-lintr-linters
         "with_defaults(line_length_linter(120), assignment_linter = NULL, object_name_linter = NULL)")
 
-  ;; (evil-set-initial-state 'inferior-ess-r-mode 'emacs)
+  (evil-set-initial-state 'inferior-ess-r-mode 'emacs)
   ;; (setq ess-assign-list '(" <- " " = " " -> ")
   ;;       ess-r-smart-operators t)
   ;; ;; ess-assign
@@ -1323,13 +1324,4 @@
 ;; https://github.com/org-roam/org-roam-bibtex/blob/master/doc/orb-manual.org
 (after! org-roam
   (setq orb-note-actions-interface 'hydra)
-  (setq orb-preformat-keywords
-        '("citekey" "title" "url" "author-or-editor" "keywords" "file")
-        orb-process-file-keyword t
-        orb-file-field-extensions '("pdf"))
-  (add-to-list 'org-roam-capture-templates
-               '("r" "bibliography reference" plain "%?"
-                 :if-new
-                 (file+head "references/${citekey}.org" "#+title: ${title}\n")
-                 :unnarrowed t))
-  )
+ )

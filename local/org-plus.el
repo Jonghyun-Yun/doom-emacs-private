@@ -408,7 +408,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
                      '("SA" "Skim Annotation" entry
                        (function (lambda () (progn (;; orb-notes-fn
                                                orb-edit-note (+reference/skim-get-bibtex-key))
-                                              (+reference/org-roam-bibtex-move-point-to-capture-skim-annotation)
+                                              ;; (+reference/org-roam-bibtex-move-point-to-capture-skim-annotation)
                                               ;; (+org-move-point-to-heading)
                                               ;; (cond ((org-at-heading-p)
                                               ;;        (org-beginning-of-line))

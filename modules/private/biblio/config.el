@@ -58,14 +58,18 @@ In case of directory the path must end with a slash."
         ;; This tell bibtex-completion to look at the File field of the bibtex
         ;; to figure out which pdf to open
         bibtex-completion-pdf-field "file")
-  (unless bibtex-completion-notes-template-multiple-files
-    (setq bibtex-completion-notes-template-multiple-files
-          "${title} : (${=key=})
+  ;; orb will define handlers for note taking so not needed to use the
+  ;; ones set for bibtex-completion
+  (unless (featurep! :lang org +roam2)
+
+    (setq bibtex-completion-notes-path +biblio-notes-path)
+    (unless bibtex-completion-notes-template-multiple-files
+      (setq bibtex-completion-notes-template-multiple-files
+            "${title} : (${=key=})
 
 - tags ::
 - keywords :: ${keywords}
-
-\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: /${file}\n  :NOTER_PAGE: \n  :END:\n\n")))
+\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: /${file}\n  :NOTER_PAGE: \n  :END:\n\n"))))
 
 
 ;; TODO which set of keys that should be bound for commonly used functions
@@ -88,45 +92,68 @@ In case of directory the path must end with a slash."
   ;; (setq org-ref-open-pdf-function 'org-ref-open-pdf-at-point)
   ;; orb will define handlers for note taking so not needed to use the
   ;; ones set for bibtex-completion
-
-  (unless (featurep! +roam-bibtex)
+  (unless (featurep! :lang org +roam2)
+    ;; determine how org ref should handle the users notes path (dir, or file)
+    (if (directory-name-p +biblio-notes-path)
+        (setq org-ref-notes-directory +biblio-notes-path)
+      (setq org-ref-bibliography-notes +biblio-notes-path))
     ;; Allow org-ref to use the same template mechanism as {helm,ivy}-bibtex for
     ;; multiple files if the user has chosen to spread their notes.
-    (setq org-ref-notes-function #'org-ref-notes-function-one-file)
-    (unless (null org-ref-notes-directory)
-      (setq org-ref-notes-function (if (directory-name-p org-ref-notes-directory)
-                                       #'org-ref-notes-function-many-files
-                                     #'org-ref-notes-function-one-file)))
-    )
-  )
+    (setq org-ref-notes-function (if (and org-ref-notes-directory (directory-name-p org-ref-notes-directory))
+                                     #'org-ref-notes-function-many-files
+                                   #'org-ref-notes-function-one-file))))
+
 
 (use-package! org-roam-bibtex
   :when (featurep! +roam-bibtex)
+  :after org-roam
   :preface
   ;; if the user has not set a template mechanism set a reasonable one of them
   ;; The package already tests for nil itself so we define a dummy tester
   (defvar orb-preformat-keywords
-    '("=key=" "title" "url" "file" "author-or-editor" "keywords"))
-  (defvar orb-templates nil)
-  :hook (org-roam-mode . org-roam-bibtex-mode)
+    '("=key=" "title" "url" "file" "author-or-editor" "keywords" "citekey" "pdf"))
+  ;;:hook (org-roam-mode . org-roam-bibtex-mode)
+  :custom
+  (orb-note-actions-interface 'default)
+  ;; (orb-note-actions-interface (cond ((featurep! :completion ivy)  'ivy)
+  ;;                                   ((featurep! :completion helm) 'helm)
+  ;;                                   ((t                           'default))))
   :config
-  (unless orb-templates
-    (setq orb-templates
-          '(("r" "ref" plain (function org-roam-capture--get-point)
-             ""
-             :file-name "${slug}"
-             :head "#+TITLE: ${=key=}: ${title}\n#+roam_key: ${ref}\n#+roam_tags: lit
+  (setq orb-insert-interface 'ivy-bibtex)
+  ;; (setq orb-insert-interface (cond ((featurep! :completion ivy)  'ivy-bibtex)
+  ;;                                  ((featurep! :completion helm) 'helm-bibtex)
+  ;;                                  ;; ((t                           'generic))
+  ;;                                  ((t                           'ivy-bibtex))
+  ;;                                  ))
+  (setq orb-process-file-keyword t
+        orb-file-field-extensions '("pdf"))
 
-- tags ::
-- keywords :: ${keywords}
+  (add-to-list 'org-roam-capture-templates
+               '("b" "Bibliography note" plain
+                 "%?
+- keywords :: %^{keywords}
+- related ::
+\n* %^{title}
+:PROPERTIES:
+:Custom_ID: %^{citekey}
+:URL: %^{url}
+:AUTHOR: %^{author-or-editor}
+:NOTER_DOCUMENT: %^{file}
+:NOTER_PAGE:
+:END:\n\n"
+                 :if-new (file+head "${=key=}.org" ":PROPERTIES:
+:ROAM_REFS: cite:${=key=}
+:END:
+#+TITLE: ${title}\n")
+                 :unnarrowed t))
+  (require 'org-ref))
 
-\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
-             :unnarrowed t)))))
-
-(use-package! citeproc-org
-  :after org
-  :config
-  (citeproc-org-setup))
+;; (use-package! bibtex-actions
+;;   :when (featurep! :completion vertico)
+;;   :after embark
+;;   :defer t
+;;   :config
+;; (add-to-list 'embark-keymap-alist '(bibtex . bibtex-actions-map)))
 
 ;; (use-package! bibtex-completion
 ;;   :defer t
