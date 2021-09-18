@@ -333,20 +333,20 @@
   ;;      :action (mu4e-error "No action for deferred mark")))
 
 ;;; mu4e-actions
-  ;; overide default mu4e-action-view-as-pdf
-  ;; msg2pdf isn't easy to make working
-  (defvar mu4e-message-to-pdf-dir "~/Downloads/"
-    "A directory to save messages in PDF.")
-  (defun mu4e-action-view-as-pdf (msg)
-    (let* ((date (mu4e-message-field msg :date))
-           (infile (mu4e~write-body-to-html msg))
-           (pdf (concat mu4e-message-to-pdf-dir (format-time-string "mu4e_%Y-%m-%d_%H%M%S_%Z.pdf" date))))
-      (with-temp-buffer
-        (shell-command
-         (format "wkhtmltopdf %s %s" infile pdf) "*mu4e-to-pdf*"))
-      (unless (and pdf (file-exists-p pdf))
-        (mu4e-warn "Failed to create PDF file"))
-      (find-file pdf)))
+  ;; ;; overide default mu4e-action-view-as-pdf
+  ;; ;; msg2pdf isn't easy to make working
+  ;; (defvar mu4e-message-to-pdf-dir "~/Downloads/"
+  ;;   "A directory to save messages in PDF.")
+  ;; (defun mu4e-action-view-as-pdf (msg)
+  ;;   (let* ((date (mu4e-message-field msg :date))
+  ;;          (infile (mu4e~write-body-to-html msg))
+  ;;          (pdf (concat mu4e-message-to-pdf-dir (format-time-string "mu4e_%Y-%m-%d_%H%M%S_%Z.pdf" date))))
+  ;;     (with-temp-buffer
+  ;;       (shell-command
+  ;;        (format "wkhtmltopdf %s %s" infile pdf) "*mu4e-to-pdf*"))
+  ;;     (unless (and pdf (file-exists-p pdf))
+  ;;       (mu4e-warn "Failed to create PDF file"))
+  ;;     (find-file pdf)))
 
 ;;; org-capture
   (defun mu4e-org-capture-message (MSG)
@@ -368,27 +368,27 @@
   )
 
 ;;; alert
-(use-package mu4e-alert
-  :defer t
-  :init (with-eval-after-load 'mu4e
-          (mu4e-alert-enable-notifications)
-          (mu4e-alert-enable-mode-line-display))
-  :config
-  ;; Enable Desktop notifications
-  ;; (mu4e-alert-set-default-style 'notifications)) ; For linux
-  ;; (mu4e-alert-set-default-style 'libnotify))  ; Alternative for linux
-  (mu4e-alert-set-default-style 'notifier) ; For Mac OSX (through the terminal notifier app)
-  ;; (mu4e-alert-set-default-style 'growl))      ; Alternative for Mac OSX
+;; (use-package mu4e-alert
+;;   :defer t
+;;   :init (with-eval-after-load 'mu4e
+;;           (mu4e-alert-enable-notifications)
+;;           (mu4e-alert-enable-mode-line-display))
+;;   :config
+;;   ;; Enable Desktop notifications
+;;   ;; (mu4e-alert-set-default-style 'notifications)) ; For linux
+;;   ;; (mu4e-alert-set-default-style 'libnotify))  ; Alternative for linux
+;;   (mu4e-alert-set-default-style 'notifier) ; For Mac OSX (through the terminal notifier app)
+;;   ;; (mu4e-alert-set-default-style 'growl))      ; Alternative for Mac OSX
 
-  (setq mu4e-alert-interesting-mail-query
-        (concat
-         "flag:unread"
-         " AND NOT flag:trashed"
-         " AND NOT maildir:"
-         "\"/gmail/[Gmail]/Trash\""
-         " AND NOT maildir:\"/uta/Trash\""
-         ))
+;;   (setq mu4e-alert-interesting-mail-query
+;;         (concat
+;;          "flag:unread"
+;;          " AND NOT flag:trashed"
+;;          " AND NOT maildir:"
+;;          "\"/gmail/[Gmail]/Trash\""
+;;          " AND NOT maildir:\"/uta/Trash\""
+;;          ))
 
-  (setq mu4e-alert-email-notification-types '(count)))
+;;   (setq mu4e-alert-email-notification-types '(count)))
 
 ;;; mu4e-plus.el ends here
