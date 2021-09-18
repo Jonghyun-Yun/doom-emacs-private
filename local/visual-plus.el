@@ -1,28 +1,26 @@
 ;;; ../Dropbox/emacs/.doom.d/local/visual-plus.el -*- lexical-binding: t; -*-
 
-;; (use-package modus-themes
-;;   :ensure
-;;   :init
-;;   ;; Add all your customizations prior to loading the themes
-;;   (setq modus-themes-italic-constructs t
-;;         modus-themes-completions 'opinionated
-;;         modus-themes-variable-pitch-headings t
-;;         modus-themes-scale-headings t
-;;         modus-themes-variable-pitch-ui t
-;;         modus-themes-org-agenda
-;;         '((header-block . (variable-pitch scale-title))
-;;           (header-date . (grayscale bold-all)))
-;;         modus-themes-org-blocks
-;;         '(grayscale)
-;;         modus-themes-mode-line
-;;         '(borderless)
-;;         modus-themes-region '(bg-only no-extend))
+(use-package modus-themes
+  :ensure
+  :init
+  ;; Add all your customizations prior to loading the themes
+  (setq modus-themes-italic-constructs t
+        modus-themes-completions 'opinionated
+        modus-themes-variable-pitch-headings t
+        modus-themes-scale-headings t
+        modus-themes-variable-pitch-ui t
+        modus-themes-org-agenda
+        '((header-block . (variable-pitch scale-title))
+          (header-date . (grayscale bold-all)))
+        modus-themes-org-blocks '(grayscale)
+        ;; modus-themes-mode-line '(borderless)
+        modus-themes-region '(bg-only no-extend))
 
-;;   ;; Load the theme files before enabling a theme
-;;   (modus-themes-load-themes)
-;;   :config
-;;   (modus-themes-load-operandi)
-;;   :bind ("<f5>" . modus-themes-toggle))
+  ;; Load the theme files before enabling a theme
+  (modus-themes-load-themes)
+  :config
+  (modus-themes-load-operandi)
+  :bind ("<f5>" . modus-themes-toggle))
 
 ;; (use-package modus-themes
 ;;   :ensure                               ; omit this to use the built-in themes
@@ -70,7 +68,7 @@
 ;;; doom-modeline
 ;; https://github.com/seagle0128/doom-modeline
 (with-eval-after-load 'doom-modeline
-;; The right side of the modeline is cut off
+  ;; The right side of the modeline is cut off
   (setq all-the-icons-scale-factor 1.1)
   ;; (doom-modeline-def-modeline 'main
   ;;                             '(bar matches buffer-info remote-host buffer-position parrot selection-info)
@@ -127,19 +125,30 @@
 
   ;; Whether display icons in the mode-line. Respects `all-the-icons-color-icons'.
   ;; While using the server mode in GUI, should set the value explicitly.
-  (setq doom-modeline-icon t)
+  (setq doom-modeline-icon nil)
+
+  ;; Whether display the icon for the buffer state. It respects `doom-modeline-icon'.
+  (setq doom-modeline-buffer-state-icon nil)
 
   ;; Whether display the buffer encoding.
   (setq doom-modeline-buffer-encoding nil)
 
+  ;; Whether display the workspace name. Non-nil to display in the mode-line.
+  (setq doom-modeline-workspace-name nil)
+
   ;; Whether display perspective name. Non-nil to display in mode-line.
   (setq doom-modeline-persp-name t)
 
+  ;; If non nil the perspective name is displayed alongside a folder icon.
+  (setq doom-modeline-persp-icon nil)
+
   ;; Whether display the `lsp' state. Non-nil to display in the mode-line.
-  (setq doom-modeline-lsp t)
+  (setq doom-modeline-lsp nil)
 
   ;; Whether display mu4e notifications. It requires `mu4e-alert' package.
-  (setq doom-modeline-mu4e t)
+  (setq doom-modeline-mu4e nil)
+  ;; also enable the start of mu4e-alert
+  ;; (mu4e-alert-enable-mode-line-display)
 
   ;; Whether display the gnus notifications.
   (setq doom-modeline-gnus nil)
