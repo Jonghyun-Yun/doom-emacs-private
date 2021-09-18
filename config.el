@@ -50,7 +50,7 @@
       doom-unicode-font (font-spec :family "JuliaMono")
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
-(setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27 :weight 'light))
+(setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
 ;; (setq variable-pitch-serif-font (font-spec :family "Roboto Slab" :size 24 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Libre Baskerville" :size 23 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Libertinus Serif" :size 27 :weight 'light))
