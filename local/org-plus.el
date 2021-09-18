@@ -508,6 +508,8 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
           ;; ("\\.pdf\\'" . default)
           ;; ("\\.pdf\\'" . emacs)
           ("\\.docx\\'" . default)
+          ("\\.xlsx\\'" . default)
+          ("\\.pptx\\'" . default)
           ))
 
   ;; (org-defkey org-mode-map [(meta return)] 'org-meta-return)  ;; The actual fix
