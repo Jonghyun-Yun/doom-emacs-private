@@ -279,6 +279,8 @@
   (setq  ;; org-src-window-setup 'current-window
         org-src-window-setup 'other-window
         ;; org-return-follows-link t
+        org-image-actual-width 500
+        org-startup-with-inline-images t
         org-use-speed-commands nil
         org-log-into-drawer t)
   ;; (org-speed-command-help)
@@ -468,7 +470,8 @@
       ;; indicate-unused-lines nil
       ;; spacemacs value of parameters
       scroll-conservatively 0)
-(setq display-time-format "%R %a %b %d"
+(setq display-time-format ;; "%R %a %b %d"
+      "%R %m/%d"
       display-time-default-load-average nil
       display-time-world-list
       '(("America/Los_Angeles" "Seattle")
@@ -480,7 +483,6 @@
 (display-time-mode 1)
 (blink-cursor-mode 1)
 ;; (display-battery-mode 1)
-
 
 ;; (add-hook 'before-save-hook 'time-stamp)
 
@@ -1118,27 +1120,6 @@
   ;; (define-key esc-map (kbd "C-s") 'vr/isearch-forward) ;; C-M-s)
   )
 
-;;; keycast
-(use-package! keycast
- :commands keycast-mode
- :config
- (define-minor-mode keycast-mode
-   "Show current command and its key binding in the mode line."
-   :global t
-   (if keycast-mode
-       (progn
-         (add-hook 'pre-command-hook 'keycast--update t)
-         (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
-     (remove-hook 'pre-command-hook 'keycast--update)
-     (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
- (custom-set-faces!
-   '(keycast-command :inherit doom-modeline-debug
-                     :height 0.9)
-   '(keycast-key :inherit custom-modified
-                 :height 1.1
-                 :weight bold)))
-
-
 ;; ;;; disable popup
 ;; (after! warnings
 ;;   (add-to-list 'warning-suppress-types '(undo discard-info)))
@@ -1162,86 +1143,6 @@
       ;; :i "C-u" 'universal-argument
       )
 
-;;; temporary fixes
-
-;; eldoc error
-;; https://github.com/hlissner/doom-emacs/issues/2972
-(defadvice! +org--suppress-mode-hooks-a (orig-fn &rest args)
-  :around #'org-eldoc-get-mode-local-documentation-function
-  (delay-mode-hooks (apply orig-fn args)))
-(after! org-eldoc
-  (puthash "R" #'ignore org-eldoc-local-functions-cache))
-
-(after! org
-  ;; https://github.com/hlissner/doom-emacs/issues/3185
-  (defadvice! no-errors/+org-inline-image-data-fn (_protocol link _description)
-    :override #'+org-inline-image-data-fn
-    "Interpret LINK as base64-encoded image data. Ignore all errors."
-    (ignore-errors
-      (base64-decode-string link))))
-
-;; https://github.com/hlissner/doom-emacs/issues/4832
-(advice-add #'org-capture :around
-            (lambda (fun &rest args)
-              (letf! ((#'+org--restart-mode-h #'ignore))
-                (apply fun args))))
-
-;; https://github.com/hlissner/doom-emacs/issues/5374
-;; key-binding conflict
-(setq iedit-toggle-key-default nil)
-
-;; ;; https://github.com/org-roam/org-roam-bibtex/pull/87
-;; (after! org-roam-bibtex
-;;   (remove-hook 'org-capture-after-finalize-hook
-;;                #'org-roam-capture--find-file-h)
-                                        ;   )
-
-;;; Disabling cursor movement when exiting insert mode
-;; Vim (and evil) move the cursor one character back when exiting insert mode. If you prefer that it didn’t, set:
-;; (setq evil-move-cursor-back nil)
-
-;;; bibtex-actions (for vertigo)
-(defvar jyun/bibs '("~/Zotero/myref.bib"))
-;; (after! org (setq org-cite-global-bibliography jyun/bibs))
-
-;; (use-package bibtex-actions
-;;   :bind (("C-c b" . bibtex-actions-insert-citation)
-;;          :map minibuffer-local-map
-;;          ("M-b" . bibtex-actions-insert-preset))
-;;   :after embark
-;;   :config
-;;   ;; Make the 'bibtex-actions' bindings and targets available to `embark'.
-;;   (add-to-list 'embark-target-finders 'bibtex-actions-citation-key-at-point)
-;;   (add-to-list 'embark-keymap-alist '(bibtex . bibtex-actions-map))
-;;   (add-to-list 'embark-keymap-alist '(citation-key . bibtex-actions-buffer-map))
-;;   ;; Make sure to set this to ensure 'bibtex-actions-open-link' command works correctly.
-;;   (bibtex-completion-additional-search-fields '(doi url))
-;;   (bibtex-completion-bibliography jyun/bibliography))
-
-;; ;; use consult-completing-read for enhanced interface
-;; (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
-
-
-;;; mu4e fixes
-;; (after! mu4e
-;;   (remove-hook 'kill-emacs-hook #'+mu4e-lock-file-delete-maybe)
-;;   (advice-remove 'mu4e~start #'+mu4e-lock-start)
-;;   (advice-remove 'mu4e-quit #'+mu4e-lock-file-delete-maybe))
-
-;; https://github.com/hlissner/doom-emacs/issues/5027
-(map! :map mu4e-view-mode-map
-      :ne "A" #'mu4e-view-mime-part-action
-      ;; :ne "p" #'mu4e-view-save-attachments
-      )
-
-;;; dap-mode
-;; rigger the hydra when the program hits a breakpoint
-(add-hook 'dap-stopped-hook
-          (lambda (arg) (call-interactively #'dap-hydra)))
-
-;;; your.gg
-(load! "local/gg-plus")
-
 ;;; mw-dict
 (use-package mw-learner
   :defer t
@@ -1250,25 +1151,22 @@
   :defer t
   :commands (mw-collegiate-lookup-at-point))
 
-;;; outline regexp (not working)
+;;; outline regexp
+;; goal: use /// or ### for outline (cannot make it work. error in consult-outline when used with outshine-mode)
+;; outshine-mode is what I need for outline fonts
 ;; (defun jyun/cc-mode-outline-regexp ()
-;;   (set (make-local-variable 'outline-regexp "//\\(?:/[^#]\\\)"))
+;;   (set (make-local-variable 'outline-regexp) "//\\(?:/[^#]\\|\\*+\\)")
 ;;   )
-
 ;; (add-hook! 'c-mode-hook #'jyun/cc-mode-outline-regexp)
 ;; (add-hook! 'c++-mode-hook #'jyun/cc-mode-outline-regexp)
-
-;;; lsp
-;; https://github.com/hlissner/doom-emacs/issues/5424
-(defadvice! +lsp-diagnostics--flycheck-buffer ()
-  :override #'lsp-diagnostics--flycheck-buffer
-  "Trigger flycheck on buffer."
-  (remove-hook 'lsp-on-idle-hook #'lsp-diagnostics--flycheck-buffer t)
-  (when (bound-and-true-p flycheck-mode)
-    (flycheck-buffer)))
+;; (defun jyun/ess-r-mode-outline-regexp ()
+;;   (set (make-local-variable 'outline-regexp) "##\\(?:#[^#]\\|\\*+\\)")
+;;   )
+;; (add-hook! 'ess-r-mode-hook #'jyun/ess-r-mode-outline-regexp)
 
 ;;; ox-hugo
 (after! ox-hugo
+  (setq org-hugo-auto-set-lastmod t)
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "csv"))
 
 ;;; treemac
@@ -1325,3 +1223,86 @@
 (after! org-roam
   (setq orb-note-actions-interface 'hydra)
  )
+
+;;; temporary fixes
+;;;; eldoc error
+;; https://github.com/hlissner/doom-emacs/issues/2972
+(defadvice! +org--suppress-mode-hooks-a (orig-fn &rest args)
+  :around #'org-eldoc-get-mode-local-documentation-function
+  (delay-mode-hooks (apply orig-fn args)))
+(after! org-eldoc
+  (puthash "R" #'ignore org-eldoc-local-functions-cache))
+
+(after! org
+  ;; https://github.com/hlissner/doom-emacs/issues/3185
+  (defadvice! no-errors/+org-inline-image-data-fn (_protocol link _description)
+    :override #'+org-inline-image-data-fn
+    "Interpret LINK as base64-encoded image data. Ignore all errors."
+    (ignore-errors
+      (base64-decode-string link))))
+
+;; https://github.com/hlissner/doom-emacs/issues/4832
+(advice-add #'org-capture :around
+            (lambda (fun &rest args)
+              (letf! ((#'+org--restart-mode-h #'ignore))
+                (apply fun args))))
+
+;; https://github.com/hlissner/doom-emacs/issues/5374
+;; key-binding conflict
+;; resolved
+;; (setq iedit-toggle-key-default nil)
+
+;; ;; https://github.com/org-roam/org-roam-bibtex/pull/87
+;; (after! org-roam-bibtex
+;;   (remove-hook 'org-capture-after-finalize-hook
+;;                #'org-roam-capture--find-file-h)
+                                        ;   )
+
+;;;; bibtex-actions (for vertigo)
+(defvar jyun/bibs '("~/Zotero/myref.bib"))
+;; (after! org (setq org-cite-global-bibliography jyun/bibs))
+
+;; (use-package bibtex-actions
+;;   :bind (("C-c b" . bibtex-actions-insert-citation)
+;;          :map minibuffer-local-map
+;;          ("M-b" . bibtex-actions-insert-preset))
+;;   :after embark
+;;   :config
+;;   ;; Make the 'bibtex-actions' bindings and targets available to `embark'.
+;;   (add-to-list 'embark-target-finders 'bibtex-actions-citation-key-at-point)
+;;   (add-to-list 'embark-keymap-alist '(bibtex . bibtex-actions-map))
+;;   (add-to-list 'embark-keymap-alist '(citation-key . bibtex-actions-buffer-map))
+;;   ;; Make sure to set this to ensure 'bibtex-actions-open-link' command works correctly.
+;;   (bibtex-completion-additional-search-fields '(doi url))
+;;   (bibtex-completion-bibliography jyun/bibliography))
+
+;; ;; use consult-completing-read for enhanced interface
+;; (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
+
+
+;;;; mu4e fixes
+;; (after! mu4e
+;;   (remove-hook 'kill-emacs-hook #'+mu4e-lock-file-delete-maybe)
+;;   (advice-remove 'mu4e~start #'+mu4e-lock-start)
+;;   (advice-remove 'mu4e-quit #'+mu4e-lock-file-delete-maybe)
+
+;; https://github.com/hlissner/doom-emacs/issues/5027
+;; (map! :map mu4e-view-mode-map
+      ;; :ne "A" #'mu4e-view-mime-part-action
+      ;; :ne "p" #'mu4e-view-save-attachments
+      ;; )
+;; )
+
+;;;; dap-mode
+;; rigger the hydra when the program hits a breakpoint
+(add-hook 'dap-stopped-hook
+          (lambda (arg) (call-interactively #'dap-hydra)))
+
+;;;; lsp
+;; https://github.com/hlissner/doom-emacs/issues/5424
+(defadvice! +lsp-diagnostics--flycheck-buffer ()
+  :override #'lsp-diagnostics--flycheck-buffer
+  "Trigger flycheck on buffer."
+  (remove-hook 'lsp-on-idle-hook #'lsp-diagnostics--flycheck-buffer t)
+  (when (bound-and-true-p flycheck-mode)
+    (flycheck-buffer)))
