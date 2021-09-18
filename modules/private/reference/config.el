@@ -68,9 +68,12 @@
 (with-eval-after-load 'bibtex-completion
   (setq bibtex-completion-pdf-open-function
         (lambda (fpath)
-          (async-start-process "open" "open" "open" nil "-a" "Skim" fpath)
-          ;; (call-process "open" nil 0 nil "-a" "Skim" fpath)
+          ;; (async-start-process "open" "open" "open" nil "-a" "Skim" fpath) ;; not wokring
+          ;; (async-start-process "open" "open" nil fpath) ;; system default
+          (async-start-process "open" "open" nil "-a" "Skim" fpath) ;; skim
+          ;; (call-process "open" nil 0 nil "-a" "Skim" fpath) ;; skim
           ))
+  ;; (setq bibtex-completion-pdf-open-function 'find-file) ;; using pdf-tools
   )
 
 ;; (after! org-capture

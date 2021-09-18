@@ -119,7 +119,7 @@ In case of directory the path must end with a slash."
   ;;                                   ((featurep! :completion helm) 'helm)
   ;;                                   ((t                           'default))))
   :config
-  (setq orb-insert-interface 'ivy-bibtex)
+  (setq orb-insert-interface 'generic)
   ;; (setq orb-insert-interface (cond ((featurep! :completion ivy)  'ivy-bibtex)
   ;;                                  ((featurep! :completion helm) 'helm-bibtex)
   ;;                                  ;; ((t                           'generic))
