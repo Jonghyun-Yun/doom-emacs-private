@@ -57,7 +57,7 @@
 
 (when (featurep! :email mu4e)
   (package! mu4e-maildirs-extension)
-  (package! mu4e-alert)
+  (package! mu4e-alert :disable t)
   )
 
 (package! latexdiff
@@ -124,7 +124,7 @@
 ;; (package! highlight-numbers-mode)
 (package! highlight-parentheses)
 
-(package! spacemacs-theme :disable t)
+;; (package! spacemacs-theme :disable t)
 (package! modus-themes)
 
 ;; bump org-ref (set in biblio)
@@ -147,7 +147,7 @@
 
 ;; https://github.com/emacs-straight/auctex
 ;; auctex preview fix
-(package! auctex :pin "1472d1d231aeae463013d5e36307605157f84191")
+;; (package! auctex :pin "1472d1d231aeae463013d5e36307605157f84191")
 
 ;; https://github.com/emacsmirror/org-gcal
 ;; (package! org-gcal :pin "52b7f8f7654e391f51e8d6d40506c8c170a5be20")
@@ -188,7 +188,7 @@
 (package! git-link :pin "2b510cf3f28bed842853294fc4ee23c7f8b6435a")
 
 ;; roam
-(package! org-roam-server :pin "2122a61e9e9be205355c7e2c1e4b65986d6985a5" :disable t)
+;; (package! org-roam-server :pin "2122a61e9e9be205355c7e2c1e4b65986d6985a5" :disable t)
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "c745d07018a46b1a20b9f571d999ecf7a092c2e1")
 (package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
 
@@ -204,10 +204,10 @@
 
 ;; need review
 (package! org-clock-convenience)
-(package! company-posframe :disable t)
-(package! lexic
-  :pin "4ded6be2ce3e8dadc5635a534827181a8c8ab602"
-  :disable t)
+;; (package! company-posframe :disable t)
+;; (package! lexic
+;;   :pin "4ded6be2ce3e8dadc5635a534827181a8c8ab602"
+;;   :disable t)
 
 ;; (package! orderless)
 ;; (package! yaml-mode)
@@ -245,11 +245,11 @@
 (package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")
 
 ;; (package! keycast :pin "a3a0798349...")
-(package! gif-screencast :pin "fa81e915c2..." :disable t) ;; error during cropping using "mogrify"
+;; (package! gif-screencast :pin "fa81e915c2..." :disable t) ;; error during cropping using "mogrify"
 
 ;;; fun
-(package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa"
-  :disable t)
+;; (package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa"
+;;   :disable t)
 
 ;;; dict
 (package! mw-dictionaries-emacs

@@ -1,5 +1,6 @@
 # -*- mode: snippet -*-
 # name: bigvee
-# key: v
+# group: math
+# key: bv
 # --
 \bigvee
