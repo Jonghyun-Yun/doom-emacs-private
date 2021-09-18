@@ -75,10 +75,12 @@
 
        :emacs
        (dired             ; making dired pretty [functional]
-        +icons)
+        +icons
+        )
        electric          ; smarter, keyword-based electric-indent
        (ibuffer           ; interactive buffer management
-       +icons)
+       +icons
+       )
        undo              ; persistent, smarter undo for your inevitable mistakes
        vc                ; version-control and Emacs, sitting in a tree
 
