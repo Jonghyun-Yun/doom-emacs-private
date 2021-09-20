@@ -62,3 +62,4 @@
  '(outline-6 ((t (:weight semi-bold :height 1.03))))
  '(outline-8 ((t (:weight semi-bold))))
  '(outline-9 ((t (:weight semi-bold)))))
+(put 'narrow-to-region 'disabled nil)
