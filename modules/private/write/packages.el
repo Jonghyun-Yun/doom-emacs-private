@@ -18,3 +18,6 @@
   :recipe (:host github :repo "jethrokuan/mathpix.el"))
 
 (package! string-inflection :pin "c4a519be102cb99dd86be3ee8c387f008d097635")
+
+(package! mw-dictionaries-emacs
+  :recipe (:host github :repo "tongjie-chen/mw-dictionaries-emacs"))
