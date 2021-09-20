@@ -67,14 +67,14 @@ Navigate headings^^^^      Move subtrees^^^^               Other^^
            "<M-down>"  #'drag-stuff-down))
     ))
 
-(use-package outorg
-  :defer t
-  :after outshine
-  :config
-  (map!
-   :leader
-   ;; "a O c"  'outorg-copy-edits-and-exit
-   "o O e"  #'outorg-edit-as-org)
-  )
+;; (use-package outorg
+;;   :defer t
+;;   :after outshine
+;;   :config
+;;   (map!
+;;    :leader
+;;    ;; "a O c"  'outorg-copy-edits-and-exit
+;;    "o O e"  #'outorg-edit-as-org)
+;;   )
 
 ;;; config.el ends here
