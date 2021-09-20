@@ -250,7 +250,3 @@
 ;;; fun
 ;; (package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa"
 ;;   :disable t)
-
-;;; dict
-(package! mw-dictionaries-emacs
-  :recipe (:host github :repo "tongjie-chen/mw-dictionaries-emacs"))
