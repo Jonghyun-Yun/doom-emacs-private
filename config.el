@@ -1143,14 +1143,6 @@
       ;; :i "C-u" 'universal-argument
       )
 
-;;; mw-dict
-(use-package mw-learner
-  :defer t
-  :commands (mw-learner-lookup-at-point))
-(use-package mw-collegiate
-  :defer t
-  :commands (mw-collegiate-lookup-at-point))
-
 ;;; outline regexp
 ;; goal: use /// or ### for outline (cannot make it work. error in consult-outline when used with outshine-mode)
 ;; outshine-mode is what I need for outline fonts
