@@ -125,7 +125,7 @@
 (package! highlight-parentheses)
 
 ;; (package! spacemacs-theme :disable t)
-(package! modus-themes)
+(package! modus-themes :disable t)
 
 ;; bump org-ref (set in biblio)
 ;; (package! org-ref :pin "1936720c2377d8af9a5edb0d252f881c0ec24918")
