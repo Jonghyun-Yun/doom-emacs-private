@@ -240,3 +240,71 @@ or `mixed-pitch-serif-mode' can be called afterward."
   ;; (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--narrow-to-subtree-a)
   (advice-remove 'org-tree-slide--display-tree-with-narrow #'+org-present--hide-first-heading-maybe-a)
   )
+
+
+;;;###autoload
+(defun jyun/org-present-hide ()
+  "Hide comments, drawers and tags."
+  (save-excursion
+    ;; hide all comments
+    (goto-char (point-min))
+    (while (re-search-forward
+            "^[ \t]*#\\(\\+\\(author\\|title\\|date\\):\\)?.*\n"
+            nil t)
+      (cond
+       ((and (match-string 2)
+             (save-match-data
+               (string-match (regexp-opt '("title" "author" "date"))
+                             (match-string 2)))))
+       ((and (match-string 2)
+             (save-match-data
+               (string-match org-babel-results-keyword (match-string 2))))
+        ;; This pulls back the end of the hidden overlay by one to
+        ;; avoid hiding image results of code blocks.  I'm not sure
+        ;; why this is required, or why images start on the preceding
+        ;; newline, but not knowing why doesn't make it less true.
+        (+org-present--make-invisible (match-beginning 0) (1- (match-end 0))))
+       (t (+org-present--make-invisible (match-beginning 0) (1- (match-end 0))))))
+    ;; hide tags
+    (when +org-present-hide-tags
+      (goto-char (point-min))
+      (while (re-search-forward
+              "^\\*+.*?\\([ \t]+:[[:alnum:]_@#%:]+:\\)[ \r\n]"
+              nil t)
+        (+org-present--make-invisible (match-beginning 1) (1- (match-end 1)))))
+    ;; hide properties
+    (when +org-present-hide-properties
+      (goto-char (point-min))
+      (while (re-search-forward org-drawer-regexp nil t)
+        (let ((beg (match-beginning 0))
+              (end (re-search-forward
+                    "^[ \t]*:END:[ \r\n]*"
+                    (save-excursion (outline-next-heading) (point)) t)))
+          (+org-present--make-invisible beg (- end 2)))))))
+;; (dolist (el '("title" "author" "date"))
+;;   (goto-char (point-min))
+;;   (when (re-search-forward (format "^\\(#\\+%s:[ \t]*\\)[ \t]*\\(.*\\)$" el) nil t)
+;;     (+org-present--make-invisible (match-beginning 1) (match-end 1))
+;;     (push (make-overlay (match-beginning 2) (match-end 2)) +org-present--overlays)
+;;     ))
+
+
+;; revert changes related to https://github.com/hlissner/doom-emacs/issues/5524
+;;;###autoload
+(defun +org-present--make-invisible (beg end)
+  (unless (assq '+org-present buffer-invisibility-spec)
+    (add-to-invisibility-spec '(+org-present)))
+  (let ((overlay (make-overlay beg (1+ end))))
+    (push overlay +org-present--overlays)
+    (overlay-put overlay 'invisible '+org-present)))
+
+;; to override one in doom's module
+(with-eval-after-load 'org-tree-slide
+  (defun +org-present-hide-blocks-h ()
+    "Hide org #+ constructs."
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "^[[:space:]]*\\(#\\+\\)\\(\\(?:BEGIN\\|END\\|ATTR\\)[^[:space:]]+\\).*" nil t)
+        (+org-present--make-invisible
+         (match-beginning 1)
+         (match-end 0))))))
