@@ -63,12 +63,10 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one-light)
-;; (setq doom-theme 'modus-operandi-theme)
+;; (setq doom-theme 'doom-one-light)
+(setq doom-theme 'doom-nord-light)
+;; (setq doom-theme 'doom-solarized-light)
 ;; (setq doom-theme 'doom-nord)
-;; (load-theme 'modus-operandi-theme t)
-(remove-hook 'window-setup-hook #'doom-init-theme-h)
-(add-hook 'after-init-hook #'doom-init-theme-h 'append)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -271,11 +269,11 @@
 (custom-set-faces!
   '(org-document-title :height 1.2))
 ;; deadlines in the error face when they're passed.
-(setq org-agenda-deadline-faces
-      '((1.001 . error)
-        (1.0 . org-warning)
-        (0.5 . org-upcoming-deadline)
-        (0.0 . org-upcoming-distant-deadline)))
+;; (setq org-agenda-deadline-faces
+;;       '((1.001 . error)
+;;         (1.0 . org-warning)
+;;         (0.5 . org-upcoming-deadline)
+;;         (0.0 . org-upcoming-distant-deadline)))
 
 ;;; org-mode
 (after! org
@@ -292,23 +290,23 @@
     (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
           org-superstar-remove-leading-stars nil
           ))
-  (setq org-ellipsis
-        ;; " ▾ " ; FiraGo
-        ;; " ▼ " ; Alegreya Sans
-        ;; " ⬎ " ; IBM Plex Mono
-        ;; " ↩ " ; firacode
-        ;; " ⤶ " ; juliamono
-        ;; " ⤵ "
-        ;; "… "
-        ;; " ↴ "
-        " ⤷ "
-        org-cycle-separator-lines 2     ; -1 or 1 to use unicode org-ellipsis
-        )
+  ;; (setq org-ellipsis
+  ;;       ;; " ▾ " ; FiraGo
+  ;;       ;; " ▼ " ; Alegreya Sans
+  ;;       ;; " ⬎ " ; IBM Plex Mono
+  ;;       ;; " ↩ " ; firacode
+  ;;       ;; " ⤶ " ; juliamono
+  ;;       ;; " ⤵ "
+  ;;       ;; "… "
+  ;;       ;; " ↴ "
+  ;;       " ⤷ "
+  ;;       org-cycle-separator-lines 2     ; -1 or 1 to use unicode org-ellipsis
+  ;;       )
   (setq
    ;; org-export-in-background t                  ; async export by default
    org-fontify-quote-and-verse-blocks nil
    org-fontify-whole-heading-line nil
-   org-hide-leading-stars nil
+   ;; org-hide-leading-stars t
    org-startup-indented t
    org-habit-show-habits-only-for-today t
    org-journal-encrypt-journal t
@@ -394,6 +392,11 @@
 ;; (setq mac-function-modifier 'hyper)  ; make Fn key do Hyper
 
 ;;; misc
+(defun jyun/get-heading ()
+  "Get org-heading of a current section."
+  (interactive)
+  (let ((heading (nth 4 (org-heading-components))))
+                 (print heading)))
 
 ;; ;; improve slow scrolling?
 ;; (use-package! hl-line+

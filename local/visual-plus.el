@@ -26,9 +26,11 @@
   ;; Global settings (defaults)
   ;; (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
   ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme doom-theme t)
+  ;; (load-theme 'doom-one-light t)
   ;; (load-theme 'modus-operandi-theme t)
   ;; (load-theme 'modus-vivendi-theme t)
+
+  (setq doom-themes-padded-modeline nil)
 
   ;; Enable flashing mode-line on errors
   ;; (doom-themes-visual-bell-config)
@@ -39,11 +41,15 @@
   ;; doom-themes package forces treemacs to use a variable-pitch font
   (setq doom-themes-treemacs-enable-variable-pitch t
         treemacs-width 30)
-  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  (setq doom-themes-treemacs-theme
+        ;; "doom-atom"
+        "doom-colors"                   ; use the colorful treemacs theme
+        )
   (doom-themes-treemacs-config)
 
   ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config))
+  (doom-themes-org-config)
+  )
 
 ;; (when (featurep! :ui treemacs)
 ;;   (add-hook 'dired-mode-hook #'treemacs-icons-dired-mode)
