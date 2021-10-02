@@ -8,16 +8,16 @@
   :after org-re-reveal
   )
 
-(use-package! org-appear
-  ;; :hook (org-mode . org-appear-mode)
-  :defer t
-  :config
-  (setq org-appear-autoemphasis t
-        org-appear-autosubmarkers t
-        org-appear-autolinks nil)
-  ;; for proper first-time setup, `org-appear--set-elements'
-  ;; needs to be run after other hooks have acted.
-  (run-at-time nil nil #'org-appear--set-elements))
+;; (use-package! org-appear
+;;   ;; :hook (org-mode . org-appear-mode)
+;;   :defer t
+;;   :config
+;;   (setq org-appear-autoemphasis t
+;;         org-appear-autosubmarkers t
+;;         org-appear-autolinks nil)
+;;   ;; for proper first-time setup, `org-appear--set-elements'
+;;   ;; needs to be run after other hooks have acted.
+;;   (run-at-time nil nil #'org-appear--set-elements))
 
 (use-package org-cv
   :load-path "~/Dropbox/emacs/packages/org-cv"

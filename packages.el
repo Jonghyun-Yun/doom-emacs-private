@@ -60,10 +60,13 @@
   (package! mu4e-alert :disable t)
   )
 
-(package! latexdiff
-  :recipe (:host github :repo "galaunay/latexdiff.el"))
+(package! latexdiff)
+;; (package! latexdiff
+  ;; :recipe (:host github :repo "galaunay/latexdiff.el"))
 
-(package! matlab-mode)
+;; (package! matlab-mode)
+(package! matlab-mode :recipe (:host github :repo "matlab-mode/mirror"))
+
 
 (package! find-file-in-project :pin "cb5f3d1b697ef8212cc276c7486cbce2bf6c2a02")
 ;; (package! scihub)
@@ -122,7 +125,7 @@
 
 ;; (package! auto-highlight-symbol)
 ;; (package! highlight-numbers-mode)
-(package! highlight-parentheses)
+;; (package! highlight-parentheses)
 
 ;; (package! spacemacs-theme :disable t)
 (package! modus-themes :disable t)
@@ -158,8 +161,9 @@
 
 ;; (package! info-colors :pin "47ee73cc19...")
 
-(package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "0b3b029d5851c77ee792727b280f062eaf2c22c7")
+;; included in org +pretty
+;; (package! org-appear :recipe (:host github :repo "awth13/org-appear")
+  ;; :pin "0b3b029d5851c77ee792727b280f062eaf2c22c7")
 
 ;; mixed-pitch-face available
 (package! mixed-pitch :pin "519e05f74825abf04b7d2e0e38ec040d013a125a")
