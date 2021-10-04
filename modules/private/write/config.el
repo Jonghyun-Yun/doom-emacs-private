@@ -345,10 +345,10 @@
                                          (alist-get 'LaTeX-mode +spell-excluded-faces-alist))))
 
 ;;; mw-dict
-(use-package mw-learner
+(use-package! mw-learner
   :defer t
   :commands (mw-learner-lookup-at-point))
-(use-package mw-collegiate
+(use-package! mw-collegiate
   :defer t
   :commands (mw-collegiate-lookup-at-point))
 

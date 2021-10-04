@@ -60,7 +60,7 @@
   jumping to LanguageTool errors with '[ g' and '] g'.")
 
 ;; https://github.com/cjl8zf/langtool-ignore-fonts
-(use-package langtool-ignore-fonts
+(use-package! langtool-ignore-fonts
   :defer t
   :after langtool
   )

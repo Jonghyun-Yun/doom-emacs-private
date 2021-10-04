@@ -30,7 +30,7 @@
         spray-height 700))
 
 ;;; nov
-(use-package nov
+(use-package! nov
   :defer t
   :mode ("\\.epub\\'" . nov-mode)
   :config
