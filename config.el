@@ -286,7 +286,7 @@
         org-log-into-drawer t)
   ;; (org-speed-command-help)
   (when (featurep! :lang org +pretty)
-    (remove-hook 'org-mode-hook 'org-superstar-mode) ; manually turn it on!
+    ;; (remove-hook 'org-mode-hook 'org-superstar-mode) ; manually turn it on!
     (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
           org-superstar-remove-leading-stars nil
           ))
