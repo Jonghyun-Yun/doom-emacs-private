@@ -16,7 +16,6 @@
        (set-face-attribute face nil :weight 'normal))
      (when (eq (face-attribute face :weight) 'bold)
        (set-face-attribute face nil :weight 'semi-bold)))
-
    (face-list)))
 
 
@@ -35,7 +34,6 @@
        (set-face-attribute face nil :weight 'semi-bold))
      (when (eq (face-attribute face :weight) 'semi-bold)
        (set-face-attribute face nil :weight 'bold)))
-
    (face-list)))
 
 
@@ -47,7 +45,6 @@
         (all-faces (face-list)))
     (dolist (face all-faces)
       (unless (memq face mixed-pitch-fixed-pitch-faces)
-
         (push 'variable-pitch-faces face)))
   (mapc
    (lambda (face)
@@ -61,7 +58,6 @@
        (set-face-attribute face nil :weight 'normal))
      (when (eq (face-attribute face :weight) 'bold)
        (set-face-attribute face nil :weight 'semi-bold)))
-
    variable-pitch-faces)))
 
 

@@ -306,12 +306,12 @@
    ;; org-export-in-background t                  ; async export by default
    org-fontify-quote-and-verse-blocks nil
    org-fontify-whole-heading-line nil
-   ;; org-hide-leading-stars t
+   ;; org-hide-leading-stars nil
    org-startup-indented t
    org-habit-show-habits-only-for-today t
    org-journal-encrypt-journal t
-   org-indent-indentation-per-level 1
-   org-adapt-indentation nil
+   org-indent-indentation-per-level 2
+   org-adapt-indentation t
    ;; tag indent
    ;; org-tags-column -77
    org-log-done 'time
@@ -565,16 +565,18 @@
   (jyun/evil-state-cursors))
 
 ;; ;; thinning all faces
-(add-hook! 'doom-load-theme-hook
-           ;; #'jyun/thin-all-faces
-           #'jyun/doom-modeline-height
-           ;; #'jyun/evil-state-cursors
-           )
+(after! doom-modeline
+  (add-hook! 'doom-load-theme-hook
+             ;; #'jyun/thin-all-faces
+             #'jyun/doom-modeline-height
+             ;; #'jyun/evil-state-cursors
+             ))
 
 (add-hook! 'window-setup-hook
            ;; #'jyun/thin-all-faces
            ;; #'jyun/evil-state-cursors
-           #'jyun/doom-modeline-height)
+           #'jyun/doom-modeline-height
+           )
 
 ;;; Hangout
 (use-package jabber
