@@ -290,6 +290,8 @@ or `mixed-pitch-serif-mode' can be called afterward."
 
 
 ;; revert changes related to https://github.com/hlissner/doom-emacs/issues/5524
+(defvar +org-present--overlays nil)
+
 ;;;###autoload
 (defun +org-present--make-invisible (beg end)
   (unless (assq '+org-present buffer-invisibility-spec)

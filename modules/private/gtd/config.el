@@ -42,7 +42,7 @@
   (org-pretty-tags-global-mode)
   )
 
-(use-package org-super-agenda
+(use-package! org-super-agenda
   :defer t
   ;; :after org-agenda
   :hook (org-agenda-mode . org-super-agenda-mode)
