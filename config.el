@@ -63,8 +63,8 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-;; (setq doom-theme 'doom-one-light)
-(setq doom-theme 'doom-nord-light)
+(setq doom-theme 'doom-one-light)
+;; (setq doom-theme 'doom-nord-light)
 ;; (setq doom-theme 'doom-solarized-light)
 ;; (setq doom-theme 'doom-nord)
 
@@ -155,6 +155,7 @@
 ;;; LaTeX
 ;; (setq +latex-viewers '(skim pdf-tools))
 (setq +latex-viewers '(pdf-tools skim))
+;; (setq +latex-viewers '(skim pdf-tools))
 ;; (add-hook! 'LaTeX-mode-hook #'(lambda () (cdlatex-mode 1)))
 (setq TeX-command-extra-options "-shell-escape")
 
@@ -294,7 +295,7 @@ HOME directory)."
 
 ;;; company
 (after! company
-  (setq company-idle-delay 5
+  (setq company-idle-delay 3.0
         company-minimum-prefix-length 2
         ;; company-box-enable-icon nil ; disable all-the-icons
         company-tooltip-limit 10)
@@ -777,7 +778,7 @@ HOME directory)."
 
 ;;; languagetool
 ;; (setq langtool-bin "languagetool")
-(setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/5.3/libexec/languagetool-server.jar")
+(setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/5.4/libexec/languagetool-server.jar")
 ;; (setq langtool-http-server-host "localhost"
 ;;       langtool-http-server-port 8081)
 
@@ -1054,7 +1055,9 @@ HOME directory)."
 
 ;;; no evil-snipe
 (after! evil-snipe
-  (pushnew! evil-snipe-disabled-modes 'ibuffer-mode 'dired-mode))
+  (pushnew! evil-snipe-disabled-modes 'ibuffer-mode 'dired-mode)
+  ;; (pushnew! evil-snipe-disabled-modes 'reftex-select-label-mode 'reftex-select-bib-mode)
+  )
 
 (use-package! ctrlf
   :hook
