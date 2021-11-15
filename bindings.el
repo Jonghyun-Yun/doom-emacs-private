@@ -295,3 +295,10 @@
  (:when (featurep! :editor multiple-cursors)
   :nv "C-M-d" nil
   :nv "C-M-S-d" #'evil-multiedit-restore))
+
+;;; company
+(map!
+ (:after company
+  :i "C-x c" #'+company/complete
+  :leader "i c" #'+company/complete)
+ )
