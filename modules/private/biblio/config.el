@@ -49,8 +49,7 @@ In case of directory the path must end with a slash."
   ;; not set one fall back to the +biblio variants which have a reasonable
   ;; fallback.
   (defvar bibtex-completion-notes-template-multiple-files nil)
-   :config
-
+  :config
   (when (featurep! :completion ivy)
     (add-to-list 'ivy-re-builders-alist '(ivy-bibtex . ivy--regex-plus)))
 
@@ -148,66 +147,55 @@ In case of directory the path must end with a slash."
                  :unnarrowed t))
   (require 'org-ref))
 
-;; (use-package! bibtex-actions
-;;   :when (featurep! :completion vertico)
-;;   :after embark
-;;   :defer t
-;;   :config
-;; (add-to-list 'embark-keymap-alist '(bibtex . bibtex-actions-map)))
+(use-package! citar
+  :when (featurep! :completion vertico)
+  :after bibtex-completion
+  :custom
+  (when (featurep! +roam2)
+    (citar-file-note-org-include '(org-id org-roam-ref)))
+  :config
+  (setq citar-bibliography "~/Zotero/myref.bib"))
 
-;; (use-package! bibtex-completion
-;;   :defer t
-;;   :config
-;;   (setq bibtex-completion-additional-search-fields '(keywords)
-;;         bibtex-completion-pdf-field "file"));; This tell bibtex-completion to look at the File field of the bibtex to figure out which pdf to open
-
-;; (use-package! ivy-bibtex
-;;   :when (featurep! :completion ivy)
-;;   :defer t
-;;   :config
-;;   (add-to-list 'ivy-re-builders-alist '(ivy-bibtex . ivy--regex-plus)))
-
-;; (use-package! bibtex-actions
-;;   :when (featurep! :completion vertico)
-;;   :after embark
-;;   :defer t
-;;   :config
-;;   (add-to-list 'embark-keymap-alist '(bibtex . bibtex-actions-map)))
-
-;; (use-package! citeproc
-;;   :defer t)
+(use-package! citeproc
+  :defer t)
 
 ;; ;;; Org-Cite configuration
 
 ;; (use-package! oc
-;;   :after org
+;;   :after org bibtex-completion citar
 ;;   :config
-;;   (setq org-cite-global-bibliography '("~/bib/references.bib"))
+;;   ;; (require 'ox)
+;;   (require 'oc-biblatex)
+;;   (require 'oc-csl)
+;;   (require 'oc-natbib)
+;;   (map! :map org-mode-map
+;;         :localleader
+;;         :desc "Insert citation" "@" #'org-cite-insert)
+;;   (setq org-cite-global-bibliography
+;;         (let ((paths (or citar-bibliography
+;;                          bibtex-completion-bibliography)))
+;;           ;; Always return bibliography paths as list for org-cite.
+;;           (if (stringp paths) (list paths) paths)))
+;;    ;; https://github.com/citation-style-language/styles
+;;    ;; or https://www.zotero.org/styles
+;;   (setq org-cite-csl-styles-dir "~/Zotero/styles")
 ;;   ;; setup export processor; default csl/citeproc-el, with biblatex for latex
 ;;   (setq org-cite-export-processors
-;;         '((latex natbib)
+;;         '((latex biblatex)
 ;;           (t csl))))
 
-;; (use-package! oc-bibtex-actions
-;;   :when (featurep! :completion vertico)
-;;   :after (oc bibtex-actions)
-;;   :config
-;;   (setq org-cite-insert-processor 'oc-bibtex-actions
-;;         org-cite-follow-processor 'oc-bibtex-actions))
+;; ;;; Org-cite processors
+;; (use-package! citar-org
+;;   :no-require
+;;   :custom
+;;   (org-cite-insert-processor 'citar)
+;;   (org-cite-follow-processor 'citar)
+;;   (org-cite-activate-processor 'citar)
+;;   ;; (org-support-shift-select t)
+;;   (when (featurep! :lang org +roam2)
+;;     ;; Include property drawer metadata for 'org-roam' v2.
+;;     (citar-file-note-org-include '(org-id org-roam-ref))))
 
-;;   ;;; Org-cite processors
-;; (use-package! oc-basic
-;;   :after oc)
-
-;; (use-package! oc-biblatex
-;;   :after oc)
-
-;; (use-package! oc-csl
-;;   :after oc
-;;   :config
-;;   ;; REVIEW optional; add to docs instead?
-;;   (setq org-cite-csl-styles-dir "~/.local/share/csl/styles")
-;;   (setq org-cite-csl-locales-dir "~/.local/share/csl/locales"))
-
-;; (use-package! oc-natbib
-;;   :after oc)
+;; (setq flyspell-duplicate-distance 0
+;;       flyspell-mark-duplications-flag nil
+;;       warning-minimum-level :error)

@@ -11,16 +11,25 @@
 
 
 (when (featurep! :lang org)
-  (package! org-ref :pin "8aa2bb45268f660956151547533689d4ec30378d"))
+  (package! org-ref
+    ;; :pin "8aa2bb45268f660956151547533689d4ec30378d" ;; version 2
+    :pin "4f58b5db2ed6bc2bb4ca46484243ca8b7d391442" ;; version 3
+    )
+  )
 
-(package! bibtex-completion :pin "a0d32ab16748b7b0c43d6421f1b497b7caf8e590")
+;; (package! bibtex-completion :pin "a0d32ab16748b7b0c43d6421f1b497b7caf8e590")
+(package! bibtex-completion :pin "bb47f355b0da8518aa3fb516019120c14c8747c9")
 
 ;; (when (featurep! :completion ivy)
-(package! ivy-bibtex :pin "a0d32ab16748b7b0c43d6421f1b497b7caf8e590")
+(package! ivy-bibtex :pin "7c16399fd3a78d11d3599a0233372e6695d32003"
+  ;; "a0d32ab16748b7b0c43d6421f1b497b7caf8e590"
+  )
 ;; )
 
 (when (featurep! :completion helm)
-  (package! helm-bibtex :pin "a0d32ab16748b7b0c43d6421f1b497b7caf8e590"))
+  (package! helm-bibtex :pin "7c16399fd3a78d11d3599a0233372e6695d32003"
+    ;; "a0d32ab16748b7b0c43d6421f1b497b7caf8e590"
+    ))
 
 ;; (when (featurep! :completion vertico)
   ;; (package! bibtex-actions :pin "6e3a194c3ab655693f8194be78542366755c58c9"))
@@ -46,7 +55,9 @@
   (package! org-roam-bibtex :pin "9675eee4183301b16eb27776dae93e8c0b99eb07"))
 
 (package! citeproc-org :pin "22a759c4f0ec80075014dcc594baa4d1b470d995")
-(package! citeproc :pin "0857973409e3ef2ef0238714f2ef7ff724230d1c")
+(package! citeproc :pin "c8ff95862823cdff067e8cc9bb7f5ef537e8f1d9")
 
 (when (featurep! :completion vertico)
-  (package! bibtex-actions :pin "6e3a194c3ab655693f8194be78542366755c58c9"))
+  (package! citar :pin "e5cbae466ff913e33b5f00bc91d6224f5205786e")
+  ;; (package! bibtex-actions :pin "6e3a194c3ab655693f8194be78542366755c58c9")
+  )

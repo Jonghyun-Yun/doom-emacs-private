@@ -61,6 +61,7 @@
 ;;         (apply 'append
 ;;                (mapcar 'get-bibtex-keys (reftex-get-bibfile-list)))))
 
+;;; reftex
 ;; Make RefTeX faster
 (with-eval-after-load 'reftex
   (setq reftex-save-parse-info t
@@ -70,6 +71,31 @@
   ;; https://emacs.stackexchange.com/questions/40724/prompts-for-equation-label-information
   (setq reftex-insert-label-flags '("s" t))
   )
+
+;; code can be found in evil-collection-reftex.el
+(after! reftex
+  (setq reftex-citation-help
+        " j / k      Go to next/previous entry (Cursor motion works as well).
+ go / gO    Show citation / Show insertion point.
+ gR / gr    Start over with new regexp / Refine with additional regexp.
+ gf         Toggle follow mode: Other window will follow with full db entry.
+ q          Quit without inserting \\cite macro into buffer.
+ TAB        Enter citation key with completion.
+ RET        Accept current entry and create \\cite macro.
+ m / M      Mark/Unmark the entry.
+ c          Unmark all entries.
+ o / O      Create BibTeX file with all marked / unmarked entries.
+ x / X      Put all (marked) entries into one/many \\cite commands."))
+(map!
+ (:after reftex
+  :map reftex-select-shared-map
+  :n "gf" #'reftex-select-toggle-follow
+  :n "gr" (lambda nil "Press `?' during selection to find out
+    about this key" (interactive) (throw (quote myexit) 114)) ;reftex binds keys in a very arcane way using the number asigned by describe-char, in this case the value of "g" is 114
+  :n "gR" (lambda nil "Press `?' during selection to find out
+    about this key" (interactive) (throw (quote myexit) 103))
+  )
+ )
 
 ;; ;; RefTeX bindings
 ;; (setq reftex-refstyle "\\cref")

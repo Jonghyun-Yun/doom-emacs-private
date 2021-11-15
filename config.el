@@ -1404,3 +1404,165 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   (remove-hook 'lsp-on-idle-hook #'lsp-diagnostics--flycheck-buffer t)
   (when (bound-and-true-p flycheck-mode)
     (flycheck-buffer)))
+
+;;; org-ref V3
+(after! org-ref-ivy
+  (setq org-ref-insert-link-function 'org-ref-insert-link-hydra/body
+        org-ref-insert-cite-function 'org-ref-cite-insert-ivy
+        org-ref-insert-label-function 'org-ref-insert-label-link
+        org-ref-insert-ref-function 'org-ref-insert-ref-link
+        org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body)))
+  )
+(after! org-ref
+  ;; (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
+  ;; (define-key org-mode-map (kbd "C-c [ [") 'org-agenda-file-to-front)
+  ;; (define-key org-mode-map (kbd "C-c [ ]") 'org-remove-file)
+  (map!
+    (:map org-mode-map
+     :g "C-c ]"       #'org-ref-insert-link
+     :g "C-c [ ["     #'org-agenda-file-to-front
+     :g "C-c [ ]"     #'org-remove-file)
+    )
+(when (featurep! :lang org +roam2)
+  (setq bibtex-completion-notes-path +biblio-notes-path)
+  (setq bibtex-completion-edit-notes-function 'orb-edit-notes-default)
+  (defun orb-edit-notes-default (keys)
+    "Open the notes associated with the entries in KEYS.
+Creates new notes where none exist yet."
+    (dolist (key keys)
+      (orb-org-ref-edit-note key)
+      )))
+(after! ivy-bibtex
+  (setq bibtex-completion-display-formats
+        '((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
+          (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
+          (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+          (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+          (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))))
+
+;; https://github.com/jkitchin/org-ref/issues/928
+(defun j-org-ref-valid-keys ()
+  "Return a list of valid bibtex keys for this buffer.
+This is used a lot in `org-ref-cite-activate' so it needs to be
+fast, but also up to date."
+
+  ;; this seems to be needed, but we don't want to do this every time
+  (unless bibtex-completion-display-formats-internal
+    (bibtex-completion-init))
+
+  (let ((files (org-ref-find-bibliography)))
+    (if (seq-every-p 'identity (cl-loop for file in files
+					collect (assoc file bibtex-completion-cache)))
+	;; We have a cache for each file
+	(cl-loop for entry in
+		 (cl-loop
+		  for file in files
+		  append (cddr (assoc file bibtex-completion-cache)))
+		 collect (cdr (assoc "=key=" (cdr entry))))
+      ;; you need to get a cache
+      (let ((bibtex-completion-bibliography files))
+	(cl-loop for entry in (bibtex-completion-candidates)
+		 collect
+		 (cdr (assoc "=key=" (cdr entry))))))))
+
+(advice-add 'org-ref-valid-keys :override #'j-org-ref-valid-keys)
+)
+
+
+;;; vertigo posframe
+(use-package! vertico-posframe
+  :config
+  (vertico-posframe-mode 1)
+  (setq vertico-posframe-parameters
+        '((left-fringe . 8)
+          (right-fringe . 8)))
+  )
+
+;;; mixed-pitch-mode
+(defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
+  "Modes that `mixed-pitch-mode' should be enabled in, but only after UI initialisation.")
+(defun init-mixed-pitch-h ()
+  "Hook `mixed-pitch-mode' into each mode in `mixed-pitch-modes'.
+Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
+  (when (memq major-mode mixed-pitch-modes)
+    (mixed-pitch-mode 1))
+  (dolist (hook mixed-pitch-modes)
+    (add-hook (intern (concat (symbol-name hook) "-hook")) #'mixed-pitch-mode)))
+;; (add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
+
+;;; mu4e tempo fix
+(setq! +org-capture-emails-file "inbox.org")
+(defun +mu4e/capture-msg-to-agenda (arg)
+  "Refile a message and add a entry in `+org-capture-emails-file' with a
+deadline.  Default deadline is today.  With one prefix, deadline
+is tomorrow.  With two prefixes, select the deadline."
+  (interactive "p")
+  (let ((sec "^* Email")
+        (msg (mu4e-message-at-point)))
+    (when msg
+      ;; put the message in the agenda
+      (with-current-buffer (find-file-noselect
+                            (expand-file-name +org-capture-emails-file org-directory))
+        (save-excursion
+          ;; find header section
+          (goto-char (point-min))
+          (when (re-search-forward sec nil t)
+            (let (org-M-RET-may-split-line
+                  (lev (org-outline-level))
+                  (folded-p (invisible-p (point-at-eol)))
+                  (from (plist-get msg :from)))
+              ;; place the subheader
+              (when folded-p (show-branches))    ; unfold if necessary
+              (org-end-of-meta-data) ; skip property drawer
+              (org-insert-todo-heading 1)        ; insert a todo heading
+              (when (= (org-outline-level) lev)  ; demote if necessary
+                (org-do-demote))
+              ;; insert message and add deadline
+              (insert (concat "Respond to "
+                              "[[mu4e:msgid:"
+                              (plist-get msg :message-id) "]["
+                              (truncate-string-to-width
+                               (or (caar from) (cdar from)) 25 nil nil t)
+                              " - "
+                              (truncate-string-to-width
+                               (plist-get msg :subject) 40 nil nil t)
+                              "]] "))
+              (org-set-tags "@email")
+              (org-deadline nil
+                            (cond ((= arg 1) (format-time-string "%Y-%m-%d"))
+                                  ((= arg 4) "+1d")))
+
+              (org-update-parent-todo-statistics)
+
+              ;; refold as necessary
+              (if folded-p
+                  (progn
+                    (org-up-heading-safe)
+                    (hide-subtree))
+                (hide-entry))))))
+      ;; refile the message and update
+      ;; (cond ((eq major-mode 'mu4e-view-mode)
+      ;;        (mu4e-view-mark-for-refile))
+      ;;       ((eq major-mode 'mu4e-headers-mode)
+      ;;        (mu4e-headers-mark-for-refile)))
+      (message "Refiled \"%s\" and added to the agenda for %s"
+               (truncate-string-to-width
+                (plist-get msg :subject) 40 nil nil t)
+               (cond ((= arg 1) "today")
+                     ((= arg 4) "tomorrow")
+                     (t         "later"))))))
+
+;;; editorconfig
+;; editorconfig forces `require-final-newline' and `mode-require-final-newline' to `t
+;; to remove a terminal newline, turn off editorconfig and set the values to t
+;; or one can edit .editorconfig file
+;; see ~/.doom.d/snippets/.editorconfig
+;; (add-hook 'snippet-mode-hook '(lambda ()
+;;                                 (progn
+;;                                   (editorconfig-mode -1)
+;;                                   (set (make-local-variable 'require-final-newline) nil))
+;;                                 ))
+
+;;; yasnippets
+(after! yasnippet
+  (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
