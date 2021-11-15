@@ -973,12 +973,12 @@ HOME directory)."
         +org-roam-open-buffer-on-find-file nil)
   ;; (setq org-roam-graph-executable "neato")
   ;; (setq org-roam-graph-extra-config '(("overlap" . "false")))
-  (setq org-roam-dailies-capture-templates
-        '(("d" "default" entry
-           #'org-roam-capture--get-point
-           "* %?"
-           :file-name "daily/%<%Y-%m-%d_%A>"
-           :head "#+TITLE: %<%Y-%m-%d %A>\n\n[[roam:%<%Y-%m %B>]]\n\n")))
+  ;; (setq org-roam-dailies-capture-templates
+  ;;       '(("d" "default" entry
+  ;;          #'org-roam-capture--get-point
+  ;;          "* %?"
+  ;;          :file-name "daily/%<%Y-%m-%d_%A>"
+  ;;          :head "#+TITLE: %<%Y-%m-%d %A>\n\n[[roam:%<%Y-%m %B>]]\n\n")))
   ;; the below bind `spare-keymap'. However, it cannot override default doom's binding
   ;; (map! :leader "nrd" #'org-roam-dailies-map)
   (setq org-roam-graph-executable
