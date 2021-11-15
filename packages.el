@@ -114,8 +114,11 @@
   ;;   (package! treemacs-icons-dired)
   ;; )
 
+;;; elfeed
 (package! elfeed-score)
+(package! elfeed-web)
 
+;;; jabber
 (package! jabber)
 (package! srv) ;; jabber dependency
 (package! fsm) ;; jabber dependency
@@ -158,8 +161,6 @@
 
 (package! visual-regexp :pin "48457d42a5e0fe10fa3a9c15854f1f127ade09b5")
 ;; (package! visual-regexp-steroids :pin "a6420b25ec0fbba43bf57875827092e1196d8a9e")
-
-;; (package! info-colors :pin "47ee73cc19...")
 
 ;; included in org +pretty
 ;; (package! org-appear :recipe (:host github :repo "awth13/org-appear")
@@ -207,7 +208,7 @@
 ;; (package! lispy :disable t)
 ;; (package! lispyville :disable t)
 
-;; need review
+;;; need review
 (package! org-clock-convenience)
 ;; (package! company-posframe :disable t)
 ;; (package! lexic
