@@ -1,5 +1,6 @@
 ;;; super-agenda-custom-commands.el
 
+;;;; super
 (add-to-list 'org-agenda-custom-commands
              '("gs" "Super View"
                ((agenda "" (
@@ -104,7 +105,7 @@
                           (org-agenda-overriding-header "")
                           (org-super-agenda-groups
                            '(
-                             (:name "Someday / Maybe"  ; Disable super group header
+                             (:name "Someday / Maybe" ; Disable super group header
                               :anything t
                               )
                              ))
@@ -122,6 +123,7 @@
  ;; org-agenda-compact-blocks t
  org-agenda-start-with-log-mode t)
 
+;;; print agenda
 (add-to-list 'org-agenda-custom-commands
              '("gP" "Printed agenda"
                (
@@ -129,12 +131,12 @@
                 ;;             (org-agenda-start-on-weekday nil)         ;; calendar begins today
                 ;;             (org-agenda-repeating-timestamp-show-all t)
                 ;;             (org-agenda-entry-types '(:timestamp :sexp))))
-                (agenda "" ((org-agenda-span 1)                      ; daily agenda
-                            (org-deadline-warning-days 7)            ; 7 day advanced warning for deadlines
+                (agenda "" ((org-agenda-span 1) ; daily agenda
+                            (org-deadline-warning-days 7) ; 7 day advanced warning for deadlines
                             (org-agenda-todo-keyword-format "[ ]")
                             (org-agenda-scheduled-leaders '("" ""))
                             (org-agenda-prefix-format "%t%s")))
-                (todo "TODO"                                          ;; todos sorted by context
+                (todo "TODO" ;; todos sorted by context
                       ((org-agenda-prefix-format "[ ] %T: ")
                        (org-agenda-sorting-strategy '(tag-up priority-down))
                        (org-agenda-todo-keyword-format "")
@@ -148,15 +150,31 @@
              ;; other commands go here
              )
 
+;;;; projects
 (add-to-list 'org-agenda-custom-commands
-             '("go" "Project View"
+             '("gc" "Current project"
+               (
+                (search (concat "+" (projectile-project-name))
+                 ((org-agenda-files '("~/org/projects.org"))
+                  (org-agenda-overriding-header (concat "Current project: " (projectile-project-name)))
+                  (org-super-agenda-groups
+                   '(
+                     (:name none        ; Disable super group header
+                      :auto-outline-path t)
+                     (:discard (:anything t))
+                     ))
+                  ))
+                )))
+
+(add-to-list 'org-agenda-custom-commands
+             '("go" "All projects"
                (
                 (alltodo ""
                          ((org-agenda-files '("~/org/projects.org"))
-                          (org-agenda-overriding-header "Projects")
+                          (org-agenda-overriding-header "All projects")
                           (org-super-agenda-groups
                            '(
-                             (:name none  ; Disable super group header
+                             (:name none ; Disable super group header
                               :auto-outline-path t)
                              (:discard (:anything t))
                              ))
@@ -166,13 +184,14 @@
                           (org-agenda-overriding-header "Projects in todo-file")
                           (org-super-agenda-groups
                            '(
-                             (:name none  ; Disable super group header
+                             (:name none ; Disable super group header
                               :tag "project")
                              (:discard (:anything t))
                              ))
                           ))
                 )))
 
+;;;; inbox
 (add-to-list 'org-agenda-custom-commands
              '("gi" "Inbox"
                ((alltodo ""
@@ -185,6 +204,7 @@
                              ;;(:anything t)
                              )))))))
 
+;;;; misc
 (add-to-list 'org-agenda-custom-commands
              '("gx" "Get to someday"
                ((todo ""
@@ -211,15 +231,16 @@
                              ;;(:anything t)
                              )))))))
 
+;;;; not using super agenda
 (setq org-agenda-custom-commands
       (append org-agenda-custom-commands
               '(
                 ;; open loops
-                ("lr" "Recent Open Loops" agenda ""
+                ("lr" "Recent open loops" agenda ""
                  ((org-agenda-start-day "-2d")
                   (org-agenda-span 4)
                   (org-agenda-start-with-log-mode t)))
-                ("ll" "Longer Open Loops" agenda ""
+                ("ll" "Longer open loops" agenda ""
                  ((org-agenda-start-day "-14d")
                   (org-agenda-span 28)
                   (org-agenda-start-with-log-mode t)))
