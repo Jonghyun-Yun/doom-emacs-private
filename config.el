@@ -111,13 +111,18 @@
 (with-eval-after-load 'hydra
   (load! "local/hydra-plus"))
 (load! "bindings")
-(load! "local/mu4e-plus")
 (load! "local/org-plus")
 ;; ;; (when (featurep! :ui ligatures +extra)
 ;; ;;   (load! "local/ligature"))
 (load! "local/ess-plus")
 (load! "local/latex-plus")
 (load! "local/visual-plus")
+
+;;; email
+(when (featurep! :email mu4e)
+  (load! "local/mu4e-plus"))
+(when (featurep! :email notmuch)
+  (setq +notmuch-sync-backend 'mbsync))
 
 (after! projectile
   (projectile-add-known-project "/Users/yunj/Dropbox/emacs/.doom.d/")
