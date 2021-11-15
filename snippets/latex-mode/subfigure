@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: subfigure
+# key: subfig
+# uuid: subfig
+# group: environments
+# --
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[t]{${1:0.49\textwidth}}
+    \includegraphics[width=${2:0.95\columnwidth}]{${3:filename}}
+    \caption{${4:caption}}
+    \label{${5:label}}
+  \end{subfigure}
+  \hfill
+\end{figure}

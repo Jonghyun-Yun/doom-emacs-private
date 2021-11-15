@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: Gls
+# key: G
+# uuid: G
+# condition: (not (save-restriction (widen) (texmathp)))
+# --
+\Gls{${1:label}}
