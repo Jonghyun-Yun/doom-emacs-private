@@ -1,8 +1,7 @@
 # -*- mode: snippet -*-
-# contributor : Peter Urbak <peter@dragonwasrobot.com>
-# key : newgls
-# group: misc
-# name : \newglossaryentry{...}{...}
+# name: gls
+# key: g
+# uuid: g
+# condition: (not (save-restriction (widen) (texmathp)))
 # --
-\newglossaryentry{$1}{name={$1},
-  description={$2.}}
+\gls{${1:label}}

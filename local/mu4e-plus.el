@@ -127,7 +127,7 @@
     "My html2text function; shows short message inline, show
   long messages in some external browser (see `browse-url-generic-program')."
     (let ((html (or (mu4e-message-field msg :body-html) "")))
-      (if (< (length html) 50000)
+      (if (< (length html) 10000)
           (mu4e-shr2text msg)
         (if (yes-or-no-p "View in external browser? ")
             (progn
@@ -349,14 +349,42 @@
   ;;     (find-file pdf)))
 
 ;;; org-capture
-  (defun mu4e-org-capture-message (MSG)
+  (defun jyun/mu4e-org-capture-message (MSG)
+    "Call org-capture to capture a message in `mu4e-view-mode'."
     (interactive)
-    (progn
+    (let ((from (plist-get MSG :from)))
       (setq jyun/target-mu4e-subject (mu4e-message-field MSG :subject))
+      (setq jyun/target-mu4e-from-subject
+            (concat "Respond to "
+                    "[[mu4e:msgid:"
+                    (plist-get MSG :message-id) "]["
+                    (truncate-string-to-width
+                     (or (caar from) (cdar from)) 25 nil nil t)
+                    " - "
+                    (truncate-string-to-width
+                     (plist-get MSG :subject) 40 nil nil t)
+                    "]] "))
       (org-capture nil "ATE")))
 
+  (defun jyun/mu4e-org-capture-message-in-headers (MSG)
+    "Call org-capture to capture a message in `mu4e-headers-mode'."
+    (interactive)
+    ;; (let
+    ;;     ((MSG
+    ;;       (mu4e-message-at-point)))
+    (when MSG
+      (jyun/mu4e-org-capture-message MSG))
+    )
+
   (add-to-list 'mu4e-view-actions
-               '("Capture to org-mode" . mu4e-org-capture-message))
+               '("Capture to org-mode" . jyun/mu4e-org-capture-message))
+
+  (add-to-list 'mu4e-headers-actions
+               '("Capture to org-mode" . jyun/mu4e-org-capture-message-in-headers))
+
+  (add-to-list 'mu4e-headers-actions
+               '("view in browser" . mu4e-action-view-in-browser))
+
 
 ;;; email send
   (setq sendmail-program "/usr/local/bin/msmtp"
@@ -390,5 +418,29 @@
 ;;          ))
 
 ;;   (setq mu4e-alert-email-notification-types '(count)))
+
+(after! (org-capture mu4e)
+  ;; email capture
+  ;;     (add-to-list 'org-capture-templates
+  ;;                  '("ATE" "Attention to Emails" entry
+  ;;                    (file+headline +org-capture-inbox-file "Email")
+  ;;                    "* TODO %(message jyun/target-mu4e-from-subject) :@email:
+  ;; DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
+  ;; :PROPERTIES:
+  ;; :CREATED: %U
+  ;; :LINK: %a
+  ;; :END:
+  ;;   %i \n%?"
+  ;;                    :immediate-finish t))
+
+  (add-to-list 'org-capture-templates
+               '("ATE" "Attention to Emails" entry
+                 (file+headline +org-capture-inbox-file "Email")
+                 "* TODO %(message jyun/target-mu4e-from-subject) :@email:
+DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\")) \n%i \n%?"
+                 :empty-lines 1
+                 :prepend nil
+                 :immediate-finish t))
+  )
 
 ;;; mu4e-plus.el ends here

@@ -4,4 +4,4 @@
 # group: environments
 # name: \url
 # --
-\url{${1:$$(yas-choose-value '("http" "ftp"))}://${2:address}}$0
+\url{${1:$$(yas-choose-value '("https" "http" "ftp"))}://${2:address}}$0

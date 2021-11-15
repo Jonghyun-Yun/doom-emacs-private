@@ -1,7 +1,6 @@
 # -*- mode: snippet -*-
-# name: \newcommand
-# uuid: newcommand
-# key: newc
-# condition: t
+# name: newcommand
+# key: cmd
+# uuid: cmd
 # --
-\newcommand{${1:\name}}$2{${3:code}}$0
+\newcommand{\\${1:name}}${2:[${3:0}]}{$0}

@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: itemize
-# uuid: it
-# assign no key (use cdlatex ite)
-# --
-\begin{itemize}
-${0:`%`}
-\end{itemize}

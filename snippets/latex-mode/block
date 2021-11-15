@@ -1,9 +1,8 @@
 # -*- mode: snippet -*-
-# contributor: Claudio Marforio <marforio@gmail.com> 
-# key: block
-# group: environments
-# name : \begin{*block} ... \end{*block}
+# name: block
+# key: bl
+# uuid: bl
 # --
-\begin{${1:$$(yas-choose-value '("block" "exampleblock" "alertblock"))}}{${2:Block Title}}
-
-\end{$1}
+\begin{block}{$1}
+        ${0:`%`}
+\end{block}

@@ -1,9 +1,7 @@
 # -*- mode: snippet -*-
-# key: frame
-# group: environments
-# name : frame
-# uuid: fr                        
-# uuid to overide doom-snippets key
+# name: frame
+# key: fr
+# uuid: fr
 # --
 \begin{frame}${1:[$2]}
         ${3:\frametitle{$4}}

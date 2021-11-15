@@ -1,7 +1,8 @@
 # -*- mode: snippet -*-
-# contributor : Marcio M. Ribeiro <marcio.mr@gmail.com>
-# key: cite
+# key: c
+# uuid: c
 # group: references
-# name : \cite{...}
+# name : cite
+# condition: (and (not (save-restriction (widen) (texmathp))) (or (looking-back " r" 2) (looking-back "^r" 2)))
 # --
-\cite{${1:label$(unless yas-modified-p (car (reftex-citation 't)))}}$0
+\cite{${1:label$(unless yas-modified-p (+company/complete))}}$0

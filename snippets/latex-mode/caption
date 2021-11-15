@@ -1,6 +1,6 @@
-# -*- mode: snippet; require-final-newline: nil -*-
+# -*- mode: snippet -*-
 # name: caption
-# key: capt
-# binding: direct-keybinding
+# key: ca
+# uuid: ca
 # --
-\caption{\label{$1} $0}
+\caption{${0:`%`}}
