@@ -810,13 +810,14 @@
 ;;                                              (elfeed-update))))
 (after! elfeed
   ;; number of concurrent fetches
-  (elfeed-set-max-connections 5)
+  (elfeed-set-max-connections 2)
   ;; (run-at-time nil (* 4 60 60) #'elfeed-update)
-  (setq elfeed-search-title-max-width 100
-        elfeed-search-title-min-width 20
-        elfeed-search-filter "@2-week-ago"
-        elfeed-show-entry-switch #'pop-to-buffer
-        elfeed-show-entry-delete #'+rss/delete-pane))
+  ;; (setq elfeed-search-title-max-width 100
+  ;;       elfeed-search-title-min-width 20
+  ;;       elfeed-search-filter "@3-week-ago"
+  ;;       elfeed-show-entry-switch #'pop-to-buffer
+  ;;       elfeed-show-entry-delete #'+rss/delete-pane)
+  )
 
 (use-package elfeed-score
   :after elfeed
@@ -825,7 +826,8 @@
   :config
   (progn
     (elfeed-score-enable)
-    (define-key elfeed-search-mode-map "=" elfeed-score-map)
+    (evil-define-key 'normal elfeed-search-mode-map "=" elfeed-score-map)
+    ;; (define-key elfeed-search-mode-map "=" elfeed-score-map)
     ;; scores displayed in the search buffer
     (setq elfeed-search-print-entry-function #'elfeed-score-print-entry)))
 

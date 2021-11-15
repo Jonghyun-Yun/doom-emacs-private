@@ -233,12 +233,7 @@
       ;; [remap elfeed-show-next] #'+rss/next
       ;; [remap elfeed-show-prev] #'rss/previous ;;error
       :nme "p" #'elfeed-show-pdf
-      :nme "C" #'(lambda ()
-                   (interactive)
-                   (progn
-                     (setq jyun/target-elfeed-entry elfeed-show-entry)
-                     (org-capture nil "EFE"))
-                   )
+      :nme "C" #'jyun/elfeed-org-capture-entry
       ;; :nm "+" #'elfeed-show-tag
       ;; :nm "-" #'elfeed-show-untag
       ;; :nm "s" #'elfeed-show-new-live-search
