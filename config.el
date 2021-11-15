@@ -176,15 +176,43 @@
 ;;         ))
 
 (after! cdlatex
-  (map! :map cdlatex-mode-map
-        :nive "\"" #'cdlatex-math-modify)
+  (setq cdlatex-env-alist
+        '(("bmatrix" "\\begin{bmatrix}\n?\n\\end{bmatrix}" nil)
+          ("equation*" "\\begin{equation*}\n?\n\\end{equation*}" nil)
+          ("axiom" "\\begin{axiom}\n?\n\\end{axiom}\n" nil)
+          ("proof" "\\begin{proof}\n?\n\\end{proof}\n" nil)
+          ("remark" "\\begin{remark}\n?\n\\end{remark}\n" nil)
+          ("lemma" "\\begin{lemma}\n?\n\\end{lemma}\n" nil)
+          ("verbatim" "\\begin{verbatim}\n?\n\\end{verbatim}\n" nil)
+          ("theorem" "\\begin{theorem}\n?\n\\end{theorem}\n" nil)
+          ("corollary" "\\begin{corollary}\n?\n\\end{corollary}\n" nil)
+          ("exercise" "\\begin{exercise}\n?\n\\end{exercise}\n" nil)
+          ("definition" "\\begin{definition}\n?\n\\end{definition}\n" nil)
+          ("algorithmic" "\\begin{algorithmic}\n?\n\\end{algorithmic}\n" nil)
+          ))
+  (setq cdlatex-command-alist
+        '(("axm" "Insert axiom env"   "" cdlatex-environment ("axiom") t nil)
+          ("thm" "Insert theorem env" "" cdlatex-environment ("theorem") t nil)
+          ("des" "Insert description env" "" cdlatex-environment ("description") t nil)
+          ("lmm" "Insert lemma env" "" cdlatex-environment ("lemma") t nil)
+          ("vbt" "Insert verbatim env" "" cdlatex-environment ("verbatim") t nil)
+          ("alg" "Insert algorithmic env" "" cdlatex-environment ("algorithmic") t nil)
+          ("clr" "Insert corollary env" "" cdlatex-environment ("corollary") t nil)
+          ("def" "Insert definition env" "" cdlatex-environment ("definition") t nil)
+          ("exc" "Insert exercise env" "" cdlatex-environment ("exercise") t nil)
+          ("prf" "Insert proof env" "" cdlatex-environment ("proof") t nil)
+          ("rmk" "Insert remark env" "" cdlatex-environment ("remark") t nil)
+          )
+        )
+  ;; (map! :map cdlatex-mode-map
+  ;;       :nive "\"" #'cdlatex-math-modify)
   (setq cdlatex-math-symbol-alist
         '(
           (?: ("\\cdots" "\\ldots"))
-          ;;   (?_    ("\\downarrow"  ""           "\\inf"))
-          ;;   (?2    ("^2"           "\\sqrt{?}"     ""     ))
-          ;;   (?3    ("^3"           "\\sqrt[3]{?}"  ""     ))
-          ;;   (?^    ("\\uparrow"    ""           "\\sup"))
+            (?_    ("\\downarrow"  ""           "\\inf"))
+            (?2    ("^2"           "\\sqrt{?}"     ""     ))
+            (?3    ("^3"           "\\sqrt[3]{?}"  ""     ))
+            (?^    ("\\uparrow"    ""           "\\sup"))
           ;;   (?k    ("\\kappa"      ""           "\\ker"))
           ;;   (?m    ("\\mu"         ""           "\\lim"))
           ;;   (?c    (""             "\\circ"     "\\cos"))
@@ -201,6 +229,22 @@
         cdlatex-math-modify-alist
         '((?B    "\\mathbb"        nil          t    nil  nil)
           (?a    "\\abs"           nil          t    nil  nil))))
+
+(defun jyun/cdlatex-insert-filename ()
+  "Insert a file name, with completion.
+The path to the file will be relative to the current directory if the file
+is in the current directory or a subdirectory.  Otherwise, the link will
+be as completed in the minibuffer (i.e. normally relative to the users
+HOME directory)."
+  (interactive)
+  (let ((file (read-file-name "File: " nil "")))
+    (let ((pwd (file-name-as-directory (expand-file-name "."))))
+      (cond
+       ((string-match (concat "^" (regexp-quote pwd) "\\(.+\\)")
+                      (expand-file-name file))
+        (message (match-string 1 (expand-file-name file))))
+       (t (message (expand-file-name file))))))
+  )
 
 ;;; ess
 (with-eval-after-load 'ess
