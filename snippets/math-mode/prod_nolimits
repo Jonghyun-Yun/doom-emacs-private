@@ -1,4 +1,5 @@
 # -*- mode: snippet -*-
+# condition: (and (texmathp) 'auto)
 # group: math
 # key: prodn
 # name: prod\nolimits_^

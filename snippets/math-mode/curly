@@ -1,6 +1,8 @@
 # -*- mode: snippet -*-
 # name: curly
 # key: curly
+# condition: (and (texmathp) 'auto)
+# group: math
 # --
 \left`(concat "\\" "{")`
   \begin{aligned}

@@ -1,4 +1,6 @@
 # key: intn
+# condition: (and (texmathp) 'auto)
+# group: math
 # name: \int\nolimits_^
 # --
 \int\nolimits${1:$(when (> (length yas-text) 0) "_")

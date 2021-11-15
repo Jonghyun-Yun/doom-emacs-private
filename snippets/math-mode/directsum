@@ -1,5 +1,7 @@
 # -*- mode: snippet -*-
 # name: directsum
+# condition: (and (texmathp) 'auto)
+# group: math
 # key: dsum
 # --
 \oplus $0

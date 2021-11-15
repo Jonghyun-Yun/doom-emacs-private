@@ -1,5 +1,7 @@
 # -*- mode: snippet -*-
 # name: expit
 # key: expit
+# condition: (and (texmathp) 'auto)
+# group: math
 # --
-\frac{e^{$1}}{1 + e^{$1}}$0
+\frac{e^{${1:x}}{1 + e^{$1}} $0

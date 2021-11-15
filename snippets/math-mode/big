@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # contributor: Song Qiang <tsiangsung@gmail.com>
 # key: bigl
+# condition: (and (texmathp) 'auto)
 # group: math
 # name: \bigl( ... \bigr)
 # --

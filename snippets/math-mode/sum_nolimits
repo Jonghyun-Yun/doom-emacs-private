@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # key: sumn
 # group: math
+# condition: (and (texmathp) 'auto)
 # name: \sum\nolimits_^
 # --
 \sum\nolimits${1:$(when (> (length yas-text) 0) "_")

@@ -1,5 +1,7 @@
 # -*- mode: snippet -*-
 # name: distequal
 # key: d=
+# condition: (and (texmathp) 'auto)
+# group: math
 # --
-\overset{d}{=} $0
+\overset{d}{=}$0

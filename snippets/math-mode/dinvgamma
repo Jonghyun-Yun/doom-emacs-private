@@ -1,5 +1,7 @@
 # -*- mode: snippet -*-
 # name: dinvgamma
+# condition: (and (texmathp) 'auto)
+# group: math
 # key: dinvgamma
 # --
-\operatorname{InvGamma}(${1:y}|${2:\alpha},${3:\beta}) = \frac{$3^{$2}}{\Gamma($2)} $1^{-($2+1)} \exp \left(-$3 \frac{1}{$1}\right).$0
+\operatorname{InvGamma}(${1:y}|${2:\alpha},${3:\beta}) = \frac{$3^{$2}}{\Gamma($2)} $1^{-($2+1)} \exp \left(-$3 \frac{1}{$1}\right)$0

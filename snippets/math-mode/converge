@@ -1,6 +1,8 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # name: converge
 # key: conv
+# condition: (and (texmathp) 'auto)
+# group: math
 # binding: direct-keybinding
 # --
-\overset{$1}{\rightarrow} $0
+\overset{$1}{\rightarrow}$0

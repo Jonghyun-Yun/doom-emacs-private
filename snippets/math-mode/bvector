@@ -1,6 +1,8 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # name: bvector
 # key: bvec
+# condition: (and (texmathp) 'auto)
+# group: math
 # binding: direct-keybinding
 # --
 \begin{bmatrix}

@@ -2,6 +2,8 @@
 # name: iid
 # key: iid
 # binding: direct-keybinding
+# condition: (and (texmathp) 'auto)
+# group: math
 # expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
 # --
-\overset{\text{iid}}{\sim}
+\overset{\text{iid}}{\sim}$0

@@ -1,5 +1,7 @@
 # key: sum
 # name: sum_^
+# condition: (and (texmathp) 'auto)
+# group: math
 # --
 \sum${1:$(when (> (length yas-text) 0) "_")
 }${1:$(when (> (length yas-text) 1) "{")

@@ -1,5 +1,7 @@
 # -*- mode: snippet -*-
-# name: openclosed
+# name: (...]
+# condition: (and (texmathp) 'auto)
+# group: math
 # key: oc
 # --
 ($0]
