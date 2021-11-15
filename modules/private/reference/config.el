@@ -90,95 +90,27 @@
   ;; override functions in org-ref
   ;; b/c these functions are loaded before loading org-ref
   (load! "bibtex-pdf")
-
-  ;;   ;; https://github.com/jkitchin/org-ref/blob/master/org-ref.org
-  ;;   (defun org-ref-open-pdf-at-point ()
-  ;;     "Open the pdf for bibtex key under point if it exists."
-  ;;     (interactive)
-  ;;     (let* ((results (org-ref-get-bibtex-key-and-file))
-  ;;            (key (car results))
-  ;;            (pdf-file (car (bibtex-completion-find-pdf key))))
-  ;;       ;; (pdf-file (car (bibtex-completion-find-pdf-in-field key))))
-  ;;       (if (file-exists-p pdf-file)
-  ;;           (org-open-file pdf-file)
-  ;;         (message "No PDF found for %s" key))))
-
-  ;;   ;; Override this function in org-ref.
-  ;;   (defun org-ref-open-bibtex-pdf ()
-  ;;     "Open pdf for a bibtex entry, if it exists.
-  ;; assumes point is in
-  ;; the entry of interest in the bibfile.  but does not check that."
-  ;;     (interactive)
-  ;;     (save-excursion
-  ;;       (bibtex-beginning-of-entry)
-  ;;       (let* ((bibtex-expand-strings t)
-  ;;              (entry (bibtex-parse-entry t))
-  ;;              (key (reftex-get-bib-field "=key=" entry))
-  ;;              (pdf-file (car (bibtex-completion-find-pdf-in-field key))))
-  ;;         (if (file-exists-p pdf-file)
-  ;;             (call-process "open" nil 0 nil "-a" "Skim" pdf-file)
-  ;;           (message "No PDF found for %s" key)))))
   )
 
-(with-eval-after-load 'bibtex-completion
-  (setq bibtex-completion-pdf-open-function
-        (lambda (fpath)
-          ;; (async-start-process "open" "open" "open" nil "-a" "Skim" fpath) ;; not wokring
-          ;; (async-start-process "open" "open" nil fpath) ;; system default
-          (async-start-process "open" "open" nil "-a" "Skim" fpath) ;; skim
-          ;; (call-process "open" nil 0 nil "-a" "Skim" fpath) ;; skim
-          ))
+(after! 'bibtex-completion
+  (cond
+   (IS-MAC
+    (setq bibtex-completion-pdf-open-function
+          (lambda (fpath)
+            ;; (async-start-process "open" "open" "open" nil "-a" "Skim" fpath) ;; not wokring
+            ;; (async-start-process "open" "open" nil fpath) ;; system default
+            (async-start-process "open" "open" nil "-a" "Skim" fpath) ;; skim
+            ;; (call-process "open" nil 0 nil "-a" "Skim" fpath) ;; skim
+            ))
+    )
+   (IS-LINUX
+    (setq bibtex-completion-pdf-open-function
+          (lambda (fpath)
+            (async-start-process "open-pdf" "/usr/bin/xdg-open" nil fpath)))))
+
   ;; (setq bibtex-completion-pdf-open-function 'find-file) ;; using pdf-tools
   )
 
-;; (after! org-capture
-;;   (add-to-list 'org-capture-templates
-;;                '("GSA" "General Skim Annotation" entry
-;;                  (file+function (lambda () (buffer-file-name)) +org-move-point-to-heading)
-;;                  "* %?
-;;    :PROPERTIES:
-;;    :CREATED: %U
-;;    :SKIM_NOTE: %(+reference/skim-get-annotation)
-;;    :SKIM_PAGE: %(+reference/get-skim-page-number)
-;;    :END:
-;;    %i"))
-;;   (add-to-list 'org-capture-templates
-;;                '("SA" "Skim Annotation" entry
-;;                  (file+function org-ref-bibliography-notes +reference/org-move-point-to-capture-skim-annotation)
-;;                  "* %?
-;;    :PROPERTIES:
-;;    :CREATED: %U
-;;    :CITE: cite:%(+reference/skim-get-bibtex-key)
-;;    :SKIM_NOTE: %(+reference/skim-get-annotation)
-;;    :SKIM_PAGE: %(+reference/get-skim-page-number)
-;;    :END:
-;;    %i"))
-;;   )
-
-;; (use-package! org-ref
-;;   :commands (org-ref-bibtex-next-entry
-;;              org-ref-bibtex-previous-entry
-;;              doi-utils-get-bibtex-entry-pdf
-;;              org-ref-ivy-insert-cite-link
-;;              org-ref-find-bibliography
-;;              org-ref-open-in-browser
-;;              org-ref-open-bibtex-notes
-;;              org-ref-open-bibtex-pdf
-;;              org-ref-bibtex-hydra/body
-;;              org-ref-bibtex-hydra/org-ref-bibtex-new-entry/body-and-exit
-;;              org-ref-sort-bibtex-entry
-;;              arxiv-add-bibtex-entry
-;;              arxiv-get-pdf-add-bibtex-entry
-;;              doi-utils-add-bibtex-entry-from-doi
-;;              isbn-to-bibtex
-;;              pubmed-insert-bibtex-from-pmid)
-;; ;; :init
-;;   (when (featurep! :completion helm)
-;;     (setq org-ref-completion-library 'org-ref-helm-bibtex))
-;;   (when (featurep! :completion ivy)
-;;     (setq org-ref-completion-library 'org-ref-ivy-cite))
-
-  ;; :config
 ;; (after! org-ref
 
   ;; (setq
@@ -276,32 +208,6 @@
 ;;     (setq bibtex-completion-pdf-open-function
 ;;           (lambda (fpath)
 ;;             (async-start-process "open-pdf" "/usr/bin/xdg-open" nil fpath))))))
-
-(after! ivy-bibtex
-
-  (setq ivy-bibtex-default-action 'ivy-bibtex-insert-key)
-  ;; (setq ivy-bibtex-default-action 'ivy-bibtex-open-any)
-
-  ;; (add-to-list 'ivy-re-builders-alist '(ivy-bibtex . ivy--regex-plus))
-  (when IS-MAC
-    (ivy-bibtex-ivify-action bibtex-completion-quicklook ivy-bibtex-quicklook)
-    (ivy-add-actions 'ivy-bibtex '(("SPC" ivy-bibtex-quicklook "Quick look"))))
-  )
-
-;; (use-package! ivy-bibtex
-;;   :when (featurep! :completion ivy)
-;;   :commands (ivy-bibtex)
-;;   :config
-;;   (setq ivy-bibtex-default-action 'ivy-bibtex-insert-key)
-;;   (add-to-list 'ivy-re-builders-alist '(ivy-bibtex . ivy--regex-plus))
-;;   (when IS-MAC
-;;     (ivy-bibtex-ivify-action bibtex-completion-quicklook ivy-bibtex-quicklook)
-;;     (ivy-add-actions 'ivy-bibtex '(("SPC" ivy-bibtex-quicklook "Quick look")))))
-
-
-;; (use-package! helm-bibtex
-;;   :when (featurep! :completion helm)
-;;   :commands helm-bibtex)
 
 ;; (after! org-capture
 ;;   (add-to-list 'org-capture-templates
