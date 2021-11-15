@@ -851,14 +851,6 @@ HOME directory)."
         :n "/" (cmd! (call-interactively #'lexic-search))))
 
 ;;; elfeed
-;; (evil-set-initial-state 'elfeed-search-mode 'emacs)
-;; (evil-set-initial-state 'elfeed-show-mode 'emacs)
-
-;; ;; A snippet for periodic update for feeds (10 mins since Emacs start, then every
-;; ;; two hour)
-;; (run-at-time (* 10 60) (* 2 60 60) #'(lambda () (progn
-;;                                              (elfeed-set-max-connections 3)
-;;                                              (elfeed-update))))
 (after! elfeed
   ;; number of concurrent fetches
   (elfeed-set-max-connections 2)
@@ -868,7 +860,58 @@ HOME directory)."
   ;;       elfeed-search-filter "@3-week-ago"
   ;;       elfeed-show-entry-switch #'pop-to-buffer
   ;;       elfeed-show-entry-delete #'+rss/delete-pane)
+  (defun jyun/elfeed-org-capture-entry ()
+    "Capture Elfeed entry to `inbox.org'."
+    (interactive)
+    (when elfeed-show-entry
+      (setq jyun/target-elfeed-entry elfeed-show-entry
+            jyun/target-elfeed-entry-title (elfeed-entry-title jyun/target-elfeed-entry)
+            jyun/target-elfeed-entry-url (elfeed-entry-link jyun/target-elfeed-entry)
+            jyun/target-elfeed-title-link
+            (concat "Read - [[" (plist-get org-store-link-plist :link)
+                    "]["
+                    (truncate-string-to-width jyun/target-elfeed-entry-title
+                                              70 nil nil t)
+                    "]] "))
+      (org-capture nil "EFE")
+      ;; (org-update-parent-todo-statistics)
+      )
+    )
+)
+(after! (org-capture elfeed)
+  ;; elfeed capture
+  (add-to-list 'org-capture-templates
+               '("EFE" "Elfeed entry" entry
+                 (file+headline +org-capture-inbox-file "Reading")
+                 "* TODO %(message jyun/target-elfeed-title-link) :rss:
+DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
+%(message jyun/target-elfeed-entry-url)
+%i \n%?"
+                 :prepend t
+                 :immediate-finish t))
+
+  ;;     ;; elfeed capture
+  ;;   (add-to-list 'org-capture-templates
+  ;;                '("EFE" "Elfeed entry" entry
+  ;;                  (file+headline +org-capture-inbox-file "Tasks")
+  ;;                  "* TODO %a :rss:
+  ;; :PROPERTIES:
+  ;; :CREATED: %U
+  ;; :LINK: %a
+  ;; :URL: %(elfeed-entry-link jyun/target-elfeed-entry)
+  ;; :END:
+  ;; %i \n%?"
+  ;;                  :prepend t
+  ;;                  :immediate-finish t))
   )
+;; (evil-set-initial-state 'elfeed-search-mode 'emacs)
+;; (evil-set-initial-state 'elfeed-show-mode 'emacs)
+
+;; ;; A snippet for periodic update for feeds (10 mins since Emacs start, then every
+;; ;; two hour)
+;; (run-at-time (* 10 60) (* 2 60 60) #'(lambda () (progn
+;;                                              (elfeed-set-max-connections 3)
+;;                                              (elfeed-update))))
 
 (use-package elfeed-score
   :after elfeed
