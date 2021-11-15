@@ -234,14 +234,6 @@
                           :branch "patch"))
 (package! lorem-ipsum)
 
-;;; nano-mu4e
-;; (package! svg-tag-mode :recipe (:repo "rougier/svg-tag-mode"
-;;                                 :host github))
-;; (package! mu4e-thread-folding :recipe (:repo "rougier/mu4e-thread-folding"
-;;                                        :host github))
-;; (package! mu4e-dashboard :recipe (:repo "rougier/mu4e-dashboard"
-;;                                   :host github))
-
 ;;; nano-emacs
 (package! nano-emacs :recipe (:repo "jonghyun-yun/nano-emacs"
                               :host github)
@@ -252,6 +244,35 @@
 ;; (package! keycast :pin "a3a0798349...")
 ;; (package! gif-screencast :pin "fa81e915c2..." :disable t) ;; error during cropping using "mogrify"
 
-;;; fun
+;;; misc
 ;; (package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa"
 ;;   :disable t)
+
+(package! key-chord)
+(package! vertico-posframe)
+
+;;; doom-snippets
+(package! doom-snippets
+  :recipe (:host github
+           :repo "jonghyun-yun/doom-snippets"
+           :files ("*.el" "*"))
+  ;; :pin "3d671584a32c4f1491fbe14a0f7ba17ed3c7912a"
+  :pin "f1f18df5898233d3b1a4a28fc4df48e257d21667"
+)
+
+;;; tempo fixes
+;; missing org-mac-link.el
+;; (package! org-contrib
+;;   :recipe (:host nil
+;;            :repo "https://git.sr.ht/~bzg/org-contrib"
+;;            )
+;;   :pin "e14dfea59491f889f35868813122c5b8c0b4b3db")
+
+(package! org-mac-link
+  :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
+           :files ("lisp/org-mac-link.el"))
+  :pin "e14dfea59491f889f35868813122c5b8c0b4b3db"
+  )
+
+;;; testing new packages
+(package! consult-yasnippet)
