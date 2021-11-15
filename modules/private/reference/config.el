@@ -173,9 +173,7 @@
   ;;   (setq doi-utils-pdf-url-functions
   ;;         (delete 'generic-full-pdf-url doi-utils-pdf-url-functions))
   ;;   (add-to-list 'doi-utils-pdf-url-functions 'generic-as-get-pdf-url t))
-
   ;; )
-
 
 ;; (use-package! bibtex
 ;;   :defer t
