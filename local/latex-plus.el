@@ -65,7 +65,10 @@
 (with-eval-after-load 'reftex
   (setq reftex-save-parse-info t
         reftex-use-multiple-selection-buffers t)
-  (evil-set-initial-state 'reftex-select-bib-mode 'emacs)
+  ;; (evil-set-initial-state 'reftex-select-bib-mode 'emacs)
+  ;; prompt for eq labeling
+  ;; https://emacs.stackexchange.com/questions/40724/prompts-for-equation-label-information
+  (setq reftex-insert-label-flags '("s" t))
   )
 
 ;; ;; RefTeX bindings
@@ -276,3 +279,8 @@
 ;;  'latex-mode
 ;;  `((,"\\\\[[:word:]]+" 0 'font-lock-keyword-face prepend))
 ;;  'end)
+
+;;; orgtbl mode
+;; https://github.com/karthink/lazytab
+;; (after! latex
+  ;; (load! "~/.doom.d/local/lazytab/lazytab.el"))
