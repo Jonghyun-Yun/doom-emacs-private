@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# condition: (and (texmathp) 'auto)
+# group: math
+# name: Zn
+# key: Zn
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# --
+Z_{1}, ..., Z_{${1:n}}$0
