@@ -272,11 +272,11 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
            :prepend t)
           ("td" "Todo deadline" entry
            (file+headline +org-capture-inbox-file "Task Deadlines")
-           "* TODO %? \nDEADLINE: %^t \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a"
+           "* TODO %? \nDEADLINE: %^t \n%i \n%a"
            :prepend t)
           ("tr" "Rapid task" entry
            (file+headline +org-capture-inbox-file "Rapid Tasks")
-           "* TODO %? \nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+1d\")) \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a"
+           "* TODO %? \nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+1d\")) \n%i \n%a"
            :prepend t)
           ("ts" "Clocked entry subtask" entry (clock)
            "* TODO %? \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a")
@@ -344,103 +344,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
            "* %^{Project for...} [/] %^{GOAL}p \n:PROPERTIES:\n:CAPTURED: %U \n:END: \n%i"
            :prepend t)))
 
-
-  ;; elfeed capture
-  (add-to-list 'org-capture-templates
-               '("EFE" "Elfeed entry" entry
-                 (file+headline +org-capture-inbox-file "Tasks")
-                 "* TODO %(elfeed-entry-title jyun/target-elfeed-entry) :rss:
-:PROPERTIES:
-:CREATED: %U
-:LINK: %a
-:URL: %(elfeed-entry-link jyun/target-elfeed-entry)
-:END:
-%i \n%?"
-                 :prepend t
-                 :immediate-finish t))
-
-  ;; email capture
-  (add-to-list 'org-capture-templates
-               '("ATE" "Attention to Emails" entry
-                 (file+headline +org-capture-inbox-file "Tasks")
-                 "* TODO %(message jyun/target-mu4e-subject) :@email:
-:PROPERTIES:
-:CREATED: %U
-:LINK: %a
-:END:
-%i \n%?"
-                 :prepend t
-                 :immediate-finish t))
-
-  (add-to-list 'org-capture-templates
-               '("GSA" "General Skim Annotation" entry
-                 (file+function (lambda () (buffer-file-name)) +org-move-point-to-heading)
-                 "* %?
-   :PROPERTIES:
-   :CREATED: %U
-   :SKIM_NOTE: %(+reference/skim-get-annotation)
-   :SKIM_PAGE: %(+reference/get-skim-page-number)
-   :END:
-   %i"))
-
-  (after! org-ref
-    ;; (if (equal org-ref-notes-function #'orb-notes-fn)
-    ;;       (add-to-list 'org-capture-templates
-    ;;                    '("SA" "Skim Annotation" entry
-    ;;                      (function (lambda () (progn (orb-notes-fn (+reference/skim-get-bibtex-key))
-    ;;                                             (+reference/org-move-point-to-capture-skim-annotation)
-    ;;                                             ;; (+org-move-point-to-heading)
-    ;;                                             ;; (cond ((org-at-heading-p)
-    ;;                                             ;;        (org-beginning-of-line))
-    ;;                                             ;;       (t
-    ;;                                             ;;        (org-previous-visible-heading
-    ;;                                             ;;         1)))
-    ;;                                             )))
-    ;;                      "* %?
-    ;; :PROPERTIES:
-    ;; :CREATED: %U
-    ;; :SKIM_NOTE: %(+reference/skim-get-annotation)
-    ;; :SKIM_PAGE: %(+reference/get-skim-page-number)
-    ;; :END:
-    ;; %i")))
-    (if (featurep! :private biblio +roam-bibtex)
-        (add-to-list 'org-capture-templates
-                     '("SA" "Skim Annotation" entry
-                       (function (lambda () (progn (;; orb-notes-fn
-                                               orb-edit-note (+reference/skim-get-bibtex-key))
-                                              ;; (+reference/org-roam-bibtex-move-point-to-capture-skim-annotation)
-                                              ;; (+org-move-point-to-heading)
-                                              ;; (cond ((org-at-heading-p)
-                                              ;;        (org-beginning-of-line))
-                                              ;;       (t
-                                              ;;        (org-previous-visible-heading
-                                              ;;         1)))
-                                              )))
-                       "* %?
-  :PROPERTIES:
-  :CREATED: %U
-  :SKIM_NOTE: %(+reference/skim-get-annotation)
-  :SKIM_PAGE: %(+reference/get-skim-page-number)
-  :END:
-  %i"))
-      ;; else
-      (if (equal org-ref-notes-function #'org-ref-notes-function-one-file)
-          (add-to-list 'org-capture-templates
-                       '("SA" "Skim Annotation" entry
-                         (file+function org-ref-bibliography-notes +reference/org-move-point-to-capture-skim-annotation)
-                         "* %?
-    :PROPERTIES:
-    :CREATED: %U
-    :CITE: cite:%(+reference/skim-get-bibtex-key)
-    :SKIM_NOTE: %(+reference/skim-get-annotation)
-    :SKIM_PAGE: %(+reference/get-skim-page-number)
-    :END:
-    %i"))
-        )
-      )
-    )
-
-  (setq org-gcal-capture-templates
+    (setq org-gcal-capture-templates
         '("s" "Scedule an event" entry
           (file +org-capture-inbox-file)
           "* %^{Scheduling...} \n:PROPERTIES: \n:calendar-id: jonghyun.yun@gmail.com \n:LOCATION: %^{Location} \n:END: \n:org-gcal: \n%^T \n%i\n%? \n:END:\n\n"
