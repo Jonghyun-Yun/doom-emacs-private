@@ -128,7 +128,7 @@
 ;; (package! highlight-parentheses)
 
 ;; (package! spacemacs-theme :disable t)
-(package! modus-themes :disable t)
+(package! modus-themes :disable nil)
 ;; (package! doom-themes :disable t)
 
 ;; bump org-ref (set in biblio)
