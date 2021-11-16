@@ -828,28 +828,6 @@ HOME directory)."
 ;;                      (setq jyun/target-mu4e-subject mu4e-subject)
 ;;                      (org-capture nil "ATE"))))
 
-(use-package! lexic
-  :commands lexic-search lexic-list-dictionary
-  :config
-  (setq lexic-dictionary-path  (expand-file-name "~/Dropbox/emacs/stardict/dic/"))
-  (map! :map lexic-mode-map
-        :n "q" #'lexic-return-from-lexic
-        :nv "RET" #'lexic-search-word-at-point
-        :n "a" #'outline-show-all
-        :n "h" (cmd! (outline-hide-sublevels 3))
-        :n "o" #'lexic-toggle-entry
-        :n "n" #'lexic-next-entry
-        :n "N" (cmd! (lexic-next-entry t))
-        :n "p" #'lexic-previous-entry
-        :n "P" (cmd! (lexic-previous-entry t))
-        :n "E" (cmd! (lexic-return-from-lexic) ; expand
-                     (switch-to-buffer (lexic-get-buffer)))
-        :n "M" (cmd! (lexic-return-from-lexic) ; minimise
-                     (lexic-goto-lexic))
-        :n "C-p" #'lexic-search-history-backwards
-        :n "C-n" #'lexic-search-history-forwards
-        :n "/" (cmd! (call-interactively #'lexic-search))))
-
 ;;; elfeed
 (after! elfeed
   ;; number of concurrent fetches
