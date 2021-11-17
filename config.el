@@ -891,7 +891,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;;                                              (elfeed-set-max-connections 3)
 ;;                                              (elfeed-update))))
 
-(use-package elfeed-score
+(use-package! elfeed-score
   :after elfeed
   :init
   (setq elfeed-score-score-file (expand-file-name "elfeed.score" doom-private-dir))
@@ -1083,7 +1083,9 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 
 (use-package! ctrlf
   :hook
-  (after-init . ctrlf-mode))
+  (after-init . ctrlf-mode)
+  :bind
+  ("C-s-s" . ctrlf-forward-symbol-at-point))
 
 ;; https://github.com/leoliu/easy-kill
 (use-package! easy-kill
