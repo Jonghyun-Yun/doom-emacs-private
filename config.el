@@ -1546,3 +1546,15 @@ is tomorrow.  With two prefixes, select the deadline."
 ;;; yasnippets
 (after! yasnippet
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
+
+(defun jyun/set-org-babel-default-header-args:R ()
+  (let ((sname (concat "*R:" (projectile-project-name) "*")))
+    (unless (boundp 'org-babel-default-header-args:R)
+      (setq org-babel-default-header-args:R '((:export . "code") (:results . "output replace")
+                                              )))
+          (setf (alist-get :export org-babel-default-header-args:R) "code")
+          (setf (alist-get :results org-babel-default-header-args:R) "output replace")
+          (setf (alist-get :session org-babel-default-header-args:R) sname)
+          )
+    ;; (plist-put org-babel-default-header-args:R: :session (projectile-project-name)))
+  )
