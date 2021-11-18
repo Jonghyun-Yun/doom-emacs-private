@@ -46,7 +46,9 @@
            ("o" . my-open-org-calendar)
            ("f" . org-gcal-fetch)
            ("D" . org-gcal-delete-at-point)
-           ("P" . org-gcal-post-at-point))
+           ("P" . org-gcal-post-at-point)
+           ;; agenda
+           ("g" . consult-org-agenda))
 
 
 
@@ -199,7 +201,16 @@
  :g "C-:" #'jyun/org-present-latex-preview
  )
 
-;;; elfedd
+;;; org-ref
+  (map!
+    (:map org-mode-map
+     :after orf-ref
+     :g "C-c ["       #'org-ref-insert-link
+     :g "C-c ] ["     #'org-agenda-file-to-front
+     :g "C-c ] ]"     #'org-remove-file)
+    )
+
+;;; elfeed
 (map! (:map elfeed-search-mode-map
        :after elfeed-search
        ;; [remap kill-this-buffer] "q"
