@@ -46,13 +46,40 @@
           ;; (ess-fl-keyword:= . t)
           ;; (ess-R-fl-keyword:F&T . t)
           ))
+
+;;; lintr
+;; disable assignment fix (= to <-)
+  ;; https://github.com/jimhester/lintr
+  (setq flycheck-lintr-linters
+        "with_defaults(line_length_linter(120), assignment_linter = NULL, object_name_linter = NULL)")
+
+  (evil-set-initial-state 'inferior-ess-r-mode 'emacs)
+  ;; (setq ess-assign-list '(" <- " " = " " -> ")
+  ;;       ess-r-smart-operators t)
+  ;; ;; ess-assign
+  ;; (defvar ess-assign-key "\M--"
+  ;;   "Call `ess-insert-assign'.")
+
+  ;; (with-eval-after-load 'ess-r-mode
+  ;;   (define-key ess-r-mode-map ess-assign-key #'ess-insert-assign))
+  ;; (add-hook 'inferior-ess-r-mode-hook
+  ;;           #'(lambda () (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign)))
+
   )
 
-;;; The following chunks are taken from https://github.com/vspinu/polymode
-;;; MARKDOWN
+;;; polymode
+;; The following chunks are taken from https://github.com/vspinu/polymode
+
+(with-eval-after-load 'polymode
+  ;; no filetype tags
+  (setq polymode-exporter-output-file-format "%s"
+        polymode-weaver-output-file-format "%s")
+  )
+
+;;;; MARKDOWN
 ;; (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))
 
-;;; R modes
+;;;; R modes
 (add-to-list 'auto-mode-alist '("\\.[rR]md$". poly-markdown+r-mode))
 ;; (add-to-list 'auto-mode-alist '("\\.rapport$" . poly-rapport-mode))
 ;; (add-to-list 'auto-mode-alist '("\\.Rhtml$" . poly-html+r-mode))
@@ -76,31 +103,6 @@
 (add-to-list 'auto-mode-alist '("\\.[rR]nw\\'" . Sweave-mode))
 (add-to-list 'auto-mode-alist '("\\.[rR]markdown\\'" . ploy-markdown+R-mode))
 
-;; (defun poly-org-mode ()
-;; "Polymode for Org files"
-;; (interactive)
-;; (require 'poly-org)
-;; (poly-org-mode))
-;; (use-package poly-R
-;;   :ensure t
-;;   :defer t
-;; )
-
-;; (use-package poly-markdown
-;;   :ensure t
-;;   :defer t
-;;   )
-
-;; (use-package poly-noweb
-;; :ensure t
-;; :defer t
-;; )
-
-;;   (use-package poly-org
-;;     :ensure t
-;;     :defer t
-;;     )
-
 (eval-after-load "poly-markdown+r-mode"
   '(progn
      (defun rmarkdown-new-chunk (name)
@@ -121,12 +123,6 @@
 ;;   (oset pm/polymode :exporter 'pm-exporter/Rmarkdown-ESS))
 
 ;; (add-hook 'poly-markdown+r-mode-hook 'my-poly-markdown+r-options)
-
-(with-eval-after-load 'polymode
-  ;; no filetype tags
-  (setq polymode-exporter-output-file-format "%s"
-        polymode-weaver-output-file-format "%s")
-  )
 
 ;; what is this for???
 (with-eval-after-load 'ess-site ;;ess-swv? or ess?

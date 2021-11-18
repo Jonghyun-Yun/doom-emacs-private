@@ -124,36 +124,6 @@
 (when (featurep! :email notmuch)
   (setq +notmuch-sync-backend 'mbsync))
 
-(after! projectile
-  (projectile-add-known-project "/Users/yunj/Dropbox/emacs/.doom.d/")
-  ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt")
-  ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt/GEPS")
-  (projectile-add-known-project "/Users/yunj/Dropbox/research/lsjm-art/lsjm-draft/")
-  ;; (projectile-add-known-project "~/Dropbox/research/lsjm-art")
-  ;; (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
-  ;; (projectile-add-known-project "~/OneDrive/research/lapf")
-  ;; (projectile-add-known-project "~/research/s.ham/RAS")
-  ;; (projectile-add-known-project "~/research/mj.jeon")
-  )
-
-;; riksy local variables
-;; old tricks stopped working. risky variables are ignored (doom updates)
-;; instead I can safely eval risky variables...
-(setq enable-local-eval t)
-;; (add-to-list 'safe-local-eval-forms
-;;              '(add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-overleaf overleaf-directory))))
-;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory))))
-;; (add-to-list 'safe-local-eval-forms '(setq overleaf-directory (ffip-project-root)))
-
-(defvar overleaf-directory nil
-  "A project directory to sync using Overleaf.")
-
-;; (setq safe-local-eval-forms
-;;       (append safe-local-eval-forms
-;;               '((setq overleaf-directory (ffip-project-root))
-;;                 (add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-overleaf overleaf-directory)))
-;;                 (add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory)))
-;;                 )))
 
 ;;; LaTeX
 ;; (setq +latex-viewers '(skim pdf-tools))
@@ -173,6 +143,7 @@
 ;; (add-hook! 'LaTeX-mode-hook #'(lambda () (rainbow-delimiters-mode -1)))
 ;; (remove-hook 'TeX-update-style-hook #'rainbow-delimiters-mode)
 
+;;;; cdlatex
 ;; (after! cdlatex
 ;;   (setq cdlatex-math-symbol-alist
 ;;         '((?: ("\\cdots" "\\ldots"))
@@ -213,10 +184,10 @@
   (setq cdlatex-math-symbol-alist
         '(
           (?: ("\\cdots" "\\ldots"))
-            (?_    ("\\downarrow"  ""           "\\inf"))
-            (?2    ("^2"           "\\sqrt{?}"     ""     ))
-            (?3    ("^3"           "\\sqrt[3]{?}"  ""     ))
-            (?^    ("\\uparrow"    ""           "\\sup"))
+          (?_    ("\\downarrow"  ""           "\\inf"))
+          (?2    ("^2"           "\\sqrt{?}"     ""     ))
+          (?3    ("^3"           "\\sqrt[3]{?}"  ""     ))
+          (?^    ("\\uparrow"    ""           "\\sup"))
           ;;   (?k    ("\\kappa"      ""           "\\ker"))
           ;;   (?m    ("\\mu"         ""           "\\lim"))
           ;;   (?c    (""             "\\circ"     "\\cos"))
@@ -229,99 +200,10 @@
           ;;   (?.    ("\\cdot" "\\dots"))
           ;;   (?:    ("\\vdots" "\\ddots"))
           ;;   (?*    ("\\times" "\\star" "\\ast"))
-          ) ;
+          )                             ;
         cdlatex-math-modify-alist
         '((?B    "\\mathbb"        nil          t    nil  nil)
           (?a    "\\abs"           nil          t    nil  nil))))
-
-;;; ess
-(with-eval-after-load 'ess
-  ;; disable assignment fix (= to <-)
-  ;; https://github.com/jimhester/lintr
-  (setq flycheck-lintr-linters
-        "with_defaults(line_length_linter(120), assignment_linter = NULL, object_name_linter = NULL)")
-
-  (evil-set-initial-state 'inferior-ess-r-mode 'emacs)
-  ;; (setq ess-assign-list '(" <- " " = " " -> ")
-  ;;       ess-r-smart-operators t)
-  ;; ;; ess-assign
-  ;; (defvar ess-assign-key "\M--"
-  ;;   "Call `ess-insert-assign'.")
-
-  ;; (with-eval-after-load 'ess-r-mode
-  ;;   (define-key ess-r-mode-map ess-assign-key #'ess-insert-assign))
-  ;; (add-hook 'inferior-ess-r-mode-hook
-  ;;           #'(lambda () (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign)))
-  )
-
-;;; plantuml
-;; jar configuration needs for math typesetting.
-;; version is pinned (brew pin plantuml)
-(after! plantuml-mode
-  (setq plantuml-jar-path "/usr/local/Cellar/plantuml/1.2021.4/libexec/plantuml.jar"
-        plantuml-default-exec-mode 'jar
-        org-plantuml-jar-path plantuml-jar-path)
-  )
-
-;; prevent some cases of Emacs flickering
-;; (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
-
-;;; maximize frame at startup
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
-;; OS X native full screen
-;; (add-to-list 'initial-frame-alist '(fullscreen . fullscreen))
-
-;;; Backups & Autosave
-;; (auto-save-visited-mode +1)
-(setq auto-save-default t
-      create-lockfiles t
-      make-backup-files nil
-      ;; truncate-string-ellipsis "…"
-      yas-triggers-in-field t           ; snippets inside snippets. some need this
-      )
-
-;;; company
-(after! company
-  (setq company-idle-delay 3.0
-        company-minimum-prefix-length 2
-        ;; company-box-enable-icon nil ; disable all-the-icons
-        company-tooltip-limit 10)
-        )
-
-;; company memory
-(setq-default history-length 500)
-(setq-default prescient-history-length 500)
-
-;;; outline faces
-(custom-set-faces!
-  '(outline-1 :weight semi-bold :height 1.25)
-  '(outline-2 :weight semi-bold :height 1.15)
-  '(outline-3 :weight semi-bold :height 1.12)
-  '(outline-4 :weight semi-bold :height 1.09)
-  '(outline-5 :weight semi-bold :height 1.06)
-  '(outline-6 :weight semi-bold :height 1.03)
-  '(outline-8 :weight semi-bold)
-  '(outline-9 :weight semi-bold))
-;; latex faces
-(custom-set-faces!
-  '(font-latex-sectioning-0-face :inherit 'outline-1)
-  '(font-latex-sectioning-1-face :inherit 'outline-2)
-  '(font-latex-sectioning-2-face :inherit 'outline-3)
-  '(font-latex-sectioning-3-face :inherit 'outline-4)
-  '(font-latex-sectioning-4-face :inherit 'outline-5)
-  '(font-latex-sectioning-5-face :inherit 'outline-6)
-  '(font-latex-sectioning-6-face :inherit 'outline-7)
-  '(font-latex-sectioning-7-face :inherit 'outline-8)
-  )
-;; org-title
-(custom-set-faces!
-  '(org-document-title :height 1.2))
-;; deadlines in the error face when they're passed.
-;; (setq org-agenda-deadline-faces
-;;       '((1.001 . error)
-;;         (1.0 . org-warning)
-;;         (0.5 . org-upcoming-deadline)
-;;         (0.0 . org-upcoming-distant-deadline)))
 
 ;;; org-mode
 (after! org
@@ -400,8 +282,11 @@
 
   (defvar jyun/org-latex-preview-scale 1.5
     "A scaling factor for the size of images created from LaTeX fragments.")
-  (defun jyun/org-latex-set-options ()
-    (plist-put org-format-latex-options :scale jyun/org-latex-preview-scale))
+  (defun jyun/org-latex-set-options (&optional scale-input)
+    "Set `org-latex-fragment' scale. `jyun/org-latex-preview-scale' is used as scale if none is provided as `scale-input' argument"
+    (let ((scale (if scale-input scale-input jyun/org-latex-preview-scale)))
+    (plist-put org-format-latex-options :scale scale)
+      ))
 
   ;; set default org-latex-preview size
   (jyun/org-latex-set-options)
@@ -425,8 +310,6 @@
    org-latex-tables-booktabs nil
    ))
 ;; ;; Github flavored markdown exporter
-;; (eval-after-load 'ox
-;;   '(require 'ox-gfm nil t))
 (use-package ox-gfm
   :defer t
   :after ox)
@@ -468,18 +351,7 @@
         (pdf-view-auto-slice-minor-mode)))
     (add-hook 'pdf-view-mode-hook 'org-noter-init-pdf-view)))
 
-;;; modifier
-;; NOTE: KARABINER
-;; caps_lock: esc if alone, right_ctrl if hold_down
-;; return: return if alone, right_ctrl if hold_down
-(setq mac-right-option-modifier 'meta)
-(setq mac-right-control-modifier 'hyper)
-;; (setq mac-function-modifier 'hyper)  ; make Fn key do Hyper
-
 ;;; misc
-;; Kill current buffer (instead of asking first buffer name)
-;; (global-set-key (kbd "C-x k") 'kill-current-buffer)
-
 (setq outshine-use-speed-commands nil)
 ;; (outshine-speed-command-help)
 
@@ -502,37 +374,143 @@
 ;; (add-hook 'focus-out-hook #'garbage-collect)
 (setq garbage-collection-messages nil)
 
-;; no key stroke for exiting INSERT mode: doom default jk
-(setq evil-escape-key-sequence (kbd "jk")
-      evil-escape-delay 0.15)
-;; to escape from emacs state
-(key-chord-mode 1)
-(key-chord-define evil-emacs-state-map evil-escape-key-sequence 'evil-escape)
-(key-chord-define evil-insert-state-map evil-escape-key-sequence 'evil-escape)
-
 ;; set korean keyboard layout
 ;; C-\ to switch input-method
 (setq default-input-method "korean-hangul390")
-;; (global-set-key (kbd "s-j s-k") 'evil-escape)
-;; (global-set-key (kbd "s-j k") 'evil-escape)
-;; (key-chord-define-global "45" 'evil-escape)
 
 ;; emacs-mode shift can be used for C-SPC
-;; didn't know it exists
 ;; (setq shift-select-mode t)
+;; replace highlighted text with what I type
+;; (delete-selection-mode 1)
 
+(defvar overleaf-directory nil
+  "A project directory to sync using Overleaf.")
+
+;;;; modifier
+;; NOTE: KARABINER
+;; caps_lock: esc if alone, right_ctrl if hold_down
+;; return: return if alone, right_ctrl if hold_down
+(setq mac-right-option-modifier 'meta)
+(setq mac-right-control-modifier 'hyper)
+;; (setq mac-function-modifier 'hyper)  ; make Fn key do Hyper
+
+;;;; Hangout
+(use-package jabber
+  :defer t
+  :commands (jabber-connect-all
+             jabber-connect)
+  :init
+  (add-hook 'jabber-post-connect-hooks 'spacemacs/jabber-connect-hook)
+  :config
+  ;; https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
+  ;; password encrypted in ~/doom-emacs/.local/etc/authinfo.gpg
+  ;; machine gmail.com login jonghyun.yun port xmpp password *******
+  ;; or I can use =pass=
+  ;; see https://github.com/DamienCassou/auth-source-pass
+  ;; pass insert jonghyun.yun@gmail.com:xmpp
+  (setq jabber-account-list '(("jonghyun.yun@gmail.com"
+                               (:network-server . "talk.google.com")
+                               (:connection-type . starttls))))
+
+  ;; (jabber-connect-all)
+  ;; (jabber-keepalive-start)
+  (evil-set-initial-state 'jabber-chat-mode 'insert))
+
+;;;; disable popup
+;; (after! warnings
+;;   (add-to-list 'warning-suppress-types '(undo discard-info)))
+
+;;;; emacs binding in insert mode
+;; don't work. probably should be used override this
+;; (after! evil
+;;   ;; use emacs bindings in insert-mode
+;;   (setq evil-disable-insert-state-bindings t
+;; evil-want-keybinding nil))
+
+(map! :i "C-p" 'previous-line
+      :i "C-n" 'next-line
+      ;; :i "C-u" 'universal-argument
+      )
+
+;;;; ignore bindings
+;; (global-set-key [C-wheel-up]  'ignore)
+;; (global-set-key [C-wheel-down] 'ignore)
+
+;;;; projectile
+(after! projectile
+  (projectile-add-known-project "/Users/yunj/Dropbox/emacs/.doom.d/")
+  ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt")
+  ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt/GEPS")
+  (projectile-add-known-project "/Users/yunj/Dropbox/research/lsjm-art/lsjm-draft/")
+  ;; (projectile-add-known-project "~/Dropbox/research/lsjm-art")
+  ;; (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
+  ;; (projectile-add-known-project "~/OneDrive/research/lapf")
+  ;; (projectile-add-known-project "~/research/s.ham/RAS")
+  ;; (projectile-add-known-project "~/research/mj.jeon")
+  )
+
+;;;; riksy local variables
+;; old tricks stopped working. risky variables are ignored (doom updates)
+;; instead I can safely eval risky variables...
+(setq enable-local-eval t)
+;; (add-to-list 'safe-local-eval-forms
+;;              '(add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-overleaf overleaf-directory))))
+;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory))))
+;; (add-to-list 'safe-local-eval-forms '(setq overleaf-directory (ffip-project-root)))
+
+;; (setq safe-local-eval-forms
+;;       (append safe-local-eval-forms
+;;               '((setq overleaf-directory (ffip-project-root))
+;;                 (add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-overleaf overleaf-directory)))
+;;                 (add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory)))
+;;                 )))
+
+;;;; time + modeline
+(setq display-time-24hr-format t
+      mouse-autoselect-window nil
+      ;; indicate-unused-lines nil
+      ;; spacemacs value of parameters
+      scroll-conservatively 0)
+(setq display-time-format ;; "%R %a %b %d"
+      "%R %m/%d"
+      display-time-default-load-average nil
+      display-time-world-list
+      '(("America/Los_Angeles" "Seattle")
+        ("America/New_York" "New York")
+        ("Europe/London" "London")
+        ;; ("Pacific/Auckland" "Auckland")
+        ("Asia/Seoul" "Seoul"))
+      display-time-world-time-format "%a %b %d %Y %R %Z")
+(display-time-mode 1)
+(blink-cursor-mode 1)
+;; (display-battery-mode 1)
+
+;;;; alert
 (with-eval-after-load 'alert
   ;; calendar notification
   ;; (setq alert-default-style 'osx-notifier)
   (setq alert-default-style 'notifier))
 
-(with-eval-after-load 'deft
-  (setq deft-extensions '("org" "md" "txt")
-        deft-directory org-directory
-        ;; include subdirectories
-        deft-recursive t))
+;;;; maximize frame at startup
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; OS X native full screen
+;; (add-to-list 'initial-frame-alist '(fullscreen . fullscreen))
 
+;; prevent some cases of Emacs flickering
+;; (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
+
+;;; Backups & Autosave
+;; (auto-save-visited-mode +1)
+(setq auto-save-default t
+      create-lockfiles t
+      make-backup-files nil
+      ;; truncate-string-ellipsis "…"
+      yas-triggers-in-field t           ; snippets inside snippets. some need this
+      )
 ;; (setq save-place-forget-unreadable-files t) ;; emacs is slow to exit after enabling saveplace
+
+;; Delete duplicated entries in autosaves of minibuffer history
+;; (setq history-delete-duplicates t)
 
 ;;; recentf
 ;; ;; https://github.com/kaz-yos/emacs/blob/master/init.d/500_recentf-related.el
@@ -554,61 +532,6 @@
   ;; (add-to-list 'recentf-exclude 'file-remote-p)
   )
 
-;; Delete duplicated entries in autosaves of minibuffer history
-;; (setq history-delete-duplicates t)
-
-;; ;; speed up comint
-;; (setq gud-gdb-command-name "gdb --annotate=1"
-;;       large-file-warning-threshold nil
-;;       line-move-visual nil)
-
-;; Other options
-;; replace highlighted text with what I type
-;; (delete-selection-mode 1)
-
-(setq display-time-24hr-format t
-      mouse-autoselect-window nil
-      ;; indicate-unused-lines nil
-      ;; spacemacs value of parameters
-      scroll-conservatively 0)
-(setq display-time-format ;; "%R %a %b %d"
-      "%R %m/%d"
-      display-time-default-load-average nil
-      display-time-world-list
-      '(("America/Los_Angeles" "Seattle")
-        ("America/New_York" "New York")
-        ("Europe/London" "London")
-        ;; ("Pacific/Auckland" "Auckland")
-        ("Asia/Seoul" "Seoul"))
-      display-time-world-time-format "%a %b %d %Y %R %Z")
-(display-time-mode 1)
-(blink-cursor-mode 1)
-;; (display-battery-mode 1)
-
-;; (add-hook 'before-save-hook 'time-stamp)
-
-;; (global-set-key [C-wheel-up]  'ignore)
-;; (global-set-key [C-wheel-down] 'ignore)
-
-;;;; which-key
-(with-eval-after-load 'which-key
-  ;; Allow C-h to trigger which-key before it is done automatically
-  ;; (setq which-key-show-early-on-C-h t)
-  ;; make sure which-key doesn't show normally but refreshes quickly after it is
-  ;; triggered.
-  (setq which-key-idle-delay 1) ;; with 800kb garbage-collection
-  ;; (setq which-key-idle-secondary-delay 0.05)
-  ;; (which-key-mode)
-  ;; (define-key which-key-mode-map (kbd "C-h") 'which-key-C-h-dispatch)
-  ;; (setq which-key-allow-multiple-replacements t)
-  (pushnew!
-   which-key-replacement-alist
-   '(("" . "\\`+?evil[-:\\/]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
-   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
-   )
-  ;; why I want this??
-  ;; (setq which-key-replacement-alist nil )
-  )
 
 ;;; reference
 ;;;; biblio
@@ -851,7 +774,62 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
             (funcall file-view-function file))))))
   )
 
-;;; ui, window mangement
+;;; search
+;;;; online lookup
+(setq +lookup-provider-url-alist
+      (append +lookup-provider-url-alist
+              '(("Google Scholar"       "http://scholar.google.com/scholar?q=%s")
+                ("Crossref"             "http://search.crossref.org/?q=%s")
+                ("PubMed"               "http://www.ncbi.nlm.nih.gov/pubmed/?term=%s")
+                ("arXiv"                "https://arxiv.org/search/?query=%s&searchtype=all&abstracts=show&order=-announced_date_first&size=50")
+                ("Semantic Scholar"     "https://www.semanticscholar.org/search?q=%s")
+                ("Dictionary.com"       "http://dictionary.reference.com/browse/%s?s=t")
+                ("Thesaurus.com"        "http://www.thesaurus.com/browse/%s")
+                ("Merriam-Webster"      "https://www.merriam-webster.com/dictionary/%s")
+                )))
+
+
+;;;; deft
+(with-eval-after-load 'deft
+  (setq deft-extensions '("org" "md" "txt")
+        deft-directory org-directory
+        ;; include subdirectories
+        deft-recursive t))
+
+;;;; ffip
+;; for doom-modeline
+(use-package! find-file-in-project
+  :defer t
+  :commands
+  (find-file-in-project
+   find-file-in-current-directory-by-selected)
+  :general (
+            [remap projectile-find-file] #'find-file-in-project
+            [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config)
+  :init
+  (map! :leader "SPC" #'find-file-in-project-by-selected)
+  :config
+  (setq ffip-use-rust-fd t)
+  ;; use ffip to find file in private config
+  ;; (advice-add 'doom/find-file-in-private-config :around #'jyun/find-file-in-private-config)
+  )
+
+;;;; regexp
+(use-package! visual-regexp
+  ;; :commands (vr/replace vr/query-replace vr/isearch-backward vr/isearch-forward)
+  :commands (vr/replace vr/query-replace)
+  ;; :config (require 'visual-regexp)
+  :init
+  (define-key global-map (kbd "C-c r") 'vr/replace)
+  (define-key global-map (kbd "C-c q") 'vr/query-replace)
+  ;; if you use multiple-cursors, this is for you:
+  ;; (define-key global-map (kbd "C-c m") 'vr/mc-mark)
+  ;; to use visual-regexp-steroids's isearch instead of the built-in regexp isearch, also include the following lines:
+  ;; (define-key esc-map (kbd "C-r") 'vr/isearch-backward) ;; C-M-r
+  ;; (define-key esc-map (kbd "C-s") 'vr/isearch-forward) ;; C-M-s)
+  )
+
+;;; visual, ui, window mangement
 ;; Switch to the new window after splitting
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
@@ -876,6 +854,53 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
            #'jyun/doom-modeline-height
            )
 
+;;;; mixed-pitch-mode
+(defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
+  "Modes that `mixed-pitch-mode' should be enabled in, but only after UI initialisation.")
+(defun init-mixed-pitch-h ()
+  "Hook `mixed-pitch-mode' into each mode in `mixed-pitch-modes'.
+Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
+  (when (memq major-mode mixed-pitch-modes)
+    (mixed-pitch-mode 1))
+  (dolist (hook mixed-pitch-modes)
+    (add-hook (intern (concat (symbol-name hook) "-hook")) #'mixed-pitch-mode)))
+;; (add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
+
+;;;; mixed pitch + zen
+(add-to-list '+zen-mixed-pitch-modes 'latex-mode)
+(setq +zen-text-scale 0.8) ;; The text-scaling level for writeroom-mode
+
+
+;;;; outline faces
+(custom-set-faces!
+  '(outline-1 :weight semi-bold :height 1.25)
+  '(outline-2 :weight semi-bold :height 1.15)
+  '(outline-3 :weight semi-bold :height 1.12)
+  '(outline-4 :weight semi-bold :height 1.09)
+  '(outline-5 :weight semi-bold :height 1.06)
+  '(outline-6 :weight semi-bold :height 1.03)
+  '(outline-8 :weight semi-bold)
+  '(outline-9 :weight semi-bold))
+;; latex faces
+(custom-set-faces!
+  '(font-latex-sectioning-0-face :inherit 'outline-1)
+  '(font-latex-sectioning-1-face :inherit 'outline-2)
+  '(font-latex-sectioning-2-face :inherit 'outline-3)
+  '(font-latex-sectioning-3-face :inherit 'outline-4)
+  '(font-latex-sectioning-4-face :inherit 'outline-5)
+  '(font-latex-sectioning-5-face :inherit 'outline-6)
+  '(font-latex-sectioning-6-face :inherit 'outline-7)
+  '(font-latex-sectioning-7-face :inherit 'outline-8)
+  )
+;; org-title
+(custom-set-faces!
+  '(org-document-title :height 1.2))
+;; deadlines in the error face when they're passed.
+;; (setq org-agenda-deadline-faces
+;;       '((1.001 . error)
+;;         (1.0 . org-warning)
+;;         (0.5 . org-upcoming-deadline)
+;;         (0.0 . org-upcoming-distant-deadline)))
 
 ;;; coding
 ;; disable flycheck by default
@@ -885,7 +910,12 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 (advice-add 'ibuffer :around #'jyun/persp-add-buffer)
 (advice-add 'R :around #'jyun/persp-add-buffer)
 
-;;; conda
+;; ;; speed up comint
+;; (setq gud-gdb-command-name "gdb --annotate=1"
+;;       large-file-warning-threshold nil
+;;       line-move-visual nil)
+
+;;;; conda
 (use-package! conda
   :after python
   :config
@@ -936,45 +966,34 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   ;;        )
   )
 
-;;; Hangout
-(use-package jabber
-  :defer t
-  :commands (jabber-connect-all
-             jabber-connect)
-  :init
-  (add-hook 'jabber-post-connect-hooks 'spacemacs/jabber-connect-hook)
-  :config
-  ;; https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
-  ;; password encrypted in ~/doom-emacs/.local/etc/authinfo.gpg
-  ;; machine gmail.com login jonghyun.yun port xmpp password *******
-  ;; or I can use =pass=
-  ;; see https://github.com/DamienCassou/auth-source-pass
-  ;; pass insert jonghyun.yun@gmail.com:xmpp
-  (setq jabber-account-list '(("jonghyun.yun@gmail.com"
-                               (:network-server . "talk.google.com")
-                               (:connection-type . starttls))))
-
-  ;; (jabber-connect-all)
-  ;; (jabber-keepalive-start)
-  (evil-set-initial-state 'jabber-chat-mode 'insert))
-
-;;; ffip
-;; for doom-modeline
-(use-package! find-file-in-project
-  :defer t
+;;;; git
+(use-package! git-link
   :commands
-  (find-file-in-project
-   find-file-in-current-directory-by-selected)
-  :general (
-            [remap projectile-find-file] #'find-file-in-project
-            [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config)
-  :init
-  (map! :leader "SPC" #'find-file-in-project-by-selected)
-  :config
-  (setq ffip-use-rust-fd t)
-  ;; use ffip to find file in private config
-  ;; (advice-add 'doom/find-file-in-private-config :around #'jyun/find-file-in-private-config)
+  (git-link git-link-commit git-link-homepage)
+  :custom
+  (git-link-use-commit t)
+  (git-link-open-in-browser t))
+
+;;;; plantuml
+;; jar configuration needs for math typesetting.
+;; version is pinned (brew pin plantuml)
+(after! plantuml-mode
+  (setq plantuml-jar-path "/usr/local/Cellar/plantuml/1.2021.4/libexec/plantuml.jar"
+        plantuml-default-exec-mode 'jar
+        org-plantuml-jar-path plantuml-jar-path)
   )
+
+;;;; graphviz
+(use-package! graphviz-dot-mode
+  :commands graphviz-dot-mode
+  :mode ("\\.dot\\'" "\\.gz\\'")
+  :init
+  (after! org
+    (setcdr (assoc "dot" org-src-lang-modes)
+            'graphviz-dot)))
+
+(use-package! company-graphviz-dot
+  :after graphviz-dot-mode)
 
 ;;; writing
 (use-package! lorem-ipsum
@@ -984,7 +1003,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
              lorem-ipsum-insert-list
              ))
 
-;;; languagetool
+;;;; languagetool
 ;; (setq langtool-bin "languagetool")
 (setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/5.4/libexec/languagetool-server.jar")
 ;; (setq langtool-http-server-host "localhost"
@@ -995,68 +1014,56 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;; (shell-command "find ~/.doom.d/ -type f -name \"*.elc\" -delete")
 
 
-;;; abbrev
-(use-package abbrev
-  :init
-  (setq-default abbrev-mode t)
-  ;; a hook funtion that sets the abbrev-table to org-mode-abbrev-table
-  ;; whenever the major mode is a text mode
-  (defun tec/set-text-mode-abbrev-table ()
-    (if (derived-mode-p 'text-mode)
-        (setq local-abbrev-table org-mode-abbrev-table)))
-  :commands abbrev-mode
-  :hook
-  (abbrev-mode . tec/set-text-mode-abbrev-table)
-  :config
-  (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir)
-        save-abbrevs 'silently))
+;;; evil
+(after! evil
+  (setq ;; evil-ex-substitute-global t     ; I like my s/../.. to by global by default
+        evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
+        ;; evil-kill-on-visual-paste nil
+        )) ; Don't put overwritten text in the kill ring
 
-;;; online lookup
-(setq +lookup-provider-url-alist
-      (append +lookup-provider-url-alist
-              '(("Google Scholar"       "http://scholar.google.com/scholar?q=%s")
-                ("Crossref"             "http://search.crossref.org/?q=%s")
-                ("PubMed"               "http://www.ncbi.nlm.nih.gov/pubmed/?term=%s")
-                ("arXiv"                "https://arxiv.org/search/?query=%s&searchtype=all&abstracts=show&order=-announced_date_first&size=50")
-                ("Semantic Scholar"     "https://www.semanticscholar.org/search?q=%s")
-                ("Dictionary.com"       "http://dictionary.reference.com/browse/%s?s=t")
-                ("Thesaurus.com"        "http://www.thesaurus.com/browse/%s")
-                ("Merriam-Webster"      "https://www.merriam-webster.com/dictionary/%s")
-                )))
+;; no key stroke for exiting INSERT mode: doom default jk
+(setq evil-escape-key-sequence (kbd "jk")
+      evil-escape-delay 0.15)
+;; to escape from emacs state
+(key-chord-mode 1)
+(key-chord-define evil-emacs-state-map evil-escape-key-sequence 'evil-escape)
+(key-chord-define evil-insert-state-map evil-escape-key-sequence 'evil-escape)
 
-
-;;; dired "J"
-;; replace `dired-goto-file' with equivalent helm and ivy functions:
-;; `helm-find-files' fuzzy matching and other features
-;; `counsel-find-file' more `M-o' actions
-(with-eval-after-load 'dired
-  (evil-define-key 'normal dired-mode-map "J"
-    (cond ((featurep! :completion helm) 'helm-find-files)
-          ((featurep! :completion ivy) 'counsel-find-file)
-          ((featurep! :completion vertico) 'find-file))))
-
-;; OS X ls not working with --quoting-style=literal
-(after! fd-dired
-  (when IS-MAC
-    (setq fd-dired-ls-option '("| xargs -0 gls -ld --quoting-style=literal" . "-ld"))
-    )
-  )
-
-
-;;; no evil-snipe
+;;;; no evil-snipe
 (after! evil-snipe
   (pushnew! evil-snipe-disabled-modes 'ibuffer-mode 'dired-mode)
   ;; (pushnew! evil-snipe-disabled-modes 'reftex-select-label-mode 'reftex-select-bib-mode)
   )
 
-;;; ctrlf
+;;; convenience
+;;;; which-key
+(with-eval-after-load 'which-key
+  ;; Allow C-h to trigger which-key before it is done automatically
+  ;; (setq which-key-show-early-on-C-h t)
+  ;; make sure which-key doesn't show normally but refreshes quickly after it is
+  ;; triggered.
+  (setq which-key-idle-delay 1) ;; with 800kb garbage-collection
+  ;; (setq which-key-idle-secondary-delay 0.05)
+  ;; (which-key-mode)
+  ;; (define-key which-key-mode-map (kbd "C-h") 'which-key-C-h-dispatch)
+  ;; (setq which-key-allow-multiple-replacements t)
+  (pushnew!
+   which-key-replacement-alist
+   '(("" . "\\`+?evil[-:\\/]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
+   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
+   )
+  ;; why I want this??
+  ;; (setq which-key-replacement-alist nil )
+  )
+
+;;;; ctrlf
 (use-package! ctrlf
   :hook
   (after-init . ctrlf-mode)
   :bind
   ("C-s-s" . ctrlf-forward-symbol-at-point))
 
-;;; easy-kill
+;;;; easy-kill
 ;; https://github.com/leoliu/easy-kill
 (use-package! easy-kill
   :bind*
@@ -1070,7 +1077,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
       :g "C-w" #'easy-kill-region)
 
 
-;;; avy
+;;;; avy
 (after! avy  
   ;; (setq avy-keys '(?a ?s ?d ?f ?j ?k ?l ?\;))
   ;; home row priorities: 8 6 4 5 - - 1 2 3 7
@@ -1078,7 +1085,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   (setq lispy-avy-keys avy-keys)
   )
 
-;;; ace-window
+;;;; ace-window
 ;; (setq avy-keys '(?n ?e ?j ?s ?t ?r ?l ?a))
 (after! ace-window
   (setq aw-scope 'global
@@ -1116,27 +1123,8 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
         (?T aw-transpose-frame "Transpose Frame")
         (?? aw-show-dispatch-help)))
 
-;;; git
-(use-package! git-link
-  :commands
-  (git-link git-link-commit git-link-homepage)
-  :custom
-  (git-link-use-commit t)
-  (git-link-open-in-browser t))
-
-;;; graphviz
-(use-package! graphviz-dot-mode
-  :commands graphviz-dot-mode
-  :mode ("\\.dot\\'" "\\.gz\\'")
-  :init
-  (after! org
-    (setcdr (assoc "dot" org-src-lang-modes)
-            'graphviz-dot)))
-
-(use-package! company-graphviz-dot
-  :after graphviz-dot-mode)
-
-;;; ivy
+;;; auto completition
+;;;; ivy
 ;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
 (when (featurep! :completion ivy)
   ;; (remove-hook 'ivy-mode-hook #'ivy-rich-mode)
@@ -1156,44 +1144,47 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
               '(swiper . ivy-display-function-fallback))
     ))
 
+;;;; company
+(after! company
+  (setq company-idle-delay 3.0
+        company-minimum-prefix-length 2
+        ;; company-box-enable-icon nil ; disable all-the-icons
+        company-tooltip-limit 10)
+        )
 
-;;; regexp
-(use-package! visual-regexp
-  ;; :commands (vr/replace vr/query-replace vr/isearch-backward vr/isearch-forward)
-  :commands (vr/replace vr/query-replace)
-  ;; :config (require 'visual-regexp)
-  :init
-  (define-key global-map (kbd "C-c r") 'vr/replace)
-  (define-key global-map (kbd "C-c q") 'vr/query-replace)
-  ;; if you use multiple-cursors, this is for you:
-  ;; (define-key global-map (kbd "C-c m") 'vr/mc-mark)
-  ;; to use visual-regexp-steroids's isearch instead of the built-in regexp isearch, also include the following lines:
-  ;; (define-key esc-map (kbd "C-r") 'vr/isearch-backward) ;; C-M-r
-  ;; (define-key esc-map (kbd "C-s") 'vr/isearch-forward) ;; C-M-s)
+;; company memory
+(setq-default history-length 500)
+(setq-default prescient-history-length 500)
+
+
+;;;; vertigo posframe
+(use-package! vertico-posframe
+  :config
+  (vertico-posframe-mode 1)
+  (setq vertico-posframe-parameters
+        '((left-fringe . 8)
+          (right-fringe . 8)))
   )
 
-;;; disable popup
-;; (after! warnings
-;;   (add-to-list 'warning-suppress-types '(undo discard-info)))
+;;;; yasnippets
+;;;; abbrev
+(use-package abbrev
+  :init
+  (setq-default abbrev-mode t)
+  ;; a hook funtion that sets the abbrev-table to org-mode-abbrev-table
+  ;; whenever the major mode is a text mode
+  (defun tec/set-text-mode-abbrev-table ()
+    (if (derived-mode-p 'text-mode)
+        (setq local-abbrev-table org-mode-abbrev-table)))
+  :commands abbrev-mode
+  :hook
+  (abbrev-mode . tec/set-text-mode-abbrev-table)
+  :config
+  (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir)
+        save-abbrevs 'silently))
 
-;;; evil
-(after! evil
-  (setq ;; evil-ex-substitute-global t     ; I like my s/../.. to by global by default
-        evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
-        ;; evil-kill-on-visual-paste nil
-        )) ; Don't put overwritten text in the kill ring
-
-;;;; emacs binding in insert mode
-;; don't work. probably should be used override this
-;; (after! evil
-;;   ;; use emacs bindings in insert-mode
-;;   (setq evil-disable-insert-state-bindings t
-;; evil-want-keybinding nil))
-
-(map! :i "C-p" 'previous-line
-      :i "C-n" 'next-line
-      ;; :i "C-u" 'universal-argument
-      )
+(after! yasnippet
+  (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
 
 ;;; treemac
 (after! treemacs
@@ -1244,34 +1235,23 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
           "*/_region_.log"
           "*/_region_.tex")))
 
-;;; vertigo posframe
-(use-package! vertico-posframe
-  :config
-  (vertico-posframe-mode 1)
-  (setq vertico-posframe-parameters
-        '((left-fringe . 8)
-          (right-fringe . 8)))
+;;; dired "J"
+;; replace `dired-goto-file' with equivalent helm and ivy functions:
+;; `helm-find-files' fuzzy matching and other features
+;; `counsel-find-file' more `M-o' actions
+(with-eval-after-load 'dired
+  (evil-define-key 'normal dired-mode-map "J"
+    (cond ((featurep! :completion helm) 'helm-find-files)
+          ((featurep! :completion ivy) 'counsel-find-file)
+          ((featurep! :completion vertico) 'find-file))))
+
+;; OS X ls not working with --quoting-style=literal
+(after! fd-dired
+  (when IS-MAC
+    (setq fd-dired-ls-option '("| xargs -0 gls -ld --quoting-style=literal" . "-ld"))
+    )
   )
 
-;;; mixed-pitch-mode
-(defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
-  "Modes that `mixed-pitch-mode' should be enabled in, but only after UI initialisation.")
-(defun init-mixed-pitch-h ()
-  "Hook `mixed-pitch-mode' into each mode in `mixed-pitch-modes'.
-Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
-  (when (memq major-mode mixed-pitch-modes)
-    (mixed-pitch-mode 1))
-  (dolist (hook mixed-pitch-modes)
-    (add-hook (intern (concat (symbol-name hook) "-hook")) #'mixed-pitch-mode)))
-;; (add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
-
-;;;; mixed pitch + zen
-(add-to-list '+zen-mixed-pitch-modes 'latex-mode)
-(setq +zen-text-scale 0.8) ;; The text-scaling level for writeroom-mode
-
-;;; yasnippets
-(after! yasnippet
-  (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
 
 ;;; temporary fixes
 ;;;; eldoc error
@@ -1312,65 +1292,66 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 
 
 ;;; mu4e tempo fix
-(defun +mu4e/capture-msg-to-agenda (arg)
-  "Refile a message and add a entry in `+org-capture-emails-file' with a
+(after! mu4e
+  (defun +mu4e/capture-msg-to-agenda (arg)
+    "Refile a message and add a entry in `+org-capture-emails-file' with a
 deadline.  Default deadline is today.  With one prefix, deadline
 is tomorrow.  With two prefixes, select the deadline."
-  (interactive "p")
-  (let ((sec "^* Email")
-        (msg (mu4e-message-at-point)))
-    (when msg
-      ;; put the message in the agenda
-      (with-current-buffer (find-file-noselect
-                            (expand-file-name +org-capture-emails-file org-directory))
-        (save-excursion
-          ;; find header section
-          (goto-char (point-min))
-          (when (re-search-forward sec nil t)
-            (let (org-M-RET-may-split-line
-                  (lev (org-outline-level))
-                  (folded-p (invisible-p (point-at-eol)))
-                  (from (plist-get msg :from)))
-              ;; place the subheader
-              (when folded-p (show-branches))   ; unfold if necessary
-              (org-end-of-meta-data)            ; skip property drawer
-              (org-insert-todo-heading 1)       ; insert a todo heading
-              (when (= (org-outline-level) lev) ; demote if necessary
-                (org-do-demote))
-              ;; insert message and add deadline
-              (insert (concat "Respond to "
-                              "[[mu4e:msgid:"
-                              (plist-get msg :message-id) "]["
-                              (truncate-string-to-width
-                               (or (caar from) (cdar from)) 25 nil nil t)
-                              " - "
-                              (truncate-string-to-width
-                               (plist-get msg :subject) 40 nil nil t)
-                              "]] "))
-              (org-set-tags "@email")
-              (org-deadline nil
-                            (cond ((= arg 1) (format-time-string "%Y-%m-%d"))
-                                  ((= arg 4) "+1d")))
+    (interactive "p")
+    (let ((sec "^* Email")
+          (msg (mu4e-message-at-point)))
+      (when msg
+        ;; put the message in the agenda
+        (with-current-buffer (find-file-noselect
+                              (expand-file-name +org-capture-emails-file org-directory))
+          (save-excursion
+            ;; find header section
+            (goto-char (point-min))
+            (when (re-search-forward sec nil t)
+              (let (org-M-RET-may-split-line
+                    (lev (org-outline-level))
+                    (folded-p (invisible-p (point-at-eol)))
+                    (from (plist-get msg :from)))
+                ;; place the subheader
+                (when folded-p (show-branches)) ; unfold if necessary
+                (org-end-of-meta-data)          ; skip property drawer
+                (org-insert-todo-heading 1)     ; insert a todo heading
+                (when (= (org-outline-level) lev) ; demote if necessary
+                  (org-do-demote))
+                ;; insert message and add deadline
+                (insert (concat "Respond to "
+                                "[[mu4e:msgid:"
+                                (plist-get msg :message-id) "]["
+                                (truncate-string-to-width
+                                 (or (caar from) (cdar from)) 25 nil nil t)
+                                " - "
+                                (truncate-string-to-width
+                                 (plist-get msg :subject) 40 nil nil t)
+                                "]] "))
+                (org-set-tags "@email")
+                (org-deadline nil
+                              (cond ((= arg 1) (format-time-string "%Y-%m-%d"))
+                                    ((= arg 4) "+1d")))
 
-              (org-update-parent-todo-statistics)
+                (org-update-parent-todo-statistics)
 
-              ;; refold as necessary
-              (if folded-p
-                  (progn
-                    (org-up-heading-safe)
-                    (hide-subtree))
-                (hide-entry))))))
-      ;; refile the message and update
-      ;; (cond ((eq major-mode 'mu4e-view-mode)
-      ;;        (mu4e-view-mark-for-refile))
-      ;;       ((eq major-mode 'mu4e-headers-mode)
-      ;;        (mu4e-headers-mark-for-refile)))
-      (message "Refiled \"%s\" and added to the agenda for %s"
-               (truncate-string-to-width
-                (plist-get msg :subject) 40 nil nil t)
-               (cond ((= arg 1) "today")
-                     ((= arg 4) "tomorrow")
-                     (t         "later"))))))
+                ;; refold as necessary
+                (if folded-p
+                    (progn
+                      (org-up-heading-safe)
+                      (hide-subtree))
+                  (hide-entry))))))
+        ;; refile the message and update
+        ;; (cond ((eq major-mode 'mu4e-view-mode)
+        ;;        (mu4e-view-mark-for-refile))
+        ;;       ((eq major-mode 'mu4e-headers-mode)
+        ;;        (mu4e-headers-mark-for-refile)))
+        (message "Refiled \"%s\" and added to the agenda for %s"
+                 (truncate-string-to-width
+                  (plist-get msg :subject) 40 nil nil t)
+                 (cond ((= arg 1) "today")
+                       ((= arg 4) "tomorrow")
+                       (t         "later")))))))
 
 ;;; archive
 ;;;; outline regexp
