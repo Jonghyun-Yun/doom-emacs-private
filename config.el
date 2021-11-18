@@ -126,8 +126,8 @@
 
 (after! projectile
   (projectile-add-known-project "/Users/yunj/Dropbox/emacs/.doom.d/")
-  (projectile-add-known-project "~/Dropbox/research/hnet-irt")
-  (projectile-add-known-project "~/Dropbox/research/hnet-irt/GEPS")
+  ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt")
+  ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt/GEPS")
   (projectile-add-known-project "/Users/yunj/Dropbox/research/lsjm-art/lsjm-draft/")
   ;; (projectile-add-known-project "~/Dropbox/research/lsjm-art")
   ;; (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
@@ -145,6 +145,8 @@
 ;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory))))
 ;; (add-to-list 'safe-local-eval-forms '(setq overleaf-directory (ffip-project-root)))
 
+(defvar overleaf-directory nil
+  "A project directory to sync using Overleaf.")
 (setq safe-local-eval-forms
       (append safe-local-eval-forms
               '((setq overleaf-directory (ffip-project-root))
