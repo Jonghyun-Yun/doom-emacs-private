@@ -191,3 +191,10 @@ Return nil otherwise."
           (replace-match (downcase (match-string 0)) t)
           (setq count (1+ count))))
       (message "Replaced %d occurances" count))))
+
+;;;###autoload
+(defun jyun/get-heading ()
+  "Get org-heading of a current section."
+  (interactive)
+  (let ((heading (nth 4 (org-heading-components))))
+                 (print heading)))

@@ -1,5 +1,12 @@
 ;;; ../Dropbox/emacs/.doom.d/local/mu4e-plus.el -*- lexical-binding: t; -*-
 
+;; (map! :map mu4e-view-mode-map
+;;       :nme "H-c" #'(lambda ()
+;;                    (interactive)
+;;                    (let* ((mu4e-subject (mu4e-message-field-at-point :subject)))
+;;                      (setq jyun/target-mu4e-subject mu4e-subject)
+;;                      (org-capture nil "ATE"))))
+
 (set-email-account! "Gmail"
                     '(
                       ( user-mail-address  . "jonghyun.yun@gmail.com"  )

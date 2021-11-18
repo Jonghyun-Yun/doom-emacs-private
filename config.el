@@ -145,15 +145,15 @@
 ;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory))))
 ;; (add-to-list 'safe-local-eval-forms '(setq overleaf-directory (ffip-project-root)))
 
-;; test comment
 (defvar overleaf-directory nil
   "A project directory to sync using Overleaf.")
-(setq safe-local-eval-forms
-      (append safe-local-eval-forms
-              '((setq overleaf-directory (ffip-project-root))
-                (add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-overleaf overleaf-directory)))
-                (add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory)))
-                )))
+
+;; (setq safe-local-eval-forms
+;;       (append safe-local-eval-forms
+;;               '((setq overleaf-directory (ffip-project-root))
+;;                 (add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-overleaf overleaf-directory)))
+;;                 (add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory)))
+;;                 )))
 
 ;;; LaTeX
 ;; (setq +latex-viewers '(skim pdf-tools))
@@ -234,22 +234,6 @@
         '((?B    "\\mathbb"        nil          t    nil  nil)
           (?a    "\\abs"           nil          t    nil  nil))))
 
-(defun jyun/cdlatex-insert-filename ()
-  "Insert a file name, with completion.
-The path to the file will be relative to the current directory if the file
-is in the current directory or a subdirectory.  Otherwise, the link will
-be as completed in the minibuffer (i.e. normally relative to the users
-HOME directory)."
-  (interactive)
-  (let ((file (read-file-name "File: " nil "")))
-    (let ((pwd (file-name-as-directory (expand-file-name "."))))
-      (cond
-       ((string-match (concat "^" (regexp-quote pwd) "\\(.+\\)")
-                      (expand-file-name file))
-        (message (match-string 1 (expand-file-name file))))
-       (t (message (expand-file-name file))))))
-  )
-
 ;;; ess
 (with-eval-after-load 'ess
   ;; disable assignment fix (= to <-)
@@ -280,7 +264,7 @@ HOME directory)."
   )
 
 ;; prevent some cases of Emacs flickering
-(add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
+;; (add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
 
 ;;; maximize frame at startup
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
@@ -319,17 +303,17 @@ HOME directory)."
   '(outline-8 :weight semi-bold)
   '(outline-9 :weight semi-bold))
 ;; latex faces
-;; (custom-set-faces!
-;;   '(font-latex-sectioning-0-face :inherit 'outline-1)
-;;   '(font-latex-sectioning-1-face :inherit 'outline-2)
-;;   '(font-latex-sectioning-2-face :inherit 'outline-3)
-;;   '(font-latex-sectioning-3-face :inherit 'outline-4)
-;;   '(font-latex-sectioning-4-face :inherit 'outline-5)
-;;   '(font-latex-sectioning-5-face :inherit 'outline-6)
-;;   '(font-latex-sectioning-6-face :inherit 'outline-7)
-;;   '(font-latex-sectioning-7-face :inherit 'outline-8)
-;;   )
-;; title
+(custom-set-faces!
+  '(font-latex-sectioning-0-face :inherit 'outline-1)
+  '(font-latex-sectioning-1-face :inherit 'outline-2)
+  '(font-latex-sectioning-2-face :inherit 'outline-3)
+  '(font-latex-sectioning-3-face :inherit 'outline-4)
+  '(font-latex-sectioning-4-face :inherit 'outline-5)
+  '(font-latex-sectioning-5-face :inherit 'outline-6)
+  '(font-latex-sectioning-6-face :inherit 'outline-7)
+  '(font-latex-sectioning-7-face :inherit 'outline-8)
+  )
+;; org-title
 (custom-set-faces!
   '(org-document-title :height 1.2))
 ;; deadlines in the error face when they're passed.
@@ -456,17 +440,20 @@ HOME directory)."
 ;; (setq mac-function-modifier 'hyper)  ; make Fn key do Hyper
 
 ;;; misc
-(defun jyun/get-heading ()
-  "Get org-heading of a current section."
-  (interactive)
-  (let ((heading (nth 4 (org-heading-components))))
-                 (print heading)))
-
 ;; ;; improve slow scrolling?
 ;; (use-package! hl-line+
 ;;   :config
 ;;   (hl-line-when-idle-interval 0.5)
 ;;   (toggle-hl-line-when-idle 1))
+
+(setq pdf-misc-print-program "lpr"
+      pdf-misc-print-program-args nil)
+
+(setq search-highlight t
+      search-whitespace-regexp ".*?")
+
+(setq doom-scratch-intial-major-mode 'lisp-interaction-mode
+      omnisharp-server-executable-path "/usr/local/bin/omnisharp")
 
 ;; no need: gcmh: https://github.com/emacsmirror/gcmh
 ;; (add-hook 'focus-out-hook #'garbage-collect)
@@ -666,22 +653,6 @@ HOME directory)."
   (evil-set-initial-state 'jabber-chat-mode 'insert))
 
 
-;; (eval-after-load 'paradox
-;;   (setq paradox-github-token (password-store-get "paradox/github-token"))
-;;   )
-
-;; (with-eval-after-load 'notmuch
-;;   (setq +notmuch-sync-backend 'mbsync
-;;         +notmuch-sync-command "mbsync -a"
-;;         +notmuch-mail-folder "~/.mail/")
-;;   )
-
-(setq
- aw-scope 'global
- doom-scratch-intial-major-mode 'lisp-interaction-mode
- omnisharp-server-executable-path "/usr/local/bin/omnisharp")
-
-
 ;; OS X ls not working with --quoting-style=literal
 (after! fd-dired
   (when IS-MAC
@@ -731,8 +702,6 @@ HOME directory)."
 ;;   )
 ;;
 
-(setq search-highlight t
-      search-whitespace-regexp ".*?")
 
 ;;;; matlab
 (after! all-the-icons
@@ -801,9 +770,6 @@ HOME directory)."
 ;; (byte-compile-file (expand-file-name "modules/private/reference/autoload/applescript.el" doom-private-dir))
 ;; (shell-command "find ~/.doom.d/ -type f -name \"*.elc\" -delete")
 
-;;; printer
-(setq pdf-misc-print-program "lpr"
-      pdf-misc-print-program-args nil)
 
 ;;; abbrev
 (use-package abbrev
@@ -835,13 +801,6 @@ HOME directory)."
                 )))
 
 
-;; (map! :map mu4e-view-mode-map
-;;       :nme "H-c" #'(lambda ()
-;;                    (interactive)
-;;                    (let* ((mu4e-subject (mu4e-message-field-at-point :subject)))
-;;                      (setq jyun/target-mu4e-subject mu4e-subject)
-;;                      (org-capture nil "ATE"))))
-
 ;;; elfeed
 (after! elfeed
   ;; number of concurrent fetches
@@ -870,6 +829,8 @@ HOME directory)."
       )
     )
 )
+
+;;;; elfeed org-capture
 (after! (org-capture elfeed)
   ;; elfeed capture
   (add-to-list 'org-capture-templates
@@ -905,6 +866,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;;                                              (elfeed-set-max-connections 3)
 ;;                                              (elfeed-update))))
 
+;;;; elfeed-score
 (use-package! elfeed-score
   :after elfeed
   :init
@@ -917,7 +879,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
     ;; scores displayed in the search buffer
     (setq elfeed-search-print-entry-function #'elfeed-score-print-entry)))
 
-;;; get pdf from elfeed entry
+;;;; get pdf from elfeed entry
 ;; https://tecosaur.github.io/emacs-config/config.html
 (after! elfeed-show
   (require 'url)
