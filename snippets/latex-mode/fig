@@ -5,9 +5,9 @@
 # uuid: fig              
 # --
 \begin{figure}[ht]
-    \centering
-    \includegraphics[width=${1:0.95\columnwidth}]{${2:"filename..."$(unless yas-modified-p (jyun/cdlatex-insert-filename))}}
-    \caption{${3:caption}}
-    \label{${4:"waiting for reftex-label call..."$(unless yas-modified-p (reftex-label nil 'dont-insert))}}
+  \centering
+  \includegraphics[width=${1:0.95\columnwidth}]{${2:"filename..."$(unless yas-modified-p (jyun/cdlatex-insert-filename))}}
+  \caption{${3:caption}}
+  \label{${4:"waiting for reftex-label call..."$(unless yas-modified-p (reftex-label nil 'dont-insert))}}
 \end{figure}
 $0

@@ -4,5 +4,5 @@
 # uuid: <C
 # --
 \begin{center}
-`%`$0
+        ${0:`%`}
 \end{center}

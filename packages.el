@@ -116,7 +116,7 @@
 
 ;;; elfeed
 (package! elfeed-score)
-(package! elfeed-web)
+(package! elfeed-web :disable t)
 
 ;;; jabber
 (package! jabber)

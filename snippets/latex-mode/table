@@ -12,7 +12,6 @@
   $0 & `(concat "\\" "\\")`
   \hline
   \end{tabular}
-  \caption{
-  \label{${2:"waiting for reftex-label call..."$(unless yas-modified-p (reftex-label nil 'dont-insert))}}
-  ${3:caption}}
+  \caption{${2:caption}}
+  \label{${3:"waiting for reftex-label call..."$(unless yas-modified-p (reftex-label nil 'dont-insert))}}
 \end{table}
