@@ -1132,6 +1132,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   )
 
 ;;; ace
+;; (setq avy-keys '(?n ?e ?j ?s ?t ?r ?l ?a))
 (after! ace-window
   (setq aw-scope 'global
         aw-dispatch-always t
@@ -1140,7 +1141,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;; C-w C-w ? to aw-show-dispath-help
 ;; (defvar aw-dispatch-alist
 ;;   '((?x aw-delete-window "Delete Window")
-;; 	(?m aw-swap-window "Swap Windows")
+;; 	(?w aw-swap-window "Swap Windows")
 ;; 	(?M aw-move-window "Move Window")
 ;; 	(?c aw-copy-window "Copy Window")
 ;; 	(?j aw-switch-buffer-in-window "Select Buffer")
@@ -1152,6 +1153,23 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;; 	(?o delete-other-windows "Delete Other Windows")
 ;; 	(?? aw-show-dispatch-help))
 ;;   "List of actions for `aw-dispatch-default'.")
+
+(setq aw-dispatch-alist
+      '((?x aw-delete-window "Delete Window")
+        (?w aw-swap-window "Swap Windows")
+        ;; (77 aw-move-window "Move Window")
+        (?c aw-copy-window "Copy Window")
+        (?k aw-switch-buffer-in-window "Select Buffer")
+        (?p aw-flip-window)
+        (?u aw-switch-buffer-other-window "Switch Buffer Other Window")
+        (?m aw-execute-command-other-window "Execute Command Other Window")
+        (?f aw-split-window-fair "Split Fair Window")
+        (?v aw-split-window-vert "Split Vert Window")
+        (?b aw-split-window-horz "Split Horz Window")
+        (?o delete-other-windows "Delete Other Windows")
+        (?T aw-transpose-frame "Transpose Frame")
+        (?? aw-show-dispatch-help)))
+
 
 ;;; ref documents in org
 (use-package! org-transclusion
