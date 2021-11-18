@@ -734,7 +734,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
   ;;     (load (expand-file-name "autoload/org" doom-private-dir))
   ;;     )
 
-
+;;; view org output
   (map! :map org-mode-map
         :localleader
         :desc "View exported file" "v" #'org-view-output-file)
@@ -762,19 +762,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
                                (find-file-noselect output-file))))
         (message "No exported file found"))))
 
-  (defun org-syntax-convert-keyword-case-to-lower ()
-    "Convert all #+KEYWORDS to #+keywords."
-    (interactive)
-    (save-excursion
-      (goto-char (point-min))
-      (let ((count 0)
-            (case-fold-search nil))
-        (while (re-search-forward "^[ \t]*#\\+[A-Z_]+" nil t)
-          (unless (s-matches-p "RESULTS" (match-string 0))
-            (replace-match (downcase (match-string 0)) t)
-            (setq count (1+ count))))
-        (message "Replaced %d occurances" count))))
-
+;;; org-latex fragment
   ;; https://stackoverflow.com/questions/43149119/how-to-regenerate-latex-fragments-in-org-mode
   (defvar my/org-latex-toggle-fragment-has-been-called nil
     "Tracks if org-toggle-latex-fragment has ever been called (updated locally).")
@@ -816,4 +804,17 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
     ;; means create images in the whole buffer instead of just the current section.
     ;; For many new images this will take time.
     (org-toggle-latex-fragment '(16)))
+
+  ;;; org-bael header
+  (defun jyun/set-org-babel-default-header-args:R ()
+    "Locally set `org-babel-default-header-args:R' for R session."
+    (let ((sname (concat "*R:" (projectile-project-name) "*")))
+      (unless (boundp 'org-babel-default-header-args:R)
+        (setq-local org-babel-default-header-args:R '((:export . "code") (:results . "output replace")
+                                                      )))
+      (setf (alist-get :export org-babel-default-header-args:R) "code")
+      (setf (alist-get :results org-babel-default-header-args:R) "output replace")
+      (setf (alist-get :session org-babel-default-header-args:R) sname)
+      )
+    )
   )
