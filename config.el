@@ -145,6 +145,7 @@
 ;; (add-to-list 'safe-local-eval-forms '(add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory))))
 ;; (add-to-list 'safe-local-eval-forms '(setq overleaf-directory (ffip-project-root)))
 
+;; test comment
 (defvar overleaf-directory nil
   "A project directory to sync using Overleaf.")
 (setq safe-local-eval-forms
