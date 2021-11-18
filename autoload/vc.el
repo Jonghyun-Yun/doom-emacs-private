@@ -5,7 +5,7 @@
 (defun jyun/setup-overleaf-pull ()
 "Add hook for local overleaf pull."
   (progn
-    (set-local overleaf-directory (file-truename (ffip-project-root)))
+    (setq-local overleaf-directory (file-truename (ffip-project-root)))
     (add-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-overleaf overleaf-directory))))
   )
 
@@ -13,7 +13,7 @@
 (defun jyun/setup-overleaf-push ()
 "Add hook for local overleaf push."
   (progn
-    (set-local overleaf-directory (file-truename (ffip-project-root)))
+    (setq-local overleaf-directory (file-truename (ffip-project-root)))
     (add-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory)))
     ))
 
@@ -21,21 +21,21 @@
 (defun jyun/magit-push-overleaf (directory)
   "Use Magit to stage files if there are unstaged ones.
 Call asynchronous magit processes to commit and push staged files (if exist) to origin"
-  (progn
-    (unless (featurep 'magit) (require 'magit))
-    (let ((default-directory (magit-toplevel directory)))
-      (when (or (magit-anything-unstaged-p) (magit-anything-staged-p))
-        (magit-with-toplevel
-          (magit-stage-1 "--u" magit-buffer-diff-files))
-        (let ((message (format "pushing changes %s" (format-time-string "%Y-%m-%d %H:%M:%S %Z"))))
-          (magit-run-git-async "commit" "-m" message)
-          (magit-run-git-async "push" "origin" "master")
-          )))))
+(when directory
+      (unless (featurep 'magit) (require 'magit))
+      (let ((default-directory (magit-toplevel directory)))
+        (when (or (magit-anything-unstaged-p) (magit-anything-staged-p))
+          (magit-with-toplevel
+            (magit-stage-1 "--u" magit-buffer-diff-files))
+          (let ((message (format "pushing changes %s" (format-time-string "%Y-%m-%d %H:%M:%S %Z"))))
+            (magit-run-git-async "commit" "-m" message)
+            (magit-run-git-async "push" "origin" "master")
+            )))))
 
 ;;;###autoload
 (defun jyun/magit-pull-overleaf (directory)
   "Run `git pull origin master' using asynchronous magit processes."
-  (progn
+  (when directory
     (unless (featurep 'magit) (require 'magit))
     (let ((default-directory (magit-toplevel directory)))
     (magit-run-git-async "pull" "origin" "master"))
