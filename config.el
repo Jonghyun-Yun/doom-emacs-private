@@ -315,6 +315,17 @@ HOME directory)."
   '(outline-6 :weight semi-bold :height 1.03)
   '(outline-8 :weight semi-bold)
   '(outline-9 :weight semi-bold))
+;; latex faces
+;; (custom-set-faces!
+;;   '(font-latex-sectioning-0-face :inherit 'outline-1)
+;;   '(font-latex-sectioning-1-face :inherit 'outline-2)
+;;   '(font-latex-sectioning-2-face :inherit 'outline-3)
+;;   '(font-latex-sectioning-3-face :inherit 'outline-4)
+;;   '(font-latex-sectioning-4-face :inherit 'outline-5)
+;;   '(font-latex-sectioning-5-face :inherit 'outline-6)
+;;   '(font-latex-sectioning-6-face :inherit 'outline-7)
+;;   '(font-latex-sectioning-7-face :inherit 'outline-8)
+;;   )
 ;; title
 (custom-set-faces!
   '(org-document-title :height 1.2))
@@ -1397,12 +1408,6 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   ;; (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
   ;; (define-key org-mode-map (kbd "C-c [ [") 'org-agenda-file-to-front)
   ;; (define-key org-mode-map (kbd "C-c [ ]") 'org-remove-file)
-  (map!
-    (:map org-mode-map
-     :g "C-c ]"       #'org-ref-insert-link
-     :g "C-c [ ["     #'org-agenda-file-to-front
-     :g "C-c [ ]"     #'org-remove-file)
-    )
 (when (featurep! :lang org +roam2)
   (setq bibtex-completion-notes-path +biblio-notes-path)
   (setq bibtex-completion-edit-notes-function 'orb-edit-notes-default)

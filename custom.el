@@ -33,17 +33,9 @@
       (:width . 700)
       (:height . 700))
      (reftex-default-bibliography "/Users/yunj/Zotero/myref.bib")
-     (org-babel-default-header-args:R
-      (:session . "*R-COR*")
-      (:export . "both")
-      (:results . "output replace"))
      (flyspell-mode . -1)
      (org-babel-default-header-args:R
       (:session . "*R-Org*")
-      (:export . "both")
-      (:results . "output replace"))
-     (org-babel-default-header-args:R
-      (:session . "*R-PIACC*")
       (:export . "both")
       (:results . "output replace"))
      (TeX-engine . xetex))))
