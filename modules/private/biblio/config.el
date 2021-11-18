@@ -118,6 +118,9 @@ In case of directory the path must end with a slash."
   ;;                                   ((featurep! :completion helm) 'helm)
   ;;                                   ((t                           'default))))
   :config
+  ;; https://github.com/org-roam/org-roam-bibtex/blob/master/doc/orb-manual.org
+  (setq orb-note-actions-interface 'hydra)
+
   (setq orb-insert-interface 'generic)
   ;; (setq orb-insert-interface (cond ((featurep! :completion ivy)  'ivy-bibtex)
   ;;                                  ((featurep! :completion helm) 'helm-bibtex)

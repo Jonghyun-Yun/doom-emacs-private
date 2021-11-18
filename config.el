@@ -416,7 +416,7 @@
 
 ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
 
-;;; ox
+;;;; ox
 (after! ox
   (setq
    org-beamer-theme "[progressbar=foot]metropolis"
@@ -431,6 +431,43 @@
   :defer t
   :after ox)
 
+;;;; ox-hugo
+(after! ox-hugo
+  (setq org-hugo-auto-set-lastmod t)
+  (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "csv"))
+
+;;;; easy org-clock correction
+(use-package! org-clock-convenience
+  :commands (org-clock-convenience-timestamp-up
+             org-clock-convenience-timestamp-down
+             org-clock-convenience-fill-gap
+             org-clock-convenience-fill-gap-both)
+  :init
+  (map! (:map org-agenda-mode-map
+         "<S-up>" #'org-clock-convenience-timestamp-up
+         "<S-down>" #'org-clock-convenience-timestamp-down
+         "H-o" #'org-clock-convenience-fill-gap
+         "H-e" #'org-clock-convenience-fill-gap-both)))
+
+;;;; ref documents in org
+(use-package! org-transclusion
+  :defer t
+  :commands (org-transclusion-mode)
+  :config
+  (setq org-transclusion-exclude-elements nil))
+
+;;;; org-noter
+(when (featurep! :lang org +noter)
+  (after! org-noter
+    ;; (org-noter-doc-split-fraction '(0.57 0.43))
+    (setq org-noter-always-create-frame t
+          org-noter-auto-save-last-location t)
+    (defun org-noter-init-pdf-view ()
+      (progn
+        (pdf-view-fit-width-to-window)
+        (pdf-view-auto-slice-minor-mode)))
+    (add-hook 'pdf-view-mode-hook 'org-noter-init-pdf-view)))
+
 ;;; modifier
 ;; NOTE: KARABINER
 ;; caps_lock: esc if alone, right_ctrl if hold_down
@@ -440,6 +477,12 @@
 ;; (setq mac-function-modifier 'hyper)  ; make Fn key do Hyper
 
 ;;; misc
+;; Kill current buffer (instead of asking first buffer name)
+;; (global-set-key (kbd "C-x k") 'kill-current-buffer)
+
+(setq outshine-use-speed-commands nil)
+;; (outshine-speed-command-help)
+
 ;; ;; improve slow scrolling?
 ;; (use-package! hl-line+
 ;;   :config
@@ -567,8 +610,8 @@
   ;; (setq which-key-replacement-alist nil )
   )
 
-
-;;; bibtex
+;;; reference
+;;;; biblio
 (setq! +biblio-pdf-library-dir "~/Zotero/storage/"
        +biblio-default-bibliography-files '("~/Zotero/myref.bib")
        ;; a single file for one long note / directory for many note files
@@ -602,204 +645,87 @@
 
 ;; (setq bibtex-completion-pdf-open-function 'org-open-file)
 
-;;; ui, window mangement
-;; Switch to the new window after splitting
-(setq evil-split-window-below t
-      evil-vsplit-window-right t)
-
-;; disable flycheck by default
-(remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
-;; replace it to update all cursor colors
-;; (remove-hook 'doom-load-theme-hook '+evil-update-cursor-color-h)
-
-;; overide the cursor color hook
-(defun +evil-update-cursor-color-h ()
-  (jyun/evil-state-cursors))
-
-;; ;; thinning all faces
-(after! doom-modeline
-  (add-hook! 'doom-load-theme-hook
-             ;; #'jyun/thin-all-faces
-             #'jyun/doom-modeline-height
-             ;; #'jyun/evil-state-cursors
-             ))
-
-(add-hook! 'window-setup-hook
-           ;; #'jyun/thin-all-faces
-           ;; #'jyun/evil-state-cursors
-           #'jyun/doom-modeline-height
-           )
-
-;;; Hangout
-(use-package jabber
-  :defer t
-  :commands (jabber-connect-all
-             jabber-connect)
-  :init
-  (add-hook 'jabber-post-connect-hooks 'spacemacs/jabber-connect-hook)
-  :config
-  ;; https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
-  ;; password encrypted in ~/doom-emacs/.local/etc/authinfo.gpg
-  ;; machine gmail.com login jonghyun.yun port xmpp password *******
-  ;; or I can use =pass=
-  ;; see https://github.com/DamienCassou/auth-source-pass
-  ;; pass insert jonghyun.yun@gmail.com:xmpp
-  (setq jabber-account-list '(("jonghyun.yun@gmail.com"
-                               (:network-server . "talk.google.com")
-                               (:connection-type . starttls))))
-
-  ;; (jabber-connect-all)
-  ;; (jabber-keepalive-start)
-  (evil-set-initial-state 'jabber-chat-mode 'insert))
+;;; org-ref V3
+(after! org-ref-ivy
+  (setq org-ref-insert-link-function 'org-ref-insert-link-hydra/body
+        org-ref-insert-cite-function 'org-ref-cite-insert-ivy
+        org-ref-insert-label-function 'org-ref-insert-label-link
+        org-ref-insert-ref-function 'org-ref-insert-ref-link
+        org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body)))
+  )
+(after! org-ref
+  ;; (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
+  ;; (define-key org-mode-map (kbd "C-c [ [") 'org-agenda-file-to-front)
+  ;; (define-key org-mode-map (kbd "C-c [ ]") 'org-remove-file)
+(when (featurep! :lang org +roam2)
+  (setq bibtex-completion-notes-path +biblio-notes-path)
+  (setq bibtex-completion-edit-notes-function 'orb-edit-notes-default)
+  (defun orb-edit-notes-default (keys)
+    "Open the notes associated with the entries in KEYS.
+Creates new notes where none exist yet."
+    (dolist (key keys)
+      (orb-org-ref-edit-note key)
+      )))
+(after! ivy-bibtex
+  (setq bibtex-completion-display-formats
+        '((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
+          (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
+          (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+          (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+          (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}")))))
 
 
-;; OS X ls not working with --quoting-style=literal
-(after! fd-dired
-  (when IS-MAC
-    (setq fd-dired-ls-option '("| xargs -0 gls -ld --quoting-style=literal" . "-ld"))
-    )
+;;; org-roam
+(after! org-roam
+  (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
+        +org-roam-open-buffer-on-find-file nil)
+  ;; (setq org-roam-graph-executable "neato")
+  ;; (setq org-roam-graph-extra-config '(("overlap" . "false")))
+  ;; (setq org-roam-dailies-capture-templates
+  ;;       '(("d" "default" entry
+  ;;          #'org-roam-capture--get-point
+  ;;          "* %?"
+  ;;          :file-name "daily/%<%Y-%m-%d_%A>"
+  ;;          :head "#+TITLE: %<%Y-%m-%d %A>\n\n[[roam:%<%Y-%m %B>]]\n\n")))
+  ;; the below bind `spare-keymap'. However, it cannot override default doom's binding
+  ;; (map! :leader "nrd" #'org-roam-dailies-map)
+  (setq org-roam-graph-executable
+        ;; "circo"
+        ;; "neato"
+        ;; "twopi"
+        "fdp"                           ; best for a large graph
+        ;; "sfdp"
+        ;; "patchwork"
+        ;; "osage"
+        )
+
+  ;; no numbers in org-roam buffers
+  (defadvice! doom-modeline--buffer-file-name-roam-aware-a (orig-fun)
+    :around #'doom-modeline-buffer-file-name ; takes no args
+    (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+        (replace-regexp-in-string
+         "\\(?:^\\|.*/\\)\\([0-9]\\{4\\}\\)\\([0-9]\\{2\\}\\)\\([0-9]\\{2\\}\\)[0-9]*-"
+         "🢔(\\1-\\2-\\3) "
+         (subst-char-in-string ? ?  buffer-file-name)
+         )
+      (funcall orig-fun)))
   )
 
-;; ibuffer and R buffers need to be manually added
-(advice-add 'ibuffer :around #'jyun/persp-add-buffer)
-(advice-add 'R :around #'jyun/persp-add-buffer)
+;;;; org-roam-ui
+(use-package! websocket
+    :after org-roam)
 
-;;; mixed pitch + zen
-(add-to-list '+zen-mixed-pitch-modes 'latex-mode)
-(setq +zen-text-scale 0.8) ;; The text-scaling level for writeroom-mode
-
-;;; ffip
-;; for doom-modeline
-(use-package! find-file-in-project
-  :defer t
-  :commands
-  (find-file-in-project
-   find-file-in-current-directory-by-selected)
-  :general (
-            [remap projectile-find-file] #'find-file-in-project
-            [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config)
-  :init
-  (map! :leader "SPC" #'find-file-in-project-by-selected)
-  :config
-  (setq ffip-use-rust-fd t)
-  ;; use ffip to find file in private config
-  ;; (advice-add 'doom/find-file-in-private-config :around #'jyun/find-file-in-private-config)
-  )
-
-;;; prog-mode
-;; (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-;; (add-hook 'prog-mode-hook #'highlight-parentheses-mode)
-
-;;;; lsp
-;; (setq
-;; lsp-prefer-flymake nil
-;; lsp-enable-file-watchers nil
-;; lsp-ui-sideline-enable nil
-;; lsp-enable-symbol-highlighting nil
-;; )
-;; (with-eval-after-load 'lsp-mode
-;;   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.ccls-cache\\'")
-;;   )
-;;
-
-
-;;;; matlab
-(after! all-the-icons
-  (setcdr (assoc "m" all-the-icons-extension-icon-alist)
-          (cdr (assoc "matlab" all-the-icons-extension-icon-alist))))
-
-(use-package matlab-mode
-  :defer t
-  :commands
-  (matlab-shell)
-  :mode ("\\.m\\'" . matlab-mode)
-  ;; :init
-  ;; (add-hook 'matlab-mode-hook 'prog-mode-hooks)
-  :config
-  ;; matlab
-  (setq matlab-return-add-semicolon t
-        matlab-shell-ask-MATLAB-for-completions t
-        matlab-shell-command-switches '("-nodesktop" "-nosplash"))
-
-  ;; ;; set column for matlab m file buffer
-  ;; (add-hook 'matlab-mode-hook
-  ;;           #'(lambda ()
-  ;;             (set-fill-column 100)))
-
-  ;; (load! "local/matlab-plus")
-  ;; (bind-keys :prefix-map matlab-mode-map
-  ;;            :prefix ""
-  ;;            ("[key]" . command))
-  ;; :bind (:map matlab-mode-map
-  ;;        ;; ("C-c C-l" . matlab-shell-run-line)
-  ;;        ;; ("C-M-x" . matlab-shell-run-region-or-paragraph-and-step)
-  ;;        ;; ("C-c C-n" . matlab-shell-run-line-and-step)
-  ;;        ;; ("C-c C-z" . matlab-show-matlab-shell-buffer)
-  ;;        )
-  )
-
-;;;; conda
-;; (with-eval-after-load 'conda
-;;   ;; (require 'conda)
-;;   (setq-default conda-anaconda-home "/opt/intel/oneapi/intelpython/latest"
-;;                 conda-env-home-directory "/Users/yunj/.conda"
-;;         )
-;;   ;; (conda-env-initialize-interactive-shells)
-;;   ;; (conda-env-initialize-eshell)
-;;   )
-;; (setq conda-env-autoactivate-mode t)
-
-;;;; debugging
-;; set this variable again after lsp
-;; otherwise the default evn-home will be used
-;; (when (featurep! :tools debugger +lsp)
-;;   (with-eval-after-load 'lsp-mode
-;;     (setq conda-env-home-directory "/Users/yunj/.conda")
-;;     ))
-
-;; information for debugging authentication in *Messages* buffer
-;; (setq auth-source-debug t)
-
-;;; languagetool
-;; (setq langtool-bin "languagetool")
-(setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/5.4/libexec/languagetool-server.jar")
-;; (setq langtool-http-server-host "localhost"
-;;       langtool-http-server-port 8081)
-
-;; (byte-recompile-directory (expand-file-name "~/.doom.d/") 0) ;
-;; (byte-compile-file (expand-file-name "modules/private/reference/autoload/applescript.el" doom-private-dir))
-;; (shell-command "find ~/.doom.d/ -type f -name \"*.elc\" -delete")
-
-
-;;; abbrev
-(use-package abbrev
-  :init
-  (setq-default abbrev-mode t)
-  ;; a hook funtion that sets the abbrev-table to org-mode-abbrev-table
-  ;; whenever the major mode is a text mode
-  (defun tec/set-text-mode-abbrev-table ()
-    (if (derived-mode-p 'text-mode)
-        (setq local-abbrev-table org-mode-abbrev-table)))
-  :commands abbrev-mode
-  :hook
-  (abbrev-mode . tec/set-text-mode-abbrev-table)
-  :config
-  (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir)
-        save-abbrevs 'silently))
-
-;;; online lookup
-(setq +lookup-provider-url-alist
-      (append +lookup-provider-url-alist
-              '(("Google Scholar"       "http://scholar.google.com/scholar?q=%s")
-                ("Crossref"             "http://search.crossref.org/?q=%s")
-                ("PubMed"               "http://www.ncbi.nlm.nih.gov/pubmed/?term=%s")
-                ("arXiv"                "https://arxiv.org/search/?query=%s&searchtype=all&abstracts=show&order=-announced_date_first&size=50")
-                ("Semantic Scholar"     "https://www.semanticscholar.org/search?q=%s")
-                ("Dictionary.com"       "http://dictionary.reference.com/browse/%s?s=t")
-                ("Thesaurus.com"        "http://www.thesaurus.com/browse/%s")
-                ("Merriam-Webster"      "https://www.merriam-webster.com/dictionary/%s")
-                )))
-
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
 
 ;;; elfeed
 (after! elfeed
@@ -925,111 +851,39 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
             (funcall file-view-function file))))))
   )
 
-;;; org-roam-server
-;; (use-package org-roam-server
-;;   ;; :after (org-roam server)
-;;   :defer t
-;;   :config
-;;   (setq org-roam-server-host "127.0.0.1"
-;;         org-roam-server-port 8080
-;;         org-roam-server-authenticate nil
-;;         org-roam-server-export-inline-images t
-;;         ;; org-roam-server-serve-files nil
-;;         ;; org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
-;;         ;; org-roam-server-network-poll t
-;;         ;; org-roam-server-network-arrows nil
-;;         org-roam-server-network-label-truncate t
-;;         org-roam-server-network-label-truncate-length 60
-;;         org-roam-server-network-label-wrap-length 20)
-;;   :init
-;;   (defun org-roam-server-open ()
-;;     "Ensure the server is active, then open the roam graph."
-;;     (interactive)
-;;     (progn
-;;       (if org-roam-server-mode t (org-roam-server-mode 1))
-;;       (browse-url (format "http://localhost:%d" org-roam-server-port))))
-;;   (map!
-;;    :leader "nrs" #'org-roam-server-open))
+;;; ui, window mangement
+;; Switch to the new window after splitting
+(setq evil-split-window-below t
+      evil-vsplit-window-right t)
+;; replace it to update all cursor colors
+;; (remove-hook 'doom-load-theme-hook '+evil-update-cursor-color-h)
 
-;;; org-roam
-(use-package! websocket
-    :after org-roam)
+;; overide the cursor color hook
+(defun +evil-update-cursor-color-h ()
+  (jyun/evil-state-cursors))
 
-(use-package! org-roam-ui
-  :after org-roam
-  :commands org-roam-ui-open
-  :hook (org-roam . org-roam-ui-mode)
-  :config
-  (require 'org-roam) ; in case autoloaded
-  (defun org-roam-ui-open ()
-    "Ensure the server is active, then open the roam graph."
-    (interactive)
-    (unless org-roam-ui-mode (org-roam-ui-mode 1))
-    (browse-url (format "http://localhost:%d" org-roam-ui-port))))
+;; ;; thinning all faces
+(after! doom-modeline
+  (add-hook! 'doom-load-theme-hook
+             ;; #'jyun/thin-all-faces
+             #'jyun/doom-modeline-height
+             ;; #'jyun/evil-state-cursors
+             ))
 
-(after! org-roam
-  (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
-        +org-roam-open-buffer-on-find-file nil)
-  ;; (setq org-roam-graph-executable "neato")
-  ;; (setq org-roam-graph-extra-config '(("overlap" . "false")))
-  ;; (setq org-roam-dailies-capture-templates
-  ;;       '(("d" "default" entry
-  ;;          #'org-roam-capture--get-point
-  ;;          "* %?"
-  ;;          :file-name "daily/%<%Y-%m-%d_%A>"
-  ;;          :head "#+TITLE: %<%Y-%m-%d %A>\n\n[[roam:%<%Y-%m %B>]]\n\n")))
-  ;; the below bind `spare-keymap'. However, it cannot override default doom's binding
-  ;; (map! :leader "nrd" #'org-roam-dailies-map)
-  (setq org-roam-graph-executable
-        ;; "circo"
-        ;; "neato"
-        ;; "twopi"
-        "fdp"                           ; best for a large graph
-        ;; "sfdp"
-        ;; "patchwork"
-        ;; "osage"
-        )
+(add-hook! 'window-setup-hook
+           ;; #'jyun/thin-all-faces
+           ;; #'jyun/evil-state-cursors
+           #'jyun/doom-modeline-height
+           )
 
-  ;; no numbers in org-roam buffers
-  (defadvice! doom-modeline--buffer-file-name-roam-aware-a (orig-fun)
-    :around #'doom-modeline-buffer-file-name ; takes no args
-    (if (s-contains-p org-roam-directory (or buffer-file-name ""))
-        (replace-regexp-in-string
-         "\\(?:^\\|.*/\\)\\([0-9]\\{4\\}\\)\\([0-9]\\{2\\}\\)\\([0-9]\\{2\\}\\)[0-9]*-"
-         "🢔(\\1-\\2-\\3) "
-         (subst-char-in-string ? ?  buffer-file-name)
-         )
-      (funcall orig-fun)))
-  )
 
-;;; dired "J"
-;; replace `dired-goto-file' with equivalent helm and ivy functions:
-;; `helm-find-files' fuzzy matching and other features
-;; `counsel-find-file' more `M-o' actions
-(with-eval-after-load 'dired
-  (evil-define-key 'normal dired-mode-map "J"
-    (cond ((featurep! :completion helm) 'helm-find-files)
-          ((featurep! :completion ivy) 'counsel-find-file)
-          ((featurep! :completion vertico) 'find-file))))
+;;; coding
+;; disable flycheck by default
+(remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
 
-;;; ivy
-;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
-;; (remove-hook 'ivy-mode-hook #'ivy-rich-mode)
-;; (setq ivy-height 15)
-(after! ivy-posframe
-  (setq ivy-posframe-parameters
-        `((min-width . ;; 90
-                     20)
-          (min-height . ,ivy-height)
-          ;; (left-fringe . 8)
-          ;; (right-fringe . 8)
-          ))
-  ;; (setq ivy-posframe-height-alist '((swiper . 10)))
-  (pushnew! ivy-posframe-display-functions-alist
-            '(counsel-M-x . ivy-display-function-fallback)
-            '(counsel-describe-variable . ivy-display-function-fallback)
-            '(swiper . ivy-display-function-fallback))
-  )
+;; ibuffer and R buffers need to be manually added
+(advice-add 'ibuffer :around #'jyun/persp-add-buffer)
+(advice-add 'R :around #'jyun/persp-add-buffer)
 
 ;;; conda
 (use-package! conda
@@ -1047,9 +901,147 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
                'append)
   )
 
-;; ;; ;; ;; python lsp
-;; (after! lsp-python-ms
-;;   (set-lsp-priority! 'mspyls 1))
+;;;; matlab
+(after! all-the-icons
+  (setcdr (assoc "m" all-the-icons-extension-icon-alist)
+          (cdr (assoc "matlab" all-the-icons-extension-icon-alist))))
+
+(use-package matlab-mode
+  :defer t
+  :commands
+  (matlab-shell)
+  :mode ("\\.m\\'" . matlab-mode)
+  ;; :init
+  ;; (add-hook 'matlab-mode-hook 'prog-mode-hooks)
+  :config
+  ;; matlab
+  (setq matlab-return-add-semicolon t
+        matlab-shell-ask-MATLAB-for-completions t
+        matlab-shell-command-switches '("-nodesktop" "-nosplash"))
+
+  ;; ;; set column for matlab m file buffer
+  ;; (add-hook 'matlab-mode-hook
+  ;;           #'(lambda ()
+  ;;             (set-fill-column 100)))
+
+  ;; (load! "local/matlab-plus")
+  ;; (bind-keys :prefix-map matlab-mode-map
+  ;;            :prefix ""
+  ;;            ("[key]" . command))
+  ;; :bind (:map matlab-mode-map
+  ;;        ;; ("C-c C-l" . matlab-shell-run-line)
+  ;;        ;; ("C-M-x" . matlab-shell-run-region-or-paragraph-and-step)
+  ;;        ;; ("C-c C-n" . matlab-shell-run-line-and-step)
+  ;;        ;; ("C-c C-z" . matlab-show-matlab-shell-buffer)
+  ;;        )
+  )
+
+;;; Hangout
+(use-package jabber
+  :defer t
+  :commands (jabber-connect-all
+             jabber-connect)
+  :init
+  (add-hook 'jabber-post-connect-hooks 'spacemacs/jabber-connect-hook)
+  :config
+  ;; https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
+  ;; password encrypted in ~/doom-emacs/.local/etc/authinfo.gpg
+  ;; machine gmail.com login jonghyun.yun port xmpp password *******
+  ;; or I can use =pass=
+  ;; see https://github.com/DamienCassou/auth-source-pass
+  ;; pass insert jonghyun.yun@gmail.com:xmpp
+  (setq jabber-account-list '(("jonghyun.yun@gmail.com"
+                               (:network-server . "talk.google.com")
+                               (:connection-type . starttls))))
+
+  ;; (jabber-connect-all)
+  ;; (jabber-keepalive-start)
+  (evil-set-initial-state 'jabber-chat-mode 'insert))
+
+;;; ffip
+;; for doom-modeline
+(use-package! find-file-in-project
+  :defer t
+  :commands
+  (find-file-in-project
+   find-file-in-current-directory-by-selected)
+  :general (
+            [remap projectile-find-file] #'find-file-in-project
+            [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config)
+  :init
+  (map! :leader "SPC" #'find-file-in-project-by-selected)
+  :config
+  (setq ffip-use-rust-fd t)
+  ;; use ffip to find file in private config
+  ;; (advice-add 'doom/find-file-in-private-config :around #'jyun/find-file-in-private-config)
+  )
+
+;;; writing
+(use-package! lorem-ipsum
+  :defer t
+  :commands (lorem-ipsum-insert-paragraphs
+             lorem-ipsum-insert-sentences
+             lorem-ipsum-insert-list
+             ))
+
+;;; languagetool
+;; (setq langtool-bin "languagetool")
+(setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/5.4/libexec/languagetool-server.jar")
+;; (setq langtool-http-server-host "localhost"
+;;       langtool-http-server-port 8081)
+
+;; (byte-recompile-directory (expand-file-name "~/.doom.d/") 0) ;
+;; (byte-compile-file (expand-file-name "modules/private/reference/autoload/applescript.el" doom-private-dir))
+;; (shell-command "find ~/.doom.d/ -type f -name \"*.elc\" -delete")
+
+
+;;; abbrev
+(use-package abbrev
+  :init
+  (setq-default abbrev-mode t)
+  ;; a hook funtion that sets the abbrev-table to org-mode-abbrev-table
+  ;; whenever the major mode is a text mode
+  (defun tec/set-text-mode-abbrev-table ()
+    (if (derived-mode-p 'text-mode)
+        (setq local-abbrev-table org-mode-abbrev-table)))
+  :commands abbrev-mode
+  :hook
+  (abbrev-mode . tec/set-text-mode-abbrev-table)
+  :config
+  (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir)
+        save-abbrevs 'silently))
+
+;;; online lookup
+(setq +lookup-provider-url-alist
+      (append +lookup-provider-url-alist
+              '(("Google Scholar"       "http://scholar.google.com/scholar?q=%s")
+                ("Crossref"             "http://search.crossref.org/?q=%s")
+                ("PubMed"               "http://www.ncbi.nlm.nih.gov/pubmed/?term=%s")
+                ("arXiv"                "https://arxiv.org/search/?query=%s&searchtype=all&abstracts=show&order=-announced_date_first&size=50")
+                ("Semantic Scholar"     "https://www.semanticscholar.org/search?q=%s")
+                ("Dictionary.com"       "http://dictionary.reference.com/browse/%s?s=t")
+                ("Thesaurus.com"        "http://www.thesaurus.com/browse/%s")
+                ("Merriam-Webster"      "https://www.merriam-webster.com/dictionary/%s")
+                )))
+
+
+;;; dired "J"
+;; replace `dired-goto-file' with equivalent helm and ivy functions:
+;; `helm-find-files' fuzzy matching and other features
+;; `counsel-find-file' more `M-o' actions
+(with-eval-after-load 'dired
+  (evil-define-key 'normal dired-mode-map "J"
+    (cond ((featurep! :completion helm) 'helm-find-files)
+          ((featurep! :completion ivy) 'counsel-find-file)
+          ((featurep! :completion vertico) 'find-file))))
+
+;; OS X ls not working with --quoting-style=literal
+(after! fd-dired
+  (when IS-MAC
+    (setq fd-dired-ls-option '("| xargs -0 gls -ld --quoting-style=literal" . "-ld"))
+    )
+  )
+
 
 ;;; no evil-snipe
 (after! evil-snipe
@@ -1057,12 +1049,14 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   ;; (pushnew! evil-snipe-disabled-modes 'reftex-select-label-mode 'reftex-select-bib-mode)
   )
 
+;;; ctrlf
 (use-package! ctrlf
   :hook
   (after-init . ctrlf-mode)
   :bind
   ("C-s-s" . ctrlf-forward-symbol-at-point))
 
+;;; easy-kill
 ;; https://github.com/leoliu/easy-kill
 (use-package! easy-kill
   :bind*
@@ -1075,18 +1069,6 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
       :map easy-kill-base-map
       :g "C-w" #'easy-kill-region)
 
-;;; easy clock correction
-(use-package! org-clock-convenience
-  :commands (org-clock-convenience-timestamp-up
-             org-clock-convenience-timestamp-down
-             org-clock-convenience-fill-gap
-             org-clock-convenience-fill-gap-both)
-  :init
-  (map! (:map org-agenda-mode-map
-         "<S-up>" #'org-clock-convenience-timestamp-up
-         "<S-down>" #'org-clock-convenience-timestamp-down
-         "H-o" #'org-clock-convenience-fill-gap
-         "H-e" #'org-clock-convenience-fill-gap-both)))
 
 ;;; avy
 (after! avy  
@@ -1096,7 +1078,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   (setq lispy-avy-keys avy-keys)
   )
 
-;;; ace
+;;; ace-window
 ;; (setq avy-keys '(?n ?e ?j ?s ?t ?r ?l ?a))
 (after! ace-window
   (setq aw-scope 'global
@@ -1134,44 +1116,13 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
         (?T aw-transpose-frame "Transpose Frame")
         (?? aw-show-dispatch-help)))
 
-
-;;; ref documents in org
-(use-package! org-transclusion
-  :defer t
-  :commands (org-transclusion-mode)
-  :config
-  (setq org-transclusion-exclude-elements nil))
-
-;;; org-noter
-(after! org-noter
-  ;; (org-noter-doc-split-fraction '(0.57 0.43))
-  (setq org-noter-always-create-frame t
-        org-noter-auto-save-last-location t)
-  (defun org-noter-init-pdf-view ()
-    (progn
-      (pdf-view-fit-width-to-window)
-      (pdf-view-auto-slice-minor-mode)))
-  (add-hook 'pdf-view-mode-hook 'org-noter-init-pdf-view))
-
+;;; git
 (use-package! git-link
   :commands
   (git-link git-link-commit git-link-homepage)
   :custom
   (git-link-use-commit t)
   (git-link-open-in-browser t))
-
-(use-package! lorem-ipsum
-  :defer t
-  :commands (lorem-ipsum-insert-paragraphs
-             lorem-ipsum-insert-sentences
-             lorem-ipsum-insert-list
-             ))
-
-;; Kill current buffer (instead of asking first buffer name)
-;; (global-set-key (kbd "C-x k") 'kill-current-buffer)
-
-(setq outshine-use-speed-commands nil)
-;; (outshine-speed-command-help)
 
 ;;; graphviz
 (use-package! graphviz-dot-mode
@@ -1185,6 +1136,28 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 (use-package! company-graphviz-dot
   :after graphviz-dot-mode)
 
+;;; ivy
+;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
+(when (featurep! :completion ivy)
+  ;; (remove-hook 'ivy-mode-hook #'ivy-rich-mode)
+  ;; (setq ivy-height 15)
+  (after! ivy-posframe
+    (setq ivy-posframe-parameters
+          `((min-width . ;; 90
+                       20)
+            (min-height . ,ivy-height)
+            ;; (left-fringe . 8)
+            ;; (right-fringe . 8)
+            ))
+    ;; (setq ivy-posframe-height-alist '((swiper . 10)))
+    (pushnew! ivy-posframe-display-functions-alist
+              '(counsel-M-x . ivy-display-function-fallback)
+              '(counsel-describe-variable . ivy-display-function-fallback)
+              '(swiper . ivy-display-function-fallback))
+    ))
+
+
+;;; regexp
 (use-package! visual-regexp
   ;; :commands (vr/replace vr/query-replace vr/isearch-backward vr/isearch-forward)
   :commands (vr/replace vr/query-replace)
@@ -1199,7 +1172,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   ;; (define-key esc-map (kbd "C-s") 'vr/isearch-forward) ;; C-M-s)
   )
 
-;; ;;; disable popup
+;;; disable popup
 ;; (after! warnings
 ;;   (add-to-list 'warning-suppress-types '(undo discard-info)))
 
@@ -1210,8 +1183,8 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
         ;; evil-kill-on-visual-paste nil
         )) ; Don't put overwritten text in the kill ring
 
-;;; emacs binding in insert mode
-;;; don't work. probably should be used override this
+;;;; emacs binding in insert mode
+;; don't work. probably should be used override this
 ;; (after! evil
 ;;   ;; use emacs bindings in insert-mode
 ;;   (setq evil-disable-insert-state-bindings t
@@ -1221,24 +1194,6 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
       :i "C-n" 'next-line
       ;; :i "C-u" 'universal-argument
       )
-
-;;; outline regexp
-;; goal: use /// or ### for outline (cannot make it work. error in consult-outline when used with outshine-mode)
-;; outshine-mode is what I need for outline fonts
-;; (defun jyun/cc-mode-outline-regexp ()
-;;   (set (make-local-variable 'outline-regexp) "//\\(?:/[^#]\\|\\*+\\)")
-;;   )
-;; (add-hook! 'c-mode-hook #'jyun/cc-mode-outline-regexp)
-;; (add-hook! 'c++-mode-hook #'jyun/cc-mode-outline-regexp)
-;; (defun jyun/ess-r-mode-outline-regexp ()
-;;   (set (make-local-variable 'outline-regexp) "##\\(?:#[^#]\\|\\*+\\)")
-;;   )
-;; (add-hook! 'ess-r-mode-hook #'jyun/ess-r-mode-outline-regexp)
-
-;;; ox-hugo
-(after! ox-hugo
-  (setq org-hugo-auto-set-lastmod t)
-  (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "csv"))
 
 ;;; treemac
 (after! treemacs
@@ -1289,11 +1244,34 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
           "*/_region_.log"
           "*/_region_.tex")))
 
-;;; orb
-;; https://github.com/org-roam/org-roam-bibtex/blob/master/doc/orb-manual.org
-(after! org-roam
-  (setq orb-note-actions-interface 'hydra)
- )
+;;; vertigo posframe
+(use-package! vertico-posframe
+  :config
+  (vertico-posframe-mode 1)
+  (setq vertico-posframe-parameters
+        '((left-fringe . 8)
+          (right-fringe . 8)))
+  )
+
+;;; mixed-pitch-mode
+(defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
+  "Modes that `mixed-pitch-mode' should be enabled in, but only after UI initialisation.")
+(defun init-mixed-pitch-h ()
+  "Hook `mixed-pitch-mode' into each mode in `mixed-pitch-modes'.
+Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
+  (when (memq major-mode mixed-pitch-modes)
+    (mixed-pitch-mode 1))
+  (dolist (hook mixed-pitch-modes)
+    (add-hook (intern (concat (symbol-name hook) "-hook")) #'mixed-pitch-mode)))
+;; (add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
+
+;;;; mixed pitch + zen
+(add-to-list '+zen-mixed-pitch-modes 'latex-mode)
+(setq +zen-text-scale 0.8) ;; The text-scaling level for writeroom-mode
+
+;;; yasnippets
+(after! yasnippet
+  (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
 
 ;;; temporary fixes
 ;;;; eldoc error
@@ -1318,52 +1296,6 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
               (letf! ((#'+org--restart-mode-h #'ignore))
                 (apply fun args))))
 
-;; https://github.com/hlissner/doom-emacs/issues/5374
-;; key-binding conflict
-;; resolved
-;; (setq iedit-toggle-key-default nil)
-
-;; ;; https://github.com/org-roam/org-roam-bibtex/pull/87
-;; (after! org-roam-bibtex
-;;   (remove-hook 'org-capture-after-finalize-hook
-;;                #'org-roam-capture--find-file-h)
-                                        ;   )
-
-;;;; bibtex-actions (for vertigo)
-(defvar jyun/bibs '("~/Zotero/myref.bib"))
-;; (after! org (setq org-cite-global-bibliography jyun/bibs))
-
-;; (use-package bibtex-actions
-;;   :bind (("C-c b" . bibtex-actions-insert-citation)
-;;          :map minibuffer-local-map
-;;          ("M-b" . bibtex-actions-insert-preset))
-;;   :after embark
-;;   :config
-;;   ;; Make the 'bibtex-actions' bindings and targets available to `embark'.
-;;   (add-to-list 'embark-target-finders 'bibtex-actions-citation-key-at-point)
-;;   (add-to-list 'embark-keymap-alist '(bibtex . bibtex-actions-map))
-;;   (add-to-list 'embark-keymap-alist '(citation-key . bibtex-actions-buffer-map))
-;;   ;; Make sure to set this to ensure 'bibtex-actions-open-link' command works correctly.
-;;   (bibtex-completion-additional-search-fields '(doi url))
-;;   (bibtex-completion-bibliography jyun/bibliography))
-
-;; ;; use consult-completing-read for enhanced interface
-;; (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
-
-
-;;;; mu4e fixes
-;; (after! mu4e
-;;   (remove-hook 'kill-emacs-hook #'+mu4e-lock-file-delete-maybe)
-;;   (advice-remove 'mu4e~start #'+mu4e-lock-start)
-;;   (advice-remove 'mu4e-quit #'+mu4e-lock-file-delete-maybe)
-
-;; https://github.com/hlissner/doom-emacs/issues/5027
-;; (map! :map mu4e-view-mode-map
-      ;; :ne "A" #'mu4e-view-mime-part-action
-      ;; :ne "p" #'mu4e-view-save-attachments
-      ;; )
-;; )
-
 ;;;; dap-mode
 ;; rigger the hydra when the program hits a breakpoint
 (add-hook 'dap-stopped-hook
@@ -1378,87 +1310,8 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   (when (bound-and-true-p flycheck-mode)
     (flycheck-buffer)))
 
-;;; org-ref V3
-(after! org-ref-ivy
-  (setq org-ref-insert-link-function 'org-ref-insert-link-hydra/body
-        org-ref-insert-cite-function 'org-ref-cite-insert-ivy
-        org-ref-insert-label-function 'org-ref-insert-label-link
-        org-ref-insert-ref-function 'org-ref-insert-ref-link
-        org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body)))
-  )
-(after! org-ref
-  ;; (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
-  ;; (define-key org-mode-map (kbd "C-c [ [") 'org-agenda-file-to-front)
-  ;; (define-key org-mode-map (kbd "C-c [ ]") 'org-remove-file)
-(when (featurep! :lang org +roam2)
-  (setq bibtex-completion-notes-path +biblio-notes-path)
-  (setq bibtex-completion-edit-notes-function 'orb-edit-notes-default)
-  (defun orb-edit-notes-default (keys)
-    "Open the notes associated with the entries in KEYS.
-Creates new notes where none exist yet."
-    (dolist (key keys)
-      (orb-org-ref-edit-note key)
-      )))
-(after! ivy-bibtex
-  (setq bibtex-completion-display-formats
-        '((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
-          (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
-          (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-          (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-          (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))))
-
-;; https://github.com/jkitchin/org-ref/issues/928
-(defun j-org-ref-valid-keys ()
-  "Return a list of valid bibtex keys for this buffer.
-This is used a lot in `org-ref-cite-activate' so it needs to be
-fast, but also up to date."
-
-  ;; this seems to be needed, but we don't want to do this every time
-  (unless bibtex-completion-display-formats-internal
-    (bibtex-completion-init))
-
-  (let ((files (org-ref-find-bibliography)))
-    (if (seq-every-p 'identity (cl-loop for file in files
-					collect (assoc file bibtex-completion-cache)))
-	;; We have a cache for each file
-	(cl-loop for entry in
-		 (cl-loop
-		  for file in files
-		  append (cddr (assoc file bibtex-completion-cache)))
-		 collect (cdr (assoc "=key=" (cdr entry))))
-      ;; you need to get a cache
-      (let ((bibtex-completion-bibliography files))
-	(cl-loop for entry in (bibtex-completion-candidates)
-		 collect
-		 (cdr (assoc "=key=" (cdr entry))))))))
-
-(advice-add 'org-ref-valid-keys :override #'j-org-ref-valid-keys)
-)
-
-
-;;; vertigo posframe
-(use-package! vertico-posframe
-  :config
-  (vertico-posframe-mode 1)
-  (setq vertico-posframe-parameters
-        '((left-fringe . 8)
-          (right-fringe . 8)))
-  )
-
-;;; mixed-pitch-mode
-(defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
-  "Modes that `mixed-pitch-mode' should be enabled in, but only after UI initialisation.")
-(defun init-mixed-pitch-h ()
-  "Hook `mixed-pitch-mode' into each mode in `mixed-pitch-modes'.
-Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
-  (when (memq major-mode mixed-pitch-modes)
-    (mixed-pitch-mode 1))
-  (dolist (hook mixed-pitch-modes)
-    (add-hook (intern (concat (symbol-name hook) "-hook")) #'mixed-pitch-mode)))
-;; (add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
 
 ;;; mu4e tempo fix
-(setq! +org-capture-emails-file "inbox.org")
 (defun +mu4e/capture-msg-to-agenda (arg)
   "Refile a message and add a entry in `+org-capture-emails-file' with a
 deadline.  Default deadline is today.  With one prefix, deadline
@@ -1479,10 +1332,10 @@ is tomorrow.  With two prefixes, select the deadline."
                   (folded-p (invisible-p (point-at-eol)))
                   (from (plist-get msg :from)))
               ;; place the subheader
-              (when folded-p (show-branches))    ; unfold if necessary
-              (org-end-of-meta-data) ; skip property drawer
-              (org-insert-todo-heading 1)        ; insert a todo heading
-              (when (= (org-outline-level) lev)  ; demote if necessary
+              (when folded-p (show-branches))   ; unfold if necessary
+              (org-end-of-meta-data)            ; skip property drawer
+              (org-insert-todo-heading 1)       ; insert a todo heading
+              (when (= (org-outline-level) lev) ; demote if necessary
                 (org-do-demote))
               ;; insert message and add deadline
               (insert (concat "Respond to "
@@ -1519,7 +1372,43 @@ is tomorrow.  With two prefixes, select the deadline."
                      ((= arg 4) "tomorrow")
                      (t         "later"))))))
 
-;;; editorconfig
+;;; archive
+;;;; outline regexp
+;; goal: use /// or ### for outline (cannot make it work. error in consult-outline when used with outshine-mode)
+;; outshine-mode is what I need for outline fonts
+;; (defun jyun/cc-mode-outline-regexp ()
+;;   (set (make-local-variable 'outline-regexp) "//\\(?:/[^#]\\|\\*+\\)")
+;;   )
+;; (add-hook! 'c-mode-hook #'jyun/cc-mode-outline-regexp)
+;; (add-hook! 'c++-mode-hook #'jyun/cc-mode-outline-regexp)
+;; (defun jyun/ess-r-mode-outline-regexp ()
+;;   (set (make-local-variable 'outline-regexp) "##\\(?:#[^#]\\|\\*+\\)")
+;;   )
+;; (add-hook! 'ess-r-mode-hook #'jyun/ess-r-mode-outline-regexp)
+
+;;;; conda
+;; (with-eval-after-load 'conda
+;;   ;; (require 'conda)
+;;   (setq-default conda-anaconda-home "/opt/intel/oneapi/intelpython/latest"
+;;                 conda-env-home-directory "/Users/yunj/.conda"
+;;         )
+;;   ;; (conda-env-initialize-interactive-shells)
+;;   ;; (conda-env-initialize-eshell)
+;;   )
+;; (setq conda-env-autoactivate-mode t)
+
+;;;; debugging
+;; set this variable again after lsp
+;; otherwise the default evn-home will be used
+;; (when (featurep! :tools debugger +lsp)
+;;   (with-eval-after-load 'lsp-mode
+;;     (setq conda-env-home-directory "/Users/yunj/.conda")
+;;     ))
+
+;; information for debugging authentication in *Messages* buffer
+;; (setq auth-source-debug t)
+
+;;;; editorconfig
 ;; editorconfig forces `require-final-newline' and `mode-require-final-newline' to `t
 ;; to remove a terminal newline, turn off editorconfig and set the values to t
 ;; or one can edit .editorconfig file
@@ -1529,7 +1418,3 @@ is tomorrow.  With two prefixes, select the deadline."
 ;;                                   (editorconfig-mode -1)
 ;;                                   (set (make-local-variable 'require-final-newline) nil))
 ;;                                 ))
-
-;;; yasnippets
-(after! yasnippet
-  (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
