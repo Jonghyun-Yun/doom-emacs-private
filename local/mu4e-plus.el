@@ -84,6 +84,8 @@
   )
 
 (with-eval-after-load 'mu4e
+  (setq! +org-capture-emails-file "inbox.org")
+
   ;; set mu4e-use-maildirs-extension-load to be evaluated after mu4e has been loaded.
   (require 'mu4e-maildirs-extension)
   (mu4e-maildirs-extension)
