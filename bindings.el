@@ -8,25 +8,29 @@
 ;; )
 
 ;;; org
-(after! evil-org
-  (map!  (:map evil-org-mode-map
-          ;; disabling navigate table cells (from insert-mode)
-          :i  "C-l"    nil
-          :i  "C-h"    nil
-          :i  "C-k"    nil
-          :i  "C-j"    nil)))
+(map!  (:after evil-org
+        :map evil-org-mode-map
+        ;; disabling navigate table cells (from insert-mode)
+        :i  "C-l"    nil
+        :i  "C-h"    nil
+        :i  "C-k"    nil
+        :i  "C-j"    nil)
+       (:map org-mode-map
+        :n "C-k"       #'org-kill-line
+        :n "C-j"       #'org-return)
+
+       ;; insert-mode C-k
+       :i "C-k" #'kill-line
+
+       ;; Org commands
+       :g "C-c a" #'org-agenda
+       :g "C-c c" #'org-capture
+       :g "C-c l" #'org-store-link)
+
 (map!
- (:map org-mode-map
-  :n "C-k"       #'org-kill-line
-  :n "C-j"       #'org-return)
-
- ;; insert-mode C-k
- :i "C-k"             #'kill-line
-
- ;; Org commands
- :g "C-c a"           #'org-agenda
- :g "C-c c"           #'org-capture
- :g "C-c l"           #'org-store-link
+ :map org-tree-slide-mode-map
+ :g "C-?" #'org-tree-slide-content
+ :g "C-:" #'jyun/org-present-latex-preview
  )
 
 ;;; gtd
@@ -50,7 +54,42 @@
            ;; agenda
            ("g" . consult-org-agenda))
 
+;;; org-roam
+(map!
+ :g
+ "C-c n r" #'org-roam-buffer-toggle
+ "C-c n f" #'org-roam-node-find
+ "C-c n u" #'org-roam-ui-open
+ "C-c n g" #'org-roam-graph
+ "C-c n i" #'org-roam-node-insert
+ :leader "n r u" #'org-roam-ui-open
+ ;; (:map org-mode-map
+ ;;  :g
+ ;;  ;; "C-c n I" #'org-roam-insert-immediate
+ ;;  )
+ )
 
+;;;; org-roam-dailies
+;; deprecated: use default one
+;; (map! :leader
+;;       (:prefix-map ("n" . "notes")
+;;        (:when (featurep! :lang org +roam)
+;;         (:prefix ("r" . "roam")
+;;          (:prefix ("d" . "by date")
+;;           "." #'org-roam-dailies-find-directory
+;;           "b" #'org-roam-dailies-find-previous-note
+;;           "f" #'org-roam-dailies-find-next-note
+;;           "n" #'org-roam-dailies-capture-today
+;;           "v" #'org-roam-dailies-capture-date)))))
+
+;;; org-ref
+  (map!
+    (:map org-mode-map
+     :after orf-ref
+     :g "C-c ]"       #'org-ref-insert-link
+     :g "C-c [ ["     #'org-agenda-file-to-front
+     :g "C-c [ ]"     #'org-remove-file)
+    )
 
 ;;; evil
 (map!
@@ -147,15 +186,25 @@
    :g "C-c s T" #'wordnut-lookup-current-word
    :g "C-c s w" #'wordnut-search
    :g "C-c s p" #'academic-phrases
-   :g "C-c s s" #'academic-phrases-by-section
+   :g "C-c s S" #'academic-phrases-by-section
    :g "C-c s m" #'mw-thesaurus-lookup-at-point
    ;; :g "C-c s l" #'synosaurus-lookup
    :g "C-c s r" #'synosaurus-choose-and-replace
    :g "C-c s i" #'synosaurus-choose-and-insert))
 
-;;; hydra key bindings
+;;; langtool
+(when (featurep! :private grammar)
+  (map!
+   :g "C-c s c" #'langtool-correct-buffer
+   :g "C-c s d" #'langtool-check-done
+   :g "C-c s s" #'langtool-check
+   :leader
+   "sgc" #'langtool-correct-buffer
+   "sgs" #'langtool-check
+   "sgd" #'langtool-check-done)
+  )
 
-;; hydra key bindings
+;;; hydra key bindings
 ;; these keymaps are activated after the packages loading.
 (with-eval-after-load 'smerge-mode
   (bind-keys :map smerge-mode-map
@@ -183,34 +232,13 @@
   :localleader
   :desc "Org Agenda Hydra" "." #'my-hydra-org-agenda/body))
 
-;;; langtool
-(map!
- :leader
- "sgc" 'langtool-correct-buffer
- "sgs" 'langtool-check
- "sgd" 'langtool-check-done)
-
 ;;; ess
 (map! (:map ess-r-package-dev-map
        "I" #'ess-r-devtools-clean-and-rebuild-package
        ))
 
-(map!
- :map org-tree-slide-mode-map
- :g "C-?" #'org-tree-slide-content
- :g "C-:" #'jyun/org-present-latex-preview
- )
-
-;;; org-ref
-  (map!
-    (:map org-mode-map
-     :after orf-ref
-     :g "C-c ["       #'org-ref-insert-link
-     :g "C-c ] ["     #'org-agenda-file-to-front
-     :g "C-c ] ]"     #'org-remove-file)
-    )
-
 ;;; elfeed
+;;;; elfeed search map
 (map! (:map elfeed-search-mode-map
        :after elfeed-search
        ;; [remap kill-this-buffer] "q"
@@ -231,59 +259,31 @@
 ;;;; elfeed-score
       (:map elfeed-search-mode-map
        :e "="      #'elfeed-score-map)
-      )
-(map! :map elfeed-show-mode-map
-      :after elfeed-show
-      ;; [remap kill-this-buffer] "q"
-      ;; [remap kill-buffer] "q"
-      ;; :n doom-leader-key nil
-      :nme "q" #'+rss/delete-pane
-      :nme "e" #'email-elfeed-entry
-      ;; :nm "o" #'ace-link-elfeed
-      ;; :nm "RET" #'org-ref-elfeed-add
-      ;; [remap elfeed-show-next] #'+rss/next
-      ;; [remap elfeed-show-prev] #'rss/previous ;;error
-      :nme "p" #'elfeed-show-pdf
-      :nme "C" #'jyun/elfeed-org-capture-entry
-      ;; :nm "+" #'elfeed-show-tag
-      ;; :nm "-" #'elfeed-show-untag
-      ;; :nm "s" #'elfeed-show-new-live-search
-      ;; :nm "y" #'elfeed-show-yank
-      )
+;;;; elfeed show map
+      (:map elfeed-show-mode-map
+       :after elfeed-show
+       ;; [remap kill-this-buffer] "q"
+       ;; [remap kill-buffer] "q"
+       ;; :n doom-leader-key nil
+       :nme "q" #'+rss/delete-pane
+       :nme "e" #'email-elfeed-entry
+       ;; :nm "o" #'ace-link-elfeed
+       ;; :nm "RET" #'org-ref-elfeed-add
+       ;; [remap elfeed-show-next] #'+rss/next
+       ;; [remap elfeed-show-prev] #'rss/previous ;;error
+       :nme "p" #'elfeed-show-pdf
+       :nme "C" #'jyun/elfeed-org-capture-entry
+       ;; :nm "+" #'elfeed-show-tag
+       ;; :nm "-" #'elfeed-show-untag
+       ;; :nm "s" #'elfeed-show-new-live-search
+       ;; :nm "y" #'elfeed-show-yank
+       ))
 
 ;;; scimax
 (map!
  :g "C-c ! ." #'scimax-error/body
  "s-<up>" #'beginning-of-buffer
  "s-<down>" #'end-of-buffer)
-
-;;; org-roam
-(map!
- :g
- "C-c n r" #'org-roam-buffer-toggle
- "C-c n f" #'org-roam-node-find
- "C-c n u" #'org-roam-ui-open
- "C-c n g" #'org-roam-graph
- "C-c n i" #'org-roam-node-insert
- :leader "n r u" #'org-roam-ui-open
- ;; (:map org-mode-map
- ;;  :g
- ;;  ;; "C-c n I" #'org-roam-insert-immediate
- ;;  )
- )
-
-;;;; org-roam-dailies
-;; deprecated: use default one
-;; (map! :leader
-;;       (:prefix-map ("n" . "notes")
-;;        (:when (featurep! :lang org +roam)
-;;         (:prefix ("r" . "roam")
-;;          (:prefix ("d" . "by date")
-;;           "." #'org-roam-dailies-find-directory
-;;           "b" #'org-roam-dailies-find-previous-note
-;;           "f" #'org-roam-dailies-find-next-note
-;;           "n" #'org-roam-dailies-capture-today
-;;           "v" #'org-roam-dailies-capture-date)))))
 
 ;;; smartparen bindings
 (map!
