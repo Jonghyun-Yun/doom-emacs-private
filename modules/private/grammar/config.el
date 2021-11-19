@@ -1,5 +1,23 @@
 ;;; checkers/grammar/config.el -*- lexical-binding: t; -*-
 
+;; (setq langtool-bin "languagetool")
+;; (setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/5.4/libexec/languagetool-server.jar")
+;; (setq langtool-language-tool-server-jar (concat
+;;  (file-name-directory
+;;   (directory-file-name
+;;    (file-name-directory
+;;     (directory-file-name (file-truename "/usr/local/bin/languagetool"))))) "libexec/languagetool-server.jar"))
+;; (setq langtool-http-server-host "localhost"
+;;       langtool-http-server-port 8081)
+
+(setq langtool-language-tool-server-jar
+      (when (file-directory-p "/usr/local/Cellar/languagetool")
+        (setq langtool-language-tool-jar
+              (locate-file "libexec/languagetool-server.jar"
+                           (doom-files-in "/usr/local/Cellar/languagetool"
+                                          :type 'dirs
+                                          :depth 2)))))
+
 (use-package! langtool
   :commands (langtool-check
              langtool-check-done
@@ -36,7 +54,7 @@
   (setq langtool-user-arguments '("--languagemodel" "/Users/yunj/.config/languagetool/languagemodel/"))
   (setq langtool-server-user-arguments '("-p" "8081" "--allow-origin" "\"*\"" "--languageModel" "/Users/yunj/.config/languagetool/languagemodel/"))
 
-  ;;; to run langtool for org-/latex-mode buffers
+;;; to run langtool for org-/latex-mode buffers
   ;; https://github.com/redguardtoo/Emacs-langtool
   ;; not working in latex-mode, server not working
   ;; (add-hook 'org-mode-hook #'jyun/langtool-org-exclude-faces)

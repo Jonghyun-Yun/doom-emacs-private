@@ -1003,17 +1003,6 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
              lorem-ipsum-insert-list
              ))
 
-;;;; languagetool
-;; (setq langtool-bin "languagetool")
-(setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/5.4/libexec/languagetool-server.jar")
-;; (setq langtool-http-server-host "localhost"
-;;       langtool-http-server-port 8081)
-
-;; (byte-recompile-directory (expand-file-name "~/.doom.d/") 0) ;
-;; (byte-compile-file (expand-file-name "modules/private/reference/autoload/applescript.el" doom-private-dir))
-;; (shell-command "find ~/.doom.d/ -type f -name \"*.elc\" -delete")
-
-
 ;;; evil
 (after! evil
   (setq ;; evil-ex-substitute-global t     ; I like my s/../.. to by global by default
