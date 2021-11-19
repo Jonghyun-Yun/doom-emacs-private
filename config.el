@@ -938,13 +938,9 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 
 (use-package matlab-mode
   :defer t
-  :commands
-  (matlab-shell)
+  :commands (matlab-shell)
   :mode ("\\.m\\'" . matlab-mode)
-  ;; :init
-  ;; (add-hook 'matlab-mode-hook 'prog-mode-hooks)
   :config
-  ;; matlab
   (setq matlab-return-add-semicolon t
         matlab-shell-ask-MATLAB-for-completions t
         matlab-shell-command-switches '("-nodesktop" "-nosplash"))
@@ -954,10 +950,6 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
   ;;           #'(lambda ()
   ;;             (set-fill-column 100)))
 
-  ;; (load! "local/matlab-plus")
-  ;; (bind-keys :prefix-map matlab-mode-map
-  ;;            :prefix ""
-  ;;            ("[key]" . command))
   ;; :bind (:map matlab-mode-map
   ;;        ;; ("C-c C-l" . matlab-shell-run-line)
   ;;        ;; ("C-M-x" . matlab-shell-run-region-or-paragraph-and-step)
@@ -1156,6 +1148,9 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
   )
 
 ;;;; yasnippets
+(after! yasnippet
+  (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
+
 ;;;; abbrev
 (use-package abbrev
   :init
@@ -1171,9 +1166,6 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
   :config
   (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir)
         save-abbrevs 'silently))
-
-(after! yasnippet
-  (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
 
 ;;; treemac
 (after! treemacs
@@ -1280,68 +1272,6 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
     (flycheck-buffer)))
 
 
-;;; mu4e tempo fix
-(after! mu4e
-  (defun +mu4e/capture-msg-to-agenda (arg)
-    "Refile a message and add a entry in `+org-capture-emails-file' with a
-deadline.  Default deadline is today.  With one prefix, deadline
-is tomorrow.  With two prefixes, select the deadline."
-    (interactive "p")
-    (let ((sec "^* Email")
-          (msg (mu4e-message-at-point)))
-      (when msg
-        ;; put the message in the agenda
-        (with-current-buffer (find-file-noselect
-                              (expand-file-name +org-capture-emails-file org-directory))
-          (save-excursion
-            ;; find header section
-            (goto-char (point-min))
-            (when (re-search-forward sec nil t)
-              (let (org-M-RET-may-split-line
-                    (lev (org-outline-level))
-                    (folded-p (invisible-p (point-at-eol)))
-                    (from (plist-get msg :from)))
-                ;; place the subheader
-                (when folded-p (show-branches)) ; unfold if necessary
-                (org-end-of-meta-data)          ; skip property drawer
-                (org-insert-todo-heading 1)     ; insert a todo heading
-                (when (= (org-outline-level) lev) ; demote if necessary
-                  (org-do-demote))
-                ;; insert message and add deadline
-                (insert (concat "Respond to "
-                                "[[mu4e:msgid:"
-                                (plist-get msg :message-id) "]["
-                                (truncate-string-to-width
-                                 (or (caar from) (cdar from)) 25 nil nil t)
-                                " - "
-                                (truncate-string-to-width
-                                 (plist-get msg :subject) 40 nil nil t)
-                                "]] "))
-                (org-set-tags "@email")
-                (org-deadline nil
-                              (cond ((= arg 1) (format-time-string "%Y-%m-%d"))
-                                    ((= arg 4) "+1d")))
-
-                (org-update-parent-todo-statistics)
-
-                ;; refold as necessary
-                (if folded-p
-                    (progn
-                      (org-up-heading-safe)
-                      (hide-subtree))
-                  (hide-entry))))))
-        ;; refile the message and update
-        ;; (cond ((eq major-mode 'mu4e-view-mode)
-        ;;        (mu4e-view-mark-for-refile))
-        ;;       ((eq major-mode 'mu4e-headers-mode)
-        ;;        (mu4e-headers-mark-for-refile)))
-        (message "Refiled \"%s\" and added to the agenda for %s"
-                 (truncate-string-to-width
-                  (plist-get msg :subject) 40 nil nil t)
-                 (cond ((= arg 1) "today")
-                       ((= arg 4) "tomorrow")
-                       (t         "later")))))))
-
 ;;; archive
 ;;;; outline regexp
 ;; goal: use /// or ### for outline (cannot make it work. error in consult-outline when used with outshine-mode)
@@ -1380,7 +1310,7 @@ is tomorrow.  With two prefixes, select the deadline."
 
 ;;;; editorconfig
 ;; editorconfig forces `require-final-newline' and `mode-require-final-newline' to `t
-;; to remove a terminal newline, turn off editorconfig and set the values to t
+;; to remove a terminal newline in `snippet-mode', turn off editorconfig and set the values to t
 ;; or one can edit .editorconfig file
 ;; see ~/.doom.d/snippets/.editorconfig
 ;; (add-hook 'snippet-mode-hook '(lambda ()
