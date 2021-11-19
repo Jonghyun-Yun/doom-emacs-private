@@ -194,9 +194,10 @@
 (package! git-link :pin "2b510cf3f28bed842853294fc4ee23c7f8b6435a")
 
 ;;; org-roam
-;; (package! org-roam-server :pin "2122a61e9e9be205355c7e2c1e4b65986d6985a5" :disable t)
-(unpin! org-roam)
-(package! org-roam-ui)
+(package! org-roam
+  :pin "d93423d4e11da95bcf177b2bc3c74cb1d1acf807")
+(package! org-roam-ui
+  :pin "9fcc9a8d716254565d06082bc6e861b259c132fd")
 ;; (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "c745d07018a46b1a20b9f571d999ecf7a092c2e1")
 ;; (package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
 (package! websocket) ; dependency of `org-roam-ui'
