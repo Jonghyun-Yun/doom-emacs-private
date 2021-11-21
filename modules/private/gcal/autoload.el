@@ -56,20 +56,6 @@
 ;;       (org-agenda nil calfw-org-agenda-view)
 ;;       (cfw:open-org-calendar))))
 
-;; ;;;###autoload
-;; (defun my-open-calendar ()
-;;   (interactive)
-;;   (cfw:open-calendar-buffer
-;;    :contents-sources
-;;    (list
-;;     (cfw:org-create-source "RoyalBlue")  ; orgmode source
-;;     (cfw:ical-create-source "family" "https://calendar.google.com/calendar/ical/i05jia4grouhk4q70bgqgg6a5c%40group.calendar.google.com/private-5abbc6ea611688b084fa8d56530bc0cf/basic.ics" "goldenrod2") ;family calendar
-;;     ;; (cfw:ical-create-source "UTA" "https://outlook.office365.com/owa/calendar/a66ad81c4e1e4d04bf004ff7e3aa85cf@uta.edu/394d55612b0345e3b25351f3e5f91f274369194296398689097/calendar.ics" "Magenta")  ; UTA
-;;     (cfw:ical-create-source "routines" "https://calendar.google.com/calendar/ical/djlfniaiog40cikg9iqvatinfs%40group.calendar.google.com/private-eefd0edcd4cd4a3b027e10dd604c22ff/basic.ics" "burlywood4") ;routines
-;;     ;; (cfw:howm-create-source "Blue")  ; howm source
-;;     ;; (cfw:cal-create-source "Orange") ; diary source
-;;     )))
-
 ;;;###autoload
 ;; (defun my-open-calendar ()
 ;;   (interactive)
@@ -86,9 +72,9 @@
 ;;      (list
 ;;       ;; (cfw:org-create-source "RoyalBlue")  ; orgmode source
 ;;       (cfw:org-create-source cfw:org-face-agenda-item-foreground-color)  ; orgmode source
-;;       (cfw:ical-create-source "family" "https://calendar.google.com/calendar/ical/i05jia4grouhk4q70bgqgg6a5c%40group.calendar.google.com/private-5abbc6ea611688b084fa8d56530bc0cf/basic.ics" "goldenrod2") ;family calendar
+;;       (cfw:ical-create-source "family" family-ical-secret "goldenrod2") ;family calendar
 ;;       ;; (cfw:ical-create-source "UTA" "https://outlook.office365.com/owa/calendar/a66ad81c4e1e4d04bf004ff7e3aa85cf@uta.edu/394d55612b0345e3b25351f3e5f91f274369194296398689097/calendar.ics" "Magenta")  ; UTA
-;;       (cfw:ical-create-source "routines" "https://calendar.google.com/calendar/ical/djlfniaiog40cikg9iqvatinfs%40group.calendar.google.com/private-eefd0edcd4cd4a3b027e10dd604c22ff/basic.ics" "burlywood4") ;routines
+;;       (cfw:ical-create-source "routines" routines-ical-secret "burlywood4") ;routines
 ;;       ;; (cfw:howm-create-source "Blue")  ; howm source
 ;;       ;; (cfw:cal-create-source "Orange") ; diary source
 ;;       ))))
@@ -105,9 +91,9 @@
      (list
       ;; (cfw:org-create-source "RoyalBlue")  ; orgmode source
       (cfw:org-create-source cfw:org-face-agenda-item-foreground-color) ; orgmode source
-      (cfw:ical-create-source "family" "https://calendar.google.com/calendar/ical/i05jia4grouhk4q70bgqgg6a5c%40group.calendar.google.com/private-5abbc6ea611688b084fa8d56530bc0cf/basic.ics" "goldenrod2") ;family calendar
+      (cfw:ical-create-source "family" family-ical-secret "goldenrod2") ;family calendar
       ;; (cfw:ical-create-source "UTA" "https://outlook.office365.com/owa/calendar/a66ad81c4e1e4d04bf004ff7e3aa85cf@uta.edu/394d55612b0345e3b25351f3e5f91f274369194296398689097/calendar.ics" "Magenta")  ; UTA
-      (cfw:ical-create-source "routines" "https://calendar.google.com/calendar/ical/djlfniaiog40cikg9iqvatinfs%40group.calendar.google.com/private-eefd0edcd4cd4a3b027e10dd604c22ff/basic.ics" "burlywood4") ;routines
+      (cfw:ical-create-source "routines" routines-ical-secret "burlywood4") ;routines
       ;; (cfw:howm-create-source "Blue")  ; howm source
       ;; (cfw:cal-create-source "Orange") ; diary source
       )

@@ -37,6 +37,10 @@
   (setq cfw:org-capture-template org-gcal-capture-templates)
   )
 
+(after! calfw-ical
+  (setq family-ical-secret (funcall #'password-store-get "org-gcal/family-secret"))
+  (setq routines-ical-secret (funcall #'password-store-get "org-gcal/routines-secret"))
+  )
 (setq cfw:display-calendar-holidays nil)
 
 ;; (use-package! calfw-ical
