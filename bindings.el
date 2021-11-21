@@ -318,3 +318,13 @@
   :i "C-x c" #'+company/complete
   :leader "i c" #'+company/complete)
  )
+
+;;; emacs binding in insert mode
+(map! :i "C-p" 'previous-line
+      :i "C-n" 'next-line
+      ;; :i "C-u" 'universal-argument
+      )
+
+;;; ignore bindings
+;; (global-set-key [C-wheel-up]  'ignore)
+;; (global-set-key [C-wheel-down] 'ignore)
