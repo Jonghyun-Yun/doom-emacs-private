@@ -74,7 +74,7 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type nil)
+(setq display-line-numbers-type 'relative)
 
 
 ;; Here are some additional functions/macros that could help you configure Doom:
@@ -212,7 +212,9 @@
         ;; org-return-follows-link t
         org-image-actual-width 500
         org-startup-with-inline-images t
-        org-use-speed-commands nil
+        org-use-speed-commands
+              ;; (lambda () (and (looking-at org-outline-regexp) (looking-back "^\\**")))
+              nil
         org-log-into-drawer t)
   ;; (org-speed-command-help)
   (when (featurep! :lang org +pretty)
@@ -352,7 +354,11 @@
     (add-hook 'pdf-view-mode-hook 'org-noter-init-pdf-view)))
 
 ;;; misc
-(setq outshine-use-speed-commands nil)
+;; diable hi-line-mode in rainbow-mode
+(add-hook! 'rainbow-mode-hook
+  (hl-line-mode (if rainbow-mode -1 +1)))
+
+(setq outshine-use-speed-commands t)
 ;; (outshine-speed-command-help)
 
 ;; ;; improve slow scrolling?

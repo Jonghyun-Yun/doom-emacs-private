@@ -1,5 +1,5 @@
 ;;; private/outshine/config.el -*- lexical-binding: t; -*-
-;;; Outshine module config file from Spacemacs.
+;;; Outshine config file from Spacemacs.
 ;;
 ;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
