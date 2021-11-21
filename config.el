@@ -422,25 +422,11 @@
   ;; (jabber-keepalive-start)
   (evil-set-initial-state 'jabber-chat-mode 'insert))
 
-;;;; disable popup
-;; (after! warnings
-;;   (add-to-list 'warning-suppress-types '(undo discard-info)))
-
-;;;; emacs binding in insert mode
-;; don't work. probably should be used override this
-;; (after! evil
-;;   ;; use emacs bindings in insert-mode
-;;   (setq evil-disable-insert-state-bindings t
-;; evil-want-keybinding nil))
-
-(map! :i "C-p" 'previous-line
-      :i "C-n" 'next-line
-      ;; :i "C-u" 'universal-argument
-      )
-
-;;;; ignore bindings
-;; (global-set-key [C-wheel-up]  'ignore)
-;; (global-set-key [C-wheel-down] 'ignore)
+;;;; disable warnings
+(add-to-list 'warning-suppress-types '(yasnippet backquote-change))
+(add-to-list 'warning-suppress-types
+             ;;   '(undo discard-info)
+             '(undo))
 
 ;;;; projectile
 (after! projectile
@@ -1152,10 +1138,6 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
         '((left-fringe . 8)
           (right-fringe . 8)))
   )
-
-;;;; yasnippets
-(after! yasnippet
-  (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
 
 ;;;; abbrev
 (use-package abbrev
