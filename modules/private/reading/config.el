@@ -138,6 +138,16 @@
   )
 
 ;;; mixed-pitch
+(defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
+  "Modes that `mixed-pitch-mode' should be enabled in, but only after UI initialisation.")
+(defun init-mixed-pitch-h ()
+  "Hook `mixed-pitch-mode' into each mode in `mixed-pitch-modes'.
+Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
+  (when (memq major-mode mixed-pitch-modes)
+    (mixed-pitch-mode 1))
+  (dolist (hook mixed-pitch-modes)
+    (add-hook (intern (concat (symbol-name hook) "-hook")) #'mixed-pitch-mode)))
+
 (autoload #'mixed-pitch-serif-mode "mixed-pitch"
   "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
 

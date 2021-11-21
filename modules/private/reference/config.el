@@ -80,7 +80,7 @@
 
 ")
 
-  (setq org-ref-open-pdf-function 'org-ref-open-pdf-at-point)
+  (setq org-ref-open-pdf-function #'org-ref-open-pdf-at-point)
   ;; (setq org-ref-notes-function #'org-ref-notes-function-one-file)
   ;; (setq org-ref-notes-function #'org-ref-notes-function-many-files)
 
