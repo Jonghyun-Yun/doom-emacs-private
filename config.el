@@ -677,27 +677,7 @@ Creates new notes where none exist yet."
    )
   )
 
-(defadvice! +rss-elfeed-wrap-h-nicer ()
-  "Enhances an elfeed entry's readability by wrapping it to a width of
-`fill-column' and centering it with `visual-fill-column-mode'."
-  :override #'+rss-elfeed-wrap-h
-  (setq-local truncate-lines nil
-              shr-width 120
-              ;; visual-fill-column-center-text t
-              default-text-properties '(line-height 1.1)
-              )
-  (let ((inhibit-read-only t)
-        (inhibit-modification-hooks t))
-    ;; (visual-fill-column-mode)
-    (setq-local shr-current-font '(
-                                   ;; :family "Roboto Slab"
-                                   ;; :family "Alegreya"
-                                   ;; :family "Merriweather"
-                                   :family "Libre Baskerville"
-                                   :height 1.0))
-    (set-buffer-modified-p nil)))
-
- ;;;; elfeed org-capture
+;;;; elfeed org-capture
 (after! (org-capture elfeed)
   (defun jyun/elfeed-org-capture-entry ()
     "Capture Elfeed entry to `inbox.org'."

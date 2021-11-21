@@ -33,6 +33,14 @@
 ;;     (set-window-configuration +my-elfeed--old-wconf)
 ;;     (setq +my-elfeed--old-wconf nil))))
 
+(defcustom elfeed-entry-font '(;; :family "Roboto Slab"
+                               ;; :family "Alegreya"
+                               ;; :family "Merriweather"
+                               :family "Libre Baskerville"
+                               :height 1.0)
+  "A font to be used as `shr-current-font' for elfeed entires."
+  :group 'elfeed)
+
 (defcustom elfeed-goodies/feed-source-column-width 16
   "Width of the feed source column."
   :group 'elfeed-goodies
@@ -94,3 +102,20 @@
       (insert (propertize title 'face title-faces 'kbd-help title)))
     (setq-local line-spacing 0.1)
     ))
+
+;;;###autoload
+
+(defadvice! +rss-elfeed-wrap-h-nicer ()
+  "Enhances an elfeed entry's readability by wrapping it to a width of
+`fill-column' and centering it with `visual-fill-column-mode'."
+  :override #'+rss-elfeed-wrap-h
+  (setq-local truncate-lines nil
+              shr-width 120
+              ;; visual-fill-column-center-text t
+              default-text-properties '(line-height 1.1)
+              )
+  (let ((inhibit-read-only t)
+        (inhibit-modification-hooks t))
+    ;; (visual-fill-column-mode)
+    (setq-local shr-current-font elfeed-entry-font)
+    (set-buffer-modified-p nil)))
