@@ -560,36 +560,6 @@
 
 ;; (setq bibtex-completion-pdf-open-function 'org-open-file)
 
-;;; org-ref V3
-(after! org-ref-ivy
-  (setq org-ref-insert-link-function 'org-ref-insert-link-hydra/body
-        org-ref-insert-cite-function 'org-ref-cite-insert-ivy
-        org-ref-insert-label-function 'org-ref-insert-label-link
-        org-ref-insert-ref-function 'org-ref-insert-ref-link
-        org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body)))
-  )
-(after! org-ref
-  ;; (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
-  ;; (define-key org-mode-map (kbd "C-c [ [") 'org-agenda-file-to-front)
-  ;; (define-key org-mode-map (kbd "C-c [ ]") 'org-remove-file)
-(when (featurep! :lang org +roam2)
-  (setq bibtex-completion-notes-path +biblio-notes-path)
-  (setq bibtex-completion-edit-notes-function 'orb-edit-notes-default)
-  (defun orb-edit-notes-default (keys)
-    "Open the notes associated with the entries in KEYS.
-Creates new notes where none exist yet."
-    (dolist (key keys)
-      (orb-org-ref-edit-note key)
-      )))
-(after! ivy-bibtex
-  (setq bibtex-completion-display-formats
-        '((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
-          (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
-          (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-          (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-          (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}")))))
-
-
 ;;; org-roam
 (after! org-roam
   (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
