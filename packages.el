@@ -115,6 +115,7 @@
   ;; )
 
 ;;; elfeed
+(package! elfeed-goodies :disable t)
 (package! elfeed-score)
 (package! elfeed-web :disable t)
 
@@ -280,4 +281,3 @@
   )
 
 ;;; testing new packages
-(package! consult-yasnippet)
