@@ -423,10 +423,11 @@
   (evil-set-initial-state 'jabber-chat-mode 'insert))
 
 ;;;; disable warnings
-(add-to-list 'warning-suppress-types '(yasnippet backquote-change))
-(add-to-list 'warning-suppress-types
-             ;;   '(undo discard-info)
-             '(undo))
+(after! warnings
+  (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
+  (add-to-list 'warning-suppress-types
+               ;;   '(undo discard-info)
+               '(undo)))
 
 ;;;; projectile
 (after! projectile
