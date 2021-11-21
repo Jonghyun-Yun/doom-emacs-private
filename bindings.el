@@ -46,8 +46,8 @@
            ("w" . my-new-weekly-review)
            ("m" . my-new-monthly-review)
            ;; calendar
-           ("c" . my-open-calendar)
-           ("o" . my-open-org-calendar)
+           ("c" . =jyun/calendar)
+           ;; ("o" . my-open-org-calendar)
            ("f" . org-gcal-fetch)
            ("D" . org-gcal-delete-at-point)
            ("P" . org-gcal-post-at-point)
@@ -128,9 +128,11 @@
 
 ;;; calendar
 (map!
- :map cfw:calendar-mode-map
- :g  "R" #'cfw:hide-routines
- :g  "C" #'cfw:org-capture ;; c and C for capture
+ :leader
+ :desc "Calendar" "o c" #'=calendar
+ (:map cfw:calendar-mode-map
+  :g "R" #'cfw:hide-routines
+  :g "C" #'cfw:org-capture) ;; c and C for capture
  )
 
 ;; (:map inferior-ess-mode-map
@@ -239,45 +241,48 @@
 
 ;;; elfeed
 ;;;; elfeed search map
-(map! (:map elfeed-search-mode-map
-       :after elfeed-search
-       ;; [remap kill-this-buffer] "q"
-       ;; [remap kill-buffer] "q"
-       ;; :n doom-leader-key nil
-       ;; :n "q" #'+rss/quit
-       ;; :n "U" #'elfeed-search-untag-all-unread
-       ;; :n "u" #'elfeed-search-tag-all-unread
-       ;; :n "s" #'elfeed-search-live-filter
-       :ne "c" #'elfeed-search-clear-filter
-       :ne "RET" #'+rss/open
-       ;; :n "+" #'elfeed-search-tag-all
-       ;; :n "-" #'elfeed-search-untag-all
-       ;; :n "S" #'elfeed-search-set-filter
-       ;; :n "M-RET" #'elfeed-search-browse-url
-       ;; :n "y" #'elfeed-search-yank
-       :ne "p" #'elfeed-show-pdf)
+(map!
+ :leader
+ :desc "Newsfeed" "o n"  #'=rss
+ (:map elfeed-search-mode-map
+  :after elfeed-search
+  ;; [remap kill-this-buffer] "q"
+  ;; [remap kill-buffer] "q"
+  ;; :n doom-leader-key nil
+  ;; :n "q" #'+rss/quit
+  ;; :n "U" #'elfeed-search-untag-all-unread
+  ;; :n "u" #'elfeed-search-tag-all-unread
+  ;; :n "s" #'elfeed-search-live-filter
+  :ne "c" #'elfeed-search-clear-filter
+  :ne "RET" #'+rss/open
+  ;; :n "+" #'elfeed-search-tag-all
+  ;; :n "-" #'elfeed-search-untag-all
+  ;; :n "S" #'elfeed-search-set-filter
+  ;; :n "M-RET" #'elfeed-search-browse-url
+  ;; :n "y" #'elfeed-search-yank
+  :ne "p" #'elfeed-show-pdf)
 ;;;; elfeed-score
-      (:map elfeed-search-mode-map
-       :e "="      #'elfeed-score-map)
+ (:map elfeed-search-mode-map
+  :e "="      #'elfeed-score-map)
 ;;;; elfeed show map
-      (:map elfeed-show-mode-map
-       :after elfeed-show
-       ;; [remap kill-this-buffer] "q"
-       ;; [remap kill-buffer] "q"
-       ;; :n doom-leader-key nil
-       :nme "q" #'+rss/delete-pane
-       :nme "e" #'email-elfeed-entry
-       ;; :nm "o" #'ace-link-elfeed
-       ;; :nm "RET" #'org-ref-elfeed-add
-       ;; [remap elfeed-show-next] #'+rss/next
-       ;; [remap elfeed-show-prev] #'rss/previous ;;error
-       :nme "p" #'elfeed-show-pdf
-       :nme "C" #'jyun/elfeed-org-capture-entry
-       ;; :nm "+" #'elfeed-show-tag
-       ;; :nm "-" #'elfeed-show-untag
-       ;; :nm "s" #'elfeed-show-new-live-search
-       ;; :nm "y" #'elfeed-show-yank
-       ))
+ (:map elfeed-show-mode-map
+  :after elfeed-show
+  ;; [remap kill-this-buffer] "q"
+  ;; [remap kill-buffer] "q"
+  ;; :n doom-leader-key nil
+  :nme "q" #'+rss/delete-pane
+  :nme "e" #'email-elfeed-entry
+  ;; :nm "o" #'ace-link-elfeed
+  ;; :nm "RET" #'org-ref-elfeed-add
+  ;; [remap elfeed-show-next] #'+rss/next
+  ;; [remap elfeed-show-prev] #'rss/previous ;;error
+  :nme "p" #'elfeed-show-pdf
+  :nme "C" #'jyun/elfeed-org-capture-entry
+  ;; :nm "+" #'elfeed-show-tag
+  ;; :nm "-" #'elfeed-show-untag
+  ;; :nm "s" #'elfeed-show-new-live-search
+  ;; :nm "y" #'elfeed-show-yank
+  ))
 
 ;;; scimax
 (map!
