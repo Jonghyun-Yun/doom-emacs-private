@@ -50,7 +50,7 @@
       doom-unicode-font (font-spec :family "JuliaMono")
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
-(setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
+;; (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
 ;; (setq variable-pitch-serif-font (font-spec :family "Roboto Slab" :size 24 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Libre Baskerville" :size 23 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Libertinus Serif" :size 27 :weight 'light))
@@ -94,7 +94,18 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 
+
+;;; load lisp
 (setq load-prefer-newer t)
+(with-eval-after-load 'hydra
+  (load! "local/hydra-plus"))
+(load! "bindings")
+(load! "local/org-plus")
+;; ;; (when (featurep! :ui ligatures +extra)
+;; ;;   (load! "local/ligature"))
+(load! "local/ess-plus")
+(load! "local/latex-plus")
+(load! "local/visual-plus")
 
 ;; org -> latex -> md -> docx
 ;; to properly generate cross references
@@ -106,17 +117,6 @@
   (after! ox-pandoc
     (add-to-list 'org-pandoc-valid-options 'citeproc))
   )
-
-;;; load lisp
-(with-eval-after-load 'hydra
-  (load! "local/hydra-plus"))
-(load! "bindings")
-(load! "local/org-plus")
-;; ;; (when (featurep! :ui ligatures +extra)
-;; ;;   (load! "local/ligature"))
-(load! "local/ess-plus")
-(load! "local/latex-plus")
-(load! "local/visual-plus")
 
 ;;; email
 (when (featurep! :email mu4e)
@@ -321,7 +321,7 @@
   (setq org-hugo-auto-set-lastmod t)
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "csv"))
 
-;;;; easy org-clock correction
+;;;; easy org-clock correction (disableed)
 (use-package! org-clock-convenience
   :commands (org-clock-convenience-timestamp-up
              org-clock-convenience-timestamp-down

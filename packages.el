@@ -55,27 +55,46 @@
 ;;            :files ("*.el" "lisp/*.el" "contrib/lisp/*.el"))
 ;;   :pin "2c980de07341b015741dc2fdad27a3078c9618fb") ;https://github.com/emacs-straight/org-mode/releases/tag/release_9.3.7
 
+;;; mu4e
 (when (featurep! :email mu4e)
   (package! mu4e-maildirs-extension)
   (package! mu4e-alert :disable t)
   )
 
+;;; latex
 (package! latexdiff)
 ;; (package! latexdiff
   ;; :recipe (:host github :repo "galaunay/latexdiff.el"))
 
+;; https://github.com/emacs-straight/auctex
+;; auctex preview fix
+;; (package! auctex :pin "1472d1d231aeae463013d5e36307605157f84191")
+
+
+;;; matlab
 ;; (package! matlab-mode)
 (package! matlab-mode :recipe (:host github :repo "matlab-mode/mirror"))
 
 
+;;; search
 (package! find-file-in-project :pin "cb5f3d1b697ef8212cc276c7486cbce2bf6c2a02")
-;; (package! scihub)
 
-;; (package! wordnut :pin "feac531404041855312c1a046bde7ea18c674915")
-;; (package! synosaurus :pin "14d34fc92a77c3a916b4d58400424c44ae99cd81")
+;;; org
+(package! org-fancy-priorities :disable t) ; slowdown emacs
 
-;; (package! org-pdftools :pin "a5b61bca3f8c91b0859bb0df1a929f9a31a57b99")
-;; (package! org-noter-pdftools :pin "a5b61bca3f8c91b0859bb0df1a929f9a31a57b99")
+;; annotation in symlinked doc
+(package! org-noter :recipe (:local-repo "local/org-noter"
+                             :branch "patch"))
+
+;; Github flavored markdown exporter
+(package! ox-gfm)
+
+(package! org-re-reveal-ref)
+
+(package! org-transclusion
+  :recipe (:host github :repo "nobiot/org-transclusion"))
+;; (package! org-clock-budget
+;;   :recipe (:host github :repo "Fuco1/org-clock-budget"))
 
 ;; ;; export doesn't work. problem in compiling; defmacro and marco eval in the same file
 ;; ;; ;; Load it localy
@@ -85,9 +104,6 @@
 ;;            :files ("*.el")
 ;;            )
 ;;   )
-
-;; (package! ox-hugo
-;;   :recipe (:host github :repo "jonghyun-yun/ox-hugo" :nonrecursive t))
 
 (package! ox-hugo
   :recipe (:local-repo "local/ox-hugo"
@@ -100,19 +116,9 @@
 ;;   ;; :pin "47ee61ce4538fe4406a68b4cfcf606e68e1f7261")
 ;;   :pin "219203e872b2bead5805544f65c9c7294e81e071")
 
-;; (package! doom-snippets
-;;   :recipe (:host github
-;;            :repo "jonghyun-yun/doom-snippets"
-;;            :files ("*.el" "*"))
-;;   ;; :pin "21b7c8d37224768091a34a6c3ede68d52d03fb18")
-;;   )
-
-(package! org-re-reveal-ref)
-;; (package! lsp-latex)
-
-;; (when (featurep! :ui treemacs)
-  ;;   (package! treemacs-icons-dired)
-  ;; )
+;; org-mode presentation
+;; (package! org-present)
+;; (package! epresent)
 
 ;;; elfeed
 (package! elfeed-goodies :disable t)
@@ -124,75 +130,27 @@
 (package! srv) ;; jabber dependency
 (package! fsm) ;; jabber dependency
 
-;;; disabled packages
-(package! writegood-mode :disable t)
-
-;; (package! auto-highlight-symbol)
-;; (package! highlight-numbers-mode)
-;; (package! highlight-parentheses)
-
-;; (package! spacemacs-theme :disable t)
-(package! modus-themes :disable nil)
-;; (package! doom-themes :disable t)
-
-;; bump org-ref (set in biblio)
-;; (package! org-ref :pin "1936720c2377d8af9a5edb0d252f881c0ec24918")
-
-;; (package! valign :pin "6b0345e29cdec8526c9c19b73bdea53295ec998e")
-
-(package! golden-ratio.el
-  :recipe (:host github :repo "roman/golden-ratio.el"))
-
-;; bookmark
-;; (package! bm)
-
-;; Github flavored markdown exporter
-(package! ox-gfm)
-
-;; org-mode presentation
-;; (package! org-present)
-;; (package! epresent)
-
-;; https://github.com/emacs-straight/auctex
-;; auctex preview fix
-;; (package! auctex :pin "1472d1d231aeae463013d5e36307605157f84191")
-
-;; https://github.com/emacsmirror/org-gcal
-;; (package! org-gcal :pin "52b7f8f7654e391f51e8d6d40506c8c170a5be20")
-
-(package! visual-regexp :pin "48457d42a5e0fe10fa3a9c15854f1f127ade09b5")
-;; (package! visual-regexp-steroids :pin "a6420b25ec0fbba43bf57875827092e1196d8a9e")
-
-;; included in org +pretty
-;; (package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  ;; :pin "0b3b029d5851c77ee792727b280f062eaf2c22c7")
-
+;;; visual
 ;; mixed-pitch-face available
 (package! mixed-pitch :pin "519e05f74825abf04b7d2e0e38ec040d013a125a")
+(package! modus-themes :disable t)
+;; (package! doom-themes :disable t)
 
-;; (package! org-pretty-table
-  ;; :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "474ad84a8f...")
-;; (package! org-fragtog :pin "0151cabc7a...")
-(package! org-fancy-priorities :disable t) ; slowdown emacs
-
-;; (package! pandoc-mode)
-
-;; hydra depends on
-;; (package! pretty-hydra :pin "84c1929a5153be169ca5c36737439d51dffde505")
-
+;;; coding
 (package! ess-view-data :pin "283251e8ac19ac0c0f89a4b0f0eb38482167e52b")
-
+(package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")
 (package! conda :pin "dce431b25f5a13af58cc7cacfa7968b5a888609c")
 
-;; annotation in symlinked doc
-(package! org-noter :recipe (:local-repo "local/org-noter"
-                             :branch "patch"))
-
-;; useful!
+;;; convenience
 (package! ctrlf)
 (package! deadgrep)
 (package! easy-kill)
 (package! git-link :pin "2b510cf3f28bed842853294fc4ee23c7f8b6435a")
+(package! visual-regexp :pin "48457d42a5e0fe10fa3a9c15854f1f127ade09b5")
+;; (package! visual-regexp-steroids :pin "a6420b25ec0fbba43bf57875827092e1196d8a9e")
+(package! key-chord)
+(package! golden-ratio.el
+  :recipe (:host github :repo "roman/golden-ratio.el"))
 
 ;;; org-roam
 (package! org-roam
@@ -202,29 +160,6 @@
 ;; (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "c745d07018a46b1a20b9f571d999ecf7a092c2e1")
 ;; (package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
 (package! websocket) ; dependency of `org-roam-ui'
-
-(package! org-transclusion
-  :recipe (:host github :repo "nobiot/org-transclusion"))
-;; (package! org-clock-budget
-;;   :recipe (:host github :repo "Fuco1/org-clock-budget"))
-
-
-;; disabled, use lispyville
-;; (package! lispy :disable t)
-;; (package! lispyville :disable t)
-
-;;; need review
-(package! org-clock-convenience)
-;; (package! company-posframe :disable t)
-;; (package! lexic
-;;   :pin "4ded6be2ce3e8dadc5635a534827181a8c8ab602"
-;;   :disable t)
-
-;; (package! orderless)
-;; (package! yaml-mode)
-;; (package! anki-editor)
-;; (package! ox-texinfo+
-  ;; :recipe (:host github :repo "tarsius/ox-texinfo-plus"))
 
 ;;; scimax
 ;; keep it here (not in scimax module)
@@ -238,24 +173,20 @@
                                   ;; "scimax-hydra.el"
                                   )
                           :branch "patch"))
-(package! lorem-ipsum)
 
 ;;; nano-emacs
-(package! nano-emacs :recipe (:repo "jonghyun-yun/nano-emacs"
-                              :host github)
+(package! nano-emacs
+  :recipe (:repo "jonghyun-yun/nano-emacs"
+           :host github)
   :disable t)
-
-(package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")
 
 ;; (package! keycast :pin "a3a0798349...")
 ;; (package! gif-screencast :pin "fa81e915c2..." :disable t) ;; error during cropping using "mogrify"
 
 ;;; misc
+(package! lorem-ipsum)
 ;; (package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa"
 ;;   :disable t)
-
-(package! key-chord)
-(package! vertico-posframe)
 
 ;;; doom-snippets
 (package! doom-snippets
@@ -281,3 +212,5 @@
   )
 
 ;;; testing new packages
+(package! vertico-posframe)
+(package! org-clock-convenience :disable t)
