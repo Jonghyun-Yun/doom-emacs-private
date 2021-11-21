@@ -397,7 +397,7 @@
 ;; caps_lock: esc if alone, right_ctrl if hold_down
 ;; return: return if alone, right_ctrl if hold_down
 (setq mac-right-option-modifier 'meta)
-(setq mac-right-control-modifier 'hyper)
+(setq mac-right-control-modifier 'hyper) ;C-s-a and C-s-' are mapped to right-ctrl by karabiner
 ;; (setq mac-function-modifier 'hyper)  ; make Fn key do Hyper
 
 ;;;; Hangout
