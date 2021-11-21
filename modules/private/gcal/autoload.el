@@ -2,22 +2,26 @@
 ;;;###if (and (featurep! :lang org) (featurep! :app calendar))
 
 ;;;###autoload
-(defun sync-gcal-after-capture ()
-  "Sync calendar after an event was added with org-capture.
-The function can be run automatically with the 'org-capture-after-finalize-hook'."
-  ;; (if (not (equal "SA" (org-capture-get :key)))
-  (when (equal "s" (org-capture-get :key))
-    (when-let (
-               (cal-files (mapcar 'f-expand (mapcar 'cdr org-gcal-file-alist)))
-               (cal-file-exists (and (mapcar 'f-file? cal-files)))
-               (capture-target-isfile (eq (car (org-capture-get :target)) 'file))
-               (capture-target (f-expand (car (cdr (org-capture-get :target)))))
-               (capture-target-is-cal-file (member capture-target cal-files)))
-        ;; (org-gcal--refresh-token)
-        (org-capture-goto-last-stored) ;; https://github.com/kidd/org-gcal.el/issues/62
-        (org-gcal-post-at-point))
-    ) ;; when
-  ) ;; (defun sync-gcal-after-capture ()
+;; (defun sync-gcal-after-capture ()
+;;   "Sync calendar after an event was added with org-capture.
+;; The function can be run automatically with the 'org-capture-after-finalize-hook'."
+;;   ;; (if (not (equal "SA" (org-capture-get :key)))
+;;   (when (equal "s" (org-capture-get :key))
+;;     (progn
+;;       (require 'org-gcal)
+;;       (when-let (
+;;                  (cal-files (mapcar 'f-expand (mapcar 'cdr org-gcal-file-alist)))
+;;                  (cal-file-exists (and (mapcar 'f-file? cal-files)))
+;;                  (capture-target-isfile (eq (car (org-capture-get :target)) 'file))
+;;                  (capture-target (f-expand (car (cdr (org-capture-get :target)))))
+;;                  (capture-target-is-cal-file (member capture-target cal-files)))
+;;         ;; (org-gcal--refresh-token)
+;;         (org-gcal-fetch)
+;;         (org-capture-goto-last-stored) ;; https://github.com/kidd/org-gcal.el/issues/62
+;;         (org-gcal-post-at-point)))
+;;     ) ;; when
+;;   )
+;; (defun sync-gcal-after-capture ()
 
 ;;;###autoload
 (defun cfw:hide-routines (no-resize)

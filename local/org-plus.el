@@ -344,16 +344,9 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
            "* %^{Project for...} [/] %^{GOAL}p \n:PROPERTIES:\n:CAPTURED: %U \n:END: \n%i"
            :prepend t)))
 
-    (setq org-gcal-capture-templates
-        '("s" "Scedule an event" entry
-          (file +org-capture-inbox-file)
-          "* %^{Scheduling...} \n:PROPERTIES: \n:calendar-id: jonghyun.yun@gmail.com \n:LOCATION: %^{Location} \n:END: \n:org-gcal: \n%^T \n%i\n%? \n:END:\n\n"
-          :prepend t))
-
+  (require 'org-gcal)
   (add-to-list 'org-capture-templates org-gcal-capture-templates)
-  (with-eval-after-load 'calfw
-    (setq cfw:org-capture-template org-gcal-capture-templates)
-    ))
+  )
 
 ;;; youtube link + SPC m v + update latex frag
 (with-eval-after-load 'org
