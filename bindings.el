@@ -85,7 +85,7 @@
 ;;; org-ref
   (map!
     (:map org-mode-map
-     :after orf-ref
+     :after org-ref
      :g "C-c ]"       #'org-ref-insert-link
      :g "C-c [ ["     #'org-agenda-file-to-front
      :g "C-c [ ]"     #'org-remove-file)
