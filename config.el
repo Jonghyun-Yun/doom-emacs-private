@@ -655,11 +655,44 @@ Creates new notes where none exist yet."
   ;; number of concurrent fetches
   (elfeed-set-max-connections 2)
   ;; (run-at-time nil (* 4 60 60) #'elfeed-update)
-  ;; (setq elfeed-search-title-max-width 100
-  ;;       elfeed-search-title-min-width 20
-  ;;       elfeed-search-filter "@3-week-ago"
-  ;;       elfeed-show-entry-switch #'pop-to-buffer
-  ;;       elfeed-show-entry-delete #'+rss/delete-pane)
+                                        ;update every 4 * 60 * 60 sec
+  (setq
+   ;; elfeed-search-title-max-width 100
+   ;; elfeed-search-title-min-width 80
+   ;; elfeed-search-title-min-width 20
+   ;; elfeed-search-filter "@3-week-ago"
+   elfeed-show-entry-switch #'pop-to-buffer
+   elfeed-show-entry-delete #'+rss/delete-pane
+   ;; elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
+   elfeed-search-print-entry-function 'jyun/score-entry-line-draw
+   ;; shr-max-image-proportion 0.6
+   ;; p
+   elfeed-search-date-format '("%m/%d/%y" 10 :left)
+   )
+  )
+
+(defadvice! +rss-elfeed-wrap-h-nicer ()
+  "Enhances an elfeed entry's readability by wrapping it to a width of
+`fill-column' and centering it with `visual-fill-column-mode'."
+  :override #'+rss-elfeed-wrap-h
+  (setq-local truncate-lines nil
+              shr-width 120
+              ;; visual-fill-column-center-text t
+              default-text-properties '(line-height 1.1)
+              )
+  (let ((inhibit-read-only t)
+        (inhibit-modification-hooks t))
+    ;; (visual-fill-column-mode)
+    (setq-local shr-current-font '(
+                                   ;; :family "Roboto Slab"
+                                   ;; :family "Alegreya"
+                                   ;; :family "Merriweather"
+                                   :family "Libre Baskerville"
+                                   :height 1.0))
+    (set-buffer-modified-p nil)))
+
+ ;;;; elfeed org-capture
+(after! (org-capture elfeed)
   (defun jyun/elfeed-org-capture-entry ()
     "Capture Elfeed entry to `inbox.org'."
     (interactive)
@@ -677,10 +710,6 @@ Creates new notes where none exist yet."
       ;; (org-update-parent-todo-statistics)
       )
     )
-)
-
-;;;; elfeed org-capture
-(after! (org-capture elfeed)
   ;; elfeed capture
   (add-to-list 'org-capture-templates
                '("EFE" "Elfeed entry" entry
@@ -706,8 +735,6 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   ;;                  :prepend t
   ;;                  :immediate-finish t))
   )
-;; (evil-set-initial-state 'elfeed-search-mode 'emacs)
-;; (evil-set-initial-state 'elfeed-show-mode 'emacs)
 
 ;; ;; A snippet for periodic update for feeds (10 mins since Emacs start, then every
 ;; ;; two hour)
@@ -722,11 +749,14 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   (setq elfeed-score-score-file (expand-file-name "elfeed.score" doom-private-dir))
   :config
   (progn
-    (elfeed-score-enable)
+    ;; (elfeed-score-enable)
     (evil-define-key 'normal elfeed-search-mode-map "=" elfeed-score-map)
     ;; (define-key elfeed-search-mode-map "=" elfeed-score-map)
     ;; scores displayed in the search buffer
-    (setq elfeed-search-print-entry-function #'elfeed-score-print-entry)))
+    ;; (setq elfeed-search-print-entry-function 'jyun/score-entry-line-draw)
+    )
+  )
+
 
 ;;;; get pdf from elfeed entry
 ;; https://tecosaur.github.io/emacs-config/config.html
