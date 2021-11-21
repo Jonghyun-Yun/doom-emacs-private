@@ -76,5 +76,12 @@ Call asynchronous magit processes to commit and push staged files (if exist) to 
                            (format "*overleaf: %s*" (projectile-project-name))
                            (format "*overleaf error: %s*" (projectile-project-name)))
       ;; (message "Done!")
-      )
-    )
+      ))
+
+;;;###autoload
+(defun jyun/fetch-doom-emacs ()
+  "See `magit-status', and run `git fetch --all' using magit processes."
+  (interactive)
+  (let ((default-directory (magit-toplevel doom-emacs-dir)))
+    (magit-status)
+    (magit-run-git-async "fetch" "--all")))
