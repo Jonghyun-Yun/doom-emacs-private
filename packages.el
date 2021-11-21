@@ -132,7 +132,7 @@
 
 ;;; visual
 ;; mixed-pitch-face available
-(package! mixed-pitch :pin "519e05f74825abf04b7d2e0e38ec040d013a125a")
+;; (package! mixed-pitch :pin "519e05f74825abf04b7d2e0e38ec040d013a125a")
 (package! modus-themes :disable t)
 ;; (package! doom-themes :disable t)
 
@@ -153,10 +153,9 @@
   :recipe (:host github :repo "roman/golden-ratio.el"))
 
 ;;; org-roam
-(package! org-roam
-  :pin "d93423d4e11da95bcf177b2bc3c74cb1d1acf807")
-(package! org-roam-ui
-  :pin "9fcc9a8d716254565d06082bc6e861b259c132fd")
+;; (package! org-roam
+  ;; :pin "d93423d4e11da95bcf177b2bc3c74cb1d1acf807")
+(package! org-roam-ui :pin "9fcc9a8d716254565d06082bc6e861b259c132fd")
 ;; (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "c745d07018a46b1a20b9f571d999ecf7a092c2e1")
 ;; (package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
 (package! websocket) ; dependency of `org-roam-ui'
