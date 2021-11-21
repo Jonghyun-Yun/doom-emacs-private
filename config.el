@@ -401,7 +401,7 @@
 ;; (setq mac-function-modifier 'hyper)  ; make Fn key do Hyper
 
 ;;;; Hangout
-(use-package jabber
+(use-package! jabber
   :defer t
   :commands (jabber-connect-all
              jabber-connect)
@@ -1029,7 +1029,6 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   )
 
 ;;;; ace-window
-;; (setq avy-keys '(?n ?e ?j ?s ?t ?r ?l ?a))
 (after! ace-window
   (setq aw-scope 'global
         aw-dispatch-always t
