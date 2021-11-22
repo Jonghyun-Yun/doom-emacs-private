@@ -198,3 +198,33 @@ Return nil otherwise."
   (interactive)
   (let ((heading (nth 4 (org-heading-components))))
                  (print heading)))
+
+;;;###autoload
+(defun jyun/insert-src-block-name (name)
+  "Go to a named source-code block."
+  (interactive
+   (let ((completion-ignore-case t)
+	 (case-fold-search t)
+	 (all-block-names (org-babel-src-block-names)))
+     (list (completing-read
+	    "source-block name: " all-block-names nil t
+	    (let* ((context (org-element-context))
+		   (type (org-element-type context))
+		   (noweb-ref
+		    (and (memq type '(inline-src-block src-block))
+			 (org-in-regexp (org-babel-noweb-wrap)))))
+	      (cond
+	       (noweb-ref
+		(buffer-substring
+		 (+ (car noweb-ref) (length org-babel-noweb-wrap-start))
+		 (- (cdr noweb-ref) (length org-babel-noweb-wrap-end))))
+	       ((memq type '(babel-call inline-babel-call)) ;#+CALL:
+		(org-element-property :call context))
+	       ((car (org-element-property :results context))) ;#+RESULTS:
+	       ((let ((symbol (thing-at-point 'symbol))) ;Symbol.
+		  (and symbol
+		       (member-ignore-case symbol all-block-names)
+		       symbol)))
+	       (t "")))))))
+  (insert (concat "<<" name ">>\n"))
+  )
