@@ -537,35 +537,10 @@
        +biblio-notes-path "~/org/refnotes.org"
        ;; +biblio-notes-path "~/org/roam/"
        )
-
-(setq! citar-bibliography +biblio-default-bibliography-files
-       citar-library-paths +biblio-pdf-library-dir
-       citar-notes-paths '("~/org/roam/"))
-
-;; (setq reftex-default-bibliography '("~/Zotero/myref.bib"))
-
-;; override functions in org-ref
-;; org-ref-open-pdf-at-point to open the first pdf
-;; doesn't work with (after! org-ref.. why?
-(load! "local/bibtex-pdf")
-
-;; ;; open zotero pdf in org-ref
-;; (eval-after-load 'org-ref
-;;   (setq org-ref-default-bibliography "~/Zotero/myref.bib"
-;;         org-ref-pdf-directory "~/Zotero/storage/"
-;;         org-ref-bibliography-notes "~/org/refnotes.org"
-;;         ;; org-ref-notes-function #'org-ref-notes-function-many-files
-;;         ;; org-ref-notes-function #'org-ref-notes-function-one-file
-;;         )
-;;   )
-
-;; (eval-after-load 'bibtex-completion
-;;   (setq bibtex-completion-library-path "~/Zotero/storage/"
-;;         bibtex-completion-bibliography org-ref-default-bibliography
-;;         bibtex-completion-notes-path org-ref-bibliography-notes
-;;         bibtex-completion-pdf-field "file"
-;;         bibtex-completion-find-additional-pdfs t)
-;;   )
+(after! citar
+  (setq! citar-bibliography +biblio-default-bibliography-files
+         citar-library-paths +biblio-pdf-library-dir
+         citar-notes-paths "~/org/roam/"))
 
 ;; (setq bibtex-completion-pdf-open-function 'org-open-file)
 
@@ -1013,21 +988,46 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   :hook
   (after-init . ctrlf-mode)
   :bind
+  ;; "M-s ." is overrided in normal mode
   ("C-s-s" . ctrlf-forward-symbol-at-point))
+;; C-M-r  ctrlf-backward-alternate
+;; C-M-s  ctrlf-forward-alternate
+;; C-r    ctrlf-backward-default
+;; C-s    ctrlf-forward-default
+;; M-s .  ctrlf-forward-symbol-at-point
+;; M-s _  ctrlf-forward-symbol
+
 
 ;;;; easy-kill
 ;; https://github.com/leoliu/easy-kill
 (use-package! easy-kill
   :bind*
   (([remap kill-ring-save] . easy-kill) ; M-w
-   ([remap mark-sexp] . easy-mark)))  ; C-M-S @
-
-;; no S-delete can be mapped in MAC
-;; C-backspace should be mapped using C-DEL
-(map! :g "<C-backspace>" #'kill-region
-      :map easy-kill-base-map
-      :g "C-w" #'easy-kill-region)
-
+   ([remap mark-sexp] . easy-mark))     ; C-M-S @
+  :config
+  ;; point > mark will place point to beginning-of-mark
+  (easy-kill-defun easy-kill-mark-region ()
+    (interactive)
+    (pcase (easy-kill-get bounds)
+      (`(,_x . ,_x)
+       (easy-kill-echo "Empty region"))
+      (`(,beg . ,end)
+       (pcase (if (eq (easy-kill-get mark) 'end)
+                  (list end beg) (list beg end))
+         (`(,m ,pt)
+          (set-mark pt)
+          (goto-char m)))
+       (activate-mark))))
+  )
+;; M-w w: save word at point
+;; M-w s: save sexp at point
+;; M-w l: save list at point (enclosing sexp)
+;; M-w d: save defun at point
+;; M-w D: save current defun name
+;; M-w f: save file at point
+;; M-w b: save buffer-file-name or default-directory.
+;; - changes the kill to the directory name, + to full name and 0 to basename.
+;; C-SPC: turn selection into an active region
 
 ;;;; avy
 (after! avy  

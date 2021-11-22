@@ -334,3 +334,11 @@
 ;;; ignore bindings
 ;; (global-set-key [C-wheel-up]  'ignore)
 ;; (global-set-key [C-wheel-down] 'ignore)
+
+;;; kill-region + easy-kill
+;; no S-delete can be mapped in MAC
+;; C-backspace should be mapped using C-DEL
+(map! :g "<C-backspace>" #'kill-region
+      (:after easy-kill
+       :map easy-kill-base-map
+       :g "C-w" #'easy-kill-region))
