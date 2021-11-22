@@ -7,21 +7,13 @@
     (set-default symbol value))
   (when value
     (cond ((eq symbol '+biblio-pdf-library-dir)
-           (when (featurep! :lang org)
-             (setq org-ref-pdf-directory value))
            (setq bibtex-completion-library-path value))
           ((eq symbol '+biblio-default-bibliography-files)
            (when (featurep! :lang org)
-             (setq reftex-default-bibliography value
-                   org-ref-default-bibliography value))
+             (setq reftex-default-bibliography value))
            (setq bibtex-completion-bibliography value))
           ((eq symbol '+biblio-notes-path)
-           (when (featurep! :lang org)
-             (if (directory-name-p value)
-                 (setq org-ref-notes-directory value)
-               (setq org-ref-bibliography-notes value)))
            (setq bibtex-completion-notes-path value)))))
-
 
 (defcustom +biblio-pdf-library-dir nil
   "Directory where pdf files are stored. Must end with a slash."
@@ -118,23 +110,6 @@ Creates new notes where none exist yet."
   ;;                                        (t                            #'org-ref-reftex)))
   ;; (setq org-ref-completion-library #'org-ref-ivy-cite)
   ;; (require 'org-ref-ivy-cite)
-  ;; :config
-  ;; Although the name is helm-bibtex, it is actually a bibtex-completion function
-  ;; it is the legacy naming of the project helm-bibtex that causes confusion.
-  ;; (setq org-ref-open-pdf-function 'org-ref-get-pdf-filename-helm-bibtex)
-  ;; (setq org-ref-open-pdf-function 'org-ref-open-pdf-at-point)
-  ;; orb will define handlers for note taking so not needed to use the
-  ;; ones set for bibtex-completion
-  ;; (unless (featurep! :lang org +roam2)
-  ;;   ;; determine how org ref should handle the users notes path (dir, or file)
-  ;;   (if (directory-name-p +biblio-notes-path)
-  ;;       (setq org-ref-notes-directory +biblio-notes-path)
-  ;;     (setq org-ref-bibliography-notes +biblio-notes-path))
-  ;;   ;; Allow org-ref to use the same template mechanism as {helm,ivy}-bibtex for
-  ;;   ;; multiple files if the user has chosen to spread their notes.
-  ;;   (setq org-ref-notes-function (if (and org-ref-notes-directory (directory-name-p org-ref-notes-directory))
-  ;;                                    #'org-ref-notes-function-many-files
-  ;;                                  #'org-ref-notes-function-one-file)))
   )
 
 (use-package! org-roam-bibtex
@@ -147,23 +122,21 @@ Creates new notes where none exist yet."
     '("=key=" "title" "url" "file" "author-or-editor" "keywords" "citekey" "pdf"))
   ;;:hook (org-roam-mode . org-roam-bibtex-mode)
   :custom
-  (orb-note-actions-interface 'default)
-  ;; (orb-note-actions-interface (cond ((featurep! :completion ivy)  'ivy)
-  ;;                                   ((featurep! :completion helm) 'helm)
-  ;;                                   ((t                           'default))))
+  (orb-note-actions-interface (cond ((featurep! :completion ivy)  'ivy)
+                                    ((featurep! :completion helm) 'helm)
+                                    (t                           'default)))
   :config
   ;; - org-ref-v2: Old Org-ref cite:links
   ;; - org-ref-v3: New Org-ref cite:&links
   ;; - org-cite  : Org-cite @elements
-  (setq orb-roam-ref-format 'org-ref-v2)
+  ;; (setq orb-roam-ref-format 'org-ref-v2)
   ;; https://github.com/org-roam/org-roam-bibtex/blob/master/doc/orb-manual.org
-  (setq orb-note-actions-interface 'hydra)
+  ;; (setq orb-note-actions-interface 'hydra)
 
-  (setq orb-insert-interface 'generic)
-  ;; (setq orb-insert-interface (cond ((featurep! :completion ivy)  'ivy-bibtex)
-  ;;                                  ((featurep! :completion helm) 'helm-bibtex)
-  ;;                                  ((t                           'generic))
-  ;;                                  ))
+  ;; (setq orb-insert-interface 'generic)
+  (setq orb-insert-interface (cond ((featurep! :completion ivy)  'ivy-bibtex)
+                                   ((featurep! :completion helm) 'helm-bibtex)
+                                   (t                           'generic)))
   (setq orb-process-file-keyword t
         orb-file-field-extensions '("pdf"))
 
@@ -187,13 +160,18 @@ Creates new notes where none exist yet."
                  :unnarrowed t))
   (require 'org-ref))
 
-;; (use-package! citar
-;;   :when (featurep! :completion vertico)
-;;   :after bibtex-completion
-;;   :custom
-;;   (when (featurep! +roam2)
-;;     (citar-file-note-org-include '(org-id org-roam-ref)))
-;;   :config)
+(use-package! citar
+  :when (featurep! :completion vertico)
+  :after bibtex-completion
+  :custom
+  (when (featurep! +roam2)
+    (citar-file-note-org-include '(org-id org-roam-ref)))
+  :config
+  (setq citar-open-note-function 'orb-citar-edit-note)
+  ;; to have the Embark menu open with org-open-at-point
+  ;; (setq citar-at-point-function 'embark-act)
+  )
+
 
 (use-package! citeproc
   :defer t)
