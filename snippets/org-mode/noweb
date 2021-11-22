@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: noweb with completion
 # key: nw
+# condition: (looking-back "^nw" 3)
 # --
 <<${1:$$(yas-choose-value
          (org-element-map (org-element-parse-buffer) 'src-block

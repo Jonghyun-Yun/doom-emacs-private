@@ -17,7 +17,9 @@
         :i  "C-j"    nil)
        (:map org-mode-map
         :n "C-k"       #'org-kill-line
-        :n "C-j"       #'org-return)
+        :n "C-j"       #'org-return
+        :g "C-c C-v C-g" #'jyun/insert-src-block-name
+        )
 
        ;; insert-mode C-k
        :i "C-k" #'kill-line
@@ -240,10 +242,15 @@
        ))
 
 ;;; elfeed
-;;;; elfeed search map
 (map!
  :leader
  :desc "Newsfeed" "o n"  #'=rss
+ ;;;; elfeed-score
+ (:map elfeed-search-mode-map
+  :e "="      #'elfeed-score-map)
+ )
+;;;; elfeed search map
+(map!
  (:map elfeed-search-mode-map
   :after elfeed-search
   ;; [remap kill-this-buffer] "q"
@@ -260,17 +267,16 @@
   ;; :n "S" #'elfeed-search-set-filter
   ;; :n "M-RET" #'elfeed-search-browse-url
   ;; :n "y" #'elfeed-search-yank
-  :ne "p" #'elfeed-show-pdf)
-;;;; elfeed-score
- (:map elfeed-search-mode-map
-  :e "="      #'elfeed-score-map)
+  :ne "p" #'elfeed-show-pdf))
+
 ;;;; elfeed show map
+(map!
  (:map elfeed-show-mode-map
   :after elfeed-show
   ;; [remap kill-this-buffer] "q"
   ;; [remap kill-buffer] "q"
   ;; :n doom-leader-key nil
-  :nme "q" #'+rss/delete-pane
+  ;; :nme "q" #'+rss/delete-pane
   :nme "e" #'email-elfeed-entry
   ;; :nm "o" #'ace-link-elfeed
   ;; :nm "RET" #'org-ref-elfeed-add
