@@ -53,7 +53,7 @@
   (setq flycheck-lintr-linters
         "with_defaults(line_length_linter(120), assignment_linter = NULL, object_name_linter = NULL)")
 
-  (evil-set-initial-state 'inferior-ess-r-mode 'emacs)
+  (evil-set-initial-state 'inferior-ess-r-mode 'insert)
   ;; (setq ess-assign-list '(" <- " " = " " -> ")
   ;;       ess-r-smart-operators t)
   ;; ;; ess-assign
