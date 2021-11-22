@@ -9,7 +9,7 @@
         org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body)))
   )
 
-(after! (org-ref org-capture)
+(after! org-capture
   (add-to-list 'org-capture-templates
                '("GSA" "General Skim Annotation" entry
                  (file+function (lambda () (buffer-file-name)) +org-move-point-to-heading)
@@ -64,9 +64,9 @@
 :END: \n%i"))))
   )
 
-(after! org-ref
-  (require 'org-mac-link)
-  (require 'org-id)
+(after! org
+  ;; (require 'org-mac-link)
+  ;; (require 'org-id)
 
   (org-link-set-parameters "skim" :follow #'+reference/org-mac-skim-open)
 

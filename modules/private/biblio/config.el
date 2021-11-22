@@ -43,7 +43,8 @@ In case of directory the path must end with a slash."
   (defvar bibtex-completion-notes-template-multiple-files nil)
   :config
   (when (featurep! :completion ivy)
-    (add-to-list 'ivy-re-builders-alist '(ivy-bibtex . ivy--regex-plus)))
+  (add-to-list 'ivy-re-builders-alist '(ivy-bibtex . ivy--regex-plus))
+    )
 
   (setq bibtex-completion-additional-search-fields '(keywords)
         ;; This tell bibtex-completion to look at the File field of the bibtex
