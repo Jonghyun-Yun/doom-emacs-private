@@ -542,6 +542,10 @@
   (setq org-ref-notes-directory +biblio-notes-path)
   )
 
+(setq! citar-bibliography +biblio-default-bibliography-files
+       citar-library-paths +biblio-pdf-library-dir
+       citar-notes-paths '("~/org/roam/"))
+
 ;; (setq reftex-default-bibliography '("~/Zotero/myref.bib"))
 
 ;; ;; open zotero pdf in org-ref
@@ -1194,6 +1198,8 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
     )
   )
 
+;; display icons with colors
+(setq all-the-icons-dired-monochrome t)
 
 ;;; temporary fixes
 ;;;; eldoc error
