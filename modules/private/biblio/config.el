@@ -60,7 +60,6 @@ In case of directory the path must end with a slash."
   ;; orb will define handlers for note taking so not needed to use the
   ;; ones set for bibtex-completion
   (unless (featurep! :lang org +roam2)
-
     (setq bibtex-completion-notes-path +biblio-notes-path)
     (unless bibtex-completion-notes-template-multiple-files
       (setq bibtex-completion-notes-template-multiple-files
@@ -76,32 +75,15 @@ In case of directory the path must end with a slash."
 (use-package! org-ref
   :when (featurep! :lang org)
   :after org
-  :preface
+  ;; :preface
   ;; This need to be set before the package is loaded, because org-ref will
   ;; automatically `require' an associated package during its loading.
   ;; (setq org-ref-completion-library (cond ((featurep! :completion ivy)  #'org-ref-ivy-cite)
   ;;                                        ((featurep! :completion helm) #'org-ref-helm-bibtex)
   ;;                                        (t                            #'org-ref-reftex)))
-  (setq org-ref-completion-library #'org-ref-ivy-cite)
+  ;; (setq org-ref-completion-library #'org-ref-ivy-cite)
   ;; (require 'org-ref-ivy-cite)
-  :config
-  ;; Although the name is helm-bibtex, it is actually a bibtex-completion function
-  ;; it is the legacy naming of the project helm-bibtex that causes confusion.
-  ;; (setq org-ref-open-pdf-function 'org-ref-get-pdf-filename-helm-bibtex)
-  ;; (setq org-ref-open-pdf-function 'org-ref-open-pdf-at-point)
-  ;; orb will define handlers for note taking so not needed to use the
-  ;; ones set for bibtex-completion
-  (unless (featurep! :lang org +roam2)
-    ;; determine how org ref should handle the users notes path (dir, or file)
-    (if (directory-name-p +biblio-notes-path)
-        (setq org-ref-notes-directory +biblio-notes-path)
-      (setq org-ref-bibliography-notes +biblio-notes-path))
-    ;; Allow org-ref to use the same template mechanism as {helm,ivy}-bibtex for
-    ;; multiple files if the user has chosen to spread their notes.
-    (setq org-ref-notes-function (if (and org-ref-notes-directory (directory-name-p org-ref-notes-directory))
-                                     #'org-ref-notes-function-many-files
-                                   #'org-ref-notes-function-one-file))))
-
+  )
 
 (use-package! org-roam-bibtex
   :when (featurep! +roam-bibtex)
@@ -109,7 +91,7 @@ In case of directory the path must end with a slash."
   :preface
   ;; if the user has not set a template mechanism set a reasonable one of them
   ;; The package already tests for nil itself so we define a dummy tester
-  (defvar orb-preformat-keywords
+  (setq orb-preformat-keywords
     '("=key=" "title" "url" "file" "author-or-editor" "keywords" "citekey" "pdf"))
   ;;:hook (org-roam-mode . org-roam-bibtex-mode)
   :custom
@@ -118,14 +100,17 @@ In case of directory the path must end with a slash."
   ;;                                   ((featurep! :completion helm) 'helm)
   ;;                                   ((t                           'default))))
   :config
+  ;; - org-ref-v2: Old Org-ref cite:links
+  ;; - org-ref-v3: New Org-ref cite:&links
+  ;; - org-cite  : Org-cite @elements
+  (setq orb-roam-ref-format 'org-ref-v2)
   ;; https://github.com/org-roam/org-roam-bibtex/blob/master/doc/orb-manual.org
   (setq orb-note-actions-interface 'hydra)
 
   (setq orb-insert-interface 'generic)
   ;; (setq orb-insert-interface (cond ((featurep! :completion ivy)  'ivy-bibtex)
   ;;                                  ((featurep! :completion helm) 'helm-bibtex)
-  ;;                                  ;; ((t                           'generic))
-  ;;                                  ((t                           'ivy-bibtex))
+  ;;                                  ((t                           'generic))
   ;;                                  ))
   (setq orb-process-file-keyword t
         orb-file-field-extensions '("pdf"))
