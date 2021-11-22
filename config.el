@@ -1100,13 +1100,11 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   (setq company-idle-delay 3.0
         company-minimum-prefix-length 2
         ;; company-box-enable-icon nil ; disable all-the-icons
-        company-tooltip-limit 10)
-        )
+        company-tooltip-limit 10))
 
 ;; company memory
 (setq-default history-length 500)
 (setq-default prescient-history-length 500)
-
 
 ;;;; vertigo posframe
 (use-package! vertico-posframe
@@ -1114,8 +1112,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   (vertico-posframe-mode 1)
   (setq vertico-posframe-parameters
         '((left-fringe . 8)
-          (right-fringe . 8)))
-  )
+          (right-fringe . 8))))
 
 ;;;; abbrev
 (use-package abbrev

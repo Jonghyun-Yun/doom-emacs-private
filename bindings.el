@@ -342,3 +342,18 @@
       (:after easy-kill
        :map easy-kill-base-map
        :g "C-w" #'easy-kill-region))
+
+;;; doom help
+(map!
+ :leader
+ :desc "doom/magit-fetch" "h d g" #'jyun/fetch-doom-emacs
+ "h d i" #'doom/goto-private-init-file
+ "h d C" nil
+ )
+
+;;; make
+(when (featurep! :tools make)
+  (map!
+   :leader
+   :desc "Run make" "c m" #'jyun/make
+   ))

@@ -20,3 +20,19 @@
               (customize-save-variable
                'pdf-misc-print-program program))
             (setq pdf-misc-print-program program))))))
+
+;;; make function (SPC c m)
+;;;###autoload
+(defun jyun/make (&optional arg)
+  "Run a make task in the current project. If multiple makefiles are available,
+you'll be prompted to select one.
+With a `\\[universal-argument]' prefix argument ARG, execute `+make/run-last'."
+  (interactive "P")
+  (cond
+   ((equal arg '(4))
+    (+make/run-last)
+    )
+   ;; +make/run
+   (t
+    (+make/run)
+    )))
