@@ -544,6 +544,11 @@
 
 ;; (setq reftex-default-bibliography '("~/Zotero/myref.bib"))
 
+;; override functions in org-ref
+;; org-ref-open-pdf-at-point to open the first pdf
+;; doesn't work with (after! org-ref.. why?
+(load! "local/bibtex-pdf")
+
 ;; ;; open zotero pdf in org-ref
 ;; (eval-after-load 'org-ref
 ;;   (setq org-ref-default-bibliography "~/Zotero/myref.bib"

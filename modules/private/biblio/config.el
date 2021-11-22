@@ -56,7 +56,9 @@ In case of directory the path must end with a slash."
   (setq bibtex-completion-additional-search-fields '(keywords)
         ;; This tell bibtex-completion to look at the File field of the bibtex
         ;; to figure out which pdf to open
-        bibtex-completion-pdf-field "file")
+        bibtex-completion-pdf-field "file"
+        )
+
   ;; determine how org ref should handle the users notes path (dir, or file)
   (setq bibtex-completion-notes-path +biblio-notes-path)
   ;; orb will define handlers for note taking so not needed to use the
@@ -82,7 +84,6 @@ Creates new notes where none exist yet."
    (IS-MAC
     (setq bibtex-completion-pdf-open-function
           (lambda (fpath)
-            ;; (async-start-process "open" "open" "open" nil "-a" "Skim" fpath) ;; not wokring
             ;; (async-start-process "open" "open" nil fpath) ;; system default
             (async-start-process "open" "open" nil "-a" "Skim" fpath) ;; skim
             ;; (call-process "open" nil 0 nil "-a" "Skim" fpath) ;; skim
