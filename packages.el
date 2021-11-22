@@ -211,5 +211,5 @@
   )
 
 ;;; testing new packages
-(package! vertico-posframe)
+(package! vertico-posframe :disable t)
 (package! org-clock-convenience :disable t)
