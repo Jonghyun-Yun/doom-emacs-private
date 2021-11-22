@@ -535,12 +535,8 @@
        +biblio-default-bibliography-files '("~/Zotero/myref.bib")
        ;; a single file for one long note / directory for many note files
        +biblio-notes-path "~/org/refnotes.org"
-       ;; org-ref-notes-directory "~/org/notes/"
+       ;; +biblio-notes-path "~/org/roam/"
        )
-(unless (featurep! :private biblio +roam-bibtex)
-  ;; error when org-ref-notes-directory is nil and no roam-bibtex is loaded
-  (setq org-ref-notes-directory +biblio-notes-path)
-  )
 
 (setq! citar-bibliography +biblio-default-bibliography-files
        citar-library-paths +biblio-pdf-library-dir

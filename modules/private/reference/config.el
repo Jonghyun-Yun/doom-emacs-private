@@ -8,27 +8,6 @@
         org-ref-insert-ref-function 'org-ref-insert-ref-link
         org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body)))
   )
-(after! org-ref
-  ;; (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
-  ;; (define-key org-mode-map (kbd "C-c [ [") 'org-agenda-file-to-front)
-  ;; (define-key org-mode-map (kbd "C-c [ ]") 'org-remove-file)
-(when (featurep! :lang org +roam2)
-  (setq bibtex-completion-notes-path +biblio-notes-path)
-  (setq bibtex-completion-edit-notes-function 'orb-edit-notes-default)
-  (defun orb-edit-notes-default (keys)
-    "Open the notes associated with the entries in KEYS.
-Creates new notes where none exist yet."
-    (dolist (key keys)
-      (orb-org-ref-edit-note key)
-      )))
-(after! ivy-bibtex
-  (setq bibtex-completion-display-formats
-        '((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
-          (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
-          (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-          (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-          (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}")))))
-
 
 (after! (org-ref org-capture)
   (add-to-list 'org-capture-templates
@@ -95,50 +74,31 @@ Creates new notes where none exist yet."
   (add-hook 'org-capture-prepare-finalize-hook #'+reference/append-org-id-to-skim-hook)
 
 ;;;; org-ref-note-title-format
-  (setq org-ref-note-title-format
-        "** %y - %t
-:PROPERTIES:
-:Custom_ID: %k
-:AUTHOR: %9a
-:JOURNAL: %j
-:YEAR: %y
-:VOLUME: %v
-:PAGES: %p
-:DOI: %D
-:URL: %U
-:END:
+;;   (setq org-ref-note-title-format
+;;         "** %y - %t
+;; :PROPERTIES:
+;; :Custom_ID: %k
+;; :AUTHOR: %9a
+;; :JOURNAL: %j
+;; :YEAR: %y
+;; :VOLUME: %v
+;; :PAGES: %p
+;; :DOI: %D
+;; :URL: %U
+;; :END:
 
-")
+;; ")
 
   (setq org-ref-open-pdf-function #'org-ref-open-pdf-at-point)
   ;; (setq org-ref-notes-function #'org-ref-notes-function-one-file)
   ;; (setq org-ref-notes-function #'org-ref-notes-function-many-files)
 
-  (if (featurep! :private biblio +roam-bibtex)
-      (setq org-ref-notes-function #'orb-org-ref-edit-note))
+  ;; (if (featurep! :private biblio +roam-bibtex)
+  ;;     (setq org-ref-notes-function #'orb-org-ref-edit-note))
 
   ;; override functions in org-ref
   ;; b/c these functions are loaded before loading org-ref
   (load! "bibtex-pdf")
-  )
-
-(after! 'bibtex-completion
-  (cond
-   (IS-MAC
-    (setq bibtex-completion-pdf-open-function
-          (lambda (fpath)
-            ;; (async-start-process "open" "open" "open" nil "-a" "Skim" fpath) ;; not wokring
-            ;; (async-start-process "open" "open" nil fpath) ;; system default
-            (async-start-process "open" "open" nil "-a" "Skim" fpath) ;; skim
-            ;; (call-process "open" nil 0 nil "-a" "Skim" fpath) ;; skim
-            ))
-    )
-   (IS-LINUX
-    (setq bibtex-completion-pdf-open-function
-          (lambda (fpath)
-            (async-start-process "open-pdf" "/usr/bin/xdg-open" nil fpath)))))
-
-  ;; (setq bibtex-completion-pdf-open-function 'find-file) ;; using pdf-tools
   )
 
 ;; (after! org-ref

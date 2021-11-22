@@ -57,17 +57,51 @@ In case of directory the path must end with a slash."
         ;; This tell bibtex-completion to look at the File field of the bibtex
         ;; to figure out which pdf to open
         bibtex-completion-pdf-field "file")
+  ;; determine how org ref should handle the users notes path (dir, or file)
+  (setq bibtex-completion-notes-path +biblio-notes-path)
   ;; orb will define handlers for note taking so not needed to use the
   ;; ones set for bibtex-completion
   (unless (featurep! :lang org +roam2)
-    (setq bibtex-completion-notes-path +biblio-notes-path)
     (unless bibtex-completion-notes-template-multiple-files
       (setq bibtex-completion-notes-template-multiple-files
             "${title} : (${=key=})
 
 - tags ::
 - keywords :: ${keywords}
-\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: /${file}\n  :NOTER_PAGE: \n  :END:\n\n"))))
+\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: /${file}\n  :NOTER_PAGE: \n  :END:\n\n")))
+  (when (featurep! :lang org +roam2)
+    (setq bibtex-completion-notes-path +biblio-notes-path)
+    (setq bibtex-completion-edit-notes-function 'orb-edit-notes-default)
+    (defun orb-edit-notes-default (keys)
+      "Open the notes associated with the entries in KEYS.
+Creates new notes where none exist yet."
+      (dolist (key keys)
+        (orb-org-ref-edit-note key)
+        )))
+  (cond
+   (IS-MAC
+    (setq bibtex-completion-pdf-open-function
+          (lambda (fpath)
+            ;; (async-start-process "open" "open" "open" nil "-a" "Skim" fpath) ;; not wokring
+            ;; (async-start-process "open" "open" nil fpath) ;; system default
+            (async-start-process "open" "open" nil "-a" "Skim" fpath) ;; skim
+            ;; (call-process "open" nil 0 nil "-a" "Skim" fpath) ;; skim
+            ))
+    )
+   (IS-LINUX
+    (setq bibtex-completion-pdf-open-function
+          (lambda (fpath)
+            (async-start-process "open-pdf" "/usr/bin/xdg-open" nil fpath)))))
+
+  ;; (setq bibtex-completion-pdf-open-function 'find-file) ;; using pdf-tools
+
+  (setq bibtex-completion-display-formats
+        '((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
+          (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
+          (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+          (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+          (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}")))
+  )
 
 
 ;; TODO which set of keys that should be bound for commonly used functions
@@ -83,6 +117,23 @@ In case of directory the path must end with a slash."
   ;;                                        (t                            #'org-ref-reftex)))
   ;; (setq org-ref-completion-library #'org-ref-ivy-cite)
   ;; (require 'org-ref-ivy-cite)
+  ;; :config
+  ;; Although the name is helm-bibtex, it is actually a bibtex-completion function
+  ;; it is the legacy naming of the project helm-bibtex that causes confusion.
+  ;; (setq org-ref-open-pdf-function 'org-ref-get-pdf-filename-helm-bibtex)
+  ;; (setq org-ref-open-pdf-function 'org-ref-open-pdf-at-point)
+  ;; orb will define handlers for note taking so not needed to use the
+  ;; ones set for bibtex-completion
+  ;; (unless (featurep! :lang org +roam2)
+  ;;   ;; determine how org ref should handle the users notes path (dir, or file)
+  ;;   (if (directory-name-p +biblio-notes-path)
+  ;;       (setq org-ref-notes-directory +biblio-notes-path)
+  ;;     (setq org-ref-bibliography-notes +biblio-notes-path))
+  ;;   ;; Allow org-ref to use the same template mechanism as {helm,ivy}-bibtex for
+  ;;   ;; multiple files if the user has chosen to spread their notes.
+  ;;   (setq org-ref-notes-function (if (and org-ref-notes-directory (directory-name-p org-ref-notes-directory))
+  ;;                                    #'org-ref-notes-function-many-files
+  ;;                                  #'org-ref-notes-function-one-file)))
   )
 
 (use-package! org-roam-bibtex
@@ -135,14 +186,13 @@ In case of directory the path must end with a slash."
                  :unnarrowed t))
   (require 'org-ref))
 
-(use-package! citar
-  :when (featurep! :completion vertico)
-  :after bibtex-completion
-  :custom
-  (when (featurep! +roam2)
-    (citar-file-note-org-include '(org-id org-roam-ref)))
-  :config
-  (setq citar-bibliography "~/Zotero/myref.bib"))
+;; (use-package! citar
+;;   :when (featurep! :completion vertico)
+;;   :after bibtex-completion
+;;   :custom
+;;   (when (featurep! +roam2)
+;;     (citar-file-note-org-include '(org-id org-roam-ref)))
+;;   :config)
 
 (use-package! citeproc
   :defer t)
