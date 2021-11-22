@@ -64,9 +64,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;; (setq doom-theme 'doom-one)
-;; (setq doom-theme 'doom-nord-light)
-;; (setq doom-theme 'doom-solarized-light)
-(setq doom-theme 'doom-nord)
+(setq doom-theme 'doom-one-light)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -74,7 +72,7 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+(setq display-line-numbers-type nil)
 
 
 ;; Here are some additional functions/macros that could help you configure Doom:
@@ -126,11 +124,16 @@
 
 
 ;;; LaTeX
-;; (setq +latex-viewers '(skim pdf-tools))
 (setq +latex-viewers '(pdf-tools skim))
-;; (setq +latex-viewers '(skim pdf-tools))
-;; (add-hook! 'LaTeX-mode-hook #'(lambda () (cdlatex-mode 1)))
-(setq TeX-command-extra-options "-shell-escape")
+  ;; (setq +latex-viewers '(skim pdf-tools))
+(after! latex
+  ;; This variable was introduced in AUCTeX 11.90.
+  ;; We need set LaTeX-reftex-cite-format-auto-activate to nil
+  ;; when setting reftex-cite-format below
+  ;; https://superuser.com/a/1386206
+  (setq LaTeX-reftex-cite-format-auto-activate nil)
+  ;; the below is buffer-local ???
+  (setq TeX-command-extra-options "-shell-escape"))
 
 ;; Set LaTeX preview image size for Org and LaTeX buffers.
 (after! preview
