@@ -110,8 +110,8 @@
 ;;            :branch "patch"))
 
 (package! ox-hugo
-  :recipe (:host nil
-           :repo "https://github.com/jonghyun-yun/ox-hugo"
+  :recipe (:host github
+           :repo "jonghyun-yun/ox-hugo"
            :branch "patch")
   ;; :pin "1f875262b152aa0e57844b4c83aae4951d52a3fe"
   )
@@ -176,7 +176,7 @@
                                   "scimax-elfeed.el"            ;; email elfeed
                                   "scimax-autoformat-abbrev.el" ;; abbrev
                                   "emacs-keybinding-command-tooltip-mode.el"
-                                  "scimax-hydra.el"
+                                  ;; "scimax-hydra.el"
                                   )
                           :branch "patch"))
 
@@ -187,8 +187,8 @@
 
 ;;; doom-snippets
 (package! doom-snippets
-  :recipe (:host nil
-           :repo "https://github.com/jonghyun-yun/doom-snippets"
+  :recipe (:host github
+           :repo "jonghyun-yun/doom-snippets"
            :files ("*.el" "*"))
   ;; :pin "f1f18df5898233d3b1a4a28fc4df48e257d21667"
 )
