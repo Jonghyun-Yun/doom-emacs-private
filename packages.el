@@ -83,8 +83,10 @@
 (package! org-fancy-priorities :disable t) ; slowdown emacs
 
 ;; annotation in symlinked doc
-(package! org-noter :recipe (:local-repo "local/org-noter"
-                             :branch "patch"))
+;; (package! org-noter :recipe (:local-repo "local/org-noter"
+;;                              :branch "patch"))
+
+(package! org-noter :recipe (:host github :repo "jonghyun-yun/org-noter"))
 
 ;; Github flavored markdown exporter
 (package! ox-gfm)
@@ -103,9 +105,16 @@
 ;;            )
 ;;   )
 
+;; (package! ox-hugo
+;;   :recipe (:local-repo "local/ox-hugo"
+;;            :branch "patch"))
+
 (package! ox-hugo
-  :recipe (:local-repo "local/ox-hugo"
-           :branch "patch"))
+  :recipe (:host nil
+           :repo "https://github.com/jonghyun-yun/ox-hugo"
+           :branch "patch")
+  ;; :pin "1f875262b152aa0e57844b4c83aae4951d52a3fe"
+  )
 
 ;; (package! org-cv
 ;;   :recipe (:host github
@@ -167,18 +176,9 @@
                                   "scimax-elfeed.el"            ;; email elfeed
                                   "scimax-autoformat-abbrev.el" ;; abbrev
                                   "emacs-keybinding-command-tooltip-mode.el"
-                                  ;; "scimax-hydra.el"
+                                  "scimax-hydra.el"
                                   )
                           :branch "patch"))
-
-;;; nano-emacs
-(package! nano-emacs
-  :recipe (:repo "jonghyun-yun/nano-emacs"
-           :host github)
-  :disable t)
-
-;; (package! keycast :pin "a3a0798349...")
-;; (package! gif-screencast :pin "fa81e915c2..." :disable t) ;; error during cropping using "mogrify"
 
 ;;; misc
 (package! lorem-ipsum)
@@ -187,11 +187,10 @@
 
 ;;; doom-snippets
 (package! doom-snippets
-  :recipe (:host github
-           :repo "jonghyun-yun/doom-snippets"
+  :recipe (:host nil
+           :repo "https://github.com/jonghyun-yun/doom-snippets"
            :files ("*.el" "*"))
-  ;; :pin "3d671584a32c4f1491fbe14a0f7ba17ed3c7912a"
-  :pin "f1f18df5898233d3b1a4a28fc4df48e257d21667"
+  ;; :pin "f1f18df5898233d3b1a4a28fc4df48e257d21667"
 )
 
 ;;; tempo fixes
