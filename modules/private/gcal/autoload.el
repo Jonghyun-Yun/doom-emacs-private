@@ -86,7 +86,6 @@
   (progn
     ;; (org-gcal-fetch)
     (cfw:open-calendar-buffer
-     ;; :custom-map cfw:my-cal-map
      :contents-sources
      (list
       ;; (cfw:org-create-source "RoyalBlue")  ; orgmode source

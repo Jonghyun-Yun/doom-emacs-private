@@ -1,11 +1,6 @@
 ;;; private/gcal/config.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! :app calendar)
 
-(after! org-gcal
-  (setq org-gcal-client-id (funcall #'password-store-get "org-gcal/client-id")
-        org-gcal-client-secret (funcall #'password-store-get "org-gcal/client-secret")
-        ))
-
 ;; sync gcal.org and google calendar
 (setq org-gcal-file-alist '(("jonghyun.yun@gmail.com" . "~/org/gcal.org") ;; google calendar
                             ))

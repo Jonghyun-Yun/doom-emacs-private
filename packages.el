@@ -88,9 +88,7 @@
 
 ;; Github flavored markdown exporter
 (package! ox-gfm)
-
 (package! org-re-reveal-ref)
-
 (package! org-transclusion
   :recipe (:host github :repo "nobiot/org-transclusion"))
 ;; (package! org-clock-budget
@@ -209,6 +207,10 @@
            :files ("lisp/org-mac-link.el"))
   :pin "e14dfea59491f889f35868813122c5b8c0b4b3db"
   )
+
+;; (package! org-gcal :pin "8b6df4b727339e3933c68045e104b6b1d99816f7")
+;; (package! org-gcal :pin "52b7f8f7654e391f51e8d6d40506c8c170a5be20")
+;; (package! org-gcal :pin "133cca813abd2823a6e2a9ada295b7b8b115be4f")
 
 ;;; testing new packages
 (package! vertico-posframe :disable t)
