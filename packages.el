@@ -72,8 +72,8 @@
 
 
 ;;; matlab
-;; (package! matlab-mode)
-(package! matlab-mode :recipe (:host github :repo "matlab-mode/mirror"))
+(package! matlab-mode)
+;; (package! matlab-mode :recipe (:host github :repo "matlab-mode/mirror"))
 
 
 ;;; search
