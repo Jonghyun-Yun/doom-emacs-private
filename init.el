@@ -21,14 +21,18 @@
 
        :completion
        (company                         ; the ultimate code completion backend
-        +childframe)
+        +childframe
+        )
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;; (ivy                ; a search engine for love and life
-       ;;  +fuzzy
-       ;;  +prescient)
+       ;;  ;; +childframe
+       ;;  ;; +fuzzy
+       ;;  ;; +prescient
+       ;;  )
        (vertico
-        +icons)                         ; the search engine of the future
+        +icons)
+                                        ; the search engine of the future
 
        :ui
        deft  ; notational velocity for Emacs
@@ -90,7 +94,8 @@
 
        :checkers
        (syntax                       ; tasing you for every semicolon you forget
-        +childframe)
+        +childframe
+        )
        (spell                           ; tasing you for misspelling mispelling
         +hunspell)
        ;; grammar           ; tasing grammar mistake every you make

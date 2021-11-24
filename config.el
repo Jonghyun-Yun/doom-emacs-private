@@ -1113,20 +1113,80 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 (after! company
   (setq company-idle-delay 3.0
         company-minimum-prefix-length 2
-        ;; company-box-enable-icon nil ; disable all-the-icons
+        company-box-enable-icon nil ; disable all-the-icons
         company-tooltip-limit 10))
 
 ;; company memory
 (setq-default history-length 500)
 (setq-default prescient-history-length 500)
 
+(use-package! company-posframe
+  :hook (company-mode . company-posframe-mode)
+  :config
+  (remove-hook 'company-mode-hook #'company-box-mode)
+  )
+
+;;; posframe
+;; (use-package! transient-posframe
+;;   :config
+;;   (transient-posframe-mode))
+
+;;;; hydra-posframe
+(use-package! hydra-posframe
+  :after hydra
+  :config
+  (hydra-posframe-enable)
+  ;; :hook (after-init . hydra-posframe-enable)
+  (setq hydra-posframe-parameters
+        '((left-fringe . 8)
+          (right-fringe . 8)
+          ))
+  (setq hydra-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
+  )
+
+;;;; which-key-posframe
+(use-package! which-key-posframe
+  :after which-key
+  :config
+  (which-key-posframe-mode 1)
+  (setq which-key-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
+  ;; (setq which-key-posframe-poshandler 'posframe-poshandler-frame-top-right-corner)
+  (setq which-key-posframe-parameters
+        '((left-fringe . 8)
+          (right-fringe . 8)
+          ))
+  ;; fix wrong `height'
+  (defun which-key-posframe--show-buffer (act-popup-dim)
+  "Show which-key buffer when popup type is posframe.
+Argument ACT-POPUP-DIM includes the dimension, (height . width)
+of the buffer text to be displayed in the popup"
+  (when (posframe-workable-p)
+    (save-window-excursion
+      (posframe-show
+       which-key--buffer
+       :font which-key-posframe-font
+       :position (point)
+       :poshandler which-key-posframe-poshandler
+       :background-color (face-attribute 'which-key-posframe :background nil t)
+       :foreground-color (face-attribute 'which-key-posframe :foreground nil t)
+       ;; :height (+ 1 (car act-popup-dim))
+       :width (cdr act-popup-dim)
+       :internal-border-width which-key-posframe-border-width
+       :internal-border-color (face-attribute 'which-key-posframe-border :background nil t)
+       :override-parameters which-key-posframe-parameters))))
+  )
+
 ;;;; vertigo posframe
 (use-package! vertico-posframe
+  :after vertico
   :config
   (vertico-posframe-mode 1)
+  (setq vertico-posframe-poshandler #'posframe-poshandler-frame-bottom-center)
+  ;; (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center)
   (setq vertico-posframe-parameters
         '((left-fringe . 8)
-          (right-fringe . 8))))
+          (right-fringe . 8)
+)))
 
 ;;;; abbrev
 (use-package abbrev

@@ -215,5 +215,12 @@
 ;; (package! org-gcal :pin "133cca813abd2823a6e2a9ada295b7b8b115be4f")
 
 ;;; testing new packages
-(package! vertico-posframe :disable t)
 (package! org-clock-convenience :disable t)
+(package! tree-sitter :disable t)
+(package! tree-sitter-langs :disable t)
+(package! company-posframe)
+(package! which-key-posframe)
+(package! transient-posframe)
+(package! vertico-posframe)
+(package! hydra-posframe :recipe (:host github
+                                  :repo "Ladicle/hydra-posframe"))
