@@ -29,7 +29,7 @@
 (use-package! scimax-hydra
   :load-path scimax-dir
   :commands (scimax-dispatch-mode-hydra
-             scimax-error/body
+             scimax-open-hydra
              scimax-src-block-hydra/body
              scimax/body)
   :init

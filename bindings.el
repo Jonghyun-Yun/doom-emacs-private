@@ -292,7 +292,9 @@
 
 ;;; scimax
 (map!
- :g "C-c ! ." #'scimax-error/body
+ :g "C-c ! ." (lambda ()
+                (interactive)
+                (scimax-open-hydra scimax-errors/body))
  "s-<up>" #'beginning-of-buffer
  "s-<down>" #'end-of-buffer)
 
