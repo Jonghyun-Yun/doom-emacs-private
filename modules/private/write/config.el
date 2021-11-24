@@ -127,7 +127,7 @@
   (flycheck-define-checker textidote
     "My latex checker"
     :command
-    ("~/Dropbox/emacs/textidote-wrapper.sh" source)
+    ("~/Dropbox/emacs/textidote/textidote-wrapper.sh" source)
     :error-patterns
     ((warning line-start (file-name) ":" line ":" column ": [" (id (1+ (not (any "]")))) "] " (message) line-end))
     :modes
@@ -145,6 +145,23 @@
 
   ;; enable flycheck for latex
   ;; (add-hook 'LaTeX-mode-hook 'flycheck-mode)
+
+  (flycheck-define-checker tex-textidote
+    "A LaTeX grammar/spelling checker using textidote.
+
+    See https://github.com/sylvainhalle/textidote"
+    :modes (latex-mode plain-tex-mode)
+    :command ("java" "-jar" (eval (expand-file-name "~/Dropbox/emacs/textidote/textidote.jar")) "--read-all"
+              "--check" (eval (if ispell-current-dictionary (substring ispell-current-dictionary 0 2) "en"))
+              "--dict" (eval (expand-file-name ispell-personal-dictionary))
+              "--no-color" source-inplace)
+    :error-patterns
+    ((warning line-start "* L" line "C" column "-" (one-or-more alphanumeric) " "
+              (message (one-or-more (not (any "]"))) "]")))
+    )
+
+  ;; add tex-textidote
+  (add-to-list 'flycheck-checkers 'tex-textidote)
   )
 
 ;; https://github.com/agzam/mw-thesaurus.el
