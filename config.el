@@ -1310,6 +1310,14 @@ of the buffer text to be displayed in the popup"
   (when (bound-and-true-p flycheck-mode)
     (flycheck-buffer)))
 
+;;; testing
+(use-package! tree-sitter
+  :hook
+  (prog-mode . global-tree-sitter-mode)
+  :config
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+(use-package! tree-sitter-langs
+  :after tree-sitter)
 
 ;;; archive
 ;;;; outline regexp
@@ -1357,3 +1365,6 @@ of the buffer text to be displayed in the popup"
 ;;                                   (editorconfig-mode -1)
 ;;                                   (set (make-local-variable 'require-final-newline) nil))
 ;;                                 ))
+;;
+
+;;; testing
