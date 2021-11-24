@@ -69,8 +69,20 @@
         ;; display in a minibuffer
         ;; 'langtool-autoshow-force-message
         ;; display in a popup
-        'langtool-autoshow-detail-popup
+        ;; 'langtool-autoshow-detail-popup
+        ;; posframe
+        'langtool-posframe-show-posframe
         )
+
+  (after! company
+    ;; Don't display popups if company is open
+    (add-hook 'langtool-posframe-inhibit-functions #'company--active-p))
+  (after! evil
+    ;; Don't display popups while in insert or replace mode, as it can affect
+    ;; the cursor's position or cause disruptive input delays.
+    (add-hook! 'langtool-posframe-inhibit-functions
+               #'evil-insert-state-p
+               #'evil-replace-state-p))
   )
 
 (defvar languagetool-show-error-on-jump nil
