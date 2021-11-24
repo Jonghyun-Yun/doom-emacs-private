@@ -86,7 +86,10 @@
 ;; (package! org-noter :recipe (:local-repo "local/org-noter"
 ;;                              :branch "patch"))
 
-(package! org-noter :recipe (:host github :repo "jonghyun-yun/org-noter"))
+(package! org-noter :recipe (:host github 
+                             :repo "jonghyun-yun/org-noter" 
+                             :branch "patch")
+  :pin "e0a5644a1eea921cf5945e56b09a1ef9688f363b")
 
 ;; Github flavored markdown exporter
 (package! ox-gfm)
@@ -113,7 +116,7 @@
   :recipe (:host github
            :repo "jonghyun-yun/ox-hugo"
            :branch "patch")
-  ;; :pin "1f875262b152aa0e57844b4c83aae4951d52a3fe"
+  :pin "1f875262b152aa0e57844b4c83aae4951d52a3fe"
   )
 
 ;; (package! org-cv
@@ -190,7 +193,7 @@
   :recipe (:host github
            :repo "jonghyun-yun/doom-snippets"
            :files ("*.el" "*"))
-  ;; :pin "f1f18df5898233d3b1a4a28fc4df48e257d21667"
+  :pin "f1f18df5898233d3b1a4a28fc4df48e257d21667"
 )
 
 ;;; tempo fixes
