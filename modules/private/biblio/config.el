@@ -161,59 +161,43 @@ Creates new notes where none exist yet."
                  :unnarrowed t))
   (require 'org-ref))
 
-(use-package! citar
-  :when (featurep! :completion vertico)
-  :after bibtex-completion
-  :custom
-  (when (featurep! +roam2)
-    (citar-file-note-org-include '(org-id org-roam-ref)))
+(use-package! citeproc :defer t)
+;; https://github.com/andras-simonyi/citeproc-org
+(use-package! citeproc-org
+  :defer t
   :config
-  (setq citar-open-note-function 'orb-citar-edit-note)
-  ;; to have the Embark menu open with org-open-at-point
-  ;; (setq citar-at-point-function 'embark-act)
-  )
+  (citeproc-org-setup))
 
-
-(use-package! citeproc
-  :defer t)
-
-;; ;;; Org-Cite configuration
+;;; `org-cite'
 
 ;; (use-package! oc
-;;   :after org bibtex-completion citar
+;;   :defer t
 ;;   :config
-;;   ;; (require 'ox)
-;;   (require 'oc-biblatex)
-;;   (require 'oc-csl)
-;;   (require 'oc-natbib)
-;;   (map! :map org-mode-map
-;;         :localleader
-;;         :desc "Insert citation" "@" #'org-cite-insert)
 ;;   (setq org-cite-global-bibliography
-;;         (let ((paths (or citar-bibliography
-;;                          bibtex-completion-bibliography)))
-;;           ;; Always return bibliography paths as list for org-cite.
-;;           (if (stringp paths) (list paths) paths)))
-;;    ;; https://github.com/citation-style-language/styles
-;;    ;; or https://www.zotero.org/styles
-;;   (setq org-cite-csl-styles-dir "~/Zotero/styles")
-;;   ;; setup export processor; default csl/citeproc-el, with biblatex for latex
-;;   (setq org-cite-export-processors
-;;         '((latex biblatex)
-;;           (t csl))))
+;;         (doom-enlist
+;;          (or (bound-and-true-p citar-bibliography)
+;;              (bound-and-true-p bibtex-completion-bibliography)))
+;;         ;; Setup export processor; default csl/citeproc-el, with biblatex for
+;;         ;; latex
+;;         org-cite-export-processors '((latex biblatex) (t csl))
+;;         org-support-shift-select t))
 
-;; ;;; Org-cite processors
-;; (use-package! citar-org
-;;   :no-require
-;;   :custom
-;;   (org-cite-insert-processor 'citar)
-;;   (org-cite-follow-processor 'citar)
-;;   (org-cite-activate-processor 'citar)
-;;   ;; (org-support-shift-select t)
-;;   (when (featurep! :lang org +roam2)
-;;     ;; Include property drawer metadata for 'org-roam' v2.
-;;     (citar-file-note-org-include '(org-id org-roam-ref))))
+(use-package! citar
+  :when (featurep! :completion vertico)
+  :no-require
+  :config
+  (setq org-cite-insert-processor 'citar
+        org-cite-follow-processor 'citar
+        org-cite-activate-processor 'citar)
+  (when (featurep! :lang org +roam2)
+    ;; Include property drawer metadata for 'org-roam' v2.
+    (setq citar-file-note-org-include '(org-id org-roam-ref))
+    (setq citar-open-note-function 'orb-citar-edit-note))
+  ;; to have the Embark menu open with org-open-at-point
+  (setq citar-at-point-function 'embark-act)
+  )
 
-;; (setq flyspell-duplicate-distance 0
-;;       flyspell-mark-duplications-flag nil
-;;       warning-minimum-level :error)
+;; `org-cite' processors
+;; (use-package! oc-biblatex :after oc)
+;; (use-package! oc-csl :after oc)
+;; (use-package! oc-natbib :after oc)
