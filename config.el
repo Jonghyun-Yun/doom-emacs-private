@@ -425,9 +425,6 @@
 ;; replace highlighted text with what I type
 ;; (delete-selection-mode 1)
 
-(defvar overleaf-directory nil
-  "A project directory to sync using Overleaf.")
-
 ;;;; modifier
 ;; NOTE: KARABINER
 ;; caps_lock: esc if alone, right_ctrl if hold_down
@@ -1013,7 +1010,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
    '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
    )
   ;; why I want this??
-  ;; (setq which-key-replacement-alist nil )
+  ;; (setq which-key-replacement-alist nil)
   )
 
 ;;;; ctrlf
