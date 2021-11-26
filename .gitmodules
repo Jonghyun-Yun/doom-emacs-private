@@ -13,3 +13,6 @@
 [submodule "local/ox-ravel"]
 	path = local/ox-ravel
 	url = https://github.com/Jonghyun-Yun/ox-ravel.git
+[submodule "emacs-overleaf"]
+	path = local/emacs-overleaf
+	url = https://github.com/Jonghyun-Yun/emacs-overleaf.git
