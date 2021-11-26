@@ -989,6 +989,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;;;; no evil-snipe
 (after! evil-snipe
   (pushnew! evil-snipe-disabled-modes 'ibuffer-mode 'dired-mode)
+  (pushnew! evil-snipe-disabled-modes 'wordnut-mode 'osx-dictionary-mode)
   ;; (pushnew! evil-snipe-disabled-modes 'reftex-select-label-mode 'reftex-select-bib-mode)
   )
 
