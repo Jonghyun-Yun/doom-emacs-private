@@ -131,7 +131,7 @@
   ;; We need set LaTeX-reftex-cite-format-auto-activate to nil
   ;; when setting reftex-cite-format below
   ;; https://superuser.com/a/1386206
-  (setq LaTeX-reftex-cite-format-auto-activate nil)
+  (setq LaTeX-reftex-cite-format-auto-activate t)
   ;; the below is buffer-local ???
   (setq TeX-command-extra-options "-shell-escape"))
 
@@ -141,6 +141,25 @@
   (setq preview-scale 1.5)
   ;; (set 'preview-scale-function 1.75)
   )
+
+;;;; reftex
+(after! reftex
+  (setq reftex-ref-style-default-list '("Default"
+                                        "Cleveref"
+                                        "AMSmath"))
+  (setq reftex-typekey-to-format-alist '((" " . "~\\ref{%s}")
+                                         ("n" . "~\\ref{%s}")
+                                         ("f" . "~\\ref{%s}")
+                                         ("e" . "~\\eqref{%s}")
+                                         ("i" . "~\\ref{%s}")
+                                         ("s" . "~\\ref{%s}")
+                                         ("t" . "~\\ref{%s}")
+                                         ("l" . "~\\ref{%s}")
+                                         ("N" . "~\\ref{%s}"))))
+
+(use-package! emacs-overleaf
+  :defer t
+  :commands (jyun/setup-overleaf-pull jyun/setup-overleaf-push))
 
 ;; ;; trying to turn off `rainbow-delimiters-mode'. not working..
 ;; (add-hook! 'LaTeX-mode-hook #'(lambda () (rainbow-delimiters-mode -1)))
