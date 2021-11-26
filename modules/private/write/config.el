@@ -1,191 +1,66 @@
 ;;; private/write/config.el -*- lexical-binding: t; -*-
 
-(use-package wordnut
+;;; dictionary
+(when IS-MAC
+  (after! osx-dictionary
+    (add-hook! 'osx-dictionary-mode-hook #'+write/buffer-face-mode-dict)
+    (map!
+     (:map osx-dictionary-mode-map
+      :nm "o" #'osx-dictionary-open-dictionary.app
+      :nm "s" #'osx-dictionary-search-input
+      :nm "q" #'osx-dictionary-quit
+      :nm "RET" #'osx-dictionary-search-word-at-point
+      :nm "r" #'osx-dictionary-read-word))
+    ))
+
+;;; wordnut
+;; powerthesaurus not working
+(setq! +lookup-dictionary-prefer-offline t)
+
+(use-package! wordnut
   :defer t
   :commands (wordnut-lookup-current-word
-             wordnut-search)
-  :hook (wordnut-mode . evil-emacs-state)
+             wordnut-search
+             wordnut-lookup-dwim)
+  :hook (wordnut-mode . +write/buffer-face-mode-dict)
   :config
   (setq wordnut-cmd "/usr/local/bin/wn")
+  (map! (:map wordnut-mode-map
+         :nm [remap +org/dwim-at-point] #'wordnut-lookup-dwim
+         :nm "s" #'wordnut-search
+         :nm [remap +org/insert-item-below] (lambda! (osx-dictionary--view-result
+                                     (substring-no-properties (car wordnut-completion-hist))))
+         :nm "q" #'quit-window
+         ))
   )
 
-;; (use-package! wordnut
-;;   :commands (wordnut-search
-;;              wordnut-lookup-current-word)
-;;   :config
-;;   (define-derived-mode wordnut-mode org-mode "WordNut"
-;;     "Major mode interface to WordNet lexical database.
-;; Turning on wordnut mode runs the normal hook `wordnut-mode-hook'.
+(after! wordnut
+  (define-derived-mode wordnut-mode org-mode "WordNut"
+    "Major mode interface to WordNet lexical database.
+Turning on wordnut mode runs the normal hook `wordnut-mode-hook'.
 
-;; \\{wordnut-mode-map}"
+\\{wordnut-mode-map}"
 
-;;     (setq-local visual-line-fringe-indicators '(nil top-right-angle))
-;;     (visual-line-mode 1)
+    (setq-local visual-line-fringe-indicators '(nil top-right-angle))
+    (visual-line-mode 1)
+    ;; we make a custom imenu index
+    (setq imenu-generic-expression nil)
+    (setq-local imenu-create-index-function 'wordnut--imenu-make-index)
+    (imenu-add-menubar-index)
 
-;;     ;; we make a custom imenu index
-;;     (setq imenu-generic-expression nil)
-;;     (setq-local imenu-create-index-function 'wordnut--imenu-make-index)
-;;     (imenu-add-menubar-index)
+    ;; (setq font-lock-defaults '(wordnut-font-lock-keywords))
 
-;;     ;; (setq font-lock-defaults '(wordnut-font-lock-keywords))
+    ;; if user has adaptive-wrap mode installed, use it
+    (if (and (fboundp 'adaptive-wrap-prefix-mode)
+             (boundp 'adaptive-wrap-extra-indent))
+        (progn
+          (setq adaptive-wrap-extra-indent 3)
+          (adaptive-wrap-prefix-mode 1))))
 
-;;     ;; if user has adaptive-wrap mode installed, use it
-;;     (if (and (fboundp 'adaptive-wrap-prefix-mode)
-;;              (boundp 'adaptive-wrap-extra-indent))
-;;         (progn
-;;           (setq adaptive-wrap-extra-indent 3)
-;;           (adaptive-wrap-prefix-mode 1))))
-;;   (defun wordnut--format-buffer ()
-;;     (let ((inhibit-read-only t)
-;;           (case-fold-search nil))
-;;       ;; delete the 1st empty line
-;;       (goto-char (point-min))
-;;       (delete-blank-lines)
-
-;;       ;; make headings
-;;       (delete-matching-lines "^ +$" (point-min) (point-max))
-;;       (while (re-search-forward
-;;               (concat "^" (regexp-opt wordnut-section-headings t) ".* \\(of \\)?\\(\\w+\\) \\(\\w+\\)\n\n.*\\([0-9]+\\) sense.*") nil t)
-;;         (replace-match "* \\1 :\\3:\n"))
-
-;;       (goto-char (point-min))
-;;       (while (re-search-forward
-;;               (concat "^" (regexp-opt wordnut-section-headings t) ".* \\(of \\)?\\(\\w+\\) \\(\\w+\\)") nil t)
-;;         (replace-match "* \\1 :\\3:"))
-
-;;       ;; remove empty entries
-;;       (goto-char (point-min))
-;;       (while (re-search-forward "^\\* .+\n\n\\*" nil t)
-;;         (replace-match "*" t t)
-;;         ;; back over the '*' to remove next matching lines
-;;         (backward-char))
-
-;;       ;; make sections
-;;       (goto-char (point-min))
-;;       (while (re-search-forward "^Sense \\([0-9]+\\)\n" nil t)
-;;         (replace-match "** \\1 "))
-
-;;       ;; remove the last empty entry
-;;       (goto-char (point-max))
-;;       (if (re-search-backward "^\\* .+\n\\'" nil t)
-;;           (replace-match "" t t))
-
-;;       (goto-char (point-min))))
-;;   (set-popup-rule! "\\*WordNut" :size 80 :side 'right :select t :quit t)
-;;   (map! :map wordnut-mode-map
-;;         :nm "<C-return>" (cmd! (osx-dictionary--view-result
-;;                                 (substring-no-properties (car wordnut-completion-hist))))
-;;         :nm "RET" #'wordnut-lookup-current-word
-;;         :nm "q" #'quit-window
-;;         :nm "gh" #'wordnut-lookup-current-word))
-
-;; (with-eval-after-load 'synosaurus
-;;   ;; (require 'synosaurus-wordnet)
-;;   (when IS-MAC
-;;     (use-package! osx-dictionary
-;;       :commands (osx-dictionary-search-word-at-point
-;;                  osx-dictionary-search-input)
-;;       :config
-;;       (add-hook 'osx-dictionary-mode-hook '+write/buffer-face-mode-dict)
-;;       (map! :map osx-dictionary-mode-map
-;;             :nm "o"   #'osx-dictionary-open-dictionary.app
-;;             :nm "s"   #'osx-dictionary-search-input
-;;             :nm "q"   #'osx-dictionary-quit
-;;             :nm "RET" #'osx-dictionary-search-word-at-point
-;;             :nm "r"   #'osx-dictionary-read-word)
-;;       (set-popup-rule! "\\*osx-dictionary" :size 80 :side 'right :select t :quit t))))
-
-(use-package! academic-phrases
-  :defer t
-  :commands (academic-phrases
-             academic-phrases-by-section)
   )
 
-;; (use-package! wordsmith-mode
-;; :commands (wordsmitch-mode))
 
-(after! flycheck
-  ;; https://www.macs.hw.ac.uk/~rs46/posts/2018-12-29-stylecheck-flycheck.html
-  ;; https://www.cs.umd.edu/~nspring/software/style-check-readme.html
-  (flycheck-define-checker style-check
-    "A linter for style-check.rb"
-    ;; cd /Users/yunj/Dropbox/emacs/style-check/
-    ;; make user-install
-    ;; ln -s /Users/yunj/Dropbox/emacs/style-check/style-check.rb /usr/local/bin/style-check.rb
-    :command ("style-check.rb"
-              source-inplace)
-    :error-patterns
-    ((warning line-start (file-name) ":" line ":" column ": "
-              (message (one-or-more not-newline)
-                       (zero-or-more "\n" (any " ") (one-or-more not-newline)))
-              line-end))
-    :modes latex-mode
-    )
-
-  ;; https://github.com/fikovnik/dotfiles/blob/master/.emacs.d/config.org#create-a-wrapper
-  ;; https://github.com/sylvainhalle/textidote
-  (flycheck-define-checker textidote
-    "My latex checker"
-    :command
-    ("~/Dropbox/emacs/textidote/textidote-wrapper.sh" source)
-    :error-patterns
-    ((warning line-start (file-name) ":" line ":" column ": [" (id (1+ (not (any "]")))) "] " (message) line-end))
-    :modes
-    (latex-mode))
-
-  ;; style-check
-  (add-to-list 'flycheck-checkers 'style-check)
-  ;; textidote and languagetool
-  (add-to-list 'flycheck-checkers 'textidote)
-  ;; texlint
-  ;; https://www.macs.hw.ac.uk/~rs46/posts/2018-12-29-textlint-flycheck.html
-  ;; https://github.com/kisaragi-hiu/flycheck-textlint
-  (add-to-list 'flycheck-textlint-plugin-alist '(tex-mode . "latex"))
-  (setq flycheck-textlint-config "~/.config/textlint/textlintrc.json")
-
-  ;; enable flycheck for latex
-  ;; (add-hook 'LaTeX-mode-hook 'flycheck-mode)
-
-  (flycheck-define-checker tex-textidote
-    "A LaTeX grammar/spelling checker using textidote.
-
-    See https://github.com/sylvainhalle/textidote"
-    :modes (latex-mode plain-tex-mode)
-    :command ("java" "-jar" (eval (expand-file-name "~/Dropbox/emacs/textidote/textidote.jar")) "--read-all"
-              "--check" (eval (if ispell-current-dictionary (substring ispell-current-dictionary 0 2) "en"))
-              "--dict" (eval (expand-file-name ispell-personal-dictionary))
-              "--no-color" source-inplace)
-    :error-patterns
-    ((warning line-start "* L" line "C" column "-" (one-or-more alphanumeric) " "
-              (message (one-or-more (not (any "]"))) "]")))
-    )
-
-  ;; add tex-textidote
-  (add-to-list 'flycheck-checkers 'tex-textidote)
-  )
-
-;; https://github.com/agzam/mw-thesaurus.el
-(use-package! mw-thesaurus
-  :defer t
-  ;; (spacemacs/set-leader-keys
-  ;;   "xwm" 'mw-thesaurus-lookup-at-point
-  ;;   )
-  :hook (mw-thesaurus-mode . evil-emacs-state)
-  :commands (mw-thesaurus-lookup-at-point)
-  :config
-  (after! pass
-    (setq mw-thesaurus--api-key (password-store-get "mw-thesaurus/api-key")))
-  ;; :init
-  ;; (global-set-key (kbd "C-c C-s m") 'mw-thesaurus-lookup-at-point)
-  ;;Key (Thesaurus):
-  ;; (define-key mw-thesaurus-mode-map [remap evil-record-macro] #'mw-thesaurus--quit) ;;q
-  ;; (define-key mw-thesaurus-mode-map [remap evil-substitute] #'osx-dictionary-search-input) ;;s
-  ;; (define-key mw-thesaurus-mode-map [remap evil-org-delete] #'osx-dictionary-search-pointer) ;;d
-  ;; (define-key mw-thesaurus-mode-map [remap evil-forward-char] #'wordnut-lookup-current-word) ;;l
-  ;; (define-key mw-thesaurus-mode-map [remap evil-set-marker] #'mw-thesaurus-lookup-at-point) ;;m
-  ;; (define-key mw-thesaurus-mode-map [remap evil-forward-word-begin] #'wordnut-search) ;;w
-  )
-
+;;; thesaurus
 ;; https://github.com/hpdeifel/synosaurus
 (use-package synosaurus
   :defer t
@@ -202,30 +77,96 @@
   ;;   )
   )
 
-;;  (use-package synosaurus-wordnet
-;;   :init
-;;   :commands (synosaurus-backend-wordnet)
-;; ;; synosaurus-backend-wordnet        An english offline thesaurus
-;; ;; https://wordnet.princeton.edu
-;; ;; $ brew install wordnet # for wn command.
-;;   :config
-;; (setq synosaurus-backend 'synosaurus-backend-wordnet
-;; ;; The way of querying the user for word replacements.
-;;       synosaurus-choose-method 'popup))
+;;; mw dict modes
+(define-derived-mode mw-dict-mode org-mode "MWDict"
+  "Major mode interface to WordNet lexical database.
+Turning on wordnut mode runs the normal hook `mw-dict-mode-hook'.
 
-(after! osx-dictionary
-  ;;   :defer t
-  ;; :config
-  (evil-set-initial-state 'osx-dictionary-mode 'emacs)
-  ;; (evilified-state-evilify-map osx-dictionary-mode-map
-  ;;   :mode osx-dictionary-mode
-  ;;   :bindings
-  ;;   "d" 'osx-dictionary-search-pointer
-  ;;   "m" 'mw-thesaurus-lookup-at-point
-  ;;   "l" 'wordnut-lookup-current-word
-  ;;   )
+\\{mw-dict-mode-map}"
+
+  (setq-local visual-line-fringe-indicators '(nil top-right-angle))
+  (visual-line-mode 1)
+  ;; if user has adaptive-wrap mode installed, use it
+  (if (and (fboundp 'adaptive-wrap-prefix-mode)
+           (boundp 'adaptive-wrap-extra-indent))
+      (progn
+        (setq adaptive-wrap-extra-indent 3)
+        (adaptive-wrap-prefix-mode 1))))
+
+(define-derived-mode mw-syno-mode org-mode "MWSyno"
+  "Major mode interface to WordNet lexical database.
+Turning on wordnut mode runs the normal hook `mw-syno-mode-hook'.
+
+\\{mw-syno-mode-map}"
+
+  (setq-local visual-line-fringe-indicators '(nil top-right-angle))
+  (visual-line-mode 1)
+  ;; if user has adaptive-wrap mode installed, use it
+  (if (and (fboundp 'adaptive-wrap-prefix-mode)
+           (boundp 'adaptive-wrap-extra-indent))
+      (progn
+        (setq adaptive-wrap-extra-indent 3)
+        (adaptive-wrap-prefix-mode 1)))
   )
 
+;;; mw dicts
+;; https://github.com/agzam/mw-thesaurus.el
+(use-package! mw-thesaurus
+  :defer t
+  :hook (mw-thesaurus-mode . +write/buffer-face-mode-dict)
+  ;; (mw-thesaurus-mode . mw-dict-mode)
+  :commands (mw-thesaurus-lookup-at-point)
+  :config
+  (add-hook! 'mw-thesaurus-mode-hook #'mw-syno-mode)
+  (after! pass
+    (setq mw-thesaurus--api-key (password-store-get "mw-thesaurus/api-key")))
+  :bind
+  (:map mw-syno-mode-map
+   ([remap evil-record-macro] . mw-thesaurus--quit)
+   ([remap +org/dwim-at-point] . mw-thesaurus-lookup-dwim)
+   )
+  ;; (global-set-key (kbd "C-c C-s m") 'mw-thesaurus-lookup-at-point)
+  ;;Key (Thesaurus):
+  ;; (define-key mw-thesaurus-mode-map [remap evil-record-macro] #'mw-thesaurus--quit) ;q
+  ;; (define-key mw-thesaurus-mode-map [remap +org/dwim-at-point] #'mw-thesaurus-lookup-at-point) ;RET
+  ;; (define-key mw-thesaurus-mode-map [remap evil-substitute] #'osx-dictionary-search-input) ;;s
+  ;; (define-key mw-thesaurus-mode-map [remap evil-org-delete] #'osx-dictionary-search-pointer) ;;d
+  ;; (define-key mw-thesaurus-mode-map [remap evil-forward-char] #'wordnut-lookup-current-word) ;;l
+  ;; (define-key mw-thesaurus-mode-map [remap evil-forward-word-begin] #'wordnut-search) ;;w
+  )
+
+(use-package! mw-learner
+  :defer t
+  :commands (mw-learner-lookup-at-point)
+  :hook (mw-learner-mode . +write/buffer-face-mode-dict)
+  :config
+  (add-hook! 'mw-learner-mode-hook #'mw-dict-mode)
+  :bind
+  ("C-c s l" . mw-learner-lookup-at-point)
+  (:map mw-dict-mode-map
+   ([remap evil-record-macro] . mw-learner--quit)
+   ([remap +org/dwim-at-point] . mw-learner-lookup-dwim))
+  )
+
+;; (use-package! mw-collegiate
+;;   :defer t
+;;   :commands (mw-collegiate-lookup-at-point))
+
+;;; dict tweaks
+
+(set-popup-rule! "\\*osx-dictionary" :size 80 :side 'right :select t :quit t)
+(set-popup-rule! "\\*WordNut" :size 80 :side 'right :select t :quit t)
+(set-popup-rule! "^\\* Merriam-Webster" :size 80 :side 'right :select t :quit t)
+
+
+;;; academic phrase
+(use-package! academic-phrases
+  :defer t
+  :commands (academic-phrases
+             academic-phrases-by-section)
+  )
+
+;;; math
 (use-package! mathpix.el
   :defer t
   :commands (mathpix-screenshot)
@@ -269,7 +210,7 @@
       "u" 'string-inflection-underscore
       "U" 'string-inflection-upcase))))
 
-;;; spell
+;;; spell checker
 (setq ispell-program-name "hunspell"
       ispell-check-comments nil
       ispell-hunspell-dict-paths-alist
@@ -301,6 +242,7 @@
 (setq spell-fu-idle-delay 0.5)
 ;; (global-spell-fu-mode -1)
 
+;;;; ignore spell checks
 ;; I need these lists for langtool!
 (setf (alist-get 'org-mode +spell-excluded-faces-alist)
       '(
@@ -361,12 +303,65 @@
                              (setq-local langtool-ignore-fonts
                                          (alist-get 'LaTeX-mode +spell-excluded-faces-alist))))
 
-;;; mw-dict
-(use-package! mw-learner
-  :defer t
-  :commands (mw-learner-lookup-at-point))
-(use-package! mw-collegiate
-  :defer t
-  :commands (mw-collegiate-lookup-at-point))
+;;; latex checkers
+(after! flycheck
+  ;; https://www.macs.hw.ac.uk/~rs46/posts/2018-12-29-stylecheck-flycheck.html
+  ;; https://www.cs.umd.edu/~nspring/software/style-check-readme.html
+  (flycheck-define-checker style-check
+    "A linter for style-check.rb"
+    ;; cd /Users/yunj/Dropbox/emacs/style-check/
+    ;; make user-install
+    ;; ln -s /Users/yunj/Dropbox/emacs/style-check/style-check.rb /usr/local/bin/style-check.rb
+    :command ("style-check.rb"
+              source-inplace)
+    :error-patterns
+    ((warning line-start (file-name) ":" line ":" column ": "
+              (message (one-or-more not-newline)
+                       (zero-or-more "\n" (any " ") (one-or-more not-newline)))
+              line-end))
+    :modes latex-mode
+    )
+
+  ;; https://github.com/fikovnik/dotfiles/blob/master/.emacs.d/config.org#create-a-wrapper
+  ;; https://github.com/sylvainhalle/textidote
+  (flycheck-define-checker textidote
+    "My latex checker"
+    :command
+    ("~/Dropbox/emacs/textidote/textidote-wrapper.sh" source)
+    :error-patterns
+    ((warning line-start (file-name) ":" line ":" column ": [" (id (1+ (not (any "]")))) "] " (message) line-end))
+    :modes
+    (latex-mode))
+
+  ;; style-check
+  (add-to-list 'flycheck-checkers 'style-check)
+  ;; textidote and languagetool
+  (add-to-list 'flycheck-checkers 'textidote)
+  ;; texlint
+  ;; https://www.macs.hw.ac.uk/~rs46/posts/2018-12-29-textlint-flycheck.html
+  ;; https://github.com/kisaragi-hiu/flycheck-textlint
+  (add-to-list 'flycheck-textlint-plugin-alist '(tex-mode . "latex"))
+  (setq flycheck-textlint-config "~/.config/textlint/textlintrc.json")
+
+  ;; enable flycheck for latex
+  ;; (add-hook 'LaTeX-mode-hook 'flycheck-mode)
+
+  (flycheck-define-checker tex-textidote
+    "A LaTeX grammar/spelling checker using textidote.
+
+    See https://github.com/sylvainhalle/textidote"
+    :modes (latex-mode plain-tex-mode)
+    :command ("java" "-jar" (eval (expand-file-name "~/Dropbox/emacs/textidote/textidote.jar")) "--read-all"
+              "--check" (eval (if ispell-current-dictionary (substring ispell-current-dictionary 0 2) "en"))
+              "--dict" (eval (expand-file-name ispell-personal-dictionary))
+              "--no-color" source-inplace)
+    :error-patterns
+    ((warning line-start "* L" line "C" column "-" (one-or-more alphanumeric) " "
+              (message (one-or-more (not (any "]"))) "]")))
+    )
+
+  ;; add tex-textidote
+  (add-to-list 'flycheck-checkers 'tex-textidote)
+  )
 
 ;;; packages.el ends here
