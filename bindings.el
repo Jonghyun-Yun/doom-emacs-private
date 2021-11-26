@@ -89,8 +89,9 @@
     (:map org-mode-map
      :after org-ref
      :g "C-c ]"       #'org-ref-insert-link
-     :g "C-c [ ["     #'org-agenda-file-to-front
-     :g "C-c [ ]"     #'org-remove-file)
+     (:prefix-map ("C-c [" . "agenda-file")
+      "[" #'org-agenda-file-to-front
+      "]" #'org-remove-file))
     )
 
 ;;; evil
@@ -345,12 +346,13 @@
        :map easy-kill-base-map
        :g "C-w" #'easy-kill-region))
 
-;;; doom help
+;;; doom
 (map!
  :leader
  :desc "doom/magit-fetch" "h d g" #'jyun/fetch-doom-emacs
  "h d i" #'doom/goto-private-init-file
  "h d C" nil
+ :desc "Toggle truncate lines" "t n" #'toggle-truncate-lines
  )
 
 ;;; make
