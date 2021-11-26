@@ -218,9 +218,12 @@
 (package! org-clock-convenience :disable t)
 (package! tree-sitter :disable t)
 (package! tree-sitter-langs :disable t)
-(package! company-posframe)
+
+;;; posframe
+(package! company-posframe :disable t)
 (package! which-key-posframe)
-(package! transient-posframe)
+(package! transient-posframe :disable t)
 (package! vertico-posframe)
 (package! hydra-posframe :recipe (:host github
                                   :repo "Ladicle/hydra-posframe"))
+(package! emacs-overleaf :recipe (:local-repo "local/emacs-overleaf"))

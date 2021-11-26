@@ -1113,35 +1113,37 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 (after! company
   (setq company-idle-delay 3.0
         company-minimum-prefix-length 2
-        company-box-enable-icon nil ; disable all-the-icons
-        company-tooltip-limit 10))
-
+        company-box-enable-icon nil     ; disable all-the-icons
+        company-tooltip-limit 10
+        company-selection-wrap-around t
+        ))
 ;; company memory
 (setq-default history-length 500)
 (setq-default prescient-history-length 500)
-
-(use-package! company-posframe
-  :hook (company-mode . company-posframe-mode)
-  :config
-  (remove-hook 'company-mode-hook #'company-box-mode)
-  )
 
 ;;; posframe
 ;; (use-package! transient-posframe
 ;;   :config
 ;;   (transient-posframe-mode))
+;; (use-package! company-posframe
+;;   :hook (company-mode . company-posframe-mode)
+;;   :config
+;;   (remove-hook 'company-mode-hook #'company-box-mode)
+;;   )
 
 ;;;; hydra-posframe
 (use-package! hydra-posframe
   :after hydra
   :config
-  (hydra-posframe-enable)
+  (hydra-posframe-mode 1)
   ;; :hook (after-init . hydra-posframe-enable)
   (setq hydra-posframe-parameters
         '((left-fringe . 8)
           (right-fringe . 8)
           ))
-  (setq hydra-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
+  ;; (setq hydra-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
+  ;; (setq hydra-posframe-poshandler 'posframe-poshandler-frame-bottom-left-corner)
+  (setq hydra-posframe-poshandler 'posframe-poshandler-frame-top-right-corner)
   )
 
 ;;;; which-key-posframe
@@ -1149,7 +1151,8 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   :after which-key
   :config
   (which-key-posframe-mode 1)
-  (setq which-key-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
+  ;; (setq which-key-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
+  (setq which-key-posframe-poshandler 'posframe-poshandler-frame-top-left-corner)
   ;; (setq which-key-posframe-poshandler 'posframe-poshandler-frame-top-right-corner)
   (setq which-key-posframe-parameters
         '((left-fringe . 8)
