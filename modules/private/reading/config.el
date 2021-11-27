@@ -39,12 +39,12 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
       (let ((mixed-pitch-face 'variable-pitch-serif))
         (mixed-pitch-mode (or arg 'toggle))))))
 
-;; company faces?
-(after! mixed-pitch
-  (dolist (f (-filter (lambda (sym)
-                        (s-prefix? "company-" (symbol-name sym)))
-                      (face-list)))
-    (pushnew! mixed-pitch-fixed-pitch-faces f)))
+;; fix company faces in mixed-pitch-mode
+;; (after! mixed-pitch
+;;   (dolist (f (-filter (lambda (sym)
+;;                         (s-prefix? "company-" (symbol-name sym)))
+;;                       (face-list)))
+;;     (pushnew! mixed-pitch-fixed-pitch-faces f)))
 
 ;;; speed reading
 (use-package! spray

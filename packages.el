@@ -214,11 +214,6 @@
 ;; (package! org-gcal :pin "52b7f8f7654e391f51e8d6d40506c8c170a5be20")
 ;; (package! org-gcal :pin "133cca813abd2823a6e2a9ada295b7b8b115be4f")
 
-;;; testing new packages
-(package! org-clock-convenience :disable t)
-(package! tree-sitter :disable t)
-(package! tree-sitter-langs :disable t)
-
 ;;; posframe
 (package! company-posframe :disable t)
 (package! which-key-posframe)
@@ -227,3 +222,10 @@
 (package! hydra-posframe :recipe (:host github
                                   :repo "Ladicle/hydra-posframe"))
 (package! emacs-overleaf :recipe (:local-repo "local/emacs-overleaf"))
+
+;;; testing new packages
+(package! org-clock-convenience :disable t)
+(package! tree-sitter :disable t)
+(package! tree-sitter-langs :disable t)
+(package! highlight-parentheses :disable t)
+(package! olivetti :disable t)
