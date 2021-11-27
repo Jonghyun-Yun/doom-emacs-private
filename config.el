@@ -1406,6 +1406,23 @@ of the buffer text to be displayed in the popup"
 ;;
 
 ;;; testing
+(define-minor-mode emacs-overleaf-mode
+  "Toggle projectr-local `emacs-overleaf-mode' with additional parameters."
+  :init-value nil
+  :global nil
+  (if emacs-overleaf-mode
+      (progn
+        (jyun/setup-overleaf-pull)
+        ;; (unless (derived-mode-p 'prog-mode))
+        (when (eq major-mode 'latex-mode)
+          (jyun/setup-overleaf-push)))
+    (progn
+      (setq-local overleaf-directory (file-truename (projectile-project-name)))
+      (setq-local overleaf-auto-sync nil)
+      (remove-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-overleaf overleaf-directory))))
+    (when (eq major-mode "org-mode")
+      (remove-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory overleaf-auto-sync)))
+      )))
 
 ;;; tab bar
 (setq! centaur-tabs-bar-height 20)
