@@ -48,7 +48,8 @@
       doom-big-font (font-spec :family "JetBrains Mono" :size 36)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 24)
       doom-unicode-font (font-spec :family "JuliaMono")
-      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
+      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light :size 24)
+      )
 
 ;; (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
 ;; (setq variable-pitch-serif-font (font-spec :family "Roboto Slab" :size 24 :weight 'light))
