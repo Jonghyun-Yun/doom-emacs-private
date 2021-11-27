@@ -471,18 +471,17 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
   ;; (setq org-icalendar-date-time-format ";TZID=%Z:%Y%m%dT%H%M%S")
   ;; (setq org-icalendar-timezone "America/Chicago")
 
-  (setq org-agenda-files `(,org-roam-directory
-                           "~/org/inbox.org"
-                           "~/org/todo.org"
-                           "~/org/gcal.org"
-                           "~/org/projects.org"
-                           "~/org/tickler.org"
-                           "~/org/routines.org"
-                           "~/org/journal.org"
-                           "~/org/notes.org"
-                           ))
+  (defvar org-agenda-base-files `("~/org/inbox.org"
+                                  "~/org/todo.org"
+                                  "~/org/gcal.org"
+                                  "~/org/projects.org"
+                                  "~/org/tickler.org"
+                                  "~/org/routines.org"
+                                  "~/org/journal.org"
+                                  "~/org/notes.org")
+    "A list of org-agneda files that are not resided in `org-roam-directory'.")
 
-
+  (setq org-agenda-files (append org-agenda-base-files org-roam-directory))
 
   ;; Don't ask to evaluate code block
   ;; (setq org-confirm-babel-evaluate nil)
@@ -798,7 +797,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
     ;; For many new images this will take time.
     (org-toggle-latex-fragment '(16)))
 
-  ;;; org-bael header
+;;; org-bael header
   (defun jyun/set-org-babel-default-header-args:R ()
     "Locally set `org-babel-default-header-args:R' for R session."
     (let ((sname (concat "*R:" (projectile-project-name) "*")))

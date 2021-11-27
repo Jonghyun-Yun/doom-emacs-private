@@ -99,12 +99,21 @@
 (with-eval-after-load 'hydra
   (load! "local/hydra-plus"))
 (load! "bindings")
+
 (load! "local/org-plus")
+;; https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e
+;; don't add all org-roam files to agenda
+;; only those who with TODO keywords, schedule, or deadline
+;; run before org-plus
+;; (add-to-list 'org-tags-exclude-from-inheritance "project")
+(load! "local/agenda.el/agenda.el")
+
 ;; ;; (when (featurep! :ui ligatures +extra)
 ;; ;;   (load! "local/ligature"))
 (load! "local/ess-plus")
 (load! "local/latex-plus")
 (load! "local/visual-plus")
+
 
 ;; org -> latex -> md -> docx
 ;; to properly generate cross references
@@ -1332,6 +1341,12 @@ of the buffer text to be displayed in the popup"
   (remove-hook 'lsp-on-idle-hook #'lsp-diagnostics--flycheck-buffer t)
   (when (bound-and-true-p flycheck-mode)
     (flycheck-buffer)))
+
+;;;; org
+(defadvice! shut-up-org-problematic-hooks (orig-fn &rest args)
+  :around #'org-fancy-priorities-mode
+  :around #'org-superstar-mode
+  (ignore-errors (apply orig-fn args)))
 
 ;;; testing
 (use-package! tree-sitter

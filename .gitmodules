@@ -16,3 +16,6 @@
 [submodule "emacs-overleaf"]
 	path = local/emacs-overleaf
 	url = https://github.com/Jonghyun-Yun/emacs-overleaf.git
+[submodule "agenda.el"]
+	path = local/agenda.el
+	url = https://gist.github.com/a60e8ccb9aceba031af243dff0d19b2e.git
