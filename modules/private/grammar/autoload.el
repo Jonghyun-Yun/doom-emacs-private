@@ -117,7 +117,7 @@
           (const :tag "Top left corner of point" point-top-left-corner)
           (const :tag "Bottom left corner of point" point-bottom-left-corner)))
 
-(defcustom langtool-posframe-border-width 0
+(defcustom langtool-posframe-border-width 1
   "Width of the border for a langtool-posframe frame."
   :group 'langtool-posframe
   :type 'integer)
@@ -129,7 +129,7 @@ Only the `background' is used in this face."
   :group 'langtool-posframe)
 
 (defface langtool-posframe-border-face
-  '((t))
+  '((t (:inherit default :background "gray50")))
   "The border color of the langtool-posframe frame.
 Only the `foreground' is used in this face."
   :group 'langtool-posframe)
