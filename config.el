@@ -105,8 +105,9 @@
 ;; don't add all org-roam files to agenda
 ;; only those who with TODO keywords, schedule, or deadline
 ;; run before org-plus
-;; (add-to-list 'org-tags-exclude-from-inheritance "project")
 (load! "local/agenda.el/agenda.el")
+(after! org
+  (add-to-list 'org-tags-exclude-from-inheritance "roadmap"))
 
 ;; ;; (when (featurep! :ui ligatures +extra)
 ;; ;;   (load! "local/ligature"))
@@ -858,7 +859,6 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 (add-to-list '+zen-mixed-pitch-modes 'latex-mode)
 (setq +zen-text-scale 0.8) ;; The text-scaling level for writeroom-mode
 
-
 ;;;; outline faces
 (custom-set-faces!
   '(outline-1 :weight semi-bold :height 1.25)
@@ -1425,10 +1425,24 @@ of the buffer text to be displayed in the popup"
       )))
 
 ;;; tab bar
-(setq! centaur-tabs-bar-height 20)
-(setq! centaur-tabs-height 16)
-(setq! centaur-tabs-set-icons nil)
+;; (setq! centaur-tabs-bar-height 20)
+(setq! centaur-tabs-height 10)
+(setq! centaur-tabs-set-icons t)
 (setq! centaur-tabs-adjust-buffer-order t)
+(setq! centaur-tabs-icon-scale-factor 0.65)
+(setq! centaur-tabs-icon-v-adjust -0.075)
+
+(defvar tab-bar-face (font-spec :family "Overpass" :height 180))
 ;; (add-hook! '() #'+tabs-disable-centaur-tabs-mode-maybe-h)
-;; (after! centrau-tabs
-;;   (centaur-tabs-group-by-projectile-project))
+(after! centaur-tabs
+  (set-face-attribute 'centaur-tabs-default nil :inherit 'tab-bar-face)
+  (set-face-attribute 'centaur-tabs-selected nil :family "Overpass" :height 180)
+  (set-face-attribute 'centaur-tabs-unselected nil :family "Overpass" :height 180)
+  (set-face-attribute 'centaur-tabs-unselected-modified nil :family "Overpass" :height 180)
+  (set-face-attribute 'centaur-tabs-selected-modified  nil :family "Overpass" :height 180)
+  (set-face-attribute 'centaur-tabs-close-unselected  nil :family "Overpass" :height 180)
+  (set-face-attribute 'centaur-tabs-close-selected   nil :family "Overpass" :height 180)
+  (set-face-attribute 'centaur-tabs-close-mouse-face  nil :family "Overpass" :height 180)
+  (set-face-attribute 'centaur-tabs-modified-marker-selected  nil :family "Overpass" :height 180)
+  (set-face-attribute 'centaur-tabs-modified-marker-unselected  nil :family "Overpass" :height 180)
+  (set-face-attribute 'centaur-tabs-active-bar-face  nil :family "Overpass" :height 180))
