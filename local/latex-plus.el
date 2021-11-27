@@ -174,22 +174,28 @@
 ;;               ([(control return)] . nil)
 ;;               ))
 
-(after! latex
 ;;; latexdiff
-  (defun my-latexdiff-init ()
-    (require 'latexdiff)
-    (local-set-key (kbd "C-c d") 'latexdiff-vc))
+(use-package! latexdiff
+  :defer t
+  :commands (latexdiff-vc latexdiff-vc-range latexdiff)
+  :bind (:map latex-mode-map
+          ("C-c d" . latexdiff-vc)))
 
-  (add-hook 'LaTeX-mode-hook 'my-latexdiff-init)
-  ;; (add-hook 'latex-mode-hook 'my-latexdiff-init)
+(after! latex
   ;;   (map!
   ;;    :map LaTeX-mode-map
   ;;    :ei [C-return] #'LaTeX-insert-item)
   (setq TeX-electric-math '("\\(" . ""))
-  ;;; tex-fold
+;;; tex-fold
   (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★") ;; make \star bigger
   (setq TeX-fold-math-spec-list
-        `(;; missing/better symbols
+        `(
+          ;; mismatching delimiters
+          ("({1}]" ("oncinterval"))
+          ("({1}]" ("oncinterval"))
+          ("[{1}]" ("cinterval"))
+          ("({1})" ("ointerval"))
+          ;; missing/better symbols
           ;; ("≤" ("le"))
           ;; ("≥" ("ge"))
           ;; ("≠" ("ne"))
