@@ -123,8 +123,10 @@
 (when (featurep! :email notmuch)
   (setq +notmuch-sync-backend 'mbsync))
 
-
 ;;; LaTeX
+;; disable `rainbow-mode' after applying styles to the buffer.
+;; (remove-hook 'TeX-update-style-hook #'rainbow-delimiters-mode)
+
 (setq +latex-viewers '(pdf-tools skim))
   ;; (setq +latex-viewers '(skim pdf-tools))
 (after! latex
@@ -842,7 +844,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
            )
 
 ;;;; mixed-pitch-mode
-(add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
+;; (add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
 
 (add-to-list '+zen-mixed-pitch-modes 'latex-mode)
 (setq +zen-text-scale 0.8) ;; The text-scaling level for writeroom-mode
