@@ -1407,3 +1407,11 @@ of the buffer text to be displayed in the popup"
 
 ;;; testing
 
+;;; tab bar
+(setq! centaur-tabs-bar-height 20)
+(setq! centaur-tabs-height 16)
+(setq! centaur-tabs-set-icons nil)
+(setq! centaur-tabs-adjust-buffer-order t)
+;; (add-hook! '() #'+tabs-disable-centaur-tabs-mode-maybe-h)
+;; (after! centrau-tabs
+;;   (centaur-tabs-group-by-projectile-project))
