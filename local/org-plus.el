@@ -171,7 +171,8 @@
           ;; 	("" "wasysym" t)
           ;; ("" "amsbsy" t)
           ("" "bm" t ("pdflatex"))      ; doesn't work well with unicode-math
-          ;; ("" "cool" t)         ; for math operators & symbols e.g. partial diff FIXME: conflict with another package
+          ;; FIXME: =cool= conflict with another package
+          ;; ("" "cool" t)         ; for math operators & symbols e.g. partial diff
           ("" "mathtools" t)    ; for math aligning & spacing
           ("" "physics" t)      ; derivative, dx, operators
           ("" "cancel" t)
