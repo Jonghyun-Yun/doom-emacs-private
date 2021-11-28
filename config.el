@@ -1425,24 +1425,37 @@ of the buffer text to be displayed in the popup"
       )))
 
 ;;; tab bar
-;; (setq! centaur-tabs-bar-height 20)
-(setq! centaur-tabs-height 10)
-(setq! centaur-tabs-set-icons t)
-(setq! centaur-tabs-adjust-buffer-order t)
-(setq! centaur-tabs-icon-scale-factor 0.65)
-(setq! centaur-tabs-icon-v-adjust -0.075)
+;; (setq! centaur-tabs-bar-height 20) ; (+ 8 centaur-tabs-height)
+(setq! centaur-tabs-height 10
+       centaur-tabs-set-icons nil
+       centaur-tabs-icon-scale-factor 0.65
+       centaur-tabs-label-fixed-length 0
+       centaur-tabs-icon-v-adjust -0.075)
 
-(defvar tab-bar-face (font-spec :family "Overpass" :height 180))
+;; When the currently selected tab(A) is at the right of the last visited
+;; tab(B), move A to the right of B. When the currently selected tab(A) is
+;; at the left of the last visited tab(B), move A to the left of B
+(setq! centaur-tabs-adjust-buffer-order t)
+;; Move the currently selected tab to the left of the the last visited tab.
+;; (setq! centaur-tabs-adjust-buffer-order 'left)
+
 ;; (add-hook! '() #'+tabs-disable-centaur-tabs-mode-maybe-h)
 (after! centaur-tabs
-  (set-face-attribute 'centaur-tabs-default nil :inherit 'tab-bar-face)
-  (set-face-attribute 'centaur-tabs-selected nil :family "Overpass" :height 180)
-  (set-face-attribute 'centaur-tabs-unselected nil :family "Overpass" :height 180)
-  (set-face-attribute 'centaur-tabs-unselected-modified nil :family "Overpass" :height 180)
-  (set-face-attribute 'centaur-tabs-selected-modified  nil :family "Overpass" :height 180)
-  (set-face-attribute 'centaur-tabs-close-unselected  nil :family "Overpass" :height 180)
-  (set-face-attribute 'centaur-tabs-close-selected   nil :family "Overpass" :height 180)
-  (set-face-attribute 'centaur-tabs-close-mouse-face  nil :family "Overpass" :height 180)
-  (set-face-attribute 'centaur-tabs-modified-marker-selected  nil :family "Overpass" :height 180)
-  (set-face-attribute 'centaur-tabs-modified-marker-unselected  nil :family "Overpass" :height 180)
-  (set-face-attribute 'centaur-tabs-active-bar-face  nil :family "Overpass" :height 180))
+  (centaur-tabs-enable-buffer-reordering)
+  (centaur-tabs-change-fonts "Overpass" (* 10 centaur-tabs-bar-height))
+  (centaur-tabs-headline-match)
+  ;; (let ((height centaur-tabs-bar-height))
+  ;;   (set-face-attribute 'centaur-tabs-default nil :family tab-bar-face-family :height (* 10 height))
+  ;;   (set-face-attribute 'centaur-tabs-selected nil :family tab-bar-face-family :height (* 10 height))
+  ;;   (set-face-attribute 'centaur-tabs-unselected nil :family tab-bar-face-family :height (* 10 height))
+  ;;   (set-face-attribute 'centaur-tabs-unselected-modified nil :family tab-bar-face-family :height (* 10 height))
+  ;;   (set-face-attribute 'centaur-tabs-selected-modified  nil :family tab-bar-face-family :height (* 10 height))
+  ;;   (set-face-attribute 'centaur-tabs-close-unselected  nil :family tab-bar-face-family :height (* 10 height))
+  ;;   (set-face-attribute 'centaur-tabs-close-selected   nil :family tab-bar-face-family :height (* 10 height))
+  ;;   (set-face-attribute 'centaur-tabs-close-mouse-face  nil :family tab-bar-face-family :height (* 10 height))
+  ;;   (set-face-attribute 'centaur-tabs-modified-marker-selected  nil :family tab-bar-face-family :height (* 10 height))
+  ;;   (set-face-attribute 'centaur-tabs-modified-marker-unselected  nil :family tab-bar-face-family :height (* 10 height))
+  ;;   (set-face-attribute 'centaur-tabs-active-bar-face  nil :family tab-bar-face-family) :height (* 10 height))
+  )
+
+;; centaur-tabs-hide-tab
