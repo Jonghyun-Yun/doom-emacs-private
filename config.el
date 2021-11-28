@@ -407,7 +407,8 @@
 (add-hook! 'rainbow-mode-hook
   (hl-line-mode (if rainbow-mode -1 +1)))
 
-(setq outshine-use-speed-commands t)
+;; BUG: evil-mc cursors cannot change to evil-insert using "i".
+;; (setq outshine-use-speed-commands nil)
 ;; (outshine-speed-command-help)
 
 ;; ;; improve slow scrolling?
@@ -655,7 +656,6 @@
    ;; elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
    elfeed-search-print-entry-function 'jyun/score-entry-line-draw
    ;; shr-max-image-proportion 0.6
-   ;; p
    elfeed-search-date-format '("%m/%d/%y" 10 :left)
    )
   )
@@ -688,22 +688,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 %(message jyun/target-elfeed-entry-url)
 %i \n%?"
                  :prepend t
-                 :immediate-finish t))
-
-  ;;     ;; elfeed capture
-  ;;   (add-to-list 'org-capture-templates
-  ;;                '("EFE" "Elfeed entry" entry
-  ;;                  (file+headline +org-capture-inbox-file "Tasks")
-  ;;                  "* TODO %a :rss:
-  ;; :PROPERTIES:
-  ;; :CREATED: %U
-  ;; :LINK: %a
-  ;; :URL: %(elfeed-entry-link jyun/target-elfeed-entry)
-  ;; :END:
-  ;; %i \n%?"
-  ;;                  :prepend t
-  ;;                  :immediate-finish t))
-  )
+                 :immediate-finish t)))
 
 ;; ;; A snippet for periodic update for feeds (10 mins since Emacs start, then every
 ;; ;; two hour)
@@ -1073,7 +1058,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;; C-SPC: turn selection into an active region
 
 ;;;; avy
-(after! avy  
+(after! avy
   ;; (setq avy-keys '(?a ?s ?d ?f ?j ?k ?l ?\;))
   ;; home row priorities: 8 6 4 5 - - 1 2 3 7
   (setq avy-keys '(?n ?e ?j ?s ?t ?r ?l ?a))
