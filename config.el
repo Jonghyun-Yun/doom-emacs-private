@@ -1444,3 +1444,9 @@ of the buffer text to be displayed in the popup"
   )
 
 ;; centaur-tabs-hide-tab
+
+;;; eshell
+;; aliases: see `+eshell-aliases'
+(set-eshell-alias!
+"up" "eshell-up $1"
+"pk" "eshell-up-peek $1")
