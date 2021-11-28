@@ -155,7 +155,7 @@
 (package! ctrlf)
 (package! deadgrep)
 (package! easy-kill)
-(package! git-link :pin "2b510cf3f28bed842853294fc4ee23c7f8b6435a")
+;; (package! git-link :pin "2b510cf3f28bed842853294fc4ee23c7f8b6435a") ; use browse-at-remote SPC g y/Y
 (package! visual-regexp :pin "48457d42a5e0fe10fa3a9c15854f1f127ade09b5")
 ;; (package! visual-regexp-steroids :pin "a6420b25ec0fbba43bf57875827092e1196d8a9e")
 (package! key-chord)
@@ -229,3 +229,8 @@
 (package! tree-sitter-langs :disable t)
 (package! highlight-parentheses :disable t)
 (package! olivetti :disable t)
+
+;;; disabled doom packages
+;; (package! github-review :disable t)
+;; (package! magit-flow :disable t)        ; have no gitflow
+;; (package! eshell-up :disable t)
