@@ -176,10 +176,9 @@
 
 ;;; latexdiff
 (use-package! latexdiff
-  :commands (latexdiff-vc latexdiff-vc-range latexdiff)
-  ;; cannot bind to latex-mode-map??
-  :bind (:map LaTeX-mode-map
-          ("C-c d" . latexdiff-vc)))
+  :init
+  (add-hook 'LaTeX-mode-hook (lambda () (local-set-key (kbd "C-c d") #'latexdiff-vc)))
+  :commands (latexdiff-vc latexdiff-vc-range latexdiff))
 
 (after! latex
   ;;   (map!
