@@ -28,7 +28,7 @@
   (map! (:map wordnut-mode-map
          :nm [remap +org/dwim-at-point] #'wordnut-lookup-dwim
          :nm "s" #'wordnut-search
-         :nm [remap +org/insert-item-below] (lambda! (osx-dictionary--view-result
+         :nm [remap +org/insert-item-below] (cmd! (osx-dictionary--view-result
                                      (substring-no-properties (car wordnut-completion-hist))))
          :nm "q" #'quit-window
          ))

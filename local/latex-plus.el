@@ -176,9 +176,9 @@
 
 ;;; latexdiff
 (use-package! latexdiff
-  :defer t
   :commands (latexdiff-vc latexdiff-vc-range latexdiff)
-  :bind (:map latex-mode-map
+  ;; cannot bind to latex-mode-map??
+  :bind (:map LaTeX-mode-map
           ("C-c d" . latexdiff-vc)))
 
 (after! latex
