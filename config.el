@@ -322,12 +322,19 @@
   (defun jyun/org-latex-set-options (&optional scale-input)
     "Set `org-latex-fragment' scale. `jyun/org-latex-preview-scale' is used as scale if none is provided as `scale-input' argument"
     (let ((scale (if scale-input scale-input jyun/org-latex-preview-scale)))
-    (plist-put org-format-latex-options :scale scale)
-      ))
+      (plist-put org-format-latex-options :scale scale)))
 
   ;; set default org-latex-preview size
-  (jyun/org-latex-set-options)
-  )
+  (jyun/org-latex-set-options))
+
+;;;; org-latex-frag
+;; TODO:
+;; (defadvice! +org-latex-preview-scale-a (img)
+;;   "Make org latex preview respect `image-scaling-factor'."
+;;   :filter-return #'org--make-preview-overlay
+;;   (plist-put (cdr img) :scale (image-compute-scaling-factor image-scaling-factor)))
+;; (setq-hook! 'text-scale-mode-hook
+;;   image-scaling-factor (math-pow text-scale-mode-step text-scale-mode-amount))
 
 ;;;; org-pretty
 ;; align tables containing variable-pitch font, CJK characters and images
@@ -1391,6 +1398,7 @@ of the buffer text to be displayed in the popup"
 ;;
 
 ;;; testing
+;;;; overleaf
 (define-minor-mode emacs-overleaf-mode
   "Toggle projectr-local `emacs-overleaf-mode' with additional parameters."
   :init-value nil
@@ -1429,18 +1437,6 @@ of the buffer text to be displayed in the popup"
   (centaur-tabs-enable-buffer-reordering)
   (centaur-tabs-change-fonts "Overpass" (* 10 centaur-tabs-bar-height))
   (centaur-tabs-headline-match)
-  ;; (let ((height centaur-tabs-bar-height))
-  ;;   (set-face-attribute 'centaur-tabs-default nil :family tab-bar-face-family :height (* 10 height))
-  ;;   (set-face-attribute 'centaur-tabs-selected nil :family tab-bar-face-family :height (* 10 height))
-  ;;   (set-face-attribute 'centaur-tabs-unselected nil :family tab-bar-face-family :height (* 10 height))
-  ;;   (set-face-attribute 'centaur-tabs-unselected-modified nil :family tab-bar-face-family :height (* 10 height))
-  ;;   (set-face-attribute 'centaur-tabs-selected-modified  nil :family tab-bar-face-family :height (* 10 height))
-  ;;   (set-face-attribute 'centaur-tabs-close-unselected  nil :family tab-bar-face-family :height (* 10 height))
-  ;;   (set-face-attribute 'centaur-tabs-close-selected   nil :family tab-bar-face-family :height (* 10 height))
-  ;;   (set-face-attribute 'centaur-tabs-close-mouse-face  nil :family tab-bar-face-family :height (* 10 height))
-  ;;   (set-face-attribute 'centaur-tabs-modified-marker-selected  nil :family tab-bar-face-family :height (* 10 height))
-  ;;   (set-face-attribute 'centaur-tabs-modified-marker-unselected  nil :family tab-bar-face-family :height (* 10 height))
-  ;;   (set-face-attribute 'centaur-tabs-active-bar-face  nil :family tab-bar-face-family) :height (* 10 height))
   )
 
 ;; centaur-tabs-hide-tab
