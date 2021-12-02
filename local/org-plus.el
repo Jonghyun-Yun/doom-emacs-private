@@ -482,7 +482,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
                                   "~/org/notes.org")
     "A list of org-agneda files that are not resided in `org-roam-directory'.")
 
-  (setq org-agenda-files (append org-agenda-base-files org-roam-directory))
+  (setq org-agenda-files (add-to-list 'org-agenda-base-files org-roam-directory))
 
   ;; Don't ask to evaluate code block
   ;; (setq org-confirm-babel-evaluate nil)
