@@ -292,16 +292,18 @@ Turning on wordnut mode runs the normal hook `mw-syno-mode-hook'.
 ;; font-latex-warning-face
 
 ;; these exculeded faces are in lists for spell-fu
-(add-hook 'org-mode-hook (defun langtool-org-mode-ignore-fonts ()
-                             (setq-local langtool-ignore-fonts
-                                         (alist-get 'org-mode +spell-excluded-faces-alist))
-                             ))
-(add-hook 'markdown-mode-hook (defun langtool-markdown-ignore-fonts ()
-                                (setq-local langtool-ignore-fonts
-                                            (alist-get 'markdown-mode +spell-excluded-faces-alist))))
-(add-hook 'LaTeX-mode-hook (defun langtool-LaTeX-ignore-fonts ()
-                             (setq-local langtool-ignore-fonts
-                                         (alist-get 'LaTeX-mode +spell-excluded-faces-alist))))
+(add-hook 'org-mode-hook
+          (defun langtool-org-mode-ignore-fonts ()
+            (setq langtool-ignore-fonts
+                  (alist-get 'org-mode +spell-excluded-faces-alist))))
+(add-hook 'markdown-mode-hook
+          (defun langtool-markdown-ignore-fonts ()
+            (setq langtool-ignore-fonts
+                  (alist-get 'markdown-mode +spell-excluded-faces-alist))))
+(add-hook! 'LaTeX-mode-hook
+  (defun langtool-LaTeX-ignore-fonts ()
+    (setq langtool-ignore-fonts
+          (alist-get 'LaTeX-mode +spell-excluded-faces-alist))))
 
 ;;; latex checkers
 (after! flycheck

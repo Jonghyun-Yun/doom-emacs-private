@@ -91,19 +91,11 @@
 
 ;; https://github.com/cjl8zf/langtool-ignore-fonts
 (use-package! langtool-ignore-fonts
-  :after langtool
-  :config
-  (setq langtool-ignore-fonts-major-mode-font-list
-  '((latex-mode
-     font-lock-comment-face
-     font-latex-math-face
-     font-latex-string-face
-     font-lock-function-name-face
-     ;; add more faces
-     font-lock-keyword-face
-     font-latex-sedate-face)))
-  (add-hook 'latex-mode-hook #'(lambda () (langtool-ignore-fonts-minor-mode 1)))
-  (add-hook 'org-mode-hook #'(lambda () (langtool-ignore-fonts-minor-mode 1)))
+  ;; :after langtool
+  :hook
+  (LaTeX-mode . langtool-ignore-fonts-minor-mode)
+  (org-mode . langtool-ignore-fonts-minor-mode)
+  (markdown-mode . langtool-ignore-fonts-minor-mode)
   )
 
 ;; Detects weasel words, passive voice and duplicates. Proselint would be a
