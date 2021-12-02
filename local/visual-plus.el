@@ -1,97 +1,96 @@
 ;;; ../Dropbox/emacs/.doom.d/local/visual-plus.el -*- lexical-binding: t -*-
 
-;; (use-package! modus-themes
-;;   :ensure
-;;   :init
-;;   ;; Add all your customizations prior to loading the themes
-;;   (setq modus-themes-italic-constructs t
-;;         modus-themes-scale-headings t
-;;         modus-themes-mixed-fonts nil
-;;         modus-themes-subtle-line-numbers t
-;;         modus-themes-intense-markup t
-;;         modus-themes-success-deuteranopia nil
-;;         modus-themes-tabs-accented nil
-;;         modus-themes-inhibit-reload t ; only applies to `customize-set-variable' and related
+(when (eq doom-theme 'modus-operandi)
+  (use-package! modus-themes
+    :init
+    ;; Add all your customizations prior to loading the themes
+    (setq modus-themes-italic-constructs t
+          modus-themes-scale-headings t
+          modus-themes-mixed-fonts t
+          modus-themes-subtle-line-numbers nil
+          modus-themes-intense-markup nil
+          modus-themes-success-deuteranopia nil
+          modus-themes-tabs-accented nil
+          modus-themes-inhibit-reload t ; only applies to `customize-set-variable' and related
 
-;;         modus-themes-fringes nil        ; {nil,'subtle,'intense}
+          modus-themes-fringes nil      ; {nil,'subtle,'intense}
 
-;;         ;; Options for `modus-themes-lang-checkers' are either nil (the
-;;         ;; default), or a list of properties that may include any of those
-;;         ;; symbols: `straight-underline', `text-also', `background',
-;;         ;; `intense' OR `faint'.
-;;         modus-themes-lang-checkers nil
+          ;; Options for `modus-themes-lang-checkers' are either nil (the
+          ;; default), or a list of properties that may include any of those
+          ;; symbols: `straight-underline', `text-also', `background',
+          ;; `intense' OR `faint'.
+          modus-themes-lang-checkers nil
 
-;;         ;; Options for `modus-themes-mode-line' are either nil, or a list
-;;         ;; that can combine any of `3d' OR `moody', `borderless',
-;;         ;; `accented', `padded'.
-;;         modus-themes-mode-line nil
+          ;; Options for `modus-themes-mode-line' are either nil, or a list
+          ;; that can combine any of `3d' OR `moody', `borderless',
+          ;; `accented', `padded'.
+          modus-themes-mode-line '(borderless)
 
-;;         ;; Options for `modus-themes-syntax' are either nil (the default),
-;;         ;; or a list of properties that may include any of those symbols:
-;;         ;; `faint', `yellow-comments', `green-strings', `alt-syntax'
-;;         modus-themes-syntax '(alt-syntax green-strings yellow-comments)
+          ;; Options for `modus-themes-syntax' are either nil (the default),
+          ;; or a list of properties that may include any of those symbols:
+          ;; `faint', `yellow-comments', `green-strings', `alt-syntax'
+          modus-themes-syntax '(alt-syntax green-strings)
 
-;;         ;; Options for `modus-themes-hl-line' are either nil (the default),
-;;         ;; or a list of properties that may include any of those symbols:
-;;         ;; `accented', `underline', `intense'
-;;         modus-themes-hl-line '(accented)
+          ;; Options for `modus-themes-hl-line' are either nil (the default),
+          ;; or a list of properties that may include any of those symbols:
+          ;; `accented', `underline', `intense'
+          ;; modus-themes-hl-line '(accented)
+          modus-themes-hl-line nil
 
-;;         ;; Options for `modus-themes-paren-match' are either nil (the
-;;         ;; default), or a list of properties that may include any of those
-;;         ;; symbols: `bold', `intense', `underline'
-;;         modus-themes-paren-match '(bold intense)
+          ;; Options for `modus-themes-paren-match' are either nil (the
+          ;; default), or a list of properties that may include any of those
+          ;; symbols: `bold', `intense', `underline'
+          modus-themes-paren-match '(bold intense)
 
-;;         ;; Options for `modus-themes-links' are either nil (the default),
-;;         ;; or a list of properties that may include any of those symbols:
-;;         ;; `neutral-underline' OR `no-underline', `faint' OR `no-color',
-;;         ;; `bold', `italic', `background'
-;;         modus-themes-links '(neutral-underline background)
+          ;; Options for `modus-themes-links' are either nil (the default),
+          ;; or a list of properties that may include any of those symbols:
+          ;; `neutral-underline' OR `no-underline', `faint' OR `no-color',
+          ;; `bold', `italic', `background'
+          modus-themes-links '(neutral-underline background)
 
-;;         ;; Options for `modus-themes-prompts' are either nil (the
-;;         ;; default), or a list of properties that may include any of those
-;;         ;; symbols: `background', `bold', `gray', `intense', `italic'
-;;         modus-themes-prompts nil
+          ;; Options for `modus-themes-prompts' are either nil (the
+          ;; default), or a list of properties that may include any of those
+          ;; symbols: `background', `bold', `gray', `intense', `italic'
+          modus-themes-prompts nil
 
-;;         modus-themes-completions 'opinionated ; {nil,'moderate,'opinionated}
+          ;; modus-themes-completions 'opinionated ; {nil,'moderate,'opinionated}
+          modus-themes-completions 'opinionated ; {nil,'moderate,'opinionated}
 
-;;         modus-themes-mail-citations nil ; {nil,'faint,'monochrome}
+          modus-themes-mail-citations nil ; {nil,'faint,'monochrome}
 
-;;         ;; Options for `modus-themes-region' are either nil (the default),
-;;         ;; or a list of properties that may include any of those symbols:
-;;         ;; `no-extend', `bg-only', `accented'
-;;         modus-themes-region '(bg-only accented)
+          ;; Options for `modus-themes-region' are either nil (the default),
+          ;; or a list of properties that may include any of those symbols:
+          ;; `no-extend', `bg-only', `accented'
+          modus-themes-region '(bg-only)
 
-;;         ;; Options for `modus-themes-diffs': nil, 'desaturated,
-;;         ;; 'bg-only, 'deuteranopia, 'fg-only-deuteranopia
-;;         modus-themes-diffs nil
+          ;; Options for `modus-themes-diffs': nil, 'desaturated,
+          ;; 'bg-only, 'deuteranopia, 'fg-only-deuteranopia
+          modus-themes-diffs nil
 
-;;         modus-themes-org-blocks 'tinted-background
+          modus-themes-org-blocks 'tinted-background
 
-;;         modus-themes-org-agenda ; this is an alist: read the manual or its doc string
-;;         '((header-block . (variable-pitch scale-title))
-;;           (header-date . (grayscale workaholic bold-today))
-;;           (event . (accented scale-small))
-;;           (scheduled . uniform)
-;;           (habit . traffic-light-deuteranopia))
+          modus-themes-org-agenda ; this is an alist: read the manual or its doc string
+          '((header-block . (variable-pitch scale-title))
+            (header-date . (grayscale workaholic bold-today))
+            (event . (accented scale-small))
+            (scheduled . uniform)
+            (habit . traffic-light-deuteranopia))
 
-;;         modus-themes-headings '((t . (rainbow))) ; this is an alist: read the manual or its doc string
-
-;;         modus-themes-variable-pitch-ui nil
-;;         ;; modus-themes-variable-pitch-headings t
-;;         )
-;;   ;; Load the theme files before enabling a theme
-;;   (modus-themes-load-themes)
-;;   :config
-;;   (modus-themes-load-operandi)
-;;   :bind ("<f5>" . modus-themes-toggle))
+          modus-themes-headings '((t . (rainbow))) ; this is an alist: read the manual or its doc string
+          modus-themes-variable-pitch-ui t
+          modus-themes-variable-pitch-headings t
+          )
+    ;; Load the theme files before enabling a theme
+    (modus-themes-load-themes)
+    :config
+    (modus-themes-load-operandi)
+    ;; :bind ("<f5>" . modus-themes-toggle)
+    ))
 
 (with-eval-after-load 'doom-themes
   ;; Global settings (defaults)
   ;; (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
   ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  ;; (load-theme 'doom-one-light t)
-  ;; (load-theme 'modus-operandi-theme t)
-  ;; (load-theme 'modus-vivendi-theme t)
 
   (setq doom-themes-padded-modeline nil)
 
@@ -102,16 +101,15 @@
   ;; (doom-themes-neotree-config)
   ;; or for treemacs users
   ;; doom-themes package forces treemacs to use a variable-pitch font
-  (setq doom-themes-treemacs-enable-variable-pitch t
-        treemacs-width 30)
-  (setq doom-themes-treemacs-theme
-        ;; "doom-atom"
-        "doom-colors"                   ; use the colorful treemacs theme
-        )
-  (doom-themes-treemacs-config)
+  ;; (setq! doom-themes-treemacs-enable-variable-pitch t)
+  ;; (setq! doom-themes-treemacs-theme
+  ;;        ;; "doom-atom"
+  ;;        "doom-colors"                  ; use the colorful treemacs theme
+  ;;        )
+  ;; (doom-themes-treemacs-config)
 
   ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config)
+  ;; (doom-themes-org-config)
   )
 
 ;; (when (featurep! :ui treemacs)
@@ -122,6 +120,11 @@
 ;;; doom-modeline
 ;; https://github.com/seagle0128/doom-modeline
 (with-eval-after-load 'doom-modeline
+  ;; (set-face-attribute 'mode-line nil :family "Noto Sans")
+  ;; (set-face-attribute 'mode-line-inactive nil :family "Noto Sans")
+  (set-face-attribute 'mode-line nil :inherit 'variable-pitch)
+  (set-face-attribute 'mode-line-inactive nil :inherit 'variable-pitch)
+
   ;; The right side of the modeline is cut off
   (setq all-the-icons-scale-factor 1.1)
   ;; (doom-modeline-def-modeline 'main
@@ -249,28 +252,32 @@
  evil-visual-state-cursor '(+evil-visual-cursor-fn (hbar . 2))
  evil-motion-state-cursor '(+evil-motion-cursor-fn box))
 
-;; (setq +evil--default-cursor-color )
-;; (setq +evil--emacs-cursor-color "SkyBlue2")
-;; (defvar +evil--insert-cursor-color "chartreuse3")
-;; (defvar +evil--replace-cursor-color "chocolate")
-;; (defvar +evil--visual-cursor-color "gray")
-;; (defvar +evil--motion-cursor-color "plum3")
+(progn
+  (put 'cursor 'evil-normal-color "DarkGoldenrod2")
+  (put 'cursor 'evil-insert-color "chartreuse3")
+  (put 'cursor 'evil-emacs-color "SkyBlue2")
+  (put 'cursor 'evil-replace-color "chocolate")
+  (put 'cursor 'evil-visual-color "gray50")
+  (put 'cursor 'evil-motion-color "plum3")
+  )
 
-(put 'cursor 'evil-normal-color "DarkGoldenrod2")
-(put 'cursor 'evil-insert-color "SkyBlue2")
-(put 'cursor 'evil-emacs-color "chartreuse3")
-(put 'cursor 'evil-replace-color "chocolate")
-(put 'cursor 'evil-visual-color "gray")
-(put 'cursor 'evil-motion-color "plum3")
+;; (progn
+;;   (put 'cursor 'evil-normal-color "DarkGoldenrod3")
+;;   (put 'cursor 'evil-insert-color "chartreuse4")
+;;   (put 'cursor 'evil-emacs-color "SkyBlue3")
+;;   (put 'cursor 'evil-replace-color "chocolate4")
+;;   (put 'cursor 'evil-visual-color "gray40")
+;;   (put 'cursor 'evil-motion-color "plum4")
+;;   )
 
-;; (defun +evil-insert-cursor-fn ()
-;;   (evil-set-cursor-color +evil--insert-cursor-color))
-;; (defun +evil-replace-cursor-fn ()
-;;   (evil-set-cursor-color +evil--replace-cursor-color))
-;; (defun +evil-visual-cursor-fn ()
-;;   (evil-set-cursor-color +evil--visual-cursor-color))
-;; (defun +evil-motion-cursor-fn ()
-;;   (evil-set-cursor-color +evil--motion-cursor-color))
+(after! doom-modeline
+  (set-face-attribute 'doom-modeline-buffer-modified nil :foreground nil :inherit 'error)
+  (set-face-attribute 'doom-modeline-evil-normal-state nil :foreground (get 'cursor 'evil-normal-color))
+  (set-face-attribute 'doom-modeline-evil-insert-state nil :foreground (get 'cursor 'evil-insert-color))
+  (set-face-attribute 'doom-modeline-evil-emacs-state nil :foreground (get 'cursor 'evil-emacs-color))
+  (set-face-attribute 'doom-modeline-evil-replace-state nil :foreground (get 'cursor 'evil-replace-color))
+  (set-face-attribute 'doom-modeline-evil-visual-state nil :foreground (get 'cursor 'evil-visual-color))
+  (set-face-attribute 'doom-modeline-evil-motion-state nil :foreground (get 'cursor 'evil-motion-color)))
 
 (defun +evil-insert-cursor-fn ()
   (evil-set-cursor-color (get 'cursor 'evil-insert-color)))
@@ -280,16 +287,6 @@
   (evil-set-cursor-color (get 'cursor 'evil-visual-color)))
 (defun +evil-motion-cursor-fn ()
   (evil-set-cursor-color (get 'cursor 'evil-motion-color)))
-
-;; (use-package visual-regexp
-;;   :defer t
-;;   :commands (vr/replace vr/query-replace)
-;;   :config
-;;   (define-key global-map (kbd "C-c r") 'vr/replace)
-;;   (define-key global-map (kbd "C-c q") 'vr/query-replace)
-;;   ;; if you use multiple-cursors, this is for you:
-;;   ;; (define-key global-map (kbd "C-c m") 'vr/mc-mark)
-;;   )
 
 ;;; unicode
 (after! unicode-fonts
@@ -303,7 +300,7 @@
   ;; (push "Noto Sans CJK KR" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
   ;; (push "Source Han Sans K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
   ;; (push "Source Han Serif K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
-  )
+)
 
 ;; Dropbox sync changes hangul encoding to NFD, which results in 한글 자소분리 in dired and other modes
 ;; https://tt.kollhong.com/79

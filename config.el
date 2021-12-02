@@ -65,7 +65,8 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;; (setq doom-theme 'doom-one)
-(setq doom-theme 'doom-one-light)
+;; (setq doom-theme 'doom-one-light)
+(setq doom-theme 'modus-operandi)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -105,16 +106,17 @@
 ;; don't add all org-roam files to agenda
 ;; only those who with TODO keywords, schedule, or deadline
 ;; run before org-plus
-(load! "local/agenda.el/agenda.el")
 (after! org
+  (load! "local/agenda.el/agenda.el")
   (add-to-list 'org-tags-exclude-from-inheritance "roadmap"))
 
 ;; ;; (when (featurep! :ui ligatures +extra)
 ;; ;;   (load! "local/ligature"))
 (load! "local/ess-plus")
 (load! "local/latex-plus")
-(load! "local/visual-plus")
 
+(setq! doom-themes-treemacs-theme "doom-colors")
+(load! "local/visual-plus")
 
 ;; org -> latex -> md -> docx
 ;; to properly generate cross references
@@ -140,6 +142,12 @@
 (setq +latex-viewers '(pdf-tools skim))
   ;; (setq +latex-viewers '(skim pdf-tools))
 (after! latex
+    (defun latex-init-pdf-view ()
+      (progn
+        (pdf-view-fit-height-to-window)
+        (pdf-view-auto-slice-minor-mode)))
+    (add-hook 'pdf-view-mode-hook 'latex-init-pdf-view)
+
   ;; This variable was introduced in AUCTeX 11.90.
   ;; We need set LaTeX-reftex-cite-format-auto-activate to nil
   ;; when setting reftex-cite-format below
@@ -325,14 +333,15 @@
       (plist-put org-format-latex-options :scale scale)))
 
   ;; set default org-latex-preview size
-  (jyun/org-latex-set-options))
+  (jyun/org-latex-set-options 1.5))
 
 ;;;; org-latex-frag
-;; TODO:
+;; TODO: move org-present scaling
+;; BUG: error when (writeroom-mode 1)
 ;; (defadvice! +org-latex-preview-scale-a (img)
 ;;   "Make org latex preview respect `image-scaling-factor'."
 ;;   :filter-return #'org--make-preview-overlay
-;;   (plist-put (cdr img) :scale (image-compute-scaling-factor image-scaling-factor)))
+;;   (plist-put (cdr img) :scale (/ (image-compute-scaling-factor image-scaling-factor) 1.25)))
 ;; (setq-hook! 'text-scale-mode-hook
 ;;   image-scaling-factor (math-pow text-scale-mode-step text-scale-mode-amount))
 
@@ -354,9 +363,7 @@
    org-latex-tables-booktabs nil
    ))
 ;; ;; Github flavored markdown exporter
-(use-package ox-gfm
-  :defer t
-  :after ox)
+(use-package ox-gfm :after ox)
 
 ;;;; ox-hugo
 (after! ox-hugo
@@ -811,8 +818,10 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   :commands (vr/replace vr/query-replace)
   ;; :config (require 'visual-regexp)
   :init
-  (define-key global-map (kbd "C-c r") 'vr/replace)
-  (define-key global-map (kbd "C-c q") 'vr/query-replace)
+  ;; (define-key global-map (kbd "C-c r") 'vr/replace)
+  (define-key global-map (kbd "C-c %") 'vr/query-replace)
+  :bind*
+  ;; (([remap query-replace-regexp] . vr/query-replace))
   ;; if you use multiple-cursors, this is for you:
   ;; (define-key global-map (kbd "C-c m") 'vr/mc-mark)
   ;; to use visual-regexp-steroids's isearch instead of the built-in regexp isearch, also include the following lines:
@@ -828,8 +837,8 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;; (remove-hook 'doom-load-theme-hook '+evil-update-cursor-color-h)
 
 ;; overide the cursor color hook
-(defun +evil-update-cursor-color-h ()
-  (jyun/evil-state-cursors))
+;; (defun +evil-update-cursor-color-h ()
+;;   (jyun/evil-state-cursors))
 
 ;; ;; thinning all faces
 (after! doom-modeline
@@ -1446,3 +1455,12 @@ of the buffer text to be displayed in the popup"
 (set-eshell-alias!
 "up" "eshell-up $1"
 "pk" "eshell-up-peek $1")
+
+;;; minibuffer
+(defun switch-to-minibuffer ()
+  "Switch to minibuffer window."
+  (interactive)
+  (if (active-minibuffer-window)
+      (select-window (active-minibuffer-window))
+    (error "Minibuffer is not active")))
+(global-set-key "\C-co" 'switch-to-minibuffer) ;; Bind to `C-c o'

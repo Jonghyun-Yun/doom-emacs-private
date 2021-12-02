@@ -143,7 +143,7 @@
 ;;; visual
 ;; mixed-pitch-face available
 ;; (package! mixed-pitch :pin "519e05f74825abf04b7d2e0e38ec040d013a125a")
-(package! modus-themes :disable t)
+(package! modus-themes)
 ;; (package! doom-themes :disable t)
 
 ;;; coding
@@ -153,7 +153,7 @@
 
 ;;; convenience
 (package! ctrlf)
-(package! deadgrep)
+(package! deadgrep :disable t)
 (package! easy-kill)
 ;; (package! git-link :pin "2b510cf3f28bed842853294fc4ee23c7f8b6435a") ; use browse-at-remote SPC g y/Y
 (package! visual-regexp :pin "48457d42a5e0fe10fa3a9c15854f1f127ade09b5")
@@ -185,8 +185,6 @@
 
 ;;; misc
 (package! lorem-ipsum)
-;; (package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa"
-;;   :disable t)
 
 ;;; doom-snippets
 (package! doom-snippets
@@ -223,10 +221,12 @@
                                   :repo "Ladicle/hydra-posframe"))
 (package! emacs-overleaf :recipe (:local-repo "local/emacs-overleaf"))
 
+;;; tree-sitter
+(package! tree-sitter)
+(package! tree-sitter-langs)
+
 ;;; testing new packages
 (package! org-clock-convenience :disable t)
-(package! tree-sitter :disable t)
-(package! tree-sitter-langs :disable t)
 (package! highlight-parentheses :disable t)
 (package! olivetti :disable t)
 
