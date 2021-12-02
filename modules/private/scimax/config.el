@@ -13,7 +13,12 @@
 (after! elfeed
   (require 'scimax-elfeed))
 
-(use-package! scimax-autoformat-abbrev)
+(use-package! scimax-autoformat-abbrev
+  :commands (scimax-toggle-abbrevs endless/ispell-word-then-abbrev)
+  :init
+  (define-key ctl-x-map "\C-i"
+    #'endless/ispell-word-then-abbrev)
+  )
 
 ;;; scimax
 ;; (load! "words")                         ;; bibtex search
@@ -23,7 +28,7 @@
 
 (defvar scimax-dir
   (expand-file-name (concat doom-private-dir "local/scimax"))
-"A local directory to load scimax packages."
+  "A local directory to load scimax packages."
   )
 
 (use-package! scimax-hydra
@@ -47,7 +52,7 @@
       (goto-char (point-min))
       (when (re-search-forward "^<<<<<<< " nil t)
         (smerge-mode +1)
-	(+vc/smerge-hydra/body)))))
+        (+vc/smerge-hydra/body)))))
 
 ;; (use-package! ox-word
 ;; :after ox)
