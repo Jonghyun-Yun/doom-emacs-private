@@ -1027,7 +1027,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   ;; (setq which-key-replacement-alist nil)
   )
 
-;;;; ctrlf
+;;;;  ctrlf
 (use-package! ctrlf
   :hook
   (after-init . ctrlf-mode)
@@ -1042,7 +1042,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;; M-s _  ctrlf-forward-symbol
 
 
-;;;; easy-kill
+;;;;  easy-kill
 ;; https://github.com/leoliu/easy-kill
 (use-package! easy-kill
   :bind*
@@ -1073,7 +1073,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;; - changes the kill to the directory name, + to full name and 0 to basename.
 ;; C-SPC: turn selection into an active region
 
-;;;; avy
+;;;;  avy
 (after! avy
   ;; (setq avy-keys '(?a ?s ?d ?f ?j ?k ?l ?\;))
   ;; home row priorities: 8 6 4 5 - - 1 2 3 7
@@ -1081,7 +1081,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   (setq lispy-avy-keys avy-keys)
   )
 
-;;;; ace-window
+;;;;  ace-window
 (after! ace-window
   (setq aw-scope 'global
         aw-dispatch-always t
@@ -1239,6 +1239,7 @@ of the buffer text to be displayed in the popup"
 
 ;;; treemac
 (after! treemacs
+  (setq treemacs-width 30)
   (defvar treemacs-file-ignore-extensions '()
     "File extension which `treemacs-ignore-filter' will ensure are ignored")
   (defvar treemacs-file-ignore-globs '()
@@ -1349,7 +1350,7 @@ of the buffer text to be displayed in the popup"
   :around #'org-superstar-mode
   (ignore-errors (apply orig-fn args)))
 
-;;; testing
+;;; tree-sitter
 (use-package! tree-sitter
   :hook
   (prog-mode . global-tree-sitter-mode)
@@ -1427,28 +1428,21 @@ of the buffer text to be displayed in the popup"
       )))
 
 ;;; tab bar
-;; (setq! centaur-tabs-bar-height 20) ; (+ 8 centaur-tabs-height)
 (setq! centaur-tabs-height 10
+       ;; centaur-tabs-bar-height 20 ; (+ 8 centaur-tabs-height)
        centaur-tabs-set-icons nil
        centaur-tabs-icon-scale-factor 0.65
        centaur-tabs-label-fixed-length 0
-       centaur-tabs-icon-v-adjust -0.075)
-
-;; When the currently selected tab(A) is at the right of the last visited
-;; tab(B), move A to the right of B. When the currently selected tab(A) is
-;; at the left of the last visited tab(B), move A to the left of B
-(setq! centaur-tabs-adjust-buffer-order t)
+       centaur-tabs-icon-v-adjust -0.075
+       centaur-tabs-adjust-buffer-order t)
 ;; Move the currently selected tab to the left of the the last visited tab.
 ;; (setq! centaur-tabs-adjust-buffer-order 'left)
-
 ;; (add-hook! '() #'+tabs-disable-centaur-tabs-mode-maybe-h)
 (after! centaur-tabs
   (centaur-tabs-enable-buffer-reordering)
   (centaur-tabs-change-fonts "Overpass" (* 10 centaur-tabs-bar-height))
-  (centaur-tabs-headline-match)
-  )
-
-;; centaur-tabs-hide-tab
+  (centaur-tabs-headline-match))
+;; edit defun centaur-tabs-hide-tab
 
 ;;; eshell
 ;; aliases: see `+eshell-aliases'
