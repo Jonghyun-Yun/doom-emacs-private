@@ -134,6 +134,7 @@
  :leader
  :desc "Calendar" "o c" #'=calendar
  (:map cfw:calendar-mode-map
+  :after calfw
   :g "R" #'cfw:hide-routines
   :g "C" #'cfw:org-capture) ;; c and C for capture
  )
@@ -248,6 +249,7 @@
  :desc "Newsfeed" "o n"  #'=rss
  ;;;; elfeed-score
  (:map elfeed-search-mode-map
+  :after elfeed-score
   :e "="      #'elfeed-score-map)
  )
 ;;;; elfeed search map
@@ -293,9 +295,8 @@
 
 ;;; scimax
 (map!
- :g "C-c ! ." (lambda ()
-                (interactive)
-                (scimax-open-hydra scimax-errors/body))
+ :g
+ :desc "Errors Hydra" "C-c ! ." (cmd! (scimax-open-hydra scimax-errors/body))
  "s-<up>" #'beginning-of-buffer
  "s-<down>" #'end-of-buffer)
 
