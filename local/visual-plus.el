@@ -87,12 +87,10 @@
     ;; :bind ("<f5>" . modus-themes-toggle)
     ))
 
-(with-eval-after-load 'doom-themes
+;; (with-eval-after-load 'doom-themes
   ;; Global settings (defaults)
   ;; (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
   ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
-
-  (setq doom-themes-padded-modeline nil)
 
   ;; Enable flashing mode-line on errors
   ;; (doom-themes-visual-bell-config)
@@ -110,7 +108,7 @@
 
   ;; Corrects (and improves) org-mode's native fontification.
   ;; (doom-themes-org-config)
-  )
+  ;; )
 
 ;; (when (featurep! :ui treemacs)
 ;;   (add-hook 'dired-mode-hook #'treemacs-icons-dired-mode)
@@ -271,7 +269,8 @@
 ;;   )
 
 (after! doom-modeline
-  (set-face-attribute 'doom-modeline-buffer-modified nil :foreground nil :inherit 'error)
+  ;; (set-face-attribute 'doom-modeline-buffer-modified nil :foreground nil :inherit 'error)
+  (custom-set-faces! '(doom-modeline-buffer-modified :inherit (error bold)))
   (set-face-attribute 'doom-modeline-evil-normal-state nil :foreground (get 'cursor 'evil-normal-color))
   (set-face-attribute 'doom-modeline-evil-insert-state nil :foreground (get 'cursor 'evil-insert-color))
   (set-face-attribute 'doom-modeline-evil-emacs-state nil :foreground (get 'cursor 'evil-emacs-color))
