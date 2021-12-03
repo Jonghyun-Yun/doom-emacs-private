@@ -37,11 +37,9 @@
              scimax-open-hydra
              scimax-src-block-hydra/body
              scimax/body)
-  :init
-  ;; (require 'cl)
-  (map! :g
-        "s-." #'scimax-dispatch-mode-hydra
-        "s-," #'scimax/body)
+  :bind
+  ("s-." . scimax-dispatch-mode-hydra)
+  ("s-," . scimax/body)
   :config
   (require 'emacs-keybinding-command-tooltip-mode))
 
