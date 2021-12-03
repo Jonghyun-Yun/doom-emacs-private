@@ -3,7 +3,8 @@
 # key: image
 # expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
 # --
-#+ATTR_LATEX: :height $1\textheight :width $1\textwidth :options page=1,keepaspectratio :center t
-#+LABEL: fig:${2:label}
-#+CAPTION: ${3:caption}
+#+attr_latex: :height $1\textheight :width $1\textwidth :options page=1,keepaspectratio :center t
+#+label: fig:${2:label}
+#+caption: ${3:caption}
+[[${3:`(read-file-name "File: ")`}]]
 $0
