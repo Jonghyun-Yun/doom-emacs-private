@@ -64,8 +64,12 @@
     #'jyun/langtool-goto-previous-error)
   (define-key evil-normal-state-map (kbd "] g")
     #'jyun/langtool-goto-next-error)
+  )
 
-  (setq langtool-autoshow-message-function
+(use-package! langtool-posframe
+  :after langtool
+  :config
+   (setq langtool-autoshow-message-function
         ;; display in a minibuffer
         ;; 'langtool-autoshow-force-message
         ;; display in a popup
@@ -73,7 +77,6 @@
         ;; posframe
         'langtool-posframe-show-posframe
         )
-
   (after! company
     ;; Don't display popups if company is open
     (add-hook 'langtool-posframe-inhibit-functions #'company--active-p))
@@ -93,7 +96,7 @@
 (use-package! langtool-ignore-fonts
   ;; :after langtool
   :hook
-  (LaTeX-mode . langtool-ignore-fonts-minor-mode)
+  (latex-mode . langtool-ignore-fonts-minor-mode)
   (org-mode . langtool-ignore-fonts-minor-mode)
   (markdown-mode . langtool-ignore-fonts-minor-mode)
   )
