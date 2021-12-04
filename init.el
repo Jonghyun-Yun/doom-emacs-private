@@ -71,7 +71,7 @@
        ;;parinfer          ; turn lisp into python, sort of
        ;;rotate-text       ; cycle region at point between text candidates
        snippets          ; my elves. They type so I don't have to
-       ;;word-wrap         ; soft wrapping with language-aware indent
+       word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
        (dired +icons)    ; making dired pretty [functional]
@@ -136,7 +136,7 @@
        ;;elm               ; care for a cup of TEA?
        emacs-lisp        ; drown in parentheses
        ;;erlang            ; an elegant language for a more civilized age
-       (ess +lsp)          ; emacs speaks statistics
+       (ess +lsp +stan)    ; emacs speaks statistics
        ;;factor
        ;;faust             ; dsp, but you get to keep your soul
        ;;fsharp            ; ML stands for Microsoft's Language
@@ -225,10 +225,11 @@
        write
        gcal
        dired-plus
-       stan
+       ;; stan
        gtd
        grammar
        outshine
        reading
        scimax
+       ebook
        )
