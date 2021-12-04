@@ -1,5 +1,10 @@
 ;;; ../Dropbox/emacs/.doom.d/local/latex-plus.el -*- lexical-binding: t; -*-
 
+  ;; make AUCTeX save files without asking
+(setq! TeX-save-query nil
+       TeX-show-compilation t
+       TeX-command-extra-options "-shell-escape")
+
 ;;; skip ispelling
 (with-eval-after-load 'latex
   (setq ispell-tex-skip-alists
@@ -18,8 +23,6 @@
             ))
          (cadr ispell-tex-skip-alists)))
 
-  ;; make AUCTeX save files without asking
-  (setq TeX-save-query nil)
 
   ;; define math environment for font-lock
   (setq font-latex-math-environments

@@ -349,6 +349,17 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
   (add-to-list 'org-capture-templates org-gcal-capture-templates)
   )
 
+(defadvice! jyun/org-capture-central-project-todo-file ()
+  :override #'+org-capture-central-project-todo-file
+  "Stop `org-capture' if not in project dir."
+  (let ((pname (projectile-project-name)))
+    (catch 'out-proj
+      (when (string= pname "-")
+        (throw 'out-proj
+               (message "Not in a project directory.")))
+    (+org--capture-central-file
+     +org-capture-projects-file pname))))
+
 ;;; youtube link + SPC m v + update latex frag
 (with-eval-after-load 'org
   ;; ;; (setq org-export-headline-levels 5) ; I like nesting
@@ -569,7 +580,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
   ;; (setq org-startup-truncated nil)
 
   ;; By using unique ID’s for links in Org-mode, links will work even if you move them across files.
-  (require 'org-id)
+  ;; (require 'org-id)
   (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id
         org-clone-delete-id t)
 
