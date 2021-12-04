@@ -19,3 +19,6 @@
 [submodule "agenda.el"]
 	path = local/agenda.el
 	url = https://gist.github.com/a60e8ccb9aceba031af243dff0d19b2e.git
+[submodule "langtool-posframe"]
+	path = local/langtool-posframe
+	url = https://github.com/Jonghyun-Yun/langtool-posframe.git
