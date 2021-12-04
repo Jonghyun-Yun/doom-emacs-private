@@ -220,6 +220,8 @@
 (package! hydra-posframe :recipe (:host github
                                   :repo "Ladicle/hydra-posframe"))
 (package! emacs-overleaf :recipe (:local-repo "local/emacs-overleaf"))
+(when (featurep! :private grammar)
+  (package! langtool-posframe :recipe (:local-repo "local/langtool-posframe")))
 
 ;;; tree-sitter
 (package! tree-sitter)
