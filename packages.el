@@ -231,6 +231,7 @@
 (package! org-clock-convenience :disable t)
 (package! highlight-parentheses :disable t)
 (package! olivetti :disable t)
+(package! explain-pause-mode :recipe (:host github :repo "lastquestion/explain-pause-mode"))
 
 ;;; disabled doom packages
 ;; (package! github-review :disable t)
