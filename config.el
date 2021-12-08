@@ -156,6 +156,14 @@
   ;; (set 'preview-scale-function 1.75)
   )
 
+;; ;; trying to turn off `rainbow-delimiters-mode'. not working..
+;; (add-hook! 'LaTeX-mode-hook #'(lambda () (rainbow-delimiters-mode -1)))
+;; (remove-hook 'TeX-update-style-hook #'rainbow-delimiters-mode)
+
+(use-package! emacs-overleaf
+  :defer t
+  :commands (jyun/setup-overleaf-pull jyun/setup-overleaf-push))
+
 ;;;; reftex
 (after! reftex
   (setq reftex-ref-style-default-list '("Default"
@@ -368,7 +376,6 @@
 
 ;;;; ref documents in org
 (use-package! org-transclusion
-  :defer t
   :commands (org-transclusion-mode)
   :config
   (setq org-transclusion-exclude-elements nil))
@@ -502,7 +509,7 @@
       ;; spacemacs value of parameters
       scroll-conservatively 0)
 (setq display-time-format ;; "%R %a %b %d"
-      "%R %m/%d"
+      "%a %m/%d %R"
       display-time-default-load-average nil
       display-time-world-list
       '(("America/Los_Angeles" "Seattle")
@@ -698,6 +705,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
                 ("Dictionary.com"       "http://dictionary.reference.com/browse/%s?s=t")
                 ("Thesaurus.com"        "http://www.thesaurus.com/browse/%s")
                 ("Merriam-Webster"      "https://www.merriam-webster.com/dictionary/%s")
+                ("Weather"              "https://wttr.in/%s")
                 )))
 
 
@@ -715,8 +723,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   :commands
   (find-file-in-project
    find-file-in-current-directory-by-selected)
-  :general (
-            [remap projectile-find-file] #'find-file-in-project
+  :general ([remap projectile-find-file] #'find-file-in-project
             [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config)
   :init
   (map! :leader "SPC" #'find-file-in-project-by-selected)
@@ -728,9 +735,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 
 ;;;; regexp
 (use-package! visual-regexp
-  ;; :commands (vr/replace vr/query-replace vr/isearch-backward vr/isearch-forward)
   :commands (vr/replace vr/query-replace)
-  ;; :config (require 'visual-regexp)
   :init
   ;; (define-key global-map (kbd "C-c r") 'vr/replace)
   (define-key global-map (kbd "C-c %") 'vr/query-replace)
