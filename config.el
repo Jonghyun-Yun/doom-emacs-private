@@ -386,14 +386,12 @@
     (add-hook 'pdf-view-mode-hook 'org-noter-init-pdf-view)))
 
 ;;;; org-gcal
-;; (require 'pass)
-(after! org
-  (require 'password-store)
-  (setq! org-gcal-client-id (funcall #'password-store-get "org-gcal/client-id")
-         org-gcal-client-secret (funcall #'password-store-get "org-gcal/client-secret"))
-  (setq! org-gcal-cancelled-todo-keyword "KILL")
-  (setq! org-gcal-auto-archive nil)
-  )
+;; (require 'password-store)
+;; org-gcal credintial after init
+(add-hook! 'after-init-hook #'jyun/get-org-gcal-credential)
+(setq! org-gcal-cancelled-todo-keyword "KILL"
+       org-gcal-auto-archive nil)
+
 ;; if something goes wrong, try delete the token and run `org-gcal-request-token'.
 ;; (progn
 ;; (delete-file org-gcal-token-file)

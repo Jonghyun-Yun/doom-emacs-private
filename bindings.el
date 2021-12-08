@@ -85,14 +85,14 @@
 ;;           "v" #'org-roam-dailies-capture-date)))))
 
 ;;; org-ref
-  (map!
-    (:map org-mode-map
-     :after org-ref
-     :g "C-c ]"       #'org-ref-insert-link
-     (:prefix-map ("C-c [" . "agenda-file")
-      "[" #'org-agenda-file-to-front
-      "]" #'org-remove-file))
-    )
+(map!
+ (:after org-ref
+  :map org-mode-map
+  :g "C-c ]"       #'org-ref-insert-link
+  (:prefix-map ("C-c [" . "agenda-file")
+   "[" #'org-agenda-file-to-front
+   "]" #'org-remove-file))
+ )
 
 ;;; evil
 (map!
