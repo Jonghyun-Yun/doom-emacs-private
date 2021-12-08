@@ -77,8 +77,7 @@ Creates new notes where none exist yet."
             ;; (async-start-process "open" "open" nil fpath) ;; system default
             (async-start-process "open" "open" nil "-a" "Skim" fpath) ;; skim
             ;; (call-process "open" nil 0 nil "-a" "Skim" fpath) ;; skim
-            ))
-    )
+            )))
    (IS-LINUX
     (setq bibtex-completion-pdf-open-function
           (lambda (fpath)

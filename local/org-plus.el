@@ -344,20 +344,9 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
            "* %^{Project for...} [/] %^{GOAL}p \n:PROPERTIES:\n:CAPTURED: %U \n:END: \n%i"
            :prepend t)))
 
-  (require 'org-gcal)
+  ;; (require 'org-gcal)
   (add-to-list 'org-capture-templates org-gcal-capture-templates)
   )
-
-(defadvice! jyun/org-capture-central-project-todo-file ()
-  :override #'+org-capture-central-project-todo-file
-  "Stop `org-capture' if not in project dir."
-  (let ((pname (projectile-project-name)))
-    (catch 'out-proj
-      (when (string= pname "-")
-        (throw 'out-proj
-               (message "Not in a project directory.")))
-    (+org--capture-central-file
-     +org-capture-projects-file pname))))
 
 ;;; youtube link + SPC m v + update latex frag
 (with-eval-after-load 'org

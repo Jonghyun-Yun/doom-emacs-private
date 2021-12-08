@@ -174,6 +174,8 @@
 
 ;;; latexdiff
 (use-package! latexdiff
+  :config
+  (setq latexdiff-vc-args '("--flatten"))
   :init
   (add-hook 'LaTeX-mode-hook (lambda () (local-set-key (kbd "C-c d") #'latexdiff-vc)))
   :commands (latexdiff-vc latexdiff-vc-range latexdiff))
