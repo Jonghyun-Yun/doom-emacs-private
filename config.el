@@ -1305,6 +1305,25 @@ of the buffer text to be displayed in the popup"
 ;;
 
 ;;; testing
+;;;; org-ref v2 to v3
+(defun org-ref-convert-cite-v2-to-v3 ()
+  "Convert all cite: to cite:&."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((count 0)
+          (case-fold-search nil))
+      (while (re-search-forward "cite:\\(\\w+\\)" nil t)
+        (replace-match "cite:\&\\1" t)
+        (setq count (1+ count)))
+      (message "Replaced %d occurances" count))))
+
+;;;; explain pause
+(use-package explain-pause-mode
+  :config
+  (explain-pause-mode)
+  )
+
 ;;;; overleaf
 (define-minor-mode emacs-overleaf-mode
   "Toggle projectr-local `emacs-overleaf-mode' with additional parameters."
