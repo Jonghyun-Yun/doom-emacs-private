@@ -177,6 +177,91 @@ Return nil otherwise."
     (catch 'out-proj
       (when (string= pname "-")
         (throw 'out-proj
-               (message "Not in a project directory.")))
-    (+org--capture-central-file
-     +org-capture-projects-file pname))))
+               (user-error "Not in a project directory.")))
+      (+org--capture-central-file
+       +org-capture-projects-file pname))))
+
+;;; org-roam
+;; no numbers in org-roam buffers
+(defadvice! doom-modeline--buffer-file-name-roam-aware-a (orig-fun)
+  :around #'doom-modeline-buffer-file-name ; takes no args
+  (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+      (replace-regexp-in-string
+       "\\(?:^\\|.*/\\)\\([0-9]\\{4\\}\\)\\([0-9]\\{2\\}\\)\\([0-9]\\{2\\}\\)[0-9]*-"
+       "🢔(\\1-\\2-\\3) "
+       (subst-char-in-string ? ?  buffer-file-name)
+       )
+    (funcall orig-fun)))
+
+;;; org-ref v2 to v3
+(defun org-ref-convert-cite-v2-to-v3 ()
+  "Convert all cite: to cite:&."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((count 0)
+          (case-fold-search nil))
+      (while (re-search-forward "cite:\\(\\w+\\)" nil t)
+        (replace-match "cite:\&\\1" t)
+        (setq count (1+ count)))
+      (message "Replaced %d occurances" count))))
+
+;;; org latex fragment background
+;;;###autoload
+(defun jyun/org-latex-set-directory-color ()
+  "Set Org LaTeX directory name to default face"
+  (interactive)
+  (setq org-preview-latex-image-directory
+        (concat "ltximg/" (s-replace "#" "HEX" (alist-get 'foreground-color (frame-parameters)))
+                ;; (let ((color (color-values (alist-get 'foreground-color (frame-parameters)))))
+                ;;   (apply 'concat (mapcar (lambda (x) (concat "_" x)) (mapcar 'int-to-string color)))
+                ;;   )
+                "/")))
+;;;###autoload
+(defun jyun/org-latex-update-fragments-color ()
+  "Remove Org LaTeX fragment layout, switch directory for face color, turn fragments back on."
+  (interactive)
+  ;; removes latex overlays in the whole buffer
+  (org-remove-latex-fragment-image-overlays)
+  ;; background directory switch
+  (jyun/org-latex-set-directory-color)
+  ;; recreate overlay
+  ;; Argument '(16) is same as prefix C-u C-u,
+  ;; means create images in the whole buffer instead of just the current section.
+  ;; For many new images this will take time.
+  (org-toggle-latex-fragment '(16)))
+
+;;; org view output
+;;;###autoload
+(defun org-view-output-file (&optional org-file-path)
+  "Visit buffer open on the first output file (if any) found, using `org-view-output-file-extensions'"
+  (interactive)
+  (let* ((org-file-path (or org-file-path (buffer-file-name) ""))
+         (dir (file-name-directory org-file-path))
+         (basename (file-name-base org-file-path))
+         (output-file nil))
+    (dolist (ext org-view-output-file-extensions)
+      (unless output-file
+        (when (file-exists-p
+               (concat dir basename "." ext))
+          (setq output-file (concat dir basename "." ext)))))
+    (if output-file
+        (if (member (file-name-extension output-file) org-view-external-file-extensions)
+            (browse-url output-file)
+          (pop-to-buffer (or (find-buffer-visiting output-file)
+                             (find-file-noselect output-file))))
+      (message "No exported file found"))))
+
+;;; org-bael header
+;;;###autoload
+(defun jyun/set-org-babel-default-header-args:R ()
+  "Locally set `org-babel-default-header-args:R' for R session."
+  (let ((sname (concat "*R:" (projectile-project-name) "*")))
+    (unless (boundp 'org-babel-default-header-args:R)
+      (setq-local org-babel-default-header-args:R '((:export . "code") (:results . "output replace")
+                                                    )))
+    (setf (alist-get :export org-babel-default-header-args:R) "code")
+    (setf (alist-get :results org-babel-default-header-args:R) "output replace")
+    (setf (alist-get :session org-babel-default-header-args:R) sname)
+    )
+  )

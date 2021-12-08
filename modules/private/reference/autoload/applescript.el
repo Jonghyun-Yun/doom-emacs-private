@@ -2,33 +2,33 @@
 ;;;###if IS-MAC
 
 ;;;###autoload
-  (defun +reference/org-mac-skim-open (uri)
-    "Visit page of pdf in Skim"
-    (let* ((note (when (string-match ";;\\(.+\\)\\'" uri) (match-string 1 uri)))
-           (page (when (string-match "::\\(.+\\);;" uri) (match-string 1 uri)))
-           (document (substring uri 0 (match-beginning 0))))
-      (do-applescript
-       (concat
-        "tell application \"Skim\"\n"
-        "activate\n"
-        "set theDoc to \"" document "\"\n"
-        "set thepage to " page "\n"
-        "set theNote to " note "\n"
-        "open theDoc\n"
-        "go document 1 to page thePage of document 1\n"
-        "if theNote is not 0\n"
-        "    go document 1 to item theNote of notes of page thePage of document 1\n"
-        "    set active note of document 1 to item theNote of notes of page thePage of document 1\n"
-        "end if\n"
-        "end tell"))))
+(defun +reference/org-mac-skim-open (uri)
+  "Visit page of pdf in Skim"
+  (let* ((note (when (string-match ";;\\(.+\\)\\'" uri) (match-string 1 uri)))
+         (page (when (string-match "::\\(.+\\);;" uri) (match-string 1 uri)))
+         (document (substring uri 0 (match-beginning 0))))
+    (do-applescript
+     (concat
+      "tell application \"Skim\"\n"
+      "activate\n"
+      "set theDoc to \"" document "\"\n"
+      "set thepage to " page "\n"
+      "set theNote to " note "\n"
+      "open theDoc\n"
+      "go document 1 to page thePage of document 1\n"
+      "if theNote is not 0\n"
+      "    go document 1 to item theNote of notes of page thePage of document 1\n"
+      "    set active note of document 1 to item theNote of notes of page thePage of document 1\n"
+      "end if\n"
+      "end tell"))))
 
 ;;;###autoload
 (defun +reference/append-org-id-to-skim-hook ()
-"NOT to create org-id for gcal.org."
-  "Create org-id only for org-skim-capture"
-    (if (or (equal "SA" (org-capture-get :key))
-            (equal "GSA" (org-capture-get :key)))
-        (+reference/append-org-id-to-skim (org-id-get-create))))
+  "NOT to create org-id for gcal.org. Create org-id only for org-skim-capture"
+  (require 'org-id)
+  (if (or (equal "SA" (org-capture-get :key))
+          (equal "GSA" (org-capture-get :key)))
+      (+reference/append-org-id-to-skim (org-id-get-create))))
 
 ;;;###autoload
   (defun +reference/append-org-id-to-skim (id)

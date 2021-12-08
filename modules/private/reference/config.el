@@ -6,10 +6,18 @@
         org-ref-insert-cite-function 'org-ref-cite-insert-ivy
         org-ref-insert-label-function 'org-ref-insert-label-link
         org-ref-insert-ref-function 'org-ref-insert-ref-link
-        org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body)))
-  )
+        org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body))))
 
 (after! org-capture
+  ;; create org-id for skim to org jump
+  (add-hook 'org-capture-prepare-finalize-hook #'+reference/append-org-id-to-skim-hook))
+
+(after! org
+  (require 'org-mac-link)
+  ;; (require 'org-id)
+  (org-link-set-parameters "skim" :follow #'+reference/org-mac-skim-open))
+
+(defun jyun/org-capture-skim-template-h ()
   (add-to-list 'org-capture-templates
                '("GSA" "General Skim Annotation" entry
                  (file+function (lambda () (buffer-file-name)) +org-move-point-to-heading)
@@ -54,22 +62,11 @@
 :SKIM_PAGE: %(+reference/get-skim-page-number)
 :END: \n%i"))
     ;; else
-    (if (equal org-ref-notes-function #'org-ref-notes-function-one-file)
+    (if (not (f-dir-p bibtex-completion-notes-path))
         (add-to-list 'org-capture-templates
                      '("SA" "Skim Annotation" entry
                        (file+function org-ref-bibliography-notes +reference/org-move-point-to-capture-skim-annotation)
                        "* %? \n:PROPERTIES: \n:CREATED: %U \n:CITE: cite:%(+reference/skim-get-bibtex-key)
 :SKIM_NOTE: %(+reference/skim-get-annotation)
 :SKIM_PAGE: %(+reference/get-skim-page-number)
-:END: \n%i"))))
-  )
-
-(after! org
-  ;; (require 'org-mac-link)
-  ;; (require 'org-id)
-
-  (org-link-set-parameters "skim" :follow #'+reference/org-mac-skim-open)
-
-  ;; create org-id for skim to org jump
-  (add-hook 'org-capture-prepare-finalize-hook #'+reference/append-org-id-to-skim-hook)
-  )
+:END: \n%i")))))

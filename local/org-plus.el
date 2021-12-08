@@ -31,7 +31,7 @@
 ;;; ox-ravel
 ;; `ox-hugo' depends on this
 (use-package ox-ravel
-  :defer t
+  :after org
   :load-path "~/.doom.d/local/ox-ravel"
   ;; :after ox
   :config
@@ -346,9 +346,87 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
 
   ;; (require 'org-gcal)
   (add-to-list 'org-capture-templates org-gcal-capture-templates)
+  (jyun/org-capture-skim-template-h)
   )
 
-;;; youtube link + SPC m v + update latex frag
+(setq org-structure-template-alist
+      '(("a" . "export ascii")
+        ("c" . "center")
+        ("C" . "comment")
+        ("e" . "example")
+        ("E" . "export")
+        ("h" . "export html")
+        ("l" . "export latex")
+        ("q" . "quote")
+        ("s" . "src")
+        ("v" . "verse")
+        ("se" . "src emacs-lisp")
+        ("sr" . "src R")
+        ("sm" . "src matlab")
+        ("sp" . "src python")
+        ("sh" . "src sh")
+        ))
+
+;; get unicode math work!
+(setq org-latex-inputenc-alist '(("utf8" . "utf8x")))
+
+;; Org-mode: Source block doesn't respect parent buffer indentation
+;; http://emacs.stackexchange.com/questions/9472/org-mode-source-block-doesnt-respect-parent-buffer-indentation
+(setq org-edit-src-content-indentation 0)
+
+;; no extra indentation in the source blocks
+(setq org-src-preserve-indentation t)
+
+;; By using unique ID’s for links in Org-mode, links will work even if you move them across files.
+;; (require 'org-id)
+(setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id
+      org-clone-delete-id t)
+
+(setq org-refile-targets '(("~/org/todo.org" :maxlevel . 3)
+                           ("~/org/projects.org" :maxlevel . 3)
+                           ("~/org/someday.org" :level . 1)
+                           ("~/org/tickler.org" :maxlevel . 1)
+                           ("~/org/notes.org" :maxlevel . 2)
+                           ))
+
+(setq org-preview-latex-process-alist
+      (quote
+       ((dvipng :programs
+                ("latex" "dvipng")
+                :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
+                (1.0 . 1.0)
+                :latex-compiler
+                ("latex -interaction nonstopmode -output-directory %o %f")
+                :image-converter
+                ("dvipng -D %D -T tight -o %O %f"))
+        (dvisvgm :programs
+                 ("latex" "dvisvgm")
+                 :description "xdv > svg" :message "you need to install the programs: xelatex and dvisvgm." :use-xcolor t :image-input-type "xdv" :image-output-type "svg" :image-size-adjust
+                 (1.7 . 1.5)
+                 :latex-compiler
+                 ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+                 :image-converter
+                 ("dvisvgm %f -n -b min -c %S -o %O"))
+        (imagemagick :programs
+                     ("latex" "convert")
+                     :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                     (1.0 . 1.0)
+                     :latex-compiler
+                     ("pdflatex -interaction nonstopmode -output-directory %o %f")
+                     :image-converter
+                     ("convert -density %D -trim -antialias %f -quality 100 %O")))
+       ))
+
+;;; view org output: SPC m v
+  (map! :map org-mode-map
+        :localleader
+        :desc "View exported file" "v" #'org-view-output-file)
+  (defvar org-view-output-file-extensions '("pdf" "md" "docx" "rst" "txt" "tex" "html")
+    "Search for output files with these extensions, in order, viewing the first that matches")
+  (defvar org-view-external-file-extensions '("html" "docx")
+    "File formats that should be opened externally.")
+
+;;; youtube link
 (with-eval-after-load 'org
   ;; ;; (setq org-export-headline-levels 5) ; I like nesting
   ;; ;; ignore heading not content
@@ -374,9 +452,6 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
   ;; (setq org-preview-latex-default-process 'dvipng)
   ;; ;; slow, supprts unicode-math
   ;; (setq org-preview-latex-default-process 'dvisvgm)
-
-  ;; get unicode math work!
-  (setq org-latex-inputenc-alist '(("utf8" . "utf8x")))
 
   ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
   ;; (add-to-list 'evil-emacs-state-modes 'org-agenda-mode)
@@ -530,21 +605,6 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
   ;;   (require 'org-tempo)
   ;;   )
 
-  (setq org-structure-template-alist
-        (append org-structure-template-alist
-                '(("se" . "src emacs-lisp")
-                  ("sr" . "src R")
-                  ("sm" . "src matlab")
-                  ("sp" . "src python")
-                  ("sh" . "src sh"))))
-
-  ;; Org-mode: Source block doesn't respect parent buffer indentation
-  ;; http://emacs.stackexchange.com/questions/9472/org-mode-source-block-doesnt-respect-parent-buffer-indentation
-  (setq org-edit-src-content-indentation 0)
-
-  ;; no extra indentation in the source blocks
-  (setq org-src-preserve-indentation t)
-
   ;; Org-mode
   ;; M-RET broken in org-mode
   ;; (use-package org
@@ -566,18 +626,6 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
   ;; (delete 'company-dabbrev company-backends)
 
   ;; (setq org-startup-truncated nil)
-
-  ;; By using unique ID’s for links in Org-mode, links will work even if you move them across files.
-  ;; (require 'org-id)
-  (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id
-        org-clone-delete-id t)
-
-  (setq org-refile-targets '(("~/org/todo.org" :maxlevel . 3)
-                             ("~/org/projects.org" :maxlevel . 3)
-                             ("~/org/someday.org" :level . 1)
-                             ("~/org/tickler.org" :maxlevel . 1)
-                             ("~/org/notes.org" :maxlevel . 2)
-                             ))
 
   ;; org ess
   ;; (setq org-babel-R-command "R --silent --no-save")
@@ -684,34 +732,6 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
   ;;            )
   ;;           )))
 
-  (setq org-preview-latex-process-alist
-        (quote
-         ((dvipng :programs
-                  ("latex" "dvipng")
-                  :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
-                  (1.0 . 1.0)
-                  :latex-compiler
-                  ("latex -interaction nonstopmode -output-directory %o %f")
-                  :image-converter
-                  ("dvipng -D %D -T tight -o %O %f"))
-          (dvisvgm :programs
-                   ("latex" "dvisvgm")
-                   :description "xdv > svg" :message "you need to install the programs: xelatex and dvisvgm." :use-xcolor t :image-input-type "xdv" :image-output-type "svg" :image-size-adjust
-                   (1.7 . 1.5)
-                   :latex-compiler
-                   ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
-                   :image-converter
-                   ("dvisvgm %f -n -b min -c %S -o %O"))
-          (imagemagick :programs
-                       ("latex" "convert")
-                       :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :image-input-type "pdf" :image-output-type "png" :image-size-adjust
-                       (1.0 . 1.0)
-                       :latex-compiler
-                       ("pdflatex -interaction nonstopmode -output-directory %o %f")
-                       :image-converter
-                       ("convert -density %D -trim -antialias %f -quality 100 %O")))
-         ))
-
   ;; suppress warning
   ;; org-protocol-check-filename-for-protocol from release_9.3.7
   ;;   (with-eval-after-load 'org-protocol
@@ -725,34 +745,6 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
 
   ;;     (load (expand-file-name "autoload/org" doom-private-dir))
   ;;     )
-
-;;; view org output
-  (map! :map org-mode-map
-        :localleader
-        :desc "View exported file" "v" #'org-view-output-file)
-  (defvar org-view-output-file-extensions '("pdf" "md" "docx" "rst" "txt" "tex" "html")
-    "Search for output files with these extensions, in order, viewing the first that matches")
-  (defvar org-view-external-file-extensions '("html" "docx")
-    "File formats that should be opened externally.")
-
-  (defun org-view-output-file (&optional org-file-path)
-    "Visit buffer open on the first output file (if any) found, using `org-view-output-file-extensions'"
-    (interactive)
-    (let* ((org-file-path (or org-file-path (buffer-file-name) ""))
-           (dir (file-name-directory org-file-path))
-           (basename (file-name-base org-file-path))
-           (output-file nil))
-      (dolist (ext org-view-output-file-extensions)
-        (unless output-file
-          (when (file-exists-p
-                 (concat dir basename "." ext))
-            (setq output-file (concat dir basename "." ext)))))
-      (if output-file
-          (if (member (file-name-extension output-file) org-view-external-file-extensions)
-              (browse-url output-file)
-            (pop-to-buffer (or (find-buffer-visiting output-file)
-                               (find-file-noselect output-file))))
-        (message "No exported file found"))))
 
 ;;; org-latex fragment
   ;; https://stackoverflow.com/questions/43149119/how-to-regenerate-latex-fragments-in-org-mode
@@ -772,41 +764,4 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
   (defadvice disable-theme (after my/disable-theme-advice-for-latex activate)
     "Conditionally update Org LaTeX fragments for current background."
     (if my/org-latex-toggle-fragment-has-been-called (jyun/org-latex-update-fragments-color)))
-
-  (defun jyun/org-latex-set-directory-color ()
-    "Set Org LaTeX directory name to default face"
-    (interactive)
-    (setq org-preview-latex-image-directory
-          (concat "ltximg/" (s-replace "#" "HEX" (alist-get 'foreground-color (frame-parameters)))
-                  ;; (let ((color (color-values (alist-get 'foreground-color (frame-parameters)))))
-                  ;;   (apply 'concat (mapcar (lambda (x) (concat "_" x)) (mapcar 'int-to-string color)))
-                  ;;   )
-                  "/")))
-
-  (defun jyun/org-latex-update-fragments-color ()
-    "Remove Org LaTeX fragment layout, switch directory for face color, turn fragments back on."
-    (interactive)
-    ;; removes latex overlays in the whole buffer
-    (org-remove-latex-fragment-image-overlays)
-
-    ;; background directory switch
-    (jyun/org-latex-set-directory-color)
-    ;; recreate overlay
-    ;; Argument '(16) is same as prefix C-u C-u,
-    ;; means create images in the whole buffer instead of just the current section.
-    ;; For many new images this will take time.
-    (org-toggle-latex-fragment '(16)))
-
-;;; org-bael header
-  (defun jyun/set-org-babel-default-header-args:R ()
-    "Locally set `org-babel-default-header-args:R' for R session."
-    (let ((sname (concat "*R:" (projectile-project-name) "*")))
-      (unless (boundp 'org-babel-default-header-args:R)
-        (setq-local org-babel-default-header-args:R '((:export . "code") (:results . "output replace")
-                                                      )))
-      (setf (alist-get :export org-babel-default-header-args:R) "code")
-      (setf (alist-get :results org-babel-default-header-args:R) "output replace")
-      (setf (alist-get :session org-babel-default-header-args:R) sname)
-      )
-    )
   )
