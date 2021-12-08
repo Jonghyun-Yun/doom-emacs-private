@@ -3,7 +3,6 @@
 ;; https://gitlab.com/oer/org-re-reveal-ref/-/blob/master/org-re-reveal-ref.el
 ;; it changes some of org-ref custom variables
 (use-package! org-re-reveal-ref
-  :defer t
   :when (featurep! :lang org +present)
   :after org-re-reveal
   )
@@ -32,8 +31,9 @@
 ;;; ox-ravel
 ;; `ox-hugo' depends on this
 (use-package ox-ravel
+  :defer t
   :load-path "~/.doom.d/local/ox-ravel"
-  :after ox
+  ;; :after ox
   :config
   ;; (require 'ob-R)
   (setq org-ravel-engines
@@ -231,7 +231,6 @@
   (setq org-latex-logfiles-extensions
         (append '("dvi" "bbl") org-latex-logfiles-extensions))
   )
-
 
 (defvar +org-capture-inbox-file "inbox.org"
   "Default target for todo entries.
@@ -493,7 +492,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
                                   "~/org/notes.org")
     "A list of org-agneda files that are not resided in `org-roam-directory'.")
 
-  (setq org-agenda-files (add-to-list 'org-agenda-base-files org-roam-directory))
+  (setq org-agenda-files (append org-agenda-base-files (list org-roam-directory)))
 
   ;; Don't ask to evaluate code block
   ;; (setq org-confirm-babel-evaluate nil)

@@ -43,14 +43,12 @@ In case of directory the path must end with a slash."
   (defvar bibtex-completion-notes-template-multiple-files nil)
   :config
   (when (featurep! :completion ivy)
-  (add-to-list 'ivy-re-builders-alist '(ivy-bibtex . ivy--regex-plus))
-    )
+  (add-to-list 'ivy-re-builders-alist '(ivy-bibtex . ivy--regex-plus)))
 
   (setq bibtex-completion-additional-search-fields '(keywords)
         ;; This tell bibtex-completion to look at the File field of the bibtex
         ;; to figure out which pdf to open
-        bibtex-completion-pdf-field "file"
-        )
+        bibtex-completion-pdf-field "file")
 
   ;; determine how org ref should handle the users notes path (dir, or file)
   (setq bibtex-completion-notes-path +biblio-notes-path)
@@ -71,8 +69,7 @@ In case of directory the path must end with a slash."
       "Open the notes associated with the entries in KEYS.
 Creates new notes where none exist yet."
       (dolist (key keys)
-        (orb-org-ref-edit-note key)
-        )))
+        (orb-org-ref-edit-note key))))
   (cond
    (IS-MAC
     (setq bibtex-completion-pdf-open-function
@@ -94,8 +91,7 @@ Creates new notes where none exist yet."
           (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
           (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
           (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-          (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}")))
-  )
+          (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))))
 
 
 ;; TODO which set of keys that should be bound for commonly used functions
@@ -198,6 +194,6 @@ Creates new notes where none exist yet."
   )
 
 ;; `org-cite' processors
-;; (use-package! oc-biblatex :after oc)
-;; (use-package! oc-csl :after oc)
-;; (use-package! oc-natbib :after oc)
+(use-package! oc-biblatex :after oc)
+(use-package! oc-csl :after oc)
+(use-package! oc-natbib :after oc)

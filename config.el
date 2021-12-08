@@ -34,16 +34,6 @@
 ;;  doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
 ;;  doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
 
-;; (setq
-;;  doom-font (font-spec :family "Roboto Mono" :size 24 :weight 'light)
-;;  doom-big-font (font-spec :family "Roboto Mono" :size 36 :weight 'light)
-;;  ;; doom-font (font-spec :family "JetBrains Mono" :size 24 :weight 'light)
-;;  ;; doom-big-font (font-spec :family "JetBrains Mono" :size 36 :weight 'light)
-;;  doom-variable-pitch-font (font-spec :family "Roboto" :size 24 :weight 'light)
-;;  ;; doom-variable-pitch-font (font-spec :family "Overpass" :size 24 :weight 'light)
-;;  doom-unicode-font (font-spec :family "JuliaMono" :weight 'light)
-;;  doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
-
 (setq doom-font (font-spec :family "JetBrains Mono" :size 24)
       doom-big-font (font-spec :family "JetBrains Mono" :size 36)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 24)
@@ -51,7 +41,7 @@
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light :size 24)
       )
 
-;; (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
+(setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
 ;; (setq variable-pitch-serif-font (font-spec :family "Roboto Slab" :size 24 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Libre Baskerville" :size 23 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Libertinus Serif" :size 27 :weight 'light))
@@ -115,8 +105,8 @@
 (load! "local/ess-plus")
 (load! "local/latex-plus")
 
-(setq! doom-themes-padded-modeline nil)
-(setq! doom-themes-treemacs-theme "doom-colors")
+(setq! doom-themes-padded-modeline nil
+       doom-themes-treemacs-theme "doom-colors")
 (load! "local/visual-plus")
 
 ;; org -> latex -> md -> docx
@@ -143,19 +133,22 @@
 (setq +latex-viewers '(pdf-tools skim))
   ;; (setq +latex-viewers '(skim pdf-tools))
 (after! latex
-    (defun latex-init-pdf-view ()
-      (progn
-        (pdf-view-fit-height-to-window)
-        (pdf-view-auto-slice-minor-mode)))
-    (add-hook 'pdf-view-mode-hook 'latex-init-pdf-view)
+  (defun latex-init-pdf-view ()
+    (progn
+      (pdf-view-fit-height-to-window)
+      (pdf-view-auto-slice-minor-mode)))
+  (add-hook 'pdf-view-mode-hook 'latex-init-pdf-view)
 
   ;; This variable was introduced in AUCTeX 11.90.
   ;; We need set LaTeX-reftex-cite-format-auto-activate to nil
   ;; when setting reftex-cite-format below
   ;; https://superuser.com/a/1386206
   (setq LaTeX-reftex-cite-format-auto-activate t)
-  ;; the below is buffer-local ???
-  (setq TeX-command-extra-options "-shell-escape"))
+  ;; make AUCTeX save files without asking
+  (setq! TeX-save-query nil
+         TeX-show-compilation nil
+         ;; the below is buffer-local ???
+         TeX-command-extra-options "-shell-escape"))
 
 ;; Set LaTeX preview image size for Org and LaTeX buffers.
 (after! preview
@@ -178,14 +171,6 @@
                                          ("t" . "~\\ref{%s}")
                                          ("l" . "~\\ref{%s}")
                                          ("N" . "~\\ref{%s}"))))
-
-(use-package! emacs-overleaf
-  :defer t
-  :commands (jyun/setup-overleaf-pull jyun/setup-overleaf-push))
-
-;; ;; trying to turn off `rainbow-delimiters-mode'. not working..
-;; (add-hook! 'LaTeX-mode-hook #'(lambda () (rainbow-delimiters-mode -1)))
-;; (remove-hook 'TeX-update-style-hook #'rainbow-delimiters-mode)
 
 ;;;; cdlatex
 ;; (after! cdlatex
@@ -223,8 +208,6 @@
           ("rmk" "Insert remark env" "" cdlatex-environment ("remark") t nil)
           )
         )
-  ;; (map! :map cdlatex-mode-map
-  ;;       :nive "\"" #'cdlatex-math-modify)
   (setq cdlatex-math-symbol-alist
         '(
           (?: ("\\cdots" "\\ldots"))
@@ -426,20 +409,15 @@
 ;; (setq outshine-use-speed-commands nil)
 ;; (outshine-speed-command-help)
 
-;; ;; improve slow scrolling?
-;; (use-package! hl-line+
-;;   :config
-;;   (hl-line-when-idle-interval 0.5)
-;;   (toggle-hl-line-when-idle 1))
-
 (setq pdf-misc-print-program "lpr"
       pdf-misc-print-program-args nil)
 
 (setq search-highlight t
       search-whitespace-regexp ".*?")
 
-(setq doom-scratch-intial-major-mode 'lisp-interaction-mode
-      omnisharp-server-executable-path "/usr/local/bin/omnisharp")
+(setq omnisharp-server-executable-path "/usr/local/bin/omnisharp"
+      ;; doom-scratch-intial-major-mode 'lisp-interaction-mode
+      )
 
 ;; no need: gcmh: https://github.com/emacsmirror/gcmh
 ;; (add-hook 'focus-out-hook #'garbage-collect)
@@ -843,17 +821,11 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 
 ;; ;; thinning all faces
 (after! doom-modeline
-  (add-hook! 'doom-load-theme-hook
-             ;; #'jyun/thin-all-faces
+  (add-hook! '(doom-load-theme-hook window-setup-hook)
              #'jyun/doom-modeline-height
+             ;; #'jyun/thin-all-faces
              ;; #'jyun/evil-state-cursors
              ))
-
-(add-hook! 'window-setup-hook
-           ;; #'jyun/thin-all-faces
-           ;; #'jyun/evil-state-cursors
-           #'jyun/doom-modeline-height
-           )
 
 ;;;; mixed-pitch-mode
 ;; (add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
@@ -927,7 +899,6 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
           (cdr (assoc "matlab" all-the-icons-extension-icon-alist))))
 
 (use-package matlab-mode
-  :defer t
   :commands (matlab-shell)
   :mode ("\\.m\\'" . matlab-mode)
   :config
@@ -1016,7 +987,6 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   ;; triggered.
   (setq which-key-idle-delay 1) ;; with 800kb garbage-collection
   ;; (setq which-key-idle-secondary-delay 0.05)
-  ;; (which-key-mode)
   ;; (define-key which-key-mode-map (kbd "C-h") 'which-key-C-h-dispatch)
   ;; (setq which-key-allow-multiple-replacements t)
   (pushnew!
@@ -1187,8 +1157,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   ;; (setq which-key-posframe-poshandler 'posframe-poshandler-frame-top-right-corner)
   (setq which-key-posframe-parameters
         '((left-fringe . 8)
-          (right-fringe . 8)
-          ))
+          (right-fringe . 8)))
   ;; fix wrong `height'
   (defun which-key-posframe--show-buffer (act-popup-dim)
   "Show which-key buffer when popup type is posframe.
@@ -1361,19 +1330,6 @@ of the buffer text to be displayed in the popup"
   :after tree-sitter)
 
 ;;; archive
-;;;; outline regexp
-;; goal: use /// or ### for outline (cannot make it work. error in consult-outline when used with outshine-mode)
-;; outshine-mode is what I need for outline fonts
-;; (defun jyun/cc-mode-outline-regexp ()
-;;   (set (make-local-variable 'outline-regexp) "//\\(?:/[^#]\\|\\*+\\)")
-;;   )
-;; (add-hook! 'c-mode-hook #'jyun/cc-mode-outline-regexp)
-;; (add-hook! 'c++-mode-hook #'jyun/cc-mode-outline-regexp)
-;; (defun jyun/ess-r-mode-outline-regexp ()
-;;   (set (make-local-variable 'outline-regexp) "##\\(?:#[^#]\\|\\*+\\)")
-;;   )
-;; (add-hook! 'ess-r-mode-hook #'jyun/ess-r-mode-outline-regexp)
-
 ;;;; conda
 ;; (with-eval-after-load 'conda
 ;;   ;; (require 'conda)
@@ -1447,9 +1403,8 @@ of the buffer text to be displayed in the popup"
 
 ;;; eshell
 ;; aliases: see `+eshell-aliases'
-(set-eshell-alias!
-"up" "eshell-up $1"
-"pk" "eshell-up-peek $1")
+(set-eshell-alias! "up" "eshell-up $1"
+                   "pk" "eshell-up-peek $1")
 
 ;;; minibuffer
 (defun switch-to-minibuffer ()

@@ -1,10 +1,5 @@
 ;;; ../Dropbox/emacs/.doom.d/local/latex-plus.el -*- lexical-binding: t; -*-
 
-  ;; make AUCTeX save files without asking
-(setq! TeX-save-query nil
-       TeX-show-compilation t
-       TeX-command-extra-options "-shell-escape")
-
 ;;; skip ispelling
 (with-eval-after-load 'latex
   (setq ispell-tex-skip-alists

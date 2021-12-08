@@ -87,34 +87,6 @@
     ;; :bind ("<f5>" . modus-themes-toggle)
     ))
 
-;; (with-eval-after-load 'doom-themes
-  ;; Global settings (defaults)
-  ;; (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-  ;; doom-themes-enable-italic t) ; if nil, italics is universally disabled
-
-  ;; Enable flashing mode-line on errors
-  ;; (doom-themes-visual-bell-config)
-
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
-  ;; (doom-themes-neotree-config)
-  ;; or for treemacs users
-  ;; doom-themes package forces treemacs to use a variable-pitch font
-  ;; (setq! doom-themes-treemacs-enable-variable-pitch t)
-  ;; (setq! doom-themes-treemacs-theme
-  ;;        ;; "doom-atom"
-  ;;        "doom-colors"                  ; use the colorful treemacs theme
-  ;;        )
-  ;; (doom-themes-treemacs-config)
-
-  ;; Corrects (and improves) org-mode's native fontification.
-  ;; (doom-themes-org-config)
-  ;; )
-
-;; (when (featurep! :ui treemacs)
-;;   (add-hook 'dired-mode-hook #'treemacs-icons-dired-mode)
-;;   )
-
-
 ;;; doom-modeline
 ;; https://github.com/seagle0128/doom-modeline
 (with-eval-after-load 'doom-modeline
@@ -215,49 +187,49 @@
   (setq doom-modeline-env-version nil))
 
 ;;; evil-cursor
-(defun jyun/evil-state-cursors ()
-  ;; doom-modeline
-  ;; (setq +evil--default-cursor-color (face-attribute 'success :foreground))
-  ;; (setq +evil--insert-cursor-color (face-attribute 'font-lock-keyword-face :foreground))
-  ;; (setq +evil--emacs-cursor-color (face-attribute 'font-lock-builtin-face :foreground))
-  ;; (setq +evil--replace-cursor-color (face-attribute 'error :foreground))
-  ;; (setq +evil--visual-cursor-color (face-attribute 'warning :foreground))
-  ;; (setq +evil--motion-cursor-color (face-attribute 'font-lock-doc-face :foreground))
+;; (defun jyun/evil-state-cursors ()
+;;   ;; doom-modeline
+;;   ;; (setq +evil--default-cursor-color (face-attribute 'success :foreground))
+;;   ;; (setq +evil--insert-cursor-color (face-attribute 'font-lock-keyword-face :foreground))
+;;   ;; (setq +evil--emacs-cursor-color (face-attribute 'font-lock-builtin-face :foreground))
+;;   ;; (setq +evil--replace-cursor-color (face-attribute 'error :foreground))
+;;   ;; (setq +evil--visual-cursor-color (face-attribute 'warning :foreground))
+;;   ;; (setq +evil--motion-cursor-color (face-attribute 'font-lock-doc-face :foreground))
 
-  (put 'cursor 'evil-normal-color (face-attribute 'success :foreground))
-  (put 'cursor 'evil-insert-color (face-attribute 'font-lock-keyword-face :foreground))
-  (put 'cursor 'evil-emacs-color (face-attribute 'font-lock-builtin-face :foreground))
-  (put 'cursor 'evil-replace-color (face-attribute 'error :foreground))
-  (put 'cursor 'evil-visual-color (face-attribute 'warning :foreground))
-  (put 'cursor 'evil-motion-color (face-attribute 'font-lock-doc-face :foreground))
+;;   (put 'cursor 'evil-normal-color (face-attribute 'success :foreground))
+;;   (put 'cursor 'evil-insert-color (face-attribute 'font-lock-keyword-face :foreground))
+;;   (put 'cursor 'evil-emacs-color (face-attribute 'font-lock-builtin-face :foreground))
+;;   (put 'cursor 'evil-replace-color (face-attribute 'error :foreground))
+;;   (put 'cursor 'evil-visual-color (face-attribute 'warning :foreground))
+;;   (put 'cursor 'evil-motion-color (face-attribute 'font-lock-doc-face :foreground))
 
-;;; modal icon face color should be found here
-  ;; doom-modeline-evil-normal-state
-  ;; doom-modeline-evil-insert-state
-  ;; doom-modeline-evil-emacs-state
-  ;; doom-modeline-evil-replace-state
-  ;; doom-modeline-evil-visual-state
-  ;; doom-modeline-evil-motion-state
-  ;; doom-modeline-evil-operator-state
-  )
+;; ;;; modal icon face color should be found here
+;;   ;; doom-modeline-evil-normal-state
+;;   ;; doom-modeline-evil-insert-state
+;;   ;; doom-modeline-evil-emacs-state
+;;   ;; doom-modeline-evil-replace-state
+;;   ;; doom-modeline-evil-visual-state
+;;   ;; doom-modeline-evil-motion-state
+;;   ;; doom-modeline-evil-operator-state
+;;   )
 
 ;; spacemacs evil cursors
-(setq
- evil-default-cursor '(+evil-default-cursor-fn box)
- evil-insert-state-cursor '(+evil-insert-cursor-fn (bar . 2))
- evil-emacs-state-cursor '(+evil-emacs-cursor-fn box)
- evil-replace-state-cursor '(+evil-replace-cursor-fn (hbar . 2))
- evil-visual-state-cursor '(+evil-visual-cursor-fn (hbar . 2))
- evil-motion-state-cursor '(+evil-motion-cursor-fn box))
+;; (setq
+;;  evil-default-cursor '(+evil-default-cursor-fn box)
+;;  evil-insert-state-cursor '(+evil-insert-cursor-fn (bar . 2))
+;;  evil-emacs-state-cursor '(+evil-emacs-cursor-fn box)
+;;  evil-replace-state-cursor '(+evil-replace-cursor-fn (hbar . 2))
+;;  evil-visual-state-cursor '(+evil-visual-cursor-fn (hbar . 2))
+;;  evil-motion-state-cursor '(+evil-motion-cursor-fn box))
 
-(progn
-  (put 'cursor 'evil-normal-color "DarkGoldenrod2")
-  (put 'cursor 'evil-insert-color "chartreuse3")
-  (put 'cursor 'evil-emacs-color "SkyBlue2")
-  (put 'cursor 'evil-replace-color "chocolate")
-  (put 'cursor 'evil-visual-color "gray50")
-  (put 'cursor 'evil-motion-color "plum3")
-  )
+;; (progn
+;;   (put 'cursor 'evil-normal-color "DarkGoldenrod2")
+;;   (put 'cursor 'evil-insert-color "chartreuse3")
+;;   (put 'cursor 'evil-emacs-color "SkyBlue2")
+;;   (put 'cursor 'evil-replace-color "chocolate")
+;;   (put 'cursor 'evil-visual-color "gray50")
+;;   (put 'cursor 'evil-motion-color "plum3")
+;;   )
 
 ;; (progn
 ;;   (put 'cursor 'evil-normal-color "DarkGoldenrod3")
@@ -268,24 +240,24 @@
 ;;   (put 'cursor 'evil-motion-color "plum4")
 ;;   )
 
-(after! doom-modeline
-  ;; (set-face-attribute 'doom-modeline-buffer-modified nil :foreground nil :inherit 'error)
-  (custom-set-faces! '(doom-modeline-buffer-modified :inherit (error bold)))
-  (set-face-attribute 'doom-modeline-evil-normal-state nil :foreground (get 'cursor 'evil-normal-color))
-  (set-face-attribute 'doom-modeline-evil-insert-state nil :foreground (get 'cursor 'evil-insert-color))
-  (set-face-attribute 'doom-modeline-evil-emacs-state nil :foreground (get 'cursor 'evil-emacs-color))
-  (set-face-attribute 'doom-modeline-evil-replace-state nil :foreground (get 'cursor 'evil-replace-color))
-  (set-face-attribute 'doom-modeline-evil-visual-state nil :foreground (get 'cursor 'evil-visual-color))
-  (set-face-attribute 'doom-modeline-evil-motion-state nil :foreground (get 'cursor 'evil-motion-color)))
+;; (after! doom-modeline
+;;   ;; (set-face-attribute 'doom-modeline-buffer-modified nil :foreground nil :inherit 'error)
+;;   (custom-set-faces! '(doom-modeline-buffer-modified :inherit (error bold)))
+;;   (set-face-attribute 'doom-modeline-evil-normal-state nil :foreground (get 'cursor 'evil-normal-color))
+;;   (set-face-attribute 'doom-modeline-evil-insert-state nil :foreground (get 'cursor 'evil-insert-color))
+;;   (set-face-attribute 'doom-modeline-evil-emacs-state nil :foreground (get 'cursor 'evil-emacs-color))
+;;   (set-face-attribute 'doom-modeline-evil-replace-state nil :foreground (get 'cursor 'evil-replace-color))
+;;   (set-face-attribute 'doom-modeline-evil-visual-state nil :foreground (get 'cursor 'evil-visual-color))
+;;   (set-face-attribute 'doom-modeline-evil-motion-state nil :foreground (get 'cursor 'evil-motion-color)))
 
-(defun +evil-insert-cursor-fn ()
-  (evil-set-cursor-color (get 'cursor 'evil-insert-color)))
-(defun +evil-replace-cursor-fn ()
-  (evil-set-cursor-color (get 'cursor 'evil-replace-color)))
-(defun +evil-visual-cursor-fn ()
-  (evil-set-cursor-color (get 'cursor 'evil-visual-color)))
-(defun +evil-motion-cursor-fn ()
-  (evil-set-cursor-color (get 'cursor 'evil-motion-color)))
+;; (defun +evil-insert-cursor-fn ()
+;;   (evil-set-cursor-color (get 'cursor 'evil-insert-color)))
+;; (defun +evil-replace-cursor-fn ()
+;;   (evil-set-cursor-color (get 'cursor 'evil-replace-color)))
+;; (defun +evil-visual-cursor-fn ()
+;;   (evil-set-cursor-color (get 'cursor 'evil-visual-color)))
+;; (defun +evil-motion-cursor-fn ()
+;;   (evil-set-cursor-color (get 'cursor 'evil-motion-color)))
 
 ;;; unicode
 (after! unicode-fonts
