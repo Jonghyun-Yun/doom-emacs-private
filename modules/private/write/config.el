@@ -112,7 +112,6 @@ Turning on wordnut mode runs the normal hook `mw-syno-mode-hook'.
 ;;; mw dicts
 ;; https://github.com/agzam/mw-thesaurus.el
 (use-package! mw-thesaurus
-  :defer t
   :hook (mw-thesaurus-mode . +write/buffer-face-mode-dict)
   ;; (mw-thesaurus-mode . mw-dict-mode)
   :commands (mw-thesaurus-lookup-at-point)
@@ -136,7 +135,6 @@ Turning on wordnut mode runs the normal hook `mw-syno-mode-hook'.
   )
 
 (use-package! mw-learner
-  :defer t
   :commands (mw-learner-lookup-at-point)
   :hook (mw-learner-mode . +write/buffer-face-mode-dict)
   :config
@@ -161,14 +159,11 @@ Turning on wordnut mode runs the normal hook `mw-syno-mode-hook'.
 
 ;;; academic phrase
 (use-package! academic-phrases
-  :defer t
   :commands (academic-phrases
-             academic-phrases-by-section)
-  )
+             academic-phrases-by-section))
 
 ;;; math
 (use-package! mathpix.el
-  :defer t
   :commands (mathpix-screenshot)
   ;; :init
   ;; (my-mathpix-password)
@@ -187,7 +182,6 @@ Turning on wordnut mode runs the normal hook `mw-syno-mode-hook'.
 
 ;;; string-inflection
 (use-package! string-inflection
-  :defer t
   :commands
   (my-hydra-string-inflection/body)
   :init

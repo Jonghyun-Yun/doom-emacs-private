@@ -96,7 +96,7 @@ Creates new notes where none exist yet."
 ;; TODO which set of keys that should be bound for commonly used functions
 ;; see https://github.com/jkitchin/org-ref/blob/master/org-ref-core.el#L3998
 (use-package! org-ref
-  :when (featurep! :lang org)
+  ;; :when (featurep! :lang org)
   :after org
   ;; :preface
   ;; This need to be set before the package is loaded, because org-ref will
@@ -106,7 +106,16 @@ Creates new notes where none exist yet."
   ;;                                        (t                            #'org-ref-reftex)))
   ;; (setq org-ref-completion-library #'org-ref-ivy-cite)
   ;; (require 'org-ref-ivy-cite)
-  )
+  ;; :bind*
+  ;; ([remap org-remove-file] . org-ref-insert-link)
+  :init
+  ;; (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
+  (map!
+   (:map org-mode-map
+    :g "C-c ]" #'org-ref-insert-link
+    (:prefix-map ("C-c [" . "agenda-file")
+     "[" #'org-agenda-file-to-front
+     "]" #'org-remove-file))))
 
 (use-package! org-roam-bibtex
   :when (featurep! +roam-bibtex)
@@ -125,7 +134,7 @@ Creates new notes where none exist yet."
   ;; - org-ref-v2: Old Org-ref cite:links
   ;; - org-ref-v3: New Org-ref cite:&links
   ;; - org-cite  : Org-cite @elements
-  ;; (setq orb-roam-ref-format 'org-ref-v2)
+  (setq orb-roam-ref-format 'org-ref-v3)
   ;; https://github.com/org-roam/org-roam-bibtex/blob/master/doc/orb-manual.org
   ;; (setq orb-note-actions-interface 'hydra)
 
@@ -158,10 +167,9 @@ Creates new notes where none exist yet."
 
 (use-package! citeproc :defer t)
 ;; https://github.com/andras-simonyi/citeproc-org
+;; looks like i don't need this
 (use-package! citeproc-org
-  :defer t
-  :config
-  (citeproc-org-setup))
+  :commands (citeproc-org-setup))
 
 ;;; `org-cite'
 

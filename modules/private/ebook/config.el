@@ -71,7 +71,6 @@
 
 ;;; nov
 (use-package! nov
-  :defer t
   :mode ("\\.epub\\'" . nov-mode)
   :config
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))

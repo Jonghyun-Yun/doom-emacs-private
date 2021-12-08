@@ -1,34 +1,7 @@
 ;;; ../Dropbox/emacs/.doom.d/local/latex-plus.el -*- lexical-binding: t; -*-
 
-;;; skip ispelling
-(with-eval-after-load 'latex
-  (setq ispell-tex-skip-alists
-        (list
-         (append
-          (car ispell-tex-skip-alists)
-          '(;; First list is used raw.
-            ("[^\\]\\$" . "[^\\]\\$")
-            ("\\\\cite[a-z*]" ispell-tex-arg-end)
-            ("\\\\citealp" ispell-tex-arg-end)
-            ("\\\\cref" ispell-tex-arg-end)
-            ("\\\\bibliography" ispell-tex-arg-end)
-            ("\\\\RequirePackage" ispell-tex-arg-end)
-            ;; Second list has key placed inside \\begin{}.
-            ("align\\*?"	. "\\\\end[ \t\n]*{[ \t\n]*align\\*?[ \t\n]*}")
-            ))
-         (cadr ispell-tex-skip-alists)))
-
-
-  ;; define math environment for font-lock
-  (setq font-latex-math-environments
-        (quote
-         ("display" "displaymath" "equation" "eqnarray" "gather" "math" "multline"
-          "align" "alignat" "align*" "xalignat" "xxalignat" "flalign")))
-
-  (evil-set-initial-state 'TeX-output-mode 'emacs)
-  (evil-set-initial-state 'TeX-special-mode 'emacs)
-
-  )
+(evil-set-initial-state 'TeX-output-mode 'emacs)
+(evil-set-initial-state 'TeX-special-mode 'emacs)
 
 ;;; reftex
 ;; Make RefTeX faster
@@ -39,10 +12,7 @@
   ;; prompt for eq labeling
   ;; https://emacs.stackexchange.com/questions/40724/prompts-for-equation-label-information
   (setq reftex-insert-label-flags '("s" t))
-  )
-
-;; code can be found in evil-collection-reftex.el
-(after! reftex
+  ;; code can be found in evil-collection-reftex.el
   (setq reftex-citation-help
         " j / k      Go to next/previous entry (Cursor motion works as well).
  go / gO    Show citation / Show insertion point.
@@ -62,9 +32,7 @@
   :n "gr" (lambda nil "Press `?' during selection to find out
     about this key" (interactive) (throw (quote myexit) 114)) ;reftex binds keys in a very arcane way using the number asigned by describe-char, in this case the value of "g" is 114
   :n "gR" (lambda nil "Press `?' during selection to find out
-    about this key" (interactive) (throw (quote myexit) 103))
-  )
- )
+    about this key" (interactive) (throw (quote myexit) 103))))
 
 ;; ;; RefTeX bindings
 ;; (eval-after-load "reftex"
@@ -181,6 +149,27 @@
   :commands (latexdiff-vc latexdiff-vc-range latexdiff))
 
 (after! latex
+;;; skip ispelling
+  (setq ispell-tex-skip-alists
+        (list
+         (append
+          (car ispell-tex-skip-alists)
+          '(;; First list is used raw.
+            ("[^\\]\\$" . "[^\\]\\$")
+            ("\\\\cite[a-z*]" ispell-tex-arg-end)
+            ("\\\\citealp" ispell-tex-arg-end)
+            ("\\\\cref" ispell-tex-arg-end)
+            ("\\\\bibliography" ispell-tex-arg-end)
+            ("\\\\RequirePackage" ispell-tex-arg-end)
+            ;; Second list has key placed inside \\begin{}.
+            ("align\\*?"	. "\\\\end[ \t\n]*{[ \t\n]*align\\*?[ \t\n]*}")
+            ))
+         (cadr ispell-tex-skip-alists)))
+  ;; define math environment for font-lock
+  (setq font-latex-math-environments
+        (quote
+         ("display" "displaymath" "equation" "eqnarray" "gather" "math" "multline"
+          "align" "alignat" "align*" "xalignat" "xxalignat" "flalign")))
   ;;   (map!
   ;;    :map LaTeX-mode-map
   ;;    :ei [C-return] #'LaTeX-insert-item)

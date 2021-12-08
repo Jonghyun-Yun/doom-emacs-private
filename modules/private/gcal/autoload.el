@@ -23,7 +23,7 @@
 ;;   )
 ;; (defun sync-gcal-after-capture ()
 
-(defvar jyun/show-routines 1
+(defcustom jyun/show-routines t
   "An indictor of routines in calendar.")
 
 ;;;###autoload

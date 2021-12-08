@@ -65,10 +65,6 @@
  "C-c n g" #'org-roam-graph
  "C-c n i" #'org-roam-node-insert
  :leader "n r u" #'org-roam-ui-open
- ;; (:map org-mode-map
- ;;  :g
- ;;  ;; "C-c n I" #'org-roam-insert-immediate
- ;;  )
  )
 
 ;;;; org-roam-dailies
@@ -83,16 +79,6 @@
 ;;           "f" #'org-roam-dailies-find-next-note
 ;;           "n" #'org-roam-dailies-capture-today
 ;;           "v" #'org-roam-dailies-capture-date)))))
-
-;;; org-ref
-(map!
- (:after org-ref
-  :map org-mode-map
-  :g "C-c ]"       #'org-ref-insert-link
-  (:prefix-map ("C-c [" . "agenda-file")
-   "[" #'org-agenda-file-to-front
-   "]" #'org-remove-file))
- )
 
 ;;; evil
 (map!

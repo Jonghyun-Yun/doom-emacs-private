@@ -25,28 +25,28 @@
 ;;           (lambda ()
 ;;             (ess-toggle-underscore nil)))
 
-(with-eval-after-load 'ess
-  (setq ess-eval-visibly 'nowait
-        inferior-R-args "--no-restore-history --no-save "
-        ess-ask-for-ess-directory nil
-        ;; ess-style 'RStudio
-        ;; ess-tab-complete-in-script t
-        )
-  (setq ess-R-font-lock-keywords
-        '((ess-R-fl-keyword:keywords . t)
-          (ess-R-fl-keyword:constants . t)
-          (ess-R-fl-keyword:modifiers . t)
-          (ess-R-fl-keyword:fun-defs . t)
-          (ess-R-fl-keyword:assign-ops . t)
-          (ess-R-fl-keyword:%op% . t)
-          (ess-fl-keyword:fun-calls . t)
-          ;; (ess-fl-keyword:numbers . t)
-          ;; (ess-fl-keyword:operators . t)
-          ;; (ess-fl-keyword:delimiters . t)
-          ;; (ess-fl-keyword:= . t)
-          ;; (ess-R-fl-keyword:F&T . t)
-          ))
+(setq ess-eval-visibly 'nowait
+      inferior-R-args "--no-restore-history --no-save "
+      ess-ask-for-ess-directory nil
+      ;; ess-style 'RStudio
+      ;; ess-tab-complete-in-script t
+      )
+;; (setq ess-R-font-lock-keywords
+;;       '((ess-R-fl-keyword:keywords . t)
+;;         (ess-R-fl-keyword:constants . t)
+;;         (ess-R-fl-keyword:modifiers . t)
+;;         (ess-R-fl-keyword:fun-defs . t)
+;;         (ess-R-fl-keyword:assign-ops . t)
+;;         (ess-R-fl-keyword:%op% . t)
+;;         (ess-fl-keyword:fun-calls . t)
+;;         ;; (ess-fl-keyword:numbers . t)
+;;         ;; (ess-fl-keyword:operators . t)
+;;         ;; (ess-fl-keyword:delimiters . t)
+;;         ;; (ess-fl-keyword:= . t)
+;;         ;; (ess-R-fl-keyword:F&T . t)
+;;         ))
 
+(with-eval-after-load 'ess
 ;;; lintr
 ;; disable assignment fix (= to <-)
   ;; https://github.com/jimhester/lintr
@@ -64,17 +64,15 @@
   ;;   (define-key ess-r-mode-map ess-assign-key #'ess-insert-assign))
   ;; (add-hook 'inferior-ess-r-mode-hook
   ;;           #'(lambda () (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign)))
-
   )
 
 ;;; polymode
 ;; The following chunks are taken from https://github.com/vspinu/polymode
 
-(with-eval-after-load 'polymode
-  ;; no filetype tags
-  (setq polymode-exporter-output-file-format "%s"
-        polymode-weaver-output-file-format "%s")
-  )
+;; no filetype tags
+(setq polymode-exporter-output-file-format "%s"
+      polymode-weaver-output-file-format "%s")
+
 
 ;;;; MARKDOWN
 ;; (add-to-list 'auto-mode-alist '("\\.md" . poly-markdown-mode))

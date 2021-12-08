@@ -48,7 +48,6 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 
 ;;; speed reading
 (use-package! spray
-  :defer t
   :commands spray-mode
   :init
   (progn

@@ -90,14 +90,16 @@
   (load! "local/hydra-plus"))
 (load! "bindings")
 
-(load! "local/org-plus")
 ;; https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e
 ;; don't add all org-roam files to agenda
 ;; only those who with TODO keywords, schedule, or deadline
 ;; run before org-plus
 (after! org
+  (remove-hook 'org-load-hook #'+org-init-capture-defaults-h)
+  (add-to-list 'org-tags-exclude-from-inheritance "roadmap")
   (load! "local/agenda.el/agenda.el")
-  (add-to-list 'org-tags-exclude-from-inheritance "roadmap"))
+  )
+(load! "local/org-plus")
 
 ;; ;; (when (featurep! :ui ligatures +extra)
 ;; ;;   (load! "local/ligature"))
@@ -161,23 +163,21 @@
 ;; (remove-hook 'TeX-update-style-hook #'rainbow-delimiters-mode)
 
 (use-package! emacs-overleaf
-  :defer t
   :commands (jyun/setup-overleaf-pull jyun/setup-overleaf-push))
 
 ;;;; reftex
-(after! reftex
-  (setq reftex-ref-style-default-list '("Default"
-                                        "Cleveref"
-                                        "AMSmath"))
-  (setq reftex-typekey-to-format-alist '((" " . "~\\ref{%s}")
-                                         ("n" . "~\\ref{%s}")
-                                         ("f" . "~\\ref{%s}")
-                                         ("e" . "~\\eqref{%s}")
-                                         ("i" . "~\\ref{%s}")
-                                         ("s" . "~\\ref{%s}")
-                                         ("t" . "~\\ref{%s}")
-                                         ("l" . "~\\ref{%s}")
-                                         ("N" . "~\\ref{%s}"))))
+(setq reftex-ref-style-default-list '("Default"
+                                      "Cleveref"
+                                      "AMSmath"))
+(setq reftex-typekey-to-format-alist '((" " . "~\\ref{%s}")
+                                       ("n" . "~\\ref{%s}")
+                                       ("f" . "~\\ref{%s}")
+                                       ("e" . "~\\eqref{%s}")
+                                       ("i" . "~\\ref{%s}")
+                                       ("s" . "~\\ref{%s}")
+                                       ("t" . "~\\ref{%s}")
+                                       ("l" . "~\\ref{%s}")
+                                       ("N" . "~\\ref{%s}")))
 
 ;;;; cdlatex
 ;; (after! cdlatex
@@ -186,135 +186,130 @@
 ;;           )
 ;;         ))
 
-(after! cdlatex
-  (setq cdlatex-env-alist
-        '(("bmatrix" "\\begin{bmatrix}\n?\n\\end{bmatrix}" nil)
-          ("equation*" "\\begin{equation*}\n?\n\\end{equation*}" nil)
-          ("axiom" "\\begin{axiom}\n?\n\\end{axiom}\n" nil)
-          ("proof" "\\begin{proof}\n?\n\\end{proof}\n" nil)
-          ("remark" "\\begin{remark}\n?\n\\end{remark}\n" nil)
-          ("lemma" "\\begin{lemma}\n?\n\\end{lemma}\n" nil)
-          ("verbatim" "\\begin{verbatim}\n?\n\\end{verbatim}\n" nil)
-          ("theorem" "\\begin{theorem}\n?\n\\end{theorem}\n" nil)
-          ("corollary" "\\begin{corollary}\n?\n\\end{corollary}\n" nil)
-          ("exercise" "\\begin{exercise}\n?\n\\end{exercise}\n" nil)
-          ("definition" "\\begin{definition}\n?\n\\end{definition}\n" nil)
-          ("algorithmic" "\\begin{algorithmic}\n?\n\\end{algorithmic}\n" nil)
-          ))
-  (setq cdlatex-command-alist
-        '(("axm" "Insert axiom env"   "" cdlatex-environment ("axiom") t nil)
-          ("thm" "Insert theorem env" "" cdlatex-environment ("theorem") t nil)
-          ("des" "Insert description env" "" cdlatex-environment ("description") t nil)
-          ("lmm" "Insert lemma env" "" cdlatex-environment ("lemma") t nil)
-          ("vbt" "Insert verbatim env" "" cdlatex-environment ("verbatim") t nil)
-          ("alg" "Insert algorithmic env" "" cdlatex-environment ("algorithmic") t nil)
-          ("clr" "Insert corollary env" "" cdlatex-environment ("corollary") t nil)
-          ("def" "Insert definition env" "" cdlatex-environment ("definition") t nil)
-          ("exc" "Insert exercise env" "" cdlatex-environment ("exercise") t nil)
-          ("prf" "Insert proof env" "" cdlatex-environment ("proof") t nil)
-          ("rmk" "Insert remark env" "" cdlatex-environment ("remark") t nil)
-          )
-        )
-  (setq cdlatex-math-symbol-alist
-        '(
-          (?: ("\\cdots" "\\ldots"))
-          (?_    ("\\downarrow"  ""           "\\inf"))
-          (?2    ("^2"           "\\sqrt{?}"     ""     ))
-          (?3    ("^3"           "\\sqrt[3]{?}"  ""     ))
-          (?^    ("\\uparrow"    ""           "\\sup"))
-          ;;   (?k    ("\\kappa"      ""           "\\ker"))
-          ;;   (?m    ("\\mu"         ""           "\\lim"))
-          ;;   (?c    (""             "\\circ"     "\\cos"))
-          ;;   (?d    ("\\delta"      "\\partial"  "\\dim"))
-          ;;   (?D    ("\\Delta"      "\\nabla"    "\\deg"))
-          ;;   ;; no idea why \Phi isnt on 'F' in first place, \phi is on 'f'.
-          (?F    ("\\Phi"))
-          (?V    (""))
-          ;;   ;; now just convenience
-          ;;   (?.    ("\\cdot" "\\dots"))
-          ;;   (?:    ("\\vdots" "\\ddots"))
-          ;;   (?*    ("\\times" "\\star" "\\ast"))
-          )                             ;
-        cdlatex-math-modify-alist
-        '((?B    "\\mathbb"        nil          t    nil  nil)
-          (?a    "\\abs"           nil          t    nil  nil))))
+(setq cdlatex-env-alist
+      '(("bmatrix" "\\begin{bmatrix}\n?\n\\end{bmatrix}" nil)
+        ("equation*" "\\begin{equation*}\n?\n\\end{equation*}" nil)
+        ("axiom" "\\begin{axiom}\n?\n\\end{axiom}\n" nil)
+        ("proof" "\\begin{proof}\n?\n\\end{proof}\n" nil)
+        ("remark" "\\begin{remark}\n?\n\\end{remark}\n" nil)
+        ("lemma" "\\begin{lemma}\n?\n\\end{lemma}\n" nil)
+        ("verbatim" "\\begin{verbatim}\n?\n\\end{verbatim}\n" nil)
+        ("theorem" "\\begin{theorem}\n?\n\\end{theorem}\n" nil)
+        ("corollary" "\\begin{corollary}\n?\n\\end{corollary}\n" nil)
+        ("exercise" "\\begin{exercise}\n?\n\\end{exercise}\n" nil)
+        ("definition" "\\begin{definition}\n?\n\\end{definition}\n" nil)
+        ("algorithmic" "\\begin{algorithmic}\n?\n\\end{algorithmic}\n" nil))
+      cdlatex-command-alist
+      '(("axm" "Insert axiom env"   "" cdlatex-environment ("axiom") t nil)
+        ("thm" "Insert theorem env" "" cdlatex-environment ("theorem") t nil)
+        ("des" "Insert description env" "" cdlatex-environment ("description") t nil)
+        ("lmm" "Insert lemma env" "" cdlatex-environment ("lemma") t nil)
+        ("vbt" "Insert verbatim env" "" cdlatex-environment ("verbatim") t nil)
+        ("alg" "Insert algorithmic env" "" cdlatex-environment ("algorithmic") t nil)
+        ("clr" "Insert corollary env" "" cdlatex-environment ("corollary") t nil)
+        ("def" "Insert definition env" "" cdlatex-environment ("definition") t nil)
+        ("exc" "Insert exercise env" "" cdlatex-environment ("exercise") t nil)
+        ("prf" "Insert proof env" "" cdlatex-environment ("proof") t nil)
+        ("rmk" "Insert remark env" "" cdlatex-environment ("remark") t nil))
+      cdlatex-math-symbol-alist
+      '((?: ("\\cdots" "\\ldots"))
+        (?_    ("\\downarrow"  ""           "\\inf"))
+        (?2    ("^2"           "\\sqrt{?}"     ""     ))
+        (?3    ("^3"           "\\sqrt[3]{?}"  ""     ))
+        (?^    ("\\uparrow"    ""           "\\sup"))
+        ;;   (?k    ("\\kappa"      ""           "\\ker"))
+        ;;   (?m    ("\\mu"         ""           "\\lim"))
+        ;;   (?c    (""             "\\circ"     "\\cos"))
+        ;;   (?d    ("\\delta"      "\\partial"  "\\dim"))
+        ;;   (?D    ("\\Delta"      "\\nabla"    "\\deg"))
+        ;;   ;; no idea why \Phi isnt on 'F' in first place, \phi is on 'f'.
+        (?F    ("\\Phi"))
+        (?V    (""))
+        ;;   ;; now just convenience
+        ;;   (?.    ("\\cdot" "\\dots"))
+        ;;   (?:    ("\\vdots" "\\ddots"))
+        ;;   (?*    ("\\times" "\\star" "\\ast"))
+        )                             ;
+      cdlatex-math-modify-alist
+      '((?B    "\\mathbb"        nil          t    nil  nil)
+        (?a    "\\abs"           nil          t    nil  nil)))
 
 ;;; org-mode
-(after! org
-  (setq  ;; org-src-window-setup 'current-window
-        org-src-window-setup 'other-window
-        ;; org-return-follows-link t
-        org-image-actual-width 500
-        org-startup-with-inline-images t
-        org-use-speed-commands
-              ;; (lambda () (and (looking-at org-outline-regexp) (looking-back "^\\**")))
-              nil
-        org-log-into-drawer t)
-  ;; (org-speed-command-help)
-  (when (featurep! :lang org +pretty)
+(when (featurep! :lang org +pretty)
+  (after! org-superstar
     ;; (remove-hook 'org-mode-hook 'org-superstar-mode) ; manually turn it on!
     (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
           org-superstar-remove-leading-stars nil
-          ))
-  ;; (setq org-ellipsis
-  ;;       ;; " ▾ " ; FiraGo
-  ;;       ;; " ▼ " ; Alegreya Sans
-  ;;       ;; " ⬎ " ; IBM Plex Mono
-  ;;       ;; " ↩ " ; firacode
-  ;;       ;; " ⤶ " ; juliamono
-  ;;       ;; " ⤵ "
-  ;;       ;; "… "
-  ;;       ;; " ↴ "
-  ;;       " ⤷ "
-  ;;       org-cycle-separator-lines 2     ; -1 or 1 to use unicode org-ellipsis
-  ;;       )
-  (setq
-   ;; org-export-in-background t                  ; async export by default
-   org-fontify-quote-and-verse-blocks nil
-   org-fontify-whole-heading-line nil
-   ;; org-hide-leading-stars nil
-   org-startup-indented t
-   org-habit-show-habits-only-for-today t
-   org-journal-encrypt-journal t
-   org-indent-indentation-per-level 2
-   org-adapt-indentation t
-   ;; tag indent
-   ;; org-tags-column -77
-   org-log-done 'time
-   ;; don't ask to follow elisp link
-   org-confirm-elisp-link-function nil
-   ;; org export global setting
-   org-export-with-toc nil
-   org-export-with-tags nil)
+          )))
+(setq ;; org-src-window-setup 'current-window
+ org-src-window-setup 'other-window
+ ;; org-return-follows-link t
+ org-image-actual-width 500
+ org-startup-with-inline-images t
+ ;; org-use-speed-commands
+ ;; (lambda () (and (looking-at org-outline-regexp) (looking-back "^\\**")))
+ ;; nil
+ org-log-into-drawer t)
+;; (setq org-ellipsis
+;;       ;; " ▾ " ; FiraGo
+;;       ;; " ▼ " ; Alegreya Sans
+;;       ;; " ⬎ " ; IBM Plex Mono
+;;       ;; " ↩ " ; firacode
+;;       ;; " ⤶ " ; juliamono
+;;       ;; " ⤵ "
+;;       ;; "… "
+;;       ;; " ↴ "
+;;       " ⤷ "
+;;       org-cycle-separator-lines 2     ; -1 or 1 to use unicode org-ellipsis
+;;       )
+(setq
+ ;; org-export-in-background t                  ; async export by default
+ org-fontify-quote-and-verse-blocks nil
+ org-fontify-whole-heading-line nil
+ ;; org-hide-leading-stars nil
+ org-startup-indented t
+ org-habit-show-habits-only-for-today t
+ org-journal-encrypt-journal t
+ org-indent-indentation-per-level 2
+ org-adapt-indentation t
+ ;; tag indent
+ ;; org-tags-column -77
+ org-log-done 'time
+ ;; don't ask to follow elisp link
+ org-link-elisp-confirm-function nil
+ ;; org export global setting
+ org-export-with-toc nil
+ org-export-with-tags nil)
   ;; org-insert-heading-respect-content nil
   ;; default attach folder
   ;;    org-attach-id-dir "data/"
+
+;;;; org-latex + tab behavior
+(after! org
   ;; visual-mode tab binds back to org-cycle
   (remove-hook 'org-tab-first-hook #'+org-yas-expand-maybe-h)
   ;; insert-mode tab binds back to org-cycle
-  (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h))
+  (remove-hook 'org-tab-first-hook #'+org-indent-maybe-h)
+;; adjust background colors of org-latex fragments
+;; call it manually!
+;; (add-hook! 'org-mode-hook #'my/org-latex-set-directory-name-to-background)
+;; (add-hook! 'doom-load-theme-hook #'my/org-latex-set-directory-name-to-background)
 
-;;;; org-latex
-(after! org
-  ;; adjust background colors of org-latex fragments
-  ;; call it manually!
-  ;; (add-hook! 'org-mode-hook #'my/org-latex-set-directory-name-to-background)
-  ;; (add-hook! 'doom-load-theme-hook #'my/org-latex-set-directory-name-to-background)
+(setq org-highlight-latex-and-related '(native script entities))
+(setq org-format-latex-options
+      (plist-put org-format-latex-options :background
+                 ;; "Transparent"
+                 'default             ; work better with dvipng
+                 ))
+(add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
+;; (setq org-src-block-faces '("latex" (:inherit default :extend t)))
 
-  (setq org-highlight-latex-and-related '(native script entities))
-  (setq org-format-latex-options
-        (plist-put org-format-latex-options :background
-                   ;; "Transparent"
-                   'default             ; work better with dvipng
-                   ))
-  (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
+;; cdlatex will ignore inline math $...$
+;; (plist-put org-format-latex-options :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")) ;; drop "$"
 
-  ;; cdlatex will ignore inline math $...$
-  ;; (plist-put org-format-latex-options :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")) ;; drop "$"
-
-  (setq org-preview-latex-image-directory "ltximg/"
-        ;; org-archive-location ".archive/%s::"
-        )
+(setq org-preview-latex-image-directory "ltximg/"
+      ;; org-archive-location ".archive/%s::"
+      )
 
   (defvar jyun/org-latex-preview-scale 1.5
     "A scaling factor for the size of images created from LaTeX fragments.")
@@ -346,13 +341,11 @@
 ;; (evil-set-initial-state 'org-agenda-mode 'emacs)
 
 ;;;; ox
-(after! ox
-  (setq
-   org-beamer-theme "[progressbar=foot]metropolis"
-   ;; org-beamer-theme "default"
-   org-beamer-frame-level 4
-   org-latex-tables-booktabs nil
-   ))
+(setq org-latex-tables-booktabs nil
+      org-beamer-theme "[progressbar=foot]metropolis"
+      ;; org-beamer-theme "default"
+      org-beamer-frame-level 4
+      org-latex-tables-booktabs nil)
 ;; ;; Github flavored markdown exporter
 (use-package ox-gfm :after ox)
 
@@ -415,10 +408,8 @@
 
 (setq pdf-misc-print-program "lpr"
       pdf-misc-print-program-args nil)
-
 (setq search-highlight t
       search-whitespace-regexp ".*?")
-
 (setq omnisharp-server-executable-path "/usr/local/bin/omnisharp"
       ;; doom-scratch-intial-major-mode 'lisp-interaction-mode
       )
@@ -446,7 +437,6 @@
 
 ;;;; Hangout
 (use-package! jabber
-  :defer t
   :commands (jabber-connect-all
              jabber-connect)
   :init
@@ -557,18 +547,17 @@
 ;; disable recentf-cleanup on Emacs start, because it can cause problems with remote files
 ;; (setq recentf-auto-cleanup 'never)
 ;; (setq recentf-auto-cleanup 300)         ;; long recentf slow down emacs
-(after! recentf
-  (setq recentf-auto-cleanup 600)
-  (setq recentf-exclude '("recentf_.*$"
-                          ;; ".*/elpa/.*"
-                          ".*\\.maildir.*"
-                          "/var/folders/.*"
-                          ".*company-statistics.*"
-                          ".*Cellar.*"
-                          ".*\\.orhc-bibtex-cache"))
+;; (after! recentf
+  ;; (setq recentf-auto-cleanup 600)
   ;; (add-to-list 'recentf-exclude 'file-remote-p)
-  )
-
+  ;; )
+(setq recentf-exclude '("recentf_.*$"
+                        ;; ".*/elpa/.*"
+                        ".*\\.maildir.*"
+                        "/var/folders/.*"
+                        ".*company-statistics.*"
+                        ".*Cellar.*"
+                        ".*\\.orhc-bibtex-cache"))
 
 ;;; reference
 ;;;; biblio
@@ -581,10 +570,10 @@
        org-cite-csl-styles-dir "~/Zotero/styles/"
        org-cite-csl-locales-dir "~/Zotero/locales/"
        )
-(after! citar
-  (setq! citar-bibliography +biblio-default-bibliography-files
-         citar-library-paths +biblio-pdf-library-dir
-         citar-notes-paths "~/org/roam/"))
+
+(setq! citar-bibliography +biblio-default-bibliography-files
+       citar-library-paths +biblio-pdf-library-dir
+       citar-notes-paths "~/org/roam/")
 
 ;; (setq bibtex-completion-pdf-open-function 'org-open-file)
 
@@ -592,8 +581,6 @@
 (after! org-roam
   (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
         +org-roam-open-buffer-on-find-file nil)
-  ;; (setq org-roam-graph-executable "neato")
-  ;; (setq org-roam-graph-extra-config '(("overlap" . "false")))
   ;; (setq org-roam-dailies-capture-templates
   ;;       '(("d" "default" entry
   ;;          #'org-roam-capture--get-point
@@ -611,17 +598,6 @@
         ;; "patchwork"
         ;; "osage"
         )
-
-  ;; no numbers in org-roam buffers
-  (defadvice! doom-modeline--buffer-file-name-roam-aware-a (orig-fun)
-    :around #'doom-modeline-buffer-file-name ; takes no args
-    (if (s-contains-p org-roam-directory (or buffer-file-name ""))
-        (replace-regexp-in-string
-         "\\(?:^\\|.*/\\)\\([0-9]\\{4\\}\\)\\([0-9]\\{2\\}\\)\\([0-9]\\{2\\}\\)[0-9]*-"
-         "🢔(\\1-\\2-\\3) "
-         (subst-char-in-string ? ?  buffer-file-name)
-         )
-      (funcall orig-fun)))
   )
 
 ;;;; org-roam-ui
@@ -656,8 +632,7 @@
    elfeed-search-print-entry-function 'jyun/score-entry-line-draw
    ;; shr-max-image-proportion 0.6
    elfeed-search-date-format '("%m/%d/%y" 10 :left)
-   )
-  )
+   ))
 
 ;;;; elfeed org-capture
 (after! (org-capture elfeed)
@@ -710,16 +685,14 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 
 
 ;;;; deft
-(with-eval-after-load 'deft
-  (setq deft-extensions '("org" "md" "txt")
-        deft-directory org-directory
+(setq ;; deft-extensions '("org" "md" "txt")
+      deft-directory "~/org"
         ;; include subdirectories
-        deft-recursive t))
+      deft-recursive t)
 
 ;;;; ffip
 ;; for doom-modeline
 (use-package! find-file-in-project
-  :defer t
   :commands
   (find-file-in-project
    find-file-in-current-directory-by-selected)
@@ -738,8 +711,8 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   :commands (vr/replace vr/query-replace)
   :init
   ;; (define-key global-map (kbd "C-c r") 'vr/replace)
-  (define-key global-map (kbd "C-c %") 'vr/query-replace)
-  :bind*
+  (define-key global-map (kbd "C-c r") 'vr/query-replace)
+  ;; :bind*
   ;; (([remap query-replace-regexp] . vr/query-replace))
   ;; if you use multiple-cursors, this is for you:
   ;; (define-key global-map (kbd "C-c m") 'vr/mc-mark)
@@ -890,18 +863,16 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 
 ;;; writing
 (use-package! lorem-ipsum
-  :defer t
   :commands (lorem-ipsum-insert-paragraphs
              lorem-ipsum-insert-sentences
              lorem-ipsum-insert-list
              ))
 
 ;;; evil
-(after! evil
-  (setq ;; evil-ex-substitute-global t     ; I like my s/../.. to by global by default
-        evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
-        ;; evil-kill-on-visual-paste nil
-        )) ; Don't put overwritten text in the kill ring
+(setq ;; evil-ex-substitute-global t     ; I like my s/../.. to by global by default
+ evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
+ ;; evil-kill-on-visual-paste nil
+ ) ; Don't put overwritten text in the kill ring
 
 ;; no key stroke for exiting INSERT mode: doom default jk
 (setq evil-escape-key-sequence (kbd "jk")
@@ -985,19 +956,15 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;; C-SPC: turn selection into an active region
 
 ;;;;  avy
-(after! avy
-  ;; (setq avy-keys '(?a ?s ?d ?f ?j ?k ?l ?\;))
-  ;; home row priorities: 8 6 4 5 - - 1 2 3 7
-  (setq avy-keys '(?n ?e ?j ?s ?t ?r ?l ?a))
-  (setq lispy-avy-keys avy-keys)
-  )
+;; (setq avy-keys '(?a ?s ?d ?f ?j ?k ?l ?\;))
+;; home row priorities: 8 6 4 5 - - 1 2 3 7
+(setq avy-keys '(?n ?e ?j ?s ?t ?r ?l ?a)
+      lispy-avy-keys avy-keys)
 
 ;;;;  ace-window
-(after! ace-window
-  (setq aw-scope 'global
-        aw-dispatch-always t
-        aw-keys avy-keys
-        ))
+(setq aw-scope 'global
+      aw-dispatch-always t
+      aw-keys avy-keys)
 ;; C-w C-w ? to aw-show-dispath-help
 ;; (defvar aw-dispatch-alist
 ;;   '((?x aw-delete-window "Delete Window")
@@ -1051,16 +1018,15 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
     ))
 
 ;;;; company
-(after! company
-  (setq company-idle-delay 3.0
-        company-minimum-prefix-length 2
-        company-box-enable-icon nil     ; disable all-the-icons
-        company-tooltip-limit 10
-        company-selection-wrap-around t
-        ))
+(setq company-idle-delay 3.0
+      company-minimum-prefix-length 2
+      company-box-enable-icon nil     ; disable all-the-icons
+      company-tooltip-limit 10
+      company-selection-wrap-around t
+      )
 ;; company memory
 (setq-default history-length 500)
-(setq-default prescient-history-length 500)
+;; (setq-default prescient-history-length 500)
 
 ;;; posframe
 ;; (use-package! transient-posframe
@@ -1226,13 +1192,12 @@ of the buffer text to be displayed in the popup"
 (after! org-eldoc
   (puthash "R" #'ignore org-eldoc-local-functions-cache))
 
-(after! org
-  ;; https://github.com/hlissner/doom-emacs/issues/3185
-  (defadvice! no-errors/+org-inline-image-data-fn (_protocol link _description)
-    :override #'+org-inline-image-data-fn
-    "Interpret LINK as base64-encoded image data. Ignore all errors."
-    (ignore-errors
-      (base64-decode-string link))))
+;; https://github.com/hlissner/doom-emacs/issues/3185
+(defadvice! no-errors/+org-inline-image-data-fn (_protocol link _description)
+  :override #'+org-inline-image-data-fn
+  "Interpret LINK as base64-encoded image data. Ignore all errors."
+  (ignore-errors
+    (base64-decode-string link)))
 
 ;; https://github.com/hlissner/doom-emacs/issues/4832
 (advice-add #'org-capture :around
@@ -1263,7 +1228,7 @@ of the buffer text to be displayed in the popup"
 ;;;; org hangs on save, ox-hugo export, etc...
 ;;     https://lists.gnu.org/r/emacs-orgmode/2021-11/msg00638.html
 ;;     This has been fixed in faf8ce7de ??
-(after! org
+(eval-after-load "org-element"
   (setq org-element-use-cache nil))
 ;; (add-hook 'after-init-hook  (lambda () (setq! gcmh-high-cons-threshold (* 64 1024 1024))))
 ;; (setq! gcmh-high-cons-threshold (* 64 1024 1024))
@@ -1314,60 +1279,11 @@ of the buffer text to be displayed in the popup"
 ;;
 
 ;;; testing
-;;;; org-ref v2 to v3
-(defun org-ref-convert-cite-v2-to-v3 ()
-  "Convert all cite: to cite:&."
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (let ((count 0)
-          (case-fold-search nil))
-      (while (re-search-forward "cite:\\(\\w+\\)" nil t)
-        (replace-match "cite:\&\\1" t)
-        (setq count (1+ count)))
-      (message "Replaced %d occurances" count))))
-
 ;;;; explain pause
-(use-package explain-pause-mode
-  :config
-  (explain-pause-mode)
-  )
-
-;;;; overleaf
-(define-minor-mode emacs-overleaf-mode
-  "Toggle projectr-local `emacs-overleaf-mode' with additional parameters."
-  :init-value nil
-  :global nil
-  (if emacs-overleaf-mode
-      (progn
-        (jyun/setup-overleaf-pull)
-        ;; (unless (derived-mode-p 'prog-mode))
-        (when (eq major-mode 'latex-mode)
-          (jyun/setup-overleaf-push)))
-    (progn
-      (setq-local overleaf-directory (file-truename (projectile-project-name)))
-      (setq-local overleaf-auto-sync nil)
-      (remove-hook 'projectile-after-switch-project-hook (lambda () (jyun/magit-pull-overleaf overleaf-directory))))
-    (when (eq major-mode "org-mode")
-      (remove-hook 'after-save-hook (lambda () (jyun/magit-push-overleaf overleaf-directory overleaf-auto-sync)))
-      )))
-
-;;; tab bar
-(setq! centaur-tabs-height 10
-       ;; centaur-tabs-bar-height 20 ; (+ 8 centaur-tabs-height)
-       centaur-tabs-set-icons nil
-       centaur-tabs-icon-scale-factor 0.65
-       centaur-tabs-label-fixed-length 0
-       centaur-tabs-icon-v-adjust -0.075
-       centaur-tabs-adjust-buffer-order t)
-;; Move the currently selected tab to the left of the the last visited tab.
-;; (setq! centaur-tabs-adjust-buffer-order 'left)
-;; (add-hook! '() #'+tabs-disable-centaur-tabs-mode-maybe-h)
-(after! centaur-tabs
-  (centaur-tabs-enable-buffer-reordering)
-  (centaur-tabs-change-fonts "Overpass" (* 10 centaur-tabs-bar-height))
-  (centaur-tabs-headline-match))
-;; edit defun centaur-tabs-hide-tab
+;; (use-package explain-pause-mode
+;;   :config
+;;   (explain-pause-mode)
+;;   )
 
 ;;; eshell
 ;; aliases: see `+eshell-aliases'
