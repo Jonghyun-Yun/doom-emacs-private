@@ -168,3 +168,15 @@ Return nil otherwise."
 	       (t "")))))))
   (insert (concat "<<" name ">>\n"))
   )
+
+;;;###autoload
+(defadvice! jyun/org-capture-central-project-todo-file ()
+  :override #'+org-capture-central-project-todo-file
+  "Stop `org-capture' if not in project dir."
+  (let ((pname (projectile-project-name)))
+    (catch 'out-proj
+      (when (string= pname "-")
+        (throw 'out-proj
+               (message "Not in a project directory.")))
+    (+org--capture-central-file
+     +org-capture-projects-file pname))))
