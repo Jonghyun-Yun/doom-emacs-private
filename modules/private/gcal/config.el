@@ -5,6 +5,13 @@
 (setq org-gcal-file-alist '(("jonghyun.yun@gmail.com" . "~/org/gcal.org") ;; google calendar
                             ))
 
+;;;###autoload
+(defun jyun/get-org-gcal-credential ()
+  "Get google calendar credientials."
+  (interactive)
+  (setq! org-gcal-client-id (funcall #'password-store-get "org-gcal/client-id")
+         org-gcal-client-secret (funcall #'password-store-get "org-gcal/client-secret")))
+
 ;; (setq org-gcal-down-days 365)   ;; Set org-gcal to download events a year in advance
 ;; (add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) ))
 ;;
@@ -20,7 +27,9 @@
 
 (defcustom org-gcal-capture-templates
   '("s" "Scedule an event" entry
-    (file "gcal.org")
+    (file+function "gcal.org" (lambda () (progn (require 'org-gcal)
+                                           ;; (jyun/get-org-gcal-credential)
+                                           )))
     "* %^{Scheduling...} \n:PROPERTIES: \n:calendar-id: jonghyun.yun@gmail.com \n:LOCATION: %^{Location} \n:END: \n:org-gcal: \n%^T \n%i \n%? \n:END:\n\n"
     :prepend t)
   "Templates for the creation of new google calendar entries."
