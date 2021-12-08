@@ -104,7 +104,25 @@
     ))
 
 ;;;###autoload
+(defun jyun/elfeed-org-capture-entry ()
+  "Capture Elfeed entry to `inbox.org'."
+  (interactive)
+  (when elfeed-show-entry
+    (setq jyun/target-elfeed-entry elfeed-show-entry
+          jyun/target-elfeed-entry-title (elfeed-entry-title jyun/target-elfeed-entry)
+          jyun/target-elfeed-entry-url (elfeed-entry-link jyun/target-elfeed-entry)
+          jyun/target-elfeed-title-link
+          (concat "Read - [[" (plist-get org-store-link-plist :link)
+                  "]["
+                  (truncate-string-to-width jyun/target-elfeed-entry-title
+                                            70 nil nil t)
+                  "]] "))
+    (org-capture nil "EFE")
+    ;; (org-update-parent-todo-statistics)
+    )
+  )
 
+;;;###autoload
 (defadvice! +rss-elfeed-wrap-h-nicer ()
   "Enhances an elfeed entry's readability by wrapping it to a width of
 `fill-column' and centering it with `visual-fill-column-mode'."
@@ -119,3 +137,47 @@
     ;; (visual-fill-column-mode)
     (setq-local shr-current-font elfeed-entry-font)
     (set-buffer-modified-p nil)))
+
+;;;; get pdf from elfeed entry
+;; https://tecosaur.github.io/emacs-config/config.html
+(defvar elfeed-pdf-dir
+  (expand-file-name "pdfs/"
+                    (file-name-directory (directory-file-name elfeed-enclosure-default-dir))))
+
+(defvar elfeed-link-pdfs
+  '(("https://www.jstatsoft.org/index.php/jss/article/view/v0\\([^/]+\\)" . "https://www.jstatsoft.org/index.php/jss/article/view/v0\\1/v\\1.pdf")
+    ("http://arxiv.org/abs/\\([^/]+\\)" . "https://arxiv.org/pdf/\\1.pdf"))
+  "List of alists of the form (REGEX-FOR-LINK . FORM-FOR-PDF)")
+
+;;;###autoload
+(defun elfeed-show-pdf (entry)
+  (interactive
+   (list (or elfeed-show-entry (elfeed-search-selected :ignore-region))))
+  (require 'url)
+  (let ((link (elfeed-entry-link entry))
+        (feed-name (plist-get (elfeed-feed-meta (elfeed-entry-feed entry)) :title))
+        (title (elfeed-entry-title entry))
+        (file-view-function
+         (lambda (f)
+           (when elfeed-show-entry
+             (elfeed-kill-buffer))
+           (pop-to-buffer (find-file-noselect f))))
+        pdf)
+
+    (let ((file (expand-file-name
+                 (concat (subst-char-in-string ?/ ?, title) ".pdf")
+                 (expand-file-name (subst-char-in-string ?/ ?, feed-name)
+                                   elfeed-pdf-dir))))
+      (if (file-exists-p file)
+          (funcall file-view-function file)
+        (dolist (link-pdf elfeed-link-pdfs)
+          (when (and (string-match-p (car link-pdf) link)
+                     (not pdf))
+            (setq pdf (replace-regexp-in-string (car link-pdf) (cdr link-pdf) link))))
+        (if (not pdf)
+            (message "No associated PDF for entry")
+          (message "Fetching %s" pdf)
+          (unless (file-exists-p (file-name-directory file))
+            (make-directory (file-name-directory file) t))
+          (url-copy-file pdf file)
+          (funcall file-view-function file))))))
