@@ -1260,6 +1260,15 @@ of the buffer text to be displayed in the popup"
   :around #'org-superstar-mode
   (ignore-errors (apply orig-fn args)))
 
+;;;; org hangs on save, ox-hugo export, etc...
+;;     https://lists.gnu.org/r/emacs-orgmode/2021-11/msg00638.html
+;;     This has been fixed in faf8ce7de ??
+(after! org
+  (setq org-element-use-cache nil))
+;; (add-hook 'after-init-hook  (lambda () (setq! gcmh-high-cons-threshold (* 64 1024 1024))))
+;; (setq! gcmh-high-cons-threshold (* 64 1024 1024))
+                                        ; xx mb
+
 ;;; tree-sitter
 (use-package! tree-sitter
   :hook
