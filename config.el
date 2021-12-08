@@ -570,6 +570,9 @@
        ;; a single file for one long note / directory for many note files
        +biblio-notes-path "~/org/refnotes.org"
        ;; +biblio-notes-path "~/org/roam/"
+       org-ref-csl-default-style "chicago-author-date.csl"
+       org-cite-csl-styles-dir "~/Zotero/styles/"
+       org-cite-csl-locales-dir "~/Zotero/locales/"
        )
 (after! citar
   (setq! citar-bibliography +biblio-default-bibliography-files
