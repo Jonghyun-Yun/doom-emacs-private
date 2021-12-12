@@ -5,4 +5,4 @@
 # contributor : Rick Moynihan <rick@sourcesmouth.co.uk>
 # contributor: Rafael Villarroel (rvf0068@gmail.com)
 # --
-#+AUTHOR: ${1:`user-full-name`}
+#+author: ${1:`user-full-name`}

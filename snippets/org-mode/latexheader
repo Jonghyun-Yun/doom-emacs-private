@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: LaTeX_HEADER: \usepackage{}
-# key: lhe
-# condition: (= (current-column) 3)
-# contributor: Rafael Villarroel (rvf0068@gmail.com)
-# --
-#+LaTeX_HEADER: ${1:\usepackage{$2}}$0

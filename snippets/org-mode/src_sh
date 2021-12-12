@@ -5,7 +5,6 @@
 # condition: t
 # # expand-env: ((yas-after-exit-snippet-hook #'org-edit-src-code))
 # expand-env: ((yas-after-exit-snippet-hook (lambda () (progn (org-edit-src-code) (evil-insert-state)))))
-
 # --
 #+begin_src sh
 `%`$0

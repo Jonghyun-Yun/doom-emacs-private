@@ -5,15 +5,15 @@
 # contributor: Rafael Villarroel <rvf0068@gmail.com>
 # key: tkz
 # --
-#+CAPTION: $1
-#+LABEL: ${2:"waiting"$(unless yas-modified-p (reftex-label "figure" 'dont-insert))}
-#+ATTR_HTML: alt="$1" width="$3%"
-#+ATTR_LATEX: width=0.$3\textwidth
-#+ATTR_ODT: (:scale 0.$3)
-#+HEADERS: :imagemagick yes :iminoptions -density 300 -resize 400
-#+HEADERS: :packages '(("" "tikz") ("" "tkz-berge")) :border 1pt
-#+BEGIN_SRC latex :file ${2:$(substring yas-text 4)}.png
+#+caption: $1
+#+label: ${2:"waiting"$(unless yas-modified-p (reftex-label "figure" 'dont-insert))}
+#+attr_html: alt="$1" width="$3%"
+#+attr_latex: width=0.$3\textwidth
+#+attr_odt: (:scale 0.$3)
+#+headers: :imagemagick yes :iminoptions -density 300 -resize 400
+#+headers: :packages '(("" "tikz") ("" "tkz-berge")) :border 1pt
+#+begin_src latex :file ${2:$(substring yas-text 4)}.png
   \begin{tikzpicture}
     ${0}
   \end{tikzpicture}
-#+END_SRC
+#+end_src

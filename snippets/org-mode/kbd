@@ -4,4 +4,4 @@
 # condition: (or (= (current-column) 3) (= (current-column) 0))
 # key: kbd
 # --
-@@html:<kbd>@@${0:key}@@html:</kbd>@@
+@@html:<kbd>@@${0:key}@@html:</kbd>@@

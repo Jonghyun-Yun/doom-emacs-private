@@ -2,8 +2,8 @@
 # name: tangle using cat
 # key: tuc              
 # --
-#+BEGIN_SRC sh
+#+begin_src sh
 cat > ${1:./filename} <<"END"
 $0
 END
-#+END_SRC
+#+end_src

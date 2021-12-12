@@ -2,8 +2,8 @@
 # name: org-rmd-globaloption
 # key: org-rmd-globaloption
 # --
-#+NAME: global_option,include=F
-#+BEGIN_SRC R
+#+name: global_option,include=F
+#+begin_src R
   ## Need the knitr package to set chunk options
   library(knitr)
 
@@ -19,6 +19,6 @@
                  cache=FALSE, autodep=TRUE, cache.comments=FALSE,
                  fig.align="center",
                  message=FALSE, warning=FALSE)
-#+END_SRC
+#+end_src
 
 $0

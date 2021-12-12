@@ -3,21 +3,21 @@
 # binding:
 # key: rtot
 # --
-#+TITLE: ${1:Title}
+#+title: ${1:Title}
 #+subtitle: ${2:Subtitle}
-#+AUTHOR: Jonghyun Yun
-#+EMAIL: "jonghyun" dot "yun" at-sign "uta" dot "edu"
-#+DATE: 
-#+DESCRIPTION:
-#+KEYWORDS:
-#+LANGUAGE: en
+#+author: Jonghyun Yun
+#+email: "jonghyun" dot "yun" at-sign "uta" dot "edu"
+#+date: 
+#+description:
+#+keywords:
+#+language: en
 
-#+OPTIONS: toc:4 num:nil H:4 ^:nil pri:t
-#+OPTIONS: html-link-use-abs-url:nil html-postamble:nil html-preamble:t
-#+OPTIONS: html-scripts:t html-style:t html5-fancy:t
+#+options: toc:4 num:nil H:4 ^:nil pri:t
+#+options: html-link-use-abs-url:nil html-postamble:nil html-preamble:t
+#+options: html-scripts:t html-style:t html5-fancy:t
 
-#+HTML_MATHJAX: align: left tagside: right
-#+HTML_MATHJAX: indent: 5em scale: 85
+#+html_mathjax: align: left tagside: right
+#+html_mathjax: indent: 5em scale: 85
 # MATHJAX font: MathJax TeX (default) Asana-Math Neo-Euler Latin-Modern Gyre-Pagella Gyre-Termes
 # #+OPTIONS: tex:dvipng # use LaTeX to generate images for equations
 
@@ -29,17 +29,17 @@
 # #+HTML: <script>$( "#text-table-of-contents ul:first" ).append( '<li><a href = "https://google.com">Google</a><li>' )</script>
 # #+HTML: <script>$( "#text-table-of-contents ul:first" ).prepend( '<li><a href = "http://bing.com">Bing</a><li>' )</script>
 
-#+LATEX_CLASS: article
-#+LaTeX_CLASS_OPTIONS: [9pt]
-#+LATEX_CMD: pdflatex
-#+LATEX_HEADER: \usepackage{geometry}\geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1.2in,rmargin=1.2in}
-#+LATEX_HEADER: \usepackage[stretch=10,babel=true]{microtype}\usepackage{lmodern}
-#+LATEX_HEADER: \setlength\parindent{0pt}\linespread{0.95}
+#+latex_class: article
+#+laTeX_CLASS_OPTIONS: [9pt]
+#+latex_cmd: pdflatex
+#+latex_header: \usepackage{geometry}\geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1.2in,rmargin=1.2in}
+#+latex_header: \usepackage[stretch=10,babel=true]{microtype}\usepackage{lmodern}
+#+latex_header: \setlength\parindent{0pt}\linespread{0.95}
 
 # #+MACRO: longtext this is a very very long text to include
 
-#+SETUPFILE: ../setup/theme-readtheorg-local-base-up.setup
-#+PROPERTY: header-args :eval yes :exports both :results replace
+#+setupfile: ../setup/theme-readtheorg-local-base-up.setup
+#+property: header-args :eval yes :exports both :results replace
 
 # #+HTML: <p></p><br><p></p>
 $0

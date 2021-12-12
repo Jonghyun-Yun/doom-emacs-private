@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: inline math
 # key: m
-# condition: (and (and (not (texmathp)) (quote auto)) (or (looking-back " m" 2) (looking-back "^m" 2)))
+# condition: (and (not (texmathp)) 'auto (looking-back "\s*m" 2))
 # expand-env: ((yas-after-exit-snippet-hook (lambda () (org-edit-latex-fragment) (evil-insert-state) (goto-char 3))))
 # --
 `(if (eq major-mode 'org-mode) "\\(" "$")%`$0`(if (eq major-mode 'org-mode) "\\)" "$")`

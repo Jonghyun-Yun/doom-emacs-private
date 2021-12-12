@@ -6,4 +6,5 @@
 #+attr_latex: ${1::placement [H]} :center t
 #+label: tab:${2:label}
 #+caption: ${3:caption}
+
 $0

@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name: R_src
-# uuid: R_src
+# name: src_R
+# uuid: src_R
 # key: <sr
 # condition: t
 # expand-env: ((yas-after-exit-snippet-hook (lambda () (progn (org-edit-src-code) (evil-insert-state)))))

@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: TODO item
-# key: todo
-# uuid: todo
-# --
-TODO ${1:task description}

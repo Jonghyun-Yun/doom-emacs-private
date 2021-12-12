@@ -6,7 +6,7 @@
 # contributor: Rafael Villarroel (rvf0068@gmail.com)
 # --
 # <<$1>>
-#+BEGIN_THEOREM
+#+begin_theorem
 #+latex: \label{${1:"waiting"$(unless yas-modified-p (reftex-label "theorem" 'dont-insert))}}%
 $0
-#+END_THEOREM
+#+end_theorem

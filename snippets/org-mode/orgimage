@@ -7,4 +7,5 @@
 #+label: fig:${2:label}
 #+caption: ${3:caption}
 [[${3:`(read-file-name "File: ")`}]]
+
 $0

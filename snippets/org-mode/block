@@ -4,6 +4,6 @@
 # key: block
 # binding: C-c y b
 # --
-#+BEGIN_$1 $2
+#+begin_$1 $2
   $0
-#+END_$1
+#+end_$1
