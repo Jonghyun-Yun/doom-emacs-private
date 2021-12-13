@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: rapply
+# key: rapply
+# uuid: rapply
+# --
+rapply(${1:list}, ${2:function})

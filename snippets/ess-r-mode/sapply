@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: sapply
+# uuid: sapply
+# key: sapply
+# condition: t
+# --
+sapply(${1:list}, ${2:function})

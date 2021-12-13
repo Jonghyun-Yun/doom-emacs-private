@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: else
+# key: el
+# --
+else {
+`yas-selected-text`$0
+}

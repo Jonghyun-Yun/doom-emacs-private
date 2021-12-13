@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: vapply
+# key: vapply
+# uuid: vapply
+# --
+vapply(${1:list}, ${2:function}, FUN.VALUE = ${3:type}, ${4:...})

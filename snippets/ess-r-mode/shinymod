@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: shinymod
+# uuid: shinymod
+# key: shinymod
+# condition: t
+# --
+${1:name}_UI <- function(id) {
+  ns <- NS(id)
+  tagList(
+    ${0:`%`}
+  )
+}
+
+$1 <- function(input, output, session) {
+
+}

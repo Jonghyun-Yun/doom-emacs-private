@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: setClass
+# uuid: setClass
+# key: sc
+# condition: t
+# --
+setClass("${1:Class}", slots = c(${2:name = "type"}))
