@@ -1,5 +1,6 @@
 # -*- mode: snippet -*-
 # name: apply_snippets
+# group: apply
 # key: ?a
 # --
 `(ido-completing-read "apply: " jyun/apply-commands)`$0

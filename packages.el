@@ -77,7 +77,7 @@
 
 
 ;;; search
-(package! find-file-in-project :pin "cb5f3d1b697ef8212cc276c7486cbce2bf6c2a02")
+(package! find-file-in-project :pin "1d2f0b374460be798ba5c4854d3660e9b4d6d6f7")
 
 ;;; org
 (package! org-fancy-priorities :disable t) ; slowdown emacs
@@ -153,7 +153,7 @@
 
 ;;; convenience
 (package! ctrlf)
-(package! deadgrep :disable t)
+(package! deadgrep)
 (package! easy-kill)
 ;; (package! git-link :pin "2b510cf3f28bed842853294fc4ee23c7f8b6435a") ; use browse-at-remote SPC g y/Y
 (package! visual-regexp :pin "48457d42a5e0fe10fa3a9c15854f1f127ade09b5")
@@ -165,7 +165,7 @@
 ;;; org-roam
 ;; (package! org-roam
   ;; :pin "d93423d4e11da95bcf177b2bc3c74cb1d1acf807")
-(package! org-roam-ui :pin "9fcc9a8d716254565d06082bc6e861b259c132fd")
+(package! org-roam-ui :pin "9ed0c5705a302a91fab2b8bcc777a12dcf9b3682")
 ;; (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "c745d07018a46b1a20b9f571d999ecf7a092c2e1")
 ;; (package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
 (package! websocket) ; dependency of `org-roam-ui'
@@ -208,10 +208,6 @@
   :pin "e14dfea59491f889f35868813122c5b8c0b4b3db"
   )
 
-;; (package! org-gcal :pin "8b6df4b727339e3933c68045e104b6b1d99816f7")
-;; (package! org-gcal :pin "52b7f8f7654e391f51e8d6d40506c8c170a5be20")
-;; (package! org-gcal :pin "133cca813abd2823a6e2a9ada295b7b8b115be4f")
-
 ;;; posframe
 (package! company-posframe :disable t)
 (package! which-key-posframe)
@@ -229,11 +225,18 @@
 
 ;;; testing new packages
 (package! org-clock-convenience :disable t)
-(package! highlight-parentheses :disable t)
-(package! olivetti :disable t)
 (package! explain-pause-mode :recipe (:host github :repo "lastquestion/explain-pause-mode"))
+(package! corfu :disable t)
+(package! cape :disable t)
+(package! lsp-ltex :disable t)
 
 ;;; disabled doom packages
 ;; (package! github-review :disable t)
 ;; (package! magit-flow :disable t)        ; have no gitflow
 ;; (package! eshell-up :disable t)
+
+
+;;; https://github.com/hlissner/doom-emacs/pull/5883
+(package! auctex :pin "3b0a080ae596c26c17b15ba9c71fc5542eae238b"
+  :recipe (:files ("*.el" "*.info" "dir"
+                   "doc" "etc" "images" "latex" "style")))

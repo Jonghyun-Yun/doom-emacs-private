@@ -2,5 +2,6 @@
 # name: tapply
 # key: tapply
 # uuid: tapply
+# group: apply
 # --
 tapply(${1:vector}, ${2:index}, ${3:function})

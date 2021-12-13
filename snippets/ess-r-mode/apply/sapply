@@ -2,6 +2,7 @@
 # name: sapply
 # uuid: sapply
 # key: sapply
+# group: apply
 # condition: t
 # --
 sapply(${1:list}, ${2:function})
