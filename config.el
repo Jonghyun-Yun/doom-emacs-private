@@ -113,13 +113,13 @@
 ;; org -> latex -> md -> docx
 ;; to properly generate cross references
 ;; https://github.com/lierdakil/pandoc-crossref
-(use-package! md-word
-  :load-path "local/"
-  :after ox
-  :config
-  (after! ox-pandoc
-    (add-to-list 'org-pandoc-valid-options 'citeproc))
-  )
+;; (use-package! md-word
+;;   :load-path "local/"
+;;   :after ox
+;;   :config
+;;   (after! ox-pandoc
+;;     (add-to-list 'org-pandoc-valid-options 'citeproc))
+;;   )
 
 ;;; email
 (when (featurep! :email mu4e)
@@ -163,7 +163,13 @@
 ;; (remove-hook 'TeX-update-style-hook #'rainbow-delimiters-mode)
 
 (use-package! emacs-overleaf
-  :commands (jyun/setup-overleaf-pull jyun/setup-overleaf-push))
+  :commands (overleaf-setup
+             emacs-overleaf-mode
+             emacs-overleaf-after-switch-project
+             emacs-overleaf-after-save
+             ;; jyun/setup-overleaf-pull
+             ;; jyun/setup-overleaf-push
+             ))
 
 ;;;; reftex
 (setq reftex-ref-style-default-list '("Default"
@@ -427,13 +433,15 @@
 ;; replace highlighted text with what I type
 ;; (delete-selection-mode 1)
 
-;;;; modifier
-;; NOTE: KARABINER
-;; caps_lock: esc if alone, right_ctrl if hold_down
-;; return: return if alone, right_ctrl if hold_down
-(setq mac-right-option-modifier 'meta)
-(setq mac-right-control-modifier 'hyper) ;C-s-a and C-s-' are mapped to right-ctrl by karabiner
-;; (setq mac-function-modifier 'hyper)  ; make Fn key do Hyper
+;;;; modifier and mouse
+(when IS-MAC
+  ;; NOTE: KARABINER
+  ;; caps_lock: esc if alone, right_ctrl if hold_down
+  ;; return: return if alone, right_ctrl if hold_down
+  (setq mac-right-option-modifier 'meta)
+  (setq mac-right-control-modifier 'hyper) ;C-s-a and C-s-' are mapped to right-ctrl by karabiner
+  ;; (setq mac-function-modifier 'hyper)  ; make Fn key do Hyper
+  (setq mac-mouse-wheel-smooth-scroll t))
 
 ;;;; Hangout
 (use-package! jabber
@@ -564,7 +572,7 @@
 (setq! +biblio-pdf-library-dir "~/Zotero/storage/"
        +biblio-default-bibliography-files '("~/Zotero/myref.bib")
        ;; a single file for one long note / directory for many note files
-       +biblio-notes-path "~/org/refnotes.org"
+       +biblio-notes-path "~/org/roam/refnotes.org"
        ;; +biblio-notes-path "~/org/roam/"
        org-ref-csl-default-style "chicago-author-date.csl"
        org-cite-csl-styles-dir "~/Zotero/styles/"
@@ -796,22 +804,19 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   :config
   (setq conda-anaconda-home (expand-file-name "/opt/intel/oneapi/intelpython/latest")
         conda-env-home-directory (expand-file-name "~/.conda"))
-
   ;; integration with term/eshell
   (conda-env-initialize-interactive-shells)
   (after! eshell (conda-env-initialize-eshell))
-
   (add-to-list 'global-mode-string
                '(conda-env-current-name (" conda:" conda-env-current-name " "))
-               'append)
-  )
+               'append))
 
 ;;;; matlab
 (after! all-the-icons
   (setcdr (assoc "m" all-the-icons-extension-icon-alist)
           (cdr (assoc "matlab" all-the-icons-extension-icon-alist))))
 
-(use-package matlab-mode
+(use-package! matlab-mode
   :commands (matlab-shell)
   :mode ("\\.m\\'" . matlab-mode)
   :config
@@ -846,8 +851,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 (after! plantuml-mode
   (setq plantuml-jar-path "/usr/local/Cellar/plantuml/1.2021.4/libexec/plantuml.jar"
         plantuml-default-exec-mode 'jar
-        org-plantuml-jar-path plantuml-jar-path)
-  )
+        org-plantuml-jar-path plantuml-jar-path))
 
 ;;;; graphviz
 (use-package! graphviz-dot-mode
@@ -865,8 +869,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 (use-package! lorem-ipsum
   :commands (lorem-ipsum-insert-paragraphs
              lorem-ipsum-insert-sentences
-             lorem-ipsum-insert-list
-             ))
+             lorem-ipsum-insert-list))
 
 ;;; evil
 (setq ;; evil-ex-substitute-global t     ; I like my s/../.. to by global by default
@@ -886,6 +889,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 (after! evil-snipe
   (pushnew! evil-snipe-disabled-modes 'ibuffer-mode 'dired-mode)
   (pushnew! evil-snipe-disabled-modes 'wordnut-mode 'osx-dictionary-mode)
+  (pushnew! evil-snipe-disabled-modes 'deadgrep-mode)
   ;; (pushnew! evil-snipe-disabled-modes 'reftex-select-label-mode 'reftex-select-bib-mode)
   )
 
@@ -903,8 +907,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   (pushnew!
    which-key-replacement-alist
    '(("" . "\\`+?evil[-:\\/]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
-   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
-   )
+   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1")))
   ;; why I want this??
   ;; (setq which-key-replacement-alist nil)
   )
@@ -924,6 +927,20 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;; M-s _  ctrlf-forward-symbol
 
 
+;;;; deadgrep
+(use-package! deadgrep
+  :commands (deadgrep)
+  :config
+  (map!
+   (:map deadgrep-mode-map
+    :n "d" #'deadgrep-directory
+    :n "s" #'deadgrep-search-term
+    :n "gr" #'deadgrep-restart
+    :g "C-c C-q" #'deadgrep-kill-all-buffers)
+   (:map deadgrep-edit-mode-map
+    :g "C-c C-c" #'deadgrep-mode
+    :g "C-c C-k" (cmd! (kill-buffer (current-buffer))))))
+
 ;;;;  easy-kill
 ;; https://github.com/leoliu/easy-kill
 (use-package! easy-kill
@@ -933,18 +950,17 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   :config
   ;; point > mark will place point to beginning-of-mark
   (easy-kill-defun easy-kill-mark-region ()
-    (interactive)
-    (pcase (easy-kill-get bounds)
-      (`(,_x . ,_x)
-       (easy-kill-echo "Empty region"))
-      (`(,beg . ,end)
-       (pcase (if (eq (easy-kill-get mark) 'end)
-                  (list end beg) (list beg end))
-         (`(,m ,pt)
-          (set-mark pt)
-          (goto-char m)))
-       (activate-mark))))
-  )
+                   (interactive)
+                   (pcase (easy-kill-get bounds)
+                     (`(,_x . ,_x)
+                      (easy-kill-echo "Empty region"))
+                     (`(,beg . ,end)
+                      (pcase (if (eq (easy-kill-get mark) 'end)
+                                 (list end beg) (list beg end))
+                        (`(,m ,pt)
+                         (set-mark pt)
+                         (goto-char m)))
+                      (activate-mark)))))
 ;; M-w w: save word at point
 ;; M-w s: save sexp at point
 ;; M-w l: save list at point (enclosing sexp)
@@ -966,24 +982,10 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
       aw-dispatch-always t
       aw-keys avy-keys)
 ;; C-w C-w ? to aw-show-dispath-help
-;; (defvar aw-dispatch-alist
-;;   '((?x aw-delete-window "Delete Window")
-;; 	(?w aw-swap-window "Swap Windows")
-;; 	(?M aw-move-window "Move Window")
-;; 	(?c aw-copy-window "Copy Window")
-;; 	(?j aw-switch-buffer-in-window "Select Buffer")
-;; 	(?n aw-flip-window)
-;; 	(?u aw-switch-buffer-other-window "Switch Buffer Other Window")
-;; 	(?c aw-split-window-fair "Split Fair Window")
-;; 	(?v aw-split-window-vert "Split Vert Window")
-;; 	(?b aw-split-window-horz "Split Horz Window")
-;; 	(?o delete-other-windows "Delete Other Windows")
-;; 	(?? aw-show-dispatch-help))
-;;   "List of actions for `aw-dispatch-default'.")
 (setq aw-dispatch-alist
       '((?x aw-delete-window "Delete Window")
         (?w aw-swap-window "Swap Windows")
-        ;; (77 aw-move-window "Move Window")
+        ;; (?M aw-move-window "Move Window")
         (?c aw-copy-window "Copy Window")
         (?i aw-switch-buffer-in-window "Select Buffer")
         (?p aw-flip-window)
@@ -1014,19 +1016,17 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
     (pushnew! ivy-posframe-display-functions-alist
               '(counsel-M-x . ivy-display-function-fallback)
               '(counsel-describe-variable . ivy-display-function-fallback)
-              '(swiper . ivy-display-function-fallback))
-    ))
+              '(swiper . ivy-display-function-fallback))))
 
 ;;;; company
-(setq company-idle-delay 3.0
+(setq company-idle-delay 5.0
       company-minimum-prefix-length 2
-      company-box-enable-icon nil     ; disable all-the-icons
+      company-box-enable-icon t     ; disable all-the-icons
       company-tooltip-limit 10
-      company-selection-wrap-around t
-      )
+      company-selection-wrap-around t)
 ;; company memory
-(setq-default history-length 500)
-;; (setq-default prescient-history-length 500)
+(setq history-length 500)
+;; (setq prescient-history-length 500)
 
 ;;; posframe
 ;; (use-package! transient-posframe
@@ -1046,12 +1046,10 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   ;; :hook (after-init . hydra-posframe-enable)
   (setq hydra-posframe-parameters
         '((left-fringe . 8)
-          (right-fringe . 8)
-          ))
+          (right-fringe . 8)))
   ;; (setq hydra-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
   ;; (setq hydra-posframe-poshandler 'posframe-poshandler-frame-bottom-left-corner)
-  (setq hydra-posframe-poshandler 'posframe-poshandler-frame-top-right-corner)
-  )
+  (setq hydra-posframe-poshandler 'posframe-poshandler-frame-top-right-corner))
 
 ;;;; which-key-posframe
 (use-package! which-key-posframe
@@ -1082,8 +1080,7 @@ of the buffer text to be displayed in the popup"
        :width (cdr act-popup-dim)
        :internal-border-width which-key-posframe-border-width
        :internal-border-color (face-attribute 'which-key-posframe-border :background nil t)
-       :override-parameters which-key-posframe-parameters))))
-  )
+       :override-parameters which-key-posframe-parameters)))))
 
 ;;;; vertigo posframe
 (use-package! vertico-posframe
@@ -1094,8 +1091,7 @@ of the buffer text to be displayed in the popup"
   ;; (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center)
   (setq vertico-posframe-parameters
         '((left-fringe . 8)
-          (right-fringe . 8)
-)))
+          (right-fringe . 8))))
 
 ;;;; abbrev
 (use-package abbrev
@@ -1171,26 +1167,23 @@ of the buffer text to be displayed in the popup"
   (evil-define-key 'normal dired-mode-map "J"
     (cond ((featurep! :completion helm) 'helm-find-files)
           ((featurep! :completion ivy) 'counsel-find-file)
-          ((featurep! :completion vertico) 'find-file))))
+          (t 'find-file))))
 
 ;; OS X ls not working with --quoting-style=literal
 (after! fd-dired
   (when IS-MAC
-    (setq fd-dired-ls-option '("| xargs -0 gls -ld --quoting-style=literal" . "-ld"))
-    )
-  )
-
+    (setq fd-dired-ls-option '("| xargs -0 gls -ld --quoting-style=literal" . "-ld"))))
 ;; display icons with colors
 (setq all-the-icons-dired-monochrome t)
 
 ;;; temporary fixes
 ;;;; eldoc error
 ;; https://github.com/hlissner/doom-emacs/issues/2972
-(defadvice! +org--suppress-mode-hooks-a (orig-fn &rest args)
-  :around #'org-eldoc-get-mode-local-documentation-function
-  (delay-mode-hooks (apply orig-fn args)))
-(after! org-eldoc
-  (puthash "R" #'ignore org-eldoc-local-functions-cache))
+;; (defadvice! +org--suppress-mode-hooks-a (orig-fn &rest args)
+;;   :around #'org-eldoc-get-mode-local-documentation-function
+;;   (delay-mode-hooks (apply orig-fn args)))
+;; (after! org-eldoc
+;;   (puthash "R" #'ignore org-eldoc-local-functions-cache))
 
 ;; https://github.com/hlissner/doom-emacs/issues/3185
 (defadvice! no-errors/+org-inline-image-data-fn (_protocol link _description)
@@ -1280,10 +1273,8 @@ of the buffer text to be displayed in the popup"
 
 ;;; testing
 ;;;; explain pause
-;; (use-package explain-pause-mode
-;;   :config
-;;   (explain-pause-mode)
-;;   )
+(use-package! explain-pause-mode
+  :commands (explain-pause-mode))
 
 ;;; eshell
 ;; aliases: see `+eshell-aliases'
@@ -1298,3 +1289,23 @@ of the buffer text to be displayed in the popup"
       (select-window (active-minibuffer-window))
     (error "Minibuffer is not active")))
 (global-set-key "\C-co" 'switch-to-minibuffer) ;; Bind to `C-c o'
+
+;;; lsp-ltex
+(use-package! lsp-ltex
+  :after latex
+  ;; :hook (LaTeX-mode . (lambda () (require 'lsp-ltex) (lsp!)))
+  :config
+  (setq lsp-ltex-enabled nil)
+  (setq lsp-ltex-server-store-path "~/local/ltex-ls/"
+        lsp-ltex-version "15.2.0")
+  (setq lsp-ltex-dictionary "~/.hunspell_en_US")
+  ;; (setq lsp-ltex-disabled-rules ;; '(({"MORFOLOGIK_RULE_EN_US"}))
+  ;;       '(("{\"en-US\": [\"MORFOLOGIK_RULE_EN_US\"]}")))
+  ;; (setq lsp-ltex--filename "ltex-ls-15.2.0-mac-x64"
+  ;;      lsp-ltex--extension-name "ltex-ls-15.2.0-mac-x64.tar.gz")
+  ;; (setq lsp-ltex--executable-path "~/local/ltex-ls/ltex-ls-15.2.0/bin/")
+  )
+
+;;; desktop.el
+;; (desktop-save-mode 1)
+;; (add-to-list 'desktop-globals-to-save 'file-name-history)
