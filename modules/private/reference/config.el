@@ -1,19 +1,19 @@
 ;;; private/reference/config.el -*- lexical-binding: t; -*-
 
 ;;; org-ref V3
-(after! org-ref-ivy
-  (setq org-ref-insert-link-function 'org-ref-insert-link-hydra/body
-        org-ref-insert-cite-function 'org-ref-cite-insert-ivy
-        org-ref-insert-label-function 'org-ref-insert-label-link
-        org-ref-insert-ref-function 'org-ref-insert-ref-link
-        org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body))))
+;; (after! org-ref-ivy
+;;   (setq org-ref-insert-link-function 'org-ref-insert-link-hydra/body
+;;         org-ref-insert-cite-function 'org-ref-cite-insert-ivy
+;;         org-ref-insert-label-function 'org-ref-insert-label-link
+;;         org-ref-insert-ref-function 'org-ref-insert-ref-link
+;;         org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body))))
 
 (after! org-capture
   ;; create org-id for skim to org jump
   (add-hook 'org-capture-prepare-finalize-hook #'+reference/append-org-id-to-skim-hook))
 
 (after! org
-  (require 'org-mac-link)
+  ;; (require 'org-mac-link)
   ;; (require 'org-id)
   (org-link-set-parameters "skim" :follow #'+reference/org-mac-skim-open))
 

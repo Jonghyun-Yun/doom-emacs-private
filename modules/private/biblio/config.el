@@ -125,16 +125,15 @@ Creates new notes where none exist yet."
   ;; The package already tests for nil itself so we define a dummy tester
   (setq orb-preformat-keywords
     '("=key=" "title" "url" "file" "author-or-editor" "keywords" "citekey" "pdf"))
-  ;;:hook (org-roam-mode . org-roam-bibtex-mode)
+  ;; - org-ref-v2: Old Org-ref cite:links
+  ;; - org-ref-v3: New Org-ref cite:&links
+  ;; - org-cite  : Org-cite @elements
+  (setq orb-roam-ref-format 'org-ref-v3)
   :custom
   (orb-note-actions-interface (cond ((featurep! :completion ivy)  'ivy)
                                     ((featurep! :completion helm) 'helm)
                                     (t                           'default)))
   :config
-  ;; - org-ref-v2: Old Org-ref cite:links
-  ;; - org-ref-v3: New Org-ref cite:&links
-  ;; - org-cite  : Org-cite @elements
-  (setq orb-roam-ref-format 'org-ref-v3)
   ;; https://github.com/org-roam/org-roam-bibtex/blob/master/doc/orb-manual.org
   ;; (setq orb-note-actions-interface 'hydra)
 
@@ -143,7 +142,7 @@ Creates new notes where none exist yet."
                                    ((featurep! :completion helm) 'helm-bibtex)
                                    (t                           'generic)))
   (setq orb-process-file-keyword t
-        orb-file-field-extensions '("pdf"))
+        orb-attached-file-extensions '("pdf"))
 
   (add-to-list 'org-roam-capture-templates
                '("b" "Bibliography note" plain
