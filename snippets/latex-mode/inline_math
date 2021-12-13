@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # key: m
 # name: inline math
-# condition: (and (and (not (texmathp)) (quote auto)) (or (looking-back " m" 2) (looking-back "^m" 2)))
+# condition: (and (not (texmathp)) (quote auto) (looking-back "^\s*m" 2))
 # group: math
 # --
 \\(`%`$0\\)

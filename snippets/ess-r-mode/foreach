@@ -4,5 +4,5 @@
 # binding: direct-keybinding                     
 # --
 foreach(${1:index} = ${2:vector}, .combine ='${3:list}') %dopar% {
-    $0
+  ${0:`%`}
 }

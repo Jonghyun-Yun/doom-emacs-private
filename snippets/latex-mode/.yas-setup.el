@@ -1,5 +1,6 @@
 ;;; ../Dropbox/emacs/.doom.d/snippets/latex-mode/.yas-setup.el -*- lexical-binding: t; -*-
 
+;;;###autoload
 (defun jyun/cdlatex-insert-filename ()
   "Insert a file name, with completion.
 The path to the file will be relative to the current directory if the file

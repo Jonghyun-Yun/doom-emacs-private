@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: apply
-# key: apply
-# --
-apply(X = $0, MARGIN = , FUN = )

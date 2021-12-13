@@ -1,5 +1,6 @@
 # -*- mode: snippet -*-
 # name: pipe
 # key: >
+# condition: (looking-back "\s>" 3)
 # --
 %>% $0
