@@ -74,7 +74,7 @@
           ))
   )
 
-;; KOMA-SCript letter
+;;;; KOMA-SCript letter
 (eval-after-load 'ox '(require 'ox-koma-letter))
 (eval-after-load 'ox-koma-letter
   '(progn
@@ -84,9 +84,9 @@
 \[NO-DEFAULT-PACKAGES]
 \[NO-PACKAGES]
 \[EXTRA]"))
-
      (setq org-koma-letter-default-class "my-koma-letter")))
 
+;;; org-latex
 (with-eval-after-load 'ox-latex
   ;; do not put in \hypersetup. Use your own if you want it e.g.
   ;; \hypersetup{pdfkeywords={%s},\n pdfsubject={%s},\n pdfcreator={%}}
@@ -137,7 +137,6 @@
           ("" "xcolor" t)
           ("" "hyperref" nil)
           ))
-                                        ;
   (setq org-latex-packages-alist
         '(
           ;;   ("AUTO" "inputenc" t ("pdflatex")) ; for basic font and character selection
@@ -173,8 +172,8 @@
           ("" "bm" t ("pdflatex"))      ; doesn't work well with unicode-math
           ;; FIXME: =cool= conflict with another package
           ;; ("" "cool" t)         ; for math operators & symbols e.g. partial diff
-          ("" "mathtools" t)    ; for math aligning & spacing
-          ("" "physics" t)      ; derivative, dx, operators
+          ("" "mathtools" t)            ; for math aligning & spacing
+          ("" "physics" t)              ; derivative, dx, operators
           ("" "cancel" t)
           ("theorems, skins" "tcolorbox" t)
           ("mathbf=sym" "unicode-math" t ("xelatex" "lualatex"))
@@ -196,7 +195,7 @@
           ("" "iftex" t)
           ))
 
-  ;; Bare-bones template
+;;;; Bare-bones template
   (add-to-list 'org-latex-classes
                '("no-article"
                  "\\documentclass{article}
@@ -227,7 +226,7 @@
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-  ;; org-export: Remove additional latex temporary files.
+;;;; org-export: Remove additional latex temporary files.
   (setq org-latex-logfiles-extensions
         (append '("dvi" "bbl") org-latex-logfiles-extensions))
   )
@@ -349,6 +348,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
   (jyun/org-capture-skim-template-h)
   )
 
+;;; org-config
 (setq org-structure-template-alist
       '(("a" . "export ascii")
         ("c" . "center")

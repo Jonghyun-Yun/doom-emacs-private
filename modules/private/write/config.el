@@ -350,12 +350,15 @@ Turning on wordnut mode runs the normal hook `mw-syno-mode-hook'.
     :command ("java" "-jar" (eval (expand-file-name "~/Dropbox/emacs/textidote/textidote.jar")) "--read-all"
               "--check" (eval (if ispell-current-dictionary (substring ispell-current-dictionary 0 2) "en"))
               "--dict" (eval (expand-file-name ispell-personal-dictionary))
+              "--ignore" "lt:en:MORFOLOGIK_RULE_EN_US,sh:d:001,lt:en:WORD_CONTAINS_UNDERSCORE"
               "--no-color" source-inplace)
     :error-patterns
     ((warning line-start "* L" line "C" column "-" (one-or-more alphanumeric) " "
               (message (one-or-more (not (any "]"))) "]")))
     )
 
+  ;; lt:en:MORFOLOGIK_RULE_EN_US spell check
+  ;; sh:d:001 space after a comman
   ;; add tex-textidote
   (add-to-list 'flycheck-checkers 'tex-textidote)
   )

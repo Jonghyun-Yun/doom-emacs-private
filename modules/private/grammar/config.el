@@ -46,8 +46,11 @@
 
   ;; ARROWS: fix -> to a real arrow
   ;; EN_QUOTES: fix "..." to smart quotes
-  (setq-default langtool-disabled-rules '("WHITESPACE_RULE" "ARROWS" "EN_QUOTES"
-                                          "EN_UNPAIRED_BRACKETS" "COMMA_PARENTHESIS_WHITESPACE"))
+  ;; MORFOLOGIK_RULE_EN_US: no spell check
+  (setq langtool-disabled-rules '("WHITESPACE_RULE" "ARROWS" "EN_QUOTES"
+                                  "EN_UNPAIRED_BRACKETS" "COMMA_PARENTHESIS_WHITESPACE"
+                                  "MORFOLOGIK_RULE_EN_US"))
+
 
   ;; to run n-grams for confusion wrods. `en' sub-directory is required
   ;; see https://dev.languagetool.org/finding-errors-using-n-gram-data.html
@@ -97,6 +100,7 @@
   ;; :after langtool
   :hook
   (latex-mode . langtool-ignore-fonts-minor-mode)
+  (LaTex-mode . langtool-ignore-fonts-minor-mode)
   (org-mode . langtool-ignore-fonts-minor-mode)
   (markdown-mode . langtool-ignore-fonts-minor-mode)
   )
