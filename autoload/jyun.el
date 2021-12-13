@@ -43,7 +43,6 @@
   (assoc-string KEY LIST))
 
 
-
 ;;;###autoload
 (defun jyun/find-file-in-private-config ()
   "Search for a file in `doom-private-dir' using `find-file-in-project'."

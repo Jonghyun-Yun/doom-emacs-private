@@ -1,19 +1,5 @@
 ;;; ../Dropbox/emacs/.doom.d/local/ess-plus.el -*- lexical-binding: t; -*-
 
-;; ;; language server w/o launching R
-;; (with-eval-after-load 'lsp-mode
-;;   (lsp-register-client
-;;    (make-lsp-client :new-connection (lsp-stdio-connection '("R" "--slave" "-e" "languageserver::run()"))
-;;                     :major-modes '(ess-r-mode)
-;;                     :server-id 'lsp-R))
-
-;;   (setq lsp-language-id-configuration
-;;         (append lsp-language-id-configuration
-;;                 '((ess-r-mode . "R")
-;;                   ;; (Sweave-mode . "R")
-;;                   )))
-;;   )
-
 ;; ;; https://github.com/emacs-ess/ESS/issues/842
 ;; ;; doom has no quickhelp mode?
 ;; (defun disable-company-quickhelp-in-ESS-R ()
@@ -31,20 +17,20 @@
       ;; ess-style 'RStudio
       ;; ess-tab-complete-in-script t
       )
-;; (setq ess-R-font-lock-keywords
-;;       '((ess-R-fl-keyword:keywords . t)
-;;         (ess-R-fl-keyword:constants . t)
-;;         (ess-R-fl-keyword:modifiers . t)
-;;         (ess-R-fl-keyword:fun-defs . t)
-;;         (ess-R-fl-keyword:assign-ops . t)
-;;         (ess-R-fl-keyword:%op% . t)
-;;         (ess-fl-keyword:fun-calls . t)
-;;         ;; (ess-fl-keyword:numbers . t)
-;;         ;; (ess-fl-keyword:operators . t)
-;;         ;; (ess-fl-keyword:delimiters . t)
-;;         ;; (ess-fl-keyword:= . t)
-;;         ;; (ess-R-fl-keyword:F&T . t)
-;;         ))
+(setq ess-R-font-lock-keywords
+      '((ess-R-fl-keyword:keywords . t)
+        (ess-R-fl-keyword:constants . t)
+        (ess-R-fl-keyword:modifiers . t)
+        (ess-R-fl-keyword:fun-defs . t)
+        (ess-R-fl-keyword:assign-ops . t)
+        (ess-R-fl-keyword:%op% . t)
+        (ess-fl-keyword:fun-calls . t)
+        (ess-fl-keyword:numbers)
+        (ess-fl-keyword:operators)
+        (ess-fl-keyword:delimiters)
+        (ess-fl-keyword:=)
+        (ess-R-fl-keyword:F&T)
+        ))
 
 (with-eval-after-load 'ess
 ;;; lintr
@@ -65,6 +51,13 @@
   ;; (add-hook 'inferior-ess-r-mode-hook
   ;;           #'(lambda () (define-key inferior-ess-r-mode-map ess-assign-key #'ess-insert-assign)))
   )
+
+;;; tab to space
+;; http://xahlee.info/emacs/emacs/emacs_tabs_space_indentation_setup.html
+(defun jyun/disable-indent-tabs ()
+  "set `indent-tabs-mode' to nil"
+  (setq indent-tabs-mode nil))
+(add-hook 'ess-r-mode-hook #'jyun/disable-indent-tabs)
 
 ;;; polymode
 ;; The following chunks are taken from https://github.com/vspinu/polymode
