@@ -318,8 +318,7 @@
 ;;; emacs binding in insert mode
 (map! :i "C-p" 'previous-line
       :i "C-n" 'next-line
-      ;; :i "C-u" 'universal-argument
-      )
+      :i "C-u" 'universal-argument)
 
 ;;; ignore bindings
 ;; (global-set-key [C-wheel-up]  'ignore)
@@ -339,8 +338,7 @@
  :desc "doom/magit-fetch" "h d g" #'jyun/fetch-doom-emacs
  "h d i" #'doom/goto-private-init-file
  "h d C" nil
- :desc "Toggle truncate lines" "t n" #'toggle-truncate-lines
- )
+ :desc "Toggle truncate lines" "t n" #'toggle-truncate-lines)
 
 ;;; make
 (when (featurep! :tools make)

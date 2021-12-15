@@ -231,15 +231,6 @@
 ;;   (put 'cursor 'evil-motion-color "plum3")
 ;;   )
 
-;; (progn
-;;   (put 'cursor 'evil-normal-color "DarkGoldenrod3")
-;;   (put 'cursor 'evil-insert-color "chartreuse4")
-;;   (put 'cursor 'evil-emacs-color "SkyBlue3")
-;;   (put 'cursor 'evil-replace-color "chocolate4")
-;;   (put 'cursor 'evil-visual-color "gray40")
-;;   (put 'cursor 'evil-motion-color "plum4")
-;;   )
-
 ;; (after! doom-modeline
 ;;   ;; (set-face-attribute 'doom-modeline-buffer-modified nil :foreground nil :inherit 'error)
 ;;   (custom-set-faces! '(doom-modeline-buffer-modified :inherit (error bold)))
@@ -271,7 +262,7 @@
   ;; (push "Noto Sans CJK KR" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
   ;; (push "Source Han Sans K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
   ;; (push "Source Han Serif K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
-)
+  )
 
 ;; Dropbox sync changes hangul encoding to NFD, which results in 한글 자소분리 in dired and other modes
 ;; https://tt.kollhong.com/79

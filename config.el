@@ -54,8 +54,10 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one-light)
+;; (setq doom-theme 'doom-one-light)
+;; (load-theme 'doom-one-light t)
 ;; (setq doom-theme 'modus-operandi)
+(load-theme 'modus-operandi t)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -83,9 +85,17 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 
+(defvar IS-GUI (display-graphic-p)
+"(display-graphic-p)"
+  )
 
 ;;; load lisp
 (setq load-prefer-newer t)
+(load! "local/splash")
+
+;; (setq +doom-dashboard-banner-file "emacs-e.svg")
+;; (setq +doom-dashboard-banner-dir (expand-file-name "misc/splash-images/" doom-private-dir))
+
 (with-eval-after-load 'hydra
   (load! "local/hydra-plus"))
 (load! "bindings")
@@ -164,12 +174,7 @@
 
 (use-package! emacs-overleaf
   :commands (overleaf-setup
-             emacs-overleaf-mode
-             emacs-overleaf-after-switch-project
-             emacs-overleaf-after-save
-             ;; jyun/setup-overleaf-pull
-             ;; jyun/setup-overleaf-push
-             ))
+             emacs-overleaf-mode))
 
 ;;;; reftex
 (setq reftex-ref-style-default-list '("Default"
@@ -579,9 +584,11 @@
        org-cite-csl-locales-dir "~/Zotero/locales/"
        )
 
-(setq! citar-bibliography +biblio-default-bibliography-files
-       citar-library-paths +biblio-pdf-library-dir
-       citar-notes-paths "~/org/roam/")
+(after! citar
+  (setq! ;; citar-bibliography +biblio-default-bibliography-files
+   ;;  ;; citar-library-paths +biblio-pdf-library-dir
+   citar-notes-paths "~/org/roam/"
+   ))
 
 ;; (setq bibtex-completion-pdf-open-function 'org-open-file)
 
@@ -612,17 +619,18 @@
 (use-package! websocket
     :after org-roam)
 
+
 (use-package! org-roam-ui
-    :after org-roam ;; or :after org
-;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-;;         a hookable mode anymore, you're advised to pick something yourself
-;;         if you don't care about startup time, use
-;;  :hook (after-init . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
+  :after org-roam ;; or :after org
+  ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+  ;;         a hookable mode anymore, you're advised to pick something yourself
+  ;;         if you don't care about startup time, use
+  ;;  :hook (after-init . org-roam-ui-mode)
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t))
 
 ;;; elfeed
 (after! elfeed
@@ -1041,6 +1049,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;;;; hydra-posframe
 (use-package! hydra-posframe
   :after hydra
+  :if IS-GUI
   :config
   (hydra-posframe-mode 1)
   ;; :hook (after-init . hydra-posframe-enable)
@@ -1054,6 +1063,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;;;; which-key-posframe
 (use-package! which-key-posframe
   :after which-key
+  :if IS-GUI
   :config
   (which-key-posframe-mode 1)
   ;; (setq which-key-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
@@ -1085,6 +1095,7 @@ of the buffer text to be displayed in the popup"
 ;;;; vertigo posframe
 (use-package! vertico-posframe
   :after vertico
+  :if IS-GUI
   :config
   (vertico-posframe-mode 1)
   (setq vertico-posframe-poshandler #'posframe-poshandler-frame-bottom-center)
