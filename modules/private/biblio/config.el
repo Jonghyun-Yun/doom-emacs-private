@@ -172,17 +172,17 @@ Creates new notes where none exist yet."
 
 ;;; `org-cite'
 
-;; (use-package! oc
-;;   :defer t
-;;   :config
-;;   (setq org-cite-global-bibliography
-;;         (doom-enlist
-;;          (or (bound-and-true-p citar-bibliography)
-;;              (bound-and-true-p bibtex-completion-bibliography)))
-;;         ;; Setup export processor; default csl/citeproc-el, with biblatex for
-;;         ;; latex
-;;         org-cite-export-processors '((latex biblatex) (t csl))
-;;         org-support-shift-select t))
+(use-package! oc
+  :defer t
+  :config
+  (setq org-cite-global-bibliography
+        (doom-enlist
+         (or (bound-and-true-p citar-bibliography)
+             (bound-and-true-p bibtex-completion-bibliography)))
+        ;; Setup export processor; default csl/citeproc-el, with biblatex for
+        ;; latex
+        org-cite-export-processors '((latex biblatex) (t csl))
+        org-support-shift-select t))
 
 (use-package! citar
   :when (featurep! :completion vertico)
