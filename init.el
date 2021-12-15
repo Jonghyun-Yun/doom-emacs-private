@@ -33,9 +33,9 @@
         +icons)
 
        :ui
-       deft  ; notational velocity for Emacs
-       doom  ; what makes DOOM look the way it does
-       ;;doom-dashboard    ; a nifty splash screen for Emacs
+       deft              ; notational velocity for Emacs
+       doom              ; what makes DOOM look the way it does
+       doom-dashboard    ; a nifty splash screen for Emacs
        ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
        ;;(emoji +unicode)  ; 🙂
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
@@ -93,7 +93,7 @@
 
        :tools
        ;;ansible
-       ;;biblio            ; Writes a PhD for you (citation needed)
+       biblio              ; Writes a PhD for you (citation needed)
        (debugger           ; FIXME stepping through code, to help you add bugs
         +lsp)
        ;;direnv
@@ -152,9 +152,9 @@
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
        (latex              ; writing papers in Emacs has never been so fun
+        +cdlatex
         +latexmk
         +lsp
-        +cdlatex
         +fold)
        ;;lean              ; for folks with too much to prove
        ;;ledger            ; be audit you can be
@@ -209,7 +209,7 @@
        :app
        calendar
        ;;emms
-       ;;everywhere          ; *leave* Emacs!? You must be joking
+       everywhere          ; *leave* Emacs!? You must be joking
        ;;irc               ; how neckbeards socialize
        (rss +org)          ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
@@ -219,9 +219,8 @@
        (default +bindings +smartparens)
 
        :private
-       reference
-       (biblio
-        +roam-bibtex)
+       (reference +roam-bibtex)
+       ;; (biblio +roam-bibtex)
        write
        gcal
        dired-plus
@@ -231,5 +230,4 @@
        outshine
        reading
        scimax
-       ebook
-       )
+       ebook)
