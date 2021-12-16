@@ -1,4 +1,4 @@
-;;; emacs/dired-plus/autoload.el -*- lexical-binding: t; -*-
+;;; emacs/dired-hacks/autoload.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
 (defun dired-open-mac () (interactive)
