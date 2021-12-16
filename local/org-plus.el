@@ -382,13 +382,6 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
 (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id
       org-clone-delete-id t)
 
-(setq org-refile-targets '(("~/org/todo.org" :maxlevel . 3)
-                           ("~/org/projects.org" :maxlevel . 3)
-                           ("~/org/someday.org" :level . 1)
-                           ("~/org/tickler.org" :maxlevel . 1)
-                           ("~/org/notes.org" :maxlevel . 2)
-                           ))
-
 (setq org-preview-latex-process-alist
       (quote
        ((dvipng :programs
@@ -428,6 +421,15 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
 
 ;;; youtube link
 (with-eval-after-load 'org
+  ;; (setq org-refile-targets '(("~/org/todo.org" :maxlevel . 3)
+  ;;                            ("~/org/projects.org" :maxlevel . 3)
+  ;;                            ("~/org/tickler.org" :maxlevel . 1)
+  ;;                            ("~/org/someday.org" :level . 1)
+  ;;                            ("~/org/notes.org" :maxlevel . 2)
+  ;;                            ))
+
+  (add-to-list 'org-refile-targets '(("~/org/someday.org" :level . 3) ("~/org/notes.org" :maxlevel . 3)))
+
   ;; ;; (setq org-export-headline-levels 5) ; I like nesting
   ;; ;; ignore heading not content
   ;; (require 'ox-extra)

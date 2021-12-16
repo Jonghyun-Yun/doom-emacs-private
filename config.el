@@ -209,10 +209,12 @@
         ("corollary" "\\begin{corollary}\n?\n\\end{corollary}\n" nil)
         ("exercise" "\\begin{exercise}\n?\n\\end{exercise}\n" nil)
         ("definition" "\\begin{definition}\n?\n\\end{definition}\n" nil)
-        ("algorithmic" "\\begin{algorithmic}\n?\n\\end{algorithmic}\n" nil))
+        ("algorithmic" "\\begin{algorithmic}\n?\n\\end{algorithmic}\n" nil)
+        ("split" "\\begin{split}\n?\n\\end{split}\n" nil))
       cdlatex-command-alist
       '(("axm" "Insert axiom env"   "" cdlatex-environment ("axiom") t nil)
         ("thm" "Insert theorem env" "" cdlatex-environment ("theorem") t nil)
+        ("spl" "Insert split env" "" cdlatex-environment ("split") t nil)
         ("des" "Insert description env" "" cdlatex-environment ("description") t nil)
         ("lmm" "Insert lemma env" "" cdlatex-environment ("lemma") t nil)
         ("vbt" "Insert verbatim env" "" cdlatex-environment ("verbatim") t nil)
@@ -254,8 +256,7 @@
           )))
 (setq ;; org-src-window-setup 'current-window
  org-src-window-setup 'other-window
- ;; org-return-follows-link t
- org-image-actual-width 500
+ org-return-follows-link t
  org-startup-with-inline-images t
  ;; org-use-speed-commands
  ;; (lambda () (and (looking-at org-outline-regexp) (looking-back "^\\**")))
@@ -297,6 +298,7 @@
 
 ;;;; org-latex + tab behavior
 (after! org
+  (setq org-image-actual-width 500)
   ;; visual-mode tab binds back to org-cycle
   (remove-hook 'org-tab-first-hook #'+org-yas-expand-maybe-h)
   ;; insert-mode tab binds back to org-cycle
@@ -1185,7 +1187,7 @@ of the buffer text to be displayed in the popup"
   (when IS-MAC
     (setq fd-dired-ls-option '("| xargs -0 gls -ld --quoting-style=literal" . "-ld"))))
 ;; display icons with colors
-(setq all-the-icons-dired-monochrome t)
+(setq all-the-icons-dired-monochrome nil)
 
 ;;; temporary fixes
 ;;;; eldoc error

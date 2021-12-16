@@ -237,6 +237,9 @@
 
 
 ;;; https://github.com/hlissner/doom-emacs/pull/5883
-(package! auctex :pin "3b0a080ae596c26c17b15ba9c71fc5542eae238b"
-  :recipe (:files ("*.el" "*.info" "dir"
-                   "doc" "etc" "images" "latex" "style")))
+(package! auctex
+  :recipe (:files (:defaults "etc" "images" "latex" "style"))
+  :pin "3b0a080ae596c26c17b15ba9c71fc5542eae238b")
+;; (package! auctex :pin "3b0a080ae596c26c17b15ba9c71fc5542eae238b"
+;;   :recipe (:files ("*.el" "*.info" "dir"
+;;                    "doc" "etc" "images" "latex" "style")))
