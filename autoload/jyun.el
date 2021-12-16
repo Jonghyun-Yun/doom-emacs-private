@@ -65,13 +65,13 @@
         (message "%s" (or title msg))))))
 
 
-;;;###autoload
-(defun jyun/workspace-create ()
-  "Create a new workspace after read `name' from a minibuffer."
-  (interactive)
-  (let ((name (read-from-minibuffer "New workspace name: ")))
-    (+workspace/new name)
-    ))
+;; ;;;###autoload
+;; (defun jyun/workspace-create ()
+;;   "Create a new workspace after read `name' from a minibuffer."
+;;   (interactive)
+;;   (let ((name (read-from-minibuffer "New workspace name: ")))
+;;     (+workspace/new name)
+;;     ))
 
 
 ;;;###autoload

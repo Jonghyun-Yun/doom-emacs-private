@@ -212,7 +212,7 @@
   "TAB e" #'+workspace/switch-to
   :desc "Layouts Hydra"
   "TAB ." #'my-hydra-layouts/body
-  "TAB c" #'jyun/workspace-create
+  ;; "TAB c" #'jyun/workspace-create
   :desc "Code Fold Hydra" "z." #'my-hydra-fold/body)
  (:map pdf-view-mode-map
   :localleader
