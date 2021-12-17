@@ -262,12 +262,12 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
         '(
           ("r" "Reminder" entry
            (file+headline +org-capture-tickler-file "Reminders")
-           "* TODO %^{Reminder for...} \nSCHEDULED: %^t \n:PROPERTIES: \n:CREATED: %U \n:END: \n%i \n%a"
+           "* TODO %^{Reminder for...} \nSCHEDULED: %^t \n%i \n%a"
            :prepend t)
-          ("t" "Templates for todos")
+          ("t" "Todo")
           ("tt" "Todo" entry
            (file+headline +org-capture-inbox-file "Tasks")
-           "* TODO %? \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a"
+           "* TODO %? \n%i \n%a"
            :prepend t)
           ("td" "Todo deadline" entry
            (file+headline +org-capture-inbox-file "Task Deadlines")
@@ -277,7 +277,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
            (file+headline +org-capture-inbox-file "Rapid Tasks")
            "* TODO %? \nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+1d\")) \n%i \n%a"
            :prepend t)
-          ("ts" "Clocked entry subtask" entry (clock)
+          ("ts" "Clocked subtask" entry (clock)
            "* TODO %? \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a")
           ("n" "Note" entry
            (file+headline +org-capture-notes-file "Inbox")
@@ -322,13 +322,13 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
           ;; these under {ProjectName}/{Tasks,Notes,Changelog} headings. They
           ;; support `:parents' to specify what headings to put them under, e.g.
           ;; :parents ("Projects")
-          ("p" "Templates for projects")
+          ("p" "Project")
           ("pt" "Project todo" entry
            #'+org-capture-central-project-todo-file
-           "* TODO %? \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a"
+           "* TODO %? \n%i \n%a"
            :heading "Tasks"
            :prepend nil)
-          ("pn" "Project notes" entry
+          ("pn" "Project note" entry
            #'+org-capture-central-project-notes-file
            "* %U %? \n%i \n%a"
            :heading "Notes"
@@ -340,7 +340,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
            :prepend t)
           ("pp" "New Project" entry
            (file+headline +org-capture-todo-file "Projects")
-           "* %^{Project for...} [/] %^{GOAL}p \n:PROPERTIES:\n:CAPTURED: %U \n:END: \n%i"
+           "* %^{Project for...} [/] %^{GOAL}p \n%i"
            :prepend t)))
 
   ;; (require 'org-gcal)
@@ -421,14 +421,14 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
 
 ;;; youtube link
 (with-eval-after-load 'org
-  ;; (setq org-refile-targets '(("~/org/todo.org" :maxlevel . 3)
-  ;;                            ("~/org/projects.org" :maxlevel . 3)
-  ;;                            ("~/org/tickler.org" :maxlevel . 1)
-  ;;                            ("~/org/someday.org" :level . 1)
-  ;;                            ("~/org/notes.org" :maxlevel . 2)
-  ;;                            ))
+  (setq org-refile-targets '(("~/org/todo.org" :maxlevel . 3)
+                             ("~/org/projects.org" :maxlevel . 3)
+                             ("~/org/tickler.org" :maxlevel . 1)
+                             ("~/org/someday.org" :level . 1)
+                             ("~/org/notes.org" :maxlevel . 2)
+                             ))
 
-  (add-to-list 'org-refile-targets '(("~/org/someday.org" :level . 3) ("~/org/notes.org" :maxlevel . 3)))
+  ;; (add-to-list 'org-refile-targets '(("~/org/someday.org" :level . 3) ("~/org/notes.org" :maxlevel . 3)))
 
   ;; ;; (setq org-export-headline-levels 5) ; I like nesting
   ;; ;; ignore heading not content

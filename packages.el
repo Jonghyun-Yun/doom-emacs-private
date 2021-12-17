@@ -229,6 +229,7 @@
 (package! corfu :disable t)
 (package! cape :disable t)
 (package! lsp-ltex :disable t)
+(package! anki-editor :disable t)
 
 ;;; disabled doom packages
 ;; (package! github-review :disable t)

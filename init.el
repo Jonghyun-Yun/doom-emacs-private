@@ -220,14 +220,14 @@
 
        :private
        (reference +roam-bibtex)
-       ;; (biblio +roam-bibtex)
        write
        gcal
-       dired-plus
+       dired-hacks
        ;; stan
        gtd
        grammar
        outshine
        reading
        scimax
-       ebook)
+       ebook
+       )

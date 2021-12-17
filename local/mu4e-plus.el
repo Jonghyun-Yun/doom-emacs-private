@@ -449,7 +449,6 @@
 DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\")) \n%i \n%?"
                  :empty-lines 1
                  :prepend nil
-                 :immediate-finish t))
-  )
+                 :immediate-finish t)))
 
 ;;; mu4e-plus.el ends here
