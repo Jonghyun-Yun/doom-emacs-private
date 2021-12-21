@@ -102,7 +102,7 @@
 (after! org
   (remove-hook 'org-load-hook #'+org-init-capture-defaults-h)
   (add-to-list 'org-tags-exclude-from-inheritance "roadmap")
-  (load! "local/agenda.el/agenda.el")
+  (load! "local/vulpea-agenda/vulpea-agenda")
   )
 (load! "local/org-plus")
 

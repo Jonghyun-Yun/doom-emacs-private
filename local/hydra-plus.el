@@ -550,3 +550,22 @@ _hp_: set priority    ^^                          _S_:  delete all filters    _L
 ;;   ("N" bm-previous)
 ;;   ;; Toggle
 ;;   ("t" bm-toggle))
+
+;;; elfeed actions
+(defhydra my-hydra-elfeed
+  (:hint nil)
+  "
+──────^^───────────────────^^────────────────^^─────────────
+[_C_] Capture entry  [_e_] email entry  [_p_] save PDF
+──────^^───────────────────^^────────────────^^───────────── "
+  ("e" jyun/email-elfeed-entry :exit t)
+  ("C" jyun/elfeed-search-org-capture-entry :exit t)
+  ("p" elfeed-show-pdf :exit t)
+  ("q" nil :exit t))
+(map!
+ (:map elfeed-show-mode-map
+  :desc "Elfeed actions"
+  :ne "a" #'my-hydra-elfeed/body)
+ (:map elfeed-search-mode-map
+  :desc "Elfeed actions"
+  :ne "a" #'my-hydra-elfeed/body))

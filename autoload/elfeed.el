@@ -181,3 +181,123 @@
             (make-directory (file-name-directory file) t))
           (url-copy-file pdf file)
           (funcall file-view-function file))))))
+
+;;; elfeed-db-compact takes > 10 sec
+;;;###autoload
+(defadvice! jyun/rss-cleanup-h ()
+  :override #'+rss-cleanup-h
+  "Disable db compression. Clean up after an elfeed session. Kills all elfeed and elfeed-org files."
+  (interactive)
+  ;; `delete-file-projectile-remove-from-cache' slows down `elfeed-db-compact'
+  ;; tremendously, so we disable the projectile cache:
+  ;; (let (projectile-enable-caching)
+  ;;   (elfeed-db-compact))
+  (let ((buf (previous-buffer)))
+    (when (or (null buf) (not (doom-real-buffer-p buf)))
+      (switch-to-buffer (doom-fallback-buffer))))
+  (let ((search-buffers (doom-buffers-in-mode 'elfeed-search-mode))
+        (show-buffers (doom-buffers-in-mode 'elfeed-show-mode))
+        kill-buffer-query-functions)
+    (dolist (file (bound-and-true-p rmh-elfeed-org-files))
+      (when-let (buf (get-file-buffer (expand-file-name file org-directory)))
+        (kill-buffer buf)))
+    (dolist (b search-buffers)
+      (with-current-buffer b
+        (remove-hook 'kill-buffer-hook #'+rss-cleanup-h :local)
+        (kill-buffer b)))
+    (mapc #'kill-buffer show-buffers))
+  (if (featurep! :ui workspaces)
+      (+workspace/delete "rss")
+    (when (window-configuration-p +rss--wconf)
+      (set-window-configuration +rss--wconf))
+    (setq +rss--wconf nil))
+  )
+
+;;;###autoload
+(defun jyun/elfeed-search-org-capture-entry (entry)
+  "elfeed-search-mode: Capture Elfeed entry to `inbox.org'."
+  (interactive
+   (list (or elfeed-show-entry (elfeed-search-selected :ignore-region))))
+  (setq jyun/target-elfeed-entry-title (elfeed-entry-title entry)
+        jyun/target-elfeed-entry-url (elfeed-entry-link entry)
+        jyun/target-elfeed-entry-id (elfeed-entry-id entry)
+        jyun/target-elfeed-org-link (concat "elfeed:" (car jyun/target-elfeed-entry-id) "#" (cdr jyun/target-elfeed-entry-id))
+        jyun/target-elfeed-title-link
+        (concat "Read - [["
+                ;; (plist-get org-store-link-plist :link)
+                jyun/target-elfeed-org-link
+                "]["
+                (truncate-string-to-width jyun/target-elfeed-entry-title
+                                          70 nil nil t)
+                "]] "))
+  (when elfeed-show-entry
+    (elfeed-kill-buffer))
+  (org-capture nil "EFE")
+  ;; (org-update-parent-todo-statistics)
+  )
+
+;;;###autoload
+(defun jyun/email-elfeed-entry (entry)
+  "Capture the elfeed entry and put it in an email."
+  (interactive
+   (list (or elfeed-show-entry (elfeed-search-selected :ignore-region))))
+  (let* ((title (elfeed-entry-title entry))
+         (url (elfeed-entry-link entry))
+         (content (elfeed-entry-content entry))
+         (entry-id (elfeed-entry-id entry))
+         (entry-link (elfeed-entry-link entry))
+         (entry-id-str (concat (car entry-id)
+                               "|"
+                               (cdr entry-id)
+                               "|"
+                               url)))
+    (when elfeed-show-entry
+      (elfeed-kill-buffer))
+
+    (compose-mail)
+    (message-goto-subject)
+    (insert title)
+
+    (if (featurep 'org-msg)
+        (let ((re-content
+               (with-temp-buffer
+                 (insert (elfeed-deref content))
+
+                 (goto-char (point-min))
+                 (while (re-search-forward "<br>" nil t)
+                   (replace-match "\n\n"))
+
+                 (goto-char (point-min))
+                 (while (re-search-forward "<.*?>" nil t)
+                   (replace-match ""))
+
+                 (fill-region (point-min) (point-max))
+                 (buffer-string)
+                 )))
+
+          (org-msg-goto-body)
+          (insert (format "You may find this interesting:
+%s\n\n" url))
+          (insert re-content))
+
+      (progn
+        (message-goto-body)
+        (insert (format "You may find this interesting:
+%s\n\n" url))
+        (insert (elfeed-deref content))
+
+        (message-goto-body)
+        (while (re-search-forward "<br>" nil t)
+          (replace-match "\n\n"))
+
+        (message-goto-body)
+        (while (re-search-forward "<.*?>" nil t)
+          (replace-match ""))
+
+        (message-goto-body)
+        (fill-region (point) (point-max))
+        ))
+
+    (message-goto-to)
+    ;; (ivy-contacts nil)
+    ))

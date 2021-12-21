@@ -559,6 +559,8 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
     "A list of org-agneda files that are not resided in `org-roam-directory'.")
 
   (setq org-agenda-files (append org-agenda-base-files (list org-roam-directory)))
+  ;; (require 'vulpea-agenda)
+  ;; (vulpea-agenda-files-update)
 
   ;; Don't ask to evaluate code block
   ;; (setq org-confirm-babel-evaluate nil)
