@@ -2,6 +2,29 @@
 ;;;###if (featurep! :lang ess)
 
 ;;;###autoload
+(defun jyun/run-last-Rscript (rname)
+  "Async Rscript the last file."
+  (let ((buf (current-buffer)))
+    (start-process "Rscript" "*Rscript*" "Rscript" rname)
+    (set-process-sentinel (get-process "Rscript") 'msg-me)
+    (with-current-buffer "*Rscript*"
+      (ess-r-mode)
+      (+popup/buffer)
+      (buffer-disable-undo))))
+
+;;;###autoload
+(defun jyun/run-Rscript (&optional arg)
+  "Async run Rscript on a selected file."
+  (interactive "P")
+  (cond
+   ((equal arg '(4))
+    (jyun/run-last-Rscript jyun/Rscript-last-executed-file))
+   (t
+    (let ((rname (file-relative-name (read-file-name "Rscript: "))))
+    (setq jyun/Rscript-last-executed-file rname)
+    (jyun/run-last-Rscript rname)))))
+
+;;;###autoload
 (defun Sweave-mode ()
   "ESS Sweave mode for Rnw files."
   (interactive)

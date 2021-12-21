@@ -1,5 +1,13 @@
 ;;; ../Dropbox/emacs/.doom.d/local/ess-plus.el -*- lexical-binding: t; -*-
 
+(defvar jyun/Rscript-last-executed-file nil
+  "Rscript file I run the last time.")
+(set-popup-rule! "\\*Rscript" :size 0.3 :select t :ttl nil)
+;; Display output in a popup.
+(defun msg-me (process event)
+   (princ
+     (format "Process: %s had the event `%s'" process event)))
+
 ;; ;; https://github.com/emacs-ess/ESS/issues/842
 ;; ;; doom has no quickhelp mode?
 ;; (defun disable-company-quickhelp-in-ESS-R ()
