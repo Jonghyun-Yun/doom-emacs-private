@@ -183,6 +183,7 @@ Return nil otherwise."
 
 ;;; org-roam
 ;; no numbers in org-roam buffers
+;;;###autoload
 (defadvice! doom-modeline--buffer-file-name-roam-aware-a (orig-fun)
   :around #'doom-modeline-buffer-file-name ; takes no args
   (if (s-contains-p org-roam-directory (or buffer-file-name ""))
@@ -193,7 +194,16 @@ Return nil otherwise."
        )
     (funcall orig-fun)))
 
+;;;###autoload
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (push arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)))
+
 ;;; org-ref v2 to v3
+;;;###autoload
 (defun org-ref-convert-cite-v2-to-v3 ()
   "Convert all cite: to cite:&."
   (interactive)
