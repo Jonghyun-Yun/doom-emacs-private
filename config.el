@@ -587,10 +587,10 @@
        )
 
 (after! citar
-  (setq! ;; citar-bibliography +biblio-default-bibliography-files
-   ;;  ;; citar-library-paths +biblio-pdf-library-dir
-   citar-notes-paths "~/org/roam/"
-   ))
+  ;; list of paths
+  (setq! citar-bibliography +biblio-default-bibliography-files
+         citar-library-paths (list +biblio-pdf-library-dir)
+         citar-notes-paths (list org-roam-directory)))
 
 ;; (setq bibtex-completion-pdf-open-function 'org-open-file)
 
