@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: fullframe
-# key: full
-# --
-   :PROPERTIES:
-   :BEAMER_ENV: fullframe
-   :END:

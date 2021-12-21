@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: TRUE
-# key: T
-# condition: (looking-back "\sT" 2)
-# --
-TRUE$0

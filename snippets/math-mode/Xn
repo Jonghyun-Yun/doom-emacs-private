@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# condition: (and (texmathp) 'auto)
-# name: X_1,...,X_n
-# key: Xn
-# group: math
-# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
-# --
-X_{1}, ..., X_{${1:n}}$0

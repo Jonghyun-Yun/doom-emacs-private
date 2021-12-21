@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: fig
-# key: fig
-# --
-fig.width = $1, fig.height = $0

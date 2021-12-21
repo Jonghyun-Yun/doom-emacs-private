@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# key : \TFQuestion
-# group: misc
-# name : \TFQuestion{T/F}
-# --
-\TFQuestion{${1:T/F}}{$0}

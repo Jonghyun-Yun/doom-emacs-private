@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: FALSE
-# key: F
-# condition: (looking-back "\sF" 2)
-# --
-FALSE$0

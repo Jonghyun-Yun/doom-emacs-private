@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: name-caption
-# key: nc
-# condition: (looking-back "^nc" 3)
-# --
-#+name: ${1:name}
-#+caption: ${2:caption}$0

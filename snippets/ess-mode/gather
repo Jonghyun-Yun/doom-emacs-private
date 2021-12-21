@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: gather
-# key: gather
-# --
-tidyr::gather(data = $1, key = key, value = value, $0)

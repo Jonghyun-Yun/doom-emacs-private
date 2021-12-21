@@ -1,7 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: newline
-# key: nl
-# binding: C-c j
-# --
-`(concat "\\" "\\")`
-$0

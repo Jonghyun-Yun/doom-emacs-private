@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: tangle using cat
-# key: tuc              
-# --
-#+begin_src sh
-cat > ${1:./filename} <<"END"
-$0
-END
-#+end_src

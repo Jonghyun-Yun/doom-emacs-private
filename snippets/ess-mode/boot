@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: boot
-# key: boot
-# --
-boot(data = $0, statistic = , R = , parallel = "multicore", ncpus = foreach::getDoParWorkers())

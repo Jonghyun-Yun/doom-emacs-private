@@ -1,6 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: setcounter
-# key: reset
-# binding: direct-keybinding
-# --
-\setcounter{subsection}{-1}

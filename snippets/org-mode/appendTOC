@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: append TOC items
-# binding:
-# condition: (or (= (current-column) 3) (= (current-column) 0))
-# key: ati
-# --
-# insert hyper links at the beginning or ending of TOC
-#+HTML: <script>$( "#text-table-of-contents ul:first" ).append( '<li><a href = "${1:http://google.com}">${2:Google}</a><li>' )</script>
-#+HTML: <script>$( "#text-table-of-contents ul:first" ).prepend( '<li><a href = "${3:http://bing.com}">${4:Bing}</a><li>' )</script>

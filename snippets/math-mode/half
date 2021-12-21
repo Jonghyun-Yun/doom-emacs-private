@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: half
-# condition: (and (texmathp) 'auto)
-# group: math
-# key: half
-# --
-\frac{1}{2}$0

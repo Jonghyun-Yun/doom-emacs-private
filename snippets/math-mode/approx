@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# condition: (and (texmathp) 'auto)
-# group: math
-# name: approx
-# key: approx
--
-# --
-\overset{\text{approx}}{\sim}$0

@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: cat
-# key: cat
-# --
-cat("$1### $0\n")

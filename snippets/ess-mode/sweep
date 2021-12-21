@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: sweep
-# key: sweep
-# --
-sweep(x      = ,
-      MARGIN = ,
-      STATS  = ,
-      FUN    = "-"
-      )

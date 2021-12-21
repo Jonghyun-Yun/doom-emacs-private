@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: write_csv
-# uuid: write_csv
-# key: write
-# condition: t
-# --
-readr::write_csv(x = ${1:data.frame}, path = "${2:filename}.csv", col_names = ${3:T})$0

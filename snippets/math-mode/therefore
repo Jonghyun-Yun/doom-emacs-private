@@ -1,8 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: therefore
-# key: tf
-# condition: (and (texmathp) 'auto)
-# group: math
-# binding: direct-keybinding
-# --
-\therefore~ $0

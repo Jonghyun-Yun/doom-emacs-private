@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: matrix
-# uuid: matrix
-# key: mat
-# condition: t
-# --
-matrix(${1:data}, nrow = ${2:rows}, ncol = ${3:cols})$0

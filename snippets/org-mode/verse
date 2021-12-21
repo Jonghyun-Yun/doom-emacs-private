@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: verse
-# key: verse
-# uuid: verse
-# --
-#+begin_verse
-`%`$0
-#+end_verse

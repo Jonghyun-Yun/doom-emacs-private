@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: glm
-# key: glm
-# --
-$0 <- glm(formula = $2,
-          family  = binomial(link = "logit"),
-          ## family  = poisson(link = "log"),
-          data    = $1)

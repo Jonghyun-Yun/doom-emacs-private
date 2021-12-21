@@ -1,7 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: d-by-dx
-# key: ddx
-# binding: direct-keybinding
-# ref: https://ctan.math.illinois.edu/macros/latex/contrib/physics/physics.pdf
-# --
-\dv{{$1:x}}(\grande)$0

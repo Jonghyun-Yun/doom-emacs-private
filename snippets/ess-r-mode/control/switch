@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: switch
-# uuid: switch
-# key: switch
-# condition: t
-# --
-switch (${1:object},
-	${2:case} = ${3:action}
-)

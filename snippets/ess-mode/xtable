@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: xtable
-# key: xtable
-# --
-print(xtable($0), table.placement = "H")

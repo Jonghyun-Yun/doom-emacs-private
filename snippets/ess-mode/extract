@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: extract
-# key: ext
-# --
-magrittr::extract2($0)

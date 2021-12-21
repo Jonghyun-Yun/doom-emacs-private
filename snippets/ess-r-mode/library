@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# key: lib
-# name: library
-# uuid: library
-# condition: (looking-back "^lib" 4)
-# --
-library(${1:`(ess-completing-read "package: " (ess-installed-packages))`})

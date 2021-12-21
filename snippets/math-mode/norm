@@ -1,8 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: norm
-# key: norm
-# condition: (and (texmathp) 'auto)
-# group: math
-# binding: direct-keybinding
-# --
-||$0||

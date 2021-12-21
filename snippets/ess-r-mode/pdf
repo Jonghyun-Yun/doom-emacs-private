@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: pdf
-# key: pdf
-# --
-pdf(file = "${1:filename}.pdf", width = 7, height = 7, family = "sans")
-$0
-dev.off()

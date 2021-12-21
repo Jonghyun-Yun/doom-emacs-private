@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: return
-# uuid: return
-# key: ret
-# condition: (looking-back "^\s*ret" 4)
-# --
-return(${1:code})

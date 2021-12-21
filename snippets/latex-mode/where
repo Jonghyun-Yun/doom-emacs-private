@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# condition: (and (texmathp) 'auto)
-# group: math
-# name: where
-# key: where
-# --
-&\text{where${1:}}${0:`%`}

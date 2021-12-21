@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: ci
-# key: ci
-# --
-+ c(-1,+1) * qnorm(0.975) * sqrt($0)

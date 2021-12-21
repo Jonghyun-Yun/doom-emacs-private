@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: lm
-# key: lm
-# --
-$0 <- lm(formula = $2,
-         data    = $1)

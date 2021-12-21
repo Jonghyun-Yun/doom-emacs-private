@@ -1,6 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: eg
-# key: eg
-# binding: direct-keybinding
-# --
-\textit{e.g.}, $0

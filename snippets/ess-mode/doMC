@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: doMC
-# key: doMC
-# --
-library(doMC)                    # parallel backend to foreach/plyr
-registerDoMC()                   # Turn on multicore processing
-options(cores = 4, mc.cores = 4) # Configuration for parallel package

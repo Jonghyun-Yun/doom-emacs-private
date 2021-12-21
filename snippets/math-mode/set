@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: set
-# condition: (and (texmathp) 'auto)
-# group: math
-# key: set
-# --
-\overset{\text{set}}{=} $0

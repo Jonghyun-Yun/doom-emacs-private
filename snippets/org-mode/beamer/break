@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: break
-# key: break
-# --
-   :PROPERTIES:
-   :BEAMER_opt: allowframebreaks,label=,t
-   :END:

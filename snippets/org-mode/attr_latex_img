@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: attr_latex_img
-# key: atlimg
-# condition: (= (current-column) 3) 
-# --
-#+attr_latex: ${1:float ${2:t/multicolumn/wrap/sideways/nil}} ${3:width=${4:0.9\textwidth}}
