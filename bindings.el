@@ -57,15 +57,26 @@
            ("g" . consult-org-agenda))
 
 ;;; org-roam
+(bind-keys* :prefix-map org-roam-mode-map
+            :prefix "C-c r")
+
 (map!
- :g
- "C-c n r" #'org-roam-buffer-toggle
- "C-c n f" #'org-roam-node-find
- "C-c n u" #'org-roam-ui-open
- "C-c n g" #'org-roam-graph
- "C-c n i" #'org-roam-node-insert
- :leader "n r u" #'org-roam-ui-open
- )
+ (:map org-roam-mode-map
+  :g
+  "p" #'dw/org-roam-find-project
+  "t" #'dw/org-roam-capture-task
+  "r" #'org-roam-buffer-toggle
+  "f" #'org-roam-node-find
+  "u" #'org-roam-ui-open
+  "g" #'org-roam-graph
+  "i" #'org-roam-node-insert
+  "I" #'org-roam-node-insert-immediate
+  )
+ :leader
+ "n r p" #'dw/org-roam-find-project
+ "n r t" #'dw/org-roam-capture-task
+ "n r u" #'org-roam-ui-open
+ "n r I" #'org-roam-node-insert-immediate)
 
 ;;;; org-roam-dailies
 ;; deprecated: use default one
@@ -256,28 +267,28 @@
   ;; :n "S" #'elfeed-search-set-filter
   ;; :n "M-RET" #'elfeed-search-browse-url
   ;; :n "y" #'elfeed-search-yank
-  :ne "p" #'elfeed-show-pdf))
-
+  ;; :ne "p" #'elfeed-show-pdf))
+))
 ;;;; elfeed show map
-(map!
- (:map elfeed-show-mode-map
-  :after elfeed-show
-  ;; [remap kill-this-buffer] "q"
-  ;; [remap kill-buffer] "q"
-  ;; :n doom-leader-key nil
-  ;; :nme "q" #'+rss/delete-pane
-  :nme "e" #'email-elfeed-entry
-  ;; :nm "o" #'ace-link-elfeed
-  ;; :nm "RET" #'org-ref-elfeed-add
-  ;; [remap elfeed-show-next] #'+rss/next
-  ;; [remap elfeed-show-prev] #'rss/previous ;;error
-  :nme "p" #'elfeed-show-pdf
-  :nme "C" #'jyun/elfeed-org-capture-entry
-  ;; :nm "+" #'elfeed-show-tag
-  ;; :nm "-" #'elfeed-show-untag
-  ;; :nm "s" #'elfeed-show-new-live-search
-  ;; :nm "y" #'elfeed-show-yank
-  ))
+;; (map!
+;;  (:map elfeed-show-mode-map
+;;   :after elfeed-show
+;;   ;; [remap kill-this-buffer] "q"
+;;   ;; [remap kill-buffer] "q"
+;;   ;; :n doom-leader-key nil
+;;   ;; :nme "q" #'+rss/delete-pane
+;;   :nme "e" #'email-elfeed-entry
+;;   ;; :nm "o" #'ace-link-elfeed
+;;   ;; :nm "RET" #'org-ref-elfeed-add
+;;   ;; [remap elfeed-show-next] #'+rss/next
+;;   ;; [remap elfeed-show-prev] #'rss/previous ;;error
+;;   :nme "p" #'elfeed-show-pdf
+;;   :nme "C" #'jyun/elfeed-org-capture-entry
+;;   ;; :nm "+" #'elfeed-show-tag
+;;   ;; :nm "-" #'elfeed-show-untag
+;;   ;; :nm "s" #'elfeed-show-new-live-search
+;;   ;; :nm "y" #'elfeed-show-yank
+;;   ))
 
 ;;; scimax
 (map!
@@ -346,3 +357,14 @@
    :leader
    :desc "Run make" "c m" #'jyun/make
    ))
+
+;;; citar
+(map! (:map citar-map
+       "p" #'citar-open-bibtex-pdf)
+      (:map citar-citation-map
+       "p" #'citar-open-bibtex-pdf))
+
+;;; ess
+(map!
+ :desc "Run Rscript"
+ :g "C-c e" #'jyun/run-Rscript)
