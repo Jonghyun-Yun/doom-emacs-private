@@ -22,3 +22,6 @@
 [submodule "langtool-posframe"]
 	path = local/langtool-posframe
 	url = https://github.com/Jonghyun-Yun/langtool-posframe.git
+[submodule "doom-snippets"]
+	path = local/doom-snippets
+	url = https://github.com/Jonghyun-Yun/doom-snippets.git
