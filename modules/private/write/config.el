@@ -318,6 +318,8 @@ Turning on wordnut mode runs the normal hook `mw-syno-mode-hook'.
     :modes latex-mode
     )
 
+  ;; to use texidote languagemodel, I needs to build languagetool in a certain way
+  ;;     --languagemodel /Users/yunj/.config/languagetool/languagemodel/ \
   ;; https://github.com/fikovnik/dotfiles/blob/master/.emacs.d/config.org#create-a-wrapper
   ;; https://github.com/sylvainhalle/textidote
   (flycheck-define-checker textidote

@@ -56,8 +56,8 @@
 ;; `load-theme' function. This is the default:
 ;; (setq doom-theme 'doom-one-light)
 ;; (load-theme 'doom-one-light t)
-;; (setq doom-theme 'modus-operandi)
 (load-theme 'modus-operandi t)
+;; (load-theme 'spacemacs-light t)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -86,16 +86,11 @@
 ;; they are implemented.
 
 (defvar IS-GUI (display-graphic-p)
-"(display-graphic-p)"
-  )
+"(display-graphic-p)")
 
 ;;; load lisp
 (setq load-prefer-newer t)
 (load! "local/splash")
-
-;; (setq +doom-dashboard-banner-file "emacs-e.svg")
-;; (setq +doom-dashboard-banner-dir (expand-file-name "misc/splash-images/" doom-private-dir))
-
 (with-eval-after-load 'hydra
   (load! "local/hydra-plus"))
 (load! "bindings")
@@ -651,6 +646,7 @@
    ;; shr-max-image-proportion 0.6
    elfeed-search-date-format '("%m/%d/%y" 10 :left)
    ))
+
 
 ;;;; elfeed org-capture
 (after! (org-capture elfeed)
