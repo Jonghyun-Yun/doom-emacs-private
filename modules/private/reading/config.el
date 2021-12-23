@@ -1,7 +1,7 @@
 ;;; private/reading/config.el -*- lexical-binding: t; -*-
 
 ;;; mixed-pitch
-(defvar variable-pitch-serif-font (font-spec :family "Alegreya" :size 27)
+(defvar variable-pitch-serif-font (font-spec :family "Alegreya" :size 23)
   "The default font to use.
 Must be a `font-spec', a font object, an XFT font string, or an XLFD string.
 

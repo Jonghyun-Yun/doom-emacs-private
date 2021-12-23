@@ -24,7 +24,7 @@
           ;; Options for `modus-themes-mode-line' are either nil, or a list
           ;; that can combine any of `3d' OR `moody', `borderless',
           ;; `accented', `padded'.
-          modus-themes-mode-line '(borderless)
+          modus-themes-mode-line '()
 
           ;; Options for `modus-themes-syntax' are either nil (the default),
           ;; or a list of properties that may include any of those symbols:
@@ -78,8 +78,7 @@
 
           modus-themes-headings '((t . (rainbow))) ; this is an alist: read the manual or its doc string
           modus-themes-variable-pitch-ui t
-          modus-themes-variable-pitch-headings t
-          )
+          modus-themes-variable-pitch-headings t)
     ;; Load the theme files before enabling a theme
     (modus-themes-load-themes)
     :config
@@ -92,8 +91,8 @@
 (with-eval-after-load 'doom-modeline
   ;; (set-face-attribute 'mode-line nil :family "Noto Sans")
   ;; (set-face-attribute 'mode-line-inactive nil :family "Noto Sans")
-  (set-face-attribute 'mode-line nil :inherit 'variable-pitch)
-  (set-face-attribute 'mode-line-inactive nil :inherit 'variable-pitch)
+  (set-face-attribute 'mode-line nil :inherit 'variable-pitch :height 0.9)
+  (set-face-attribute 'mode-line-inactive nil :inherit 'variable-pitch :height 0.9)
 
   ;; The right side of the modeline is cut off
   (setq all-the-icons-scale-factor 1.1)
@@ -103,7 +102,7 @@
 
   ;; How tall the mode-line should be. It's only respected in GUI.
   ;; If the actual char height is larger, it respects the actual height.
-  (setq doom-modeline-height 24)
+  (setq doom-modeline-height 20)
 
   ;; to see letters instead of the colored circles
   (setq doom-modeline-modal-icon nil)
@@ -115,7 +114,7 @@
   ;; (advice-add #'doom-modeline--font-height :override #'my-doom-modeline--font-height)
 
   ;; How wide the mode-line bar should be. It's only respected in GUI.
-  (setq doom-modeline-bar-width 3)
+  (setq doom-modeline-bar-width 2)
 
   ;; The limit of the window width.
   ;; If `window-width' is smaller than the limit, some information won't be displayed.
