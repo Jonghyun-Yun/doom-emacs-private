@@ -724,7 +724,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   :commands (vr/replace vr/query-replace)
   :init
   ;; (define-key global-map (kbd "C-c r") 'vr/replace)
-  (define-key global-map (kbd "C-c r") 'vr/query-replace)
+  (define-key global-map (kbd "C-c q") 'vr/query-replace)
   ;; :bind*
   ;; (([remap query-replace-regexp] . vr/query-replace))
   ;; if you use multiple-cursors, this is for you:

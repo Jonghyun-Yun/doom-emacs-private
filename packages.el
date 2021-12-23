@@ -144,7 +144,7 @@
 ;; mixed-pitch-face available
 ;; (package! mixed-pitch :pin "519e05f74825abf04b7d2e0e38ec040d013a125a")
 (package! modus-themes)
-(package! spacemacs-theme)
+(package! spacemacs-theme :disable t)
 ;; (package! doom-themes :disable t)
 
 ;;; coding
