@@ -2,6 +2,8 @@
 
 (defvar jyun/Rscript-last-executed-file nil
   "Rscript file I run the last time.")
+(defvar jyun/Rscript-last-working-directory nil
+  "Working directory that I run Rscript the last time.")
 (set-popup-rule! "\\*Rscript" :size 0.3 :select t :ttl nil)
 ;; Display output in a popup.
 (defun msg-me (process event)

@@ -1,10 +1,15 @@
 ;;; ~/.doom.d/autoload/ess.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! :lang ess)
 
+;;; Rscript
 ;;;###autoload
-(defun jyun/run-last-Rscript (rname)
-  "Async Rscript the last file."
-  (let ((buf (current-buffer)))
+(defun jyun/run-Rscript-file (rname &optional wd)
+  "Async Rscript a file."
+  (jyun/check-Rscript-file-extension rname)
+  (let ((default-directory (or wd default-directory))
+        (buf (current-buffer)))
+    (setq jyun/Rscript-last-executed-file rname)
+    (setq jyun/Rscript-last-working-directory default-directory)
     (start-process "Rscript" "*Rscript*" "Rscript" rname)
     (set-process-sentinel (get-process "Rscript") 'msg-me)
     (with-current-buffer "*Rscript*"
@@ -12,18 +17,86 @@
       (+popup/buffer)
       (buffer-disable-undo))))
 
-;;;###autoload
-(defun jyun/run-Rscript (&optional arg)
-  "Async run Rscript on a selected file."
-  (interactive "P")
-  (cond
-   ((equal arg '(4))
-    (jyun/run-last-Rscript jyun/Rscript-last-executed-file))
-   (t
-    (let ((rname (file-relative-name (read-file-name "Rscript: "))))
-    (setq jyun/Rscript-last-executed-file rname)
-    (jyun/run-last-Rscript rname)))))
+(defun jyun/run-last-Rscript-file ()
+  "Async Rscript the last file."
+  (interactive)
+  (jyun/run-Rscript-file jyun/Rscript-last-executed-file
+                         jyun/Rscript-last-working-directory))
 
+;;;###autoload
+;; (defun jyun/find-or-run-last-Rscript (&optional arg)
+;;   "Async run Rscript on a selected file."
+;;   (interactive "P")
+;;   (cond
+;;    ((equal arg '(4))
+;;     (jyun/run-last-Rscript jyun/Rscript-last-executed-file jyun/Rscript-last-working-directory))
+;;    (t
+;;     (let ((rname (read-file-name "Rscript: "))
+;;           (default-directory (ffip-project-root)))
+;;       (jyun/check-Rscript-file-extension rname)
+;;       (setq jyun/Rscript-last-executed-file rname)
+;;       (setq jyun/Rscript-last-working-directory default-directory)
+;;       (let ((relname (abbreviate-file-name
+;;                       (file-relative-name rname default-directory))))
+;;         (jyun/run-last-Rscript relname default-directory))))))
+
+;;;###autoload
+(defun jyun/find-and-run-Rscript-file (&optional guess)
+  "Select an R file and Async run it using Rscript."
+  (interactive)
+  (let* ((rname (read-file-name "Rscript: " nil guess))
+         (default-directory (ffip-project-root))
+         (relname (jyun/file-path-from-project rname)))
+    (jyun/run-Rscript-file relname)))
+
+;;;###autoload
+(defun jyun/file-path-from-project (&optional fname)
+  (let ((filename (or
+                   fname
+                   (buffer-file-name (buffer-base-buffer))
+                   (bound-and-true-p list-buffers-directory))))
+    (abbreviate-file-name
+     (file-relative-name filename (ffip-project-root)))))
+
+;;;###autoload
+(defun jyun/save-current-buffer-and-run-Rscript ()
+  "TODO"
+  (interactive)
+  (let ((default-directory (ffip-project-root))
+        (relname (jyun/file-path-from-project)))
+    (save-buffer)
+    (jyun/run-Rscript-file relname)))
+
+;;;###autoload
+(defun jyun/check-Rscript-file-extension (file)
+"TODO"
+(unless (or (string= (file-name-extension file) "R")
+            (string= (file-name-extension file) "r"))
+  (user-error "The target is not an Rscript.")))
+
+;;;###autoload
+(defun jyun/run-Rscript-at-point (&optional identifier)
+  "Tries to locate the file at point (or in active selection).
+Uses find-in-project functionality (provided by ivy, helm, or project),
+otherwise falling back to ffap.el (find-file-at-point)."
+  (interactive)
+  (let ((guess
+         (cond (identifier)
+               ((doom-region-active-p)
+                (buffer-substring-no-properties
+                 (doom-region-beginning)
+                 (doom-region-end)))
+               ((if (require 'ffap) (ffap-guesser)))
+               ((thing-at-point 'filename t)))))
+    (cond ((and (stringp guess)
+                (file-exists-p guess))
+           (jyun/run-Rscript-file guess (ffip-project-root)))
+          (t
+           (jyun/find-and-run-Rscript-file guess)
+           ))
+    t))
+
+;;; Sweave
 ;;;###autoload
 (defun Sweave-mode ()
   "ESS Sweave mode for Rnw files."
@@ -65,7 +138,7 @@
           (add-to-list 'reftex-file-extensions suffix))
         '(("nw") ("Snw") ("Rnw"))))
 
-;; ESS's equivalent of RStudio's `clean and rebuild'
+;;; RStudio's `clean and rebuild'
 ;;;###autoload
 (defun ess-r-devtools-clean-and-rebuild-package (&optional arg)
   "Interface to `devtools::install()'.

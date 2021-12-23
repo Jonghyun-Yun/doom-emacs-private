@@ -366,5 +366,11 @@
 
 ;;; ess
 (map!
- :desc "Run Rscript"
- :g "C-c e" #'jyun/run-Rscript)
+ :desc "Rscript a current buffer"
+ :g "C-c e b" #'jyun/save-current-buffer-and-run-Rscript
+ :desc "Rscript at point"
+ :g "C-c e e" #'jyun/run-Rscript-at-point
+ :desc "Rscript the last file"
+ :g "C-c e l" #'jyun/run-last-Rscript-file
+ :desc "Rscript a file"
+ :g "C-c e f" #'jyun/find-and-run-Rscript-file)
