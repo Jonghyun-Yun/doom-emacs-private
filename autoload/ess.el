@@ -2,20 +2,63 @@
 ;;;###if (featurep! :lang ess)
 
 ;;; Rscript
+
+;;;###autoload
+(defun jyun/tangle-and-run-Rscript-src-block (&optional arg)
+  "tangle src block and run it using Rscript."
+  (interactive "P")
+  (let ((rname (or (cdr (assq :tangle (nth 2 (org-babel-get-src-block-info 'light))))
+                   (user-error "Point is not in a source code block"))))
+    (cond ((equal arg '(4)) t)
+          (t
+           (org-babel-tangle '(16))))
+    (jyun/run-Rscript-file rname (ffip-project-root))))
+
+;;;###autoload
+(defun iterm-send-string (str)
+  "Send STR to a running iTerm instance."
+    (let ((cmd (concat "osascript "
+                       "-e 'tell app \"iTerm\"' "
+                       "-e 'tell current window' "
+                       "-e 'tell current session' "
+                       "-e $'write text \"" str "\"' "
+                       "-e 'end tell' "
+                       "-e 'end tell' "
+                       "-e 'end tell' ")))
+      (shell-command cmd)
+      ))
+
 ;;;###autoload
 (defun jyun/run-Rscript-file (rname &optional wd)
   "Async Rscript a file."
   (jyun/check-Rscript-file-extension rname)
   (let ((default-directory (or wd default-directory))
-        (buf (current-buffer)))
+        (buf (current-buffer))
+        (bname (concat "*Rscript:" rname "*")))
     (setq jyun/Rscript-last-executed-file rname)
     (setq jyun/Rscript-last-working-directory default-directory)
-    (start-process "Rscript" "*Rscript*" "Rscript" rname)
+    (start-process "Rscript" bname "Rscript" rname)
     (set-process-sentinel (get-process "Rscript") 'msg-me)
-    (with-current-buffer "*Rscript*"
+    (with-current-buffer bname
       (ess-r-mode)
       (+popup/buffer)
       (buffer-disable-undo))))
+
+(defun jyun/run-R-CMD-BATCH-file (rname &optional wd)
+  "Async Rscript a file."
+  (jyun/check-Rscript-file-extension rname)
+  (let ((default-directory (or wd default-directory))
+        (buf (current-buffer))
+        (bname (concat "*RCMD:" rname "*")))
+    (setq jyun/Rscript-last-executed-file rname)
+    (setq jyun/Rscript-last-working-directory default-directory)
+    (start-process "RCMD" bname "R" "CMD" "BATCH" rname)
+    (set-process-sentinel (get-process "RCMD") 'msg-me)
+    (with-current-buffer bname
+      (ess-r-mode)
+      (+popup/buffer)
+      (buffer-disable-undo))))
+
 
 (defun jyun/run-last-Rscript-file ()
   "Async Rscript the last file."
@@ -69,10 +112,11 @@
 
 ;;;###autoload
 (defun jyun/check-Rscript-file-extension (file)
-"TODO"
-(unless (or (string= (file-name-extension file) "R")
-            (string= (file-name-extension file) "r"))
-  (user-error "The target is not an Rscript.")))
+  "TODO"
+  (unless (or (string= (file-name-extension file) "R")
+              (string= (file-name-extension file) "r"))
+    (user-error "The target is not an Rscript."))
+  t)
 
 ;;;###autoload
 (defun jyun/run-Rscript-at-point (&optional identifier)
