@@ -700,9 +700,17 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 
 ;;;; deft
 (setq ;; deft-extensions '("org" "md" "txt")
-      deft-directory "~/org"
-        ;; include subdirectories
-      deft-recursive t)
+ deft-strip-summary-regexp
+  (concat "\\("
+           "[\n\t]" ;; blank
+           "\\|^#\\+[[:upper:]_]+:.*$" ;; org-mode metadata
+           "\\|^# #\\+[[:upper:]_]+:.*$" ;; commented org-mode metadata
+           "\\|:PROPERTIES:\n\\(.+\n\\)+:END:\n" ;; proprety
+           "\\)")
+ deft-use-filename-as-title t
+ deft-directory "~/org"
+ ;; include subdirectories
+ deft-recursive t)
 
 ;;;; ffip
 ;; for doom-modeline

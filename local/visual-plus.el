@@ -86,6 +86,18 @@
     ;; :bind ("<f5>" . modus-themes-toggle)
     ))
 
+;;; doom-theme
+(setq doom-themes-padded-modeline nil
+       doom-themes-treemacs-theme "doom-colors")
+(setq doom-themes-treemacs-enable-variable-pitch t
+      doom-themes-treemacs-line-spacing 1
+      doom-themes-treemacs-bitmap-indicator-width 2)
+(defface jyun/treemacs-face
+  '((t (:family "Roboto Consensed" :height 0.9)))
+  "A face to display file/diretory in treemacs."
+  :group 'basic-faces)
+(setq doom-themes-treemacs-variable-pitch-face 'jyun/treemacs-face)
+
 ;;; doom-modeline
 ;; https://github.com/seagle0128/doom-modeline
 (with-eval-after-load 'doom-modeline
