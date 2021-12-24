@@ -373,4 +373,7 @@
  :desc "Rscript the last file"
  :g "C-c e l" #'jyun/run-last-Rscript-file
  :desc "Rscript a file"
- :g "C-c e f" #'jyun/find-and-run-Rscript-file)
+ :g "C-c e f" #'jyun/find-and-run-Rscript-file
+ :desc "Tangle src block and Rscrit its target"
+ :g "C-c e t" #'jyun/tangle-and-run-Rscript-src-block
+ )
