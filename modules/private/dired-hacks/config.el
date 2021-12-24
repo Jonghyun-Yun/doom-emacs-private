@@ -21,7 +21,17 @@
   (evil-define-key 'normal dired-mode-map "g/" dired-filter-map))
 
 (use-package! dired-subtree
-  :commands dired-subtree-toggle)
+  :commands dired-subtree-toggle
+  :config
+  (setq dired-subtree-cycle-depth 4
+        dired-subtree-line-prefix ">")
+  (map! :map dired-mode-map
+        [backtab] #'dired-subtree-cycle
+        [tab] #'dired-subtree-toggle
+        :n "g^" #'dired-subtree-beginning
+        :n "g$" #'dired-subtree-end
+        :n "gm" #'dired-subtree-mark-subtree
+        :n "gu" #'dired-subtree-unmark-subtree))
 
 (use-package! dired-narrow
   :commands (dired-narrow-regexp)
@@ -29,9 +39,8 @@
   (evil-collection-define-key 'normal 'dired-mode-map
     "s" 'dired-narrow-regexp))
 
-(use-package! dired-collapse
-  :after dired
-  :commnads (dired-collapse-mode))
+ (use-package! dired-collapse
+  :commands (dired-collapse-mode))
 
 (use-package! dired-ranger
   :after dired
@@ -40,3 +49,18 @@
   (map! (:map dired-mode-map
          "g P" #'dired-ranger-paste
          "g C" #'dired-ranger-copy)))
+
+(use-package! dired-sidebar
+  :unless (featurep! :emacs dired +ranger)
+  :defer
+  :config
+  (setq dired-sidebar-width 25
+        dired-sidebar-theme 'ascii
+        dired-sidebar-tui-update-delay 5
+        dired-sidebar-recenter-cursor-on-tui-update t
+        dired-sidebar-no-delete-other-windows t
+        dired-sidebar-use-custom-modeline t)
+  (pushnew! dired-sidebar-toggle-hidden-commands
+            'evil-window-rotate-upwards 'evil-window-rotate-downwards)
+  (map! :map dired-sidebar-mode-map
+        :n "q" #'dired-sidebar-toggle-sidebar))
