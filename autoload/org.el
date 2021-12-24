@@ -52,6 +52,16 @@
                  (print heading)))
 
 ;;;###autoload
+(defun jyun/get-nth-up-heading (&optional nth)
+  "TODO: nth parent heading"
+  (let ((pos (point)))
+    (org-up-heading-all (or nth 1))
+    (let ((heading (jyun/get-heading)))
+      (goto-char pos)
+      heading
+      )))
+
+;;;###autoload
 (defun jyun/insert-src-block-name (name)
   "Go to a named source-code block."
   (interactive
@@ -73,7 +83,7 @@
 	       ((memq type '(babel-call inline-babel-call)) ;#+CALL:
 		(org-element-property :call context))
 	       ((car (org-element-property :results context))) ;#+RESULTS:
-	       ((let ((symbol (thing-at-point 'symbol))) ;Symbol.
+	       ((let ((symbol (thing-at-point 'symbol)))       ;Symbol.
 		  (and symbol
 		       (member-ignore-case symbol all-block-names)
 		       symbol)))

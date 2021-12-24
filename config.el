@@ -35,12 +35,12 @@
 ;;  doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
 
 (setq doom-font (font-spec :family "JetBrains Mono" :size 20)
-      doom-big-font (font-spec :family "JetBrains Mono" :size 32)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 30)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 20)
-      doom-unicode-font (font-spec :family "JuliaMono")
+      doom-unicode-font (font-spec :family "JuliaMono" :size 20)
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light :size 20))
 
-(setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 23))
+(setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 22))
 ;; (setq variable-pitch-serif-font (font-spec :family "Roboto Slab" :size 24 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Libre Baskerville" :size 23 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Libertinus Serif" :size 27 :weight 'light))
