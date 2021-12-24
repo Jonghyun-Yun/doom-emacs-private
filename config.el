@@ -87,6 +87,9 @@
 (defvar IS-GUI (display-graphic-p)
 "(display-graphic-p)")
 
+;; export to markdown when closing the frame
+(setq emacs-everywhere-major-mode-function #'org-mode)
+
 ;;; load lisp
 (setq load-prefer-newer t)
 (load! "local/splash")
@@ -110,8 +113,6 @@
 (load! "local/ess-plus")
 (load! "local/latex-plus")
 
-(setq! doom-themes-padded-modeline nil
-       doom-themes-treemacs-theme "doom-colors")
 (load! "local/visual-plus")
 
 ;; org -> latex -> md -> docx
@@ -709,15 +710,78 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   :commands
   (find-file-in-project
    find-file-in-current-directory-by-selected)
-  :general ([remap projectile-find-file] #'find-file-in-project
-            [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config)
+  :general (
+            ;; [remap projectile-find-file] #'find-file-in-project
+            ;; [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config
+            )
   :init
   (map! :leader "SPC" #'find-file-in-project-by-selected)
   :config
   (setq ffip-use-rust-fd t)
   ;; use ffip to find file in private config
   ;; (advice-add 'doom/find-file-in-private-config :around #'jyun/find-file-in-private-config)
-  )
+  (setq ffip-ignore-filenames
+  '(;; VCS
+    ;; project misc
+    "*.log"
+    ;; Ctags
+    "tags"
+    "TAGS"
+    ;; compressed
+    "*.tgz"
+    "*.gz"
+    "*.xz"
+    "*.zip"
+    "*.tar"
+    "*.rar"
+    ;; Global/Cscope
+    "GTAGS"
+    "GPATH"
+    "GRTAGS"
+    "cscope.files"
+    ;; html/javascript/css
+    "*bundle.js"
+    "*min.js"
+    "*min.css"
+    ;; Images
+    "*.jpg"
+    "*.jpeg"
+    "*.gif"
+    "*.bmp"
+    "*.tiff"
+    "*.ico"
+    ;; documents
+    "*.doc"
+    "*.docx"
+    "*.xls"
+    "*.ppt"
+    "*.odt"
+    ;; C/C++
+    "*.obj"
+    "*.so"
+    "*.o"
+    "*.a"
+    "*.ifso"
+    "*.tbd"
+    "*.dylib"
+    "*.lib"
+    "*.d"
+    "*.dll"
+    "*.exe"
+    ;; Java
+    ".metadata*"
+    "*.class"
+    "*.war"
+    "*.jar"
+    ;; Emacs/Vim
+    "*flymake"
+    "#*#"
+    ".#*"
+    "*.swp"
+    "*~"
+    "*.elc"
+    ;; Python
+    "*.pyc")))
 
 ;;;; regexp
 (use-package! visual-regexp
@@ -1120,7 +1184,7 @@ of the buffer text to be displayed in the popup"
 
 ;;; treemac
 (after! treemacs
-  (setq treemacs-width 30)
+  (setq treemacs-width 25)
   (defvar treemacs-file-ignore-extensions '()
     "File extension which `treemacs-ignore-filter' will ensure are ignored")
   (defvar treemacs-file-ignore-globs '()
@@ -1159,6 +1223,8 @@ of the buffer text to be displayed in the popup"
           "mw"
           ;; LaTeX - pdfx
           "pdfa.xmpi"
+          ;; ??
+          "blg"
           ))
   (setq treemacs-file-ignore-globs
         '(;; LaTeX
@@ -1166,6 +1232,7 @@ of the buffer text to be displayed in the popup"
           ;; AucTeX
           "*/.auctex-auto"
           "*/_region_.log"
+          "*/_region_.pdf"
           "*/_region_.tex")))
 
 ;;; dired "J"
