@@ -76,7 +76,7 @@
                         ("emacs" . ?e) ("literature" . ?l) ("coding" . ?c) ("project" . ?o)
                         ("paper" . ?p) ("grant" . ?g) ("job" . ?j) ("immigration" . ?i)
                         ;; home-related
-                        ("fun" . ?u) ("auto" . ?a) ("finance" . ?f) ("buy" . ?b) ("maintenance" . ?m)
+                        ("auto" . ?a) ("finance" . ?f) ("buy" . ?b) ("maintenance" . ?m)
                         (:startgroup . nil)
                         ("research" . ?r) ("teaching" . ?t) ("service" . ?v)
                         (:endgroup . nil)

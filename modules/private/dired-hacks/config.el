@@ -52,7 +52,7 @@
 
 (use-package! dired-sidebar
   :unless (featurep! :emacs dired +ranger)
-  :defer
+  :commands (dired-sidebar-toggle-sidebar dired-sidebar-show-sidebar)
   :config
   (setq dired-sidebar-width 25
         dired-sidebar-theme 'ascii

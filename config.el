@@ -55,7 +55,10 @@
 ;; `load-theme' function. This is the default:
 ;; (setq doom-theme 'doom-one-light)
 ;; (load-theme 'doom-one-light t)
+;; (load-theme 'doom-nord t)
 (load-theme 'modus-operandi t)
+(unless (display-graphic-p)
+  (load-theme 'doom-nord t))
 ;; (load-theme 'spacemacs-light t)
 
 ;; If you use `org' and don't want your org files in the default location below,
@@ -86,9 +89,6 @@
 
 (defvar IS-GUI (display-graphic-p)
 "(display-graphic-p)")
-
-;; export to markdown when closing the frame
-(setq emacs-everywhere-major-mode-function #'org-mode)
 
 ;;; load lisp
 (setq load-prefer-newer t)
@@ -257,8 +257,7 @@
   (after! org-superstar
     ;; (remove-hook 'org-mode-hook 'org-superstar-mode) ; manually turn it on!
     (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
-          org-superstar-remove-leading-stars nil
-          )))
+          org-superstar-remove-leading-stars nil)))
 (setq ;; org-src-window-setup 'current-window
  org-src-window-setup 'other-window
  org-return-follows-link t
@@ -267,18 +266,18 @@
  ;; (lambda () (and (looking-at org-outline-regexp) (looking-back "^\\**")))
  ;; nil
  org-log-into-drawer t)
-;; (setq org-ellipsis
+(setq org-ellipsis
 ;;       ;; " ▾ " ; FiraGo
 ;;       ;; " ▼ " ; Alegreya Sans
 ;;       ;; " ⬎ " ; IBM Plex Mono
 ;;       ;; " ↩ " ; firacode
-;;       ;; " ⤶ " ; juliamono
+            " ⤶ " ; juliamono
 ;;       ;; " ⤵ "
 ;;       ;; "… "
 ;;       ;; " ↴ "
-;;       " ⤷ "
+;;       ;; " ⤷ "
 ;;       org-cycle-separator-lines 2     ; -1 or 1 to use unicode org-ellipsis
-;;       )
+      )
 (setq
  ;; org-export-in-background t                  ; async export by default
  org-fontify-quote-and-verse-blocks nil
@@ -730,7 +729,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
    find-file-in-current-directory-by-selected)
   :general (
             ;; [remap projectile-find-file] #'find-file-in-project
-            ;; [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config
+            [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config
             )
   :init
   (map! :leader "SPC" #'find-file-in-project-by-selected)
@@ -1228,6 +1227,7 @@ of the buffer text to be displayed in the popup"
           "fls"
           "synctex.gz"
           "toc"
+          "cb"
           ;; LaTeX - glossary
           "glg"
           "glo"
