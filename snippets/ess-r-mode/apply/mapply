@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: mapply
+# key: mapply
+# group: apply
+# uuid: mapply
+# --
+mapply(${1:function}, ${2:...})

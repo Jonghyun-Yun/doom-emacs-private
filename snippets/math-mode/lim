@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# condition: (and (texmathp) 'auto)
+# group: math
+# name: lim
+# key: lim
+# --
+\lim_{${1:n} \to ${2:\infty}} $0

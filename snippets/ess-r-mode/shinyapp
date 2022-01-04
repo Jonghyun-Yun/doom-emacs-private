@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: shinyapp
+# uuid: shinyapp
+# key: shinyapp
+# condition: t
+# --
+library(shiny)
+
+ui <- fluidPage(
+  ${0:`%`}
+)
+
+server <- function(input, output, session) {
+
+}
+
+shinyApp(ui, server)

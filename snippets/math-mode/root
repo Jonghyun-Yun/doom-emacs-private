@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# condition: (and (texmathp) 'auto)
+# group: math
+# name: sqrt[]{}
+# key: root
+# --
+\sqrt[$1]{`%`$2}$0

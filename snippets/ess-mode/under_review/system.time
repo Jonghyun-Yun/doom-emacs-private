@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: system.time
+# key: system
+# --
+system.time({$0})

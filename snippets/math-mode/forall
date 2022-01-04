@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: forall
+# key: fa
+# condition: (and (texmathp) 'auto)
+# group: math
+# binding: direct-keybinding
+# --
+~\forall~ $0

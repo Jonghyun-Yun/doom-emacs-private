@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: select
+# uuid: select
+# key: select
+# condition: t
+# --
+dplyr::select($0)

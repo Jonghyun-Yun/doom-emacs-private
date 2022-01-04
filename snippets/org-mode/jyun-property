@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: property
+# key: p
+# condition: (and (looking-back "^p" 2) (> 20 (line-number-at-pos)))
+# --
+#+property: $0

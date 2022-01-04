@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: poisson density
+# key: dpois
+# group: math
+# condition: (and (texmathp) 'auto)
+# --
+\exp(-${1:\lambda}) \frac{$1^{${2:x}}}{$2!} $0

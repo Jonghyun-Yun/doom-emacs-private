@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: timestamp
+# uuid: teimstamp
+# key: ts
+# condition: t
+# --
+paste("#", date(), "------------------------------\n")

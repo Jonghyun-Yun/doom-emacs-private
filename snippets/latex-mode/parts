@@ -1,0 +1,24 @@
+# -*- mode: snippet -*-
+# key : \begparts
+# group: environments
+# name : \begin{parts} ... \end{parts}
+# --
+\begin{parts}
+  \part $0
+  \begin{solution}
+  \end{solution}
+  \vspace{\stretch{1}}
+  \part
+  \begin{solution}
+  \end{solution}
+  \vspace{\stretch{1}}
+  \part
+  \begin{solution}
+  \end{solution}
+  \vspace{\stretch{1}}
+  \part
+  \begin{solution}
+  \end{solution}
+  \vspace{\stretch{1}}
+\end{parts}
+\newpage

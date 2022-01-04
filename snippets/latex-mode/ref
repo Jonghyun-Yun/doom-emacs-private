@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# key: r
+# uuid: r
+# group: references
+# name : ref
+# condition: (and (not (save-restriction (widen) (texmathp))) (or (looking-back "~r" 2) (looking-back " r" 2) (looking-back "^r" 2)))
+# --
+\ref{${1:label$(unless yas-modified-p (+company/complete))}}$0

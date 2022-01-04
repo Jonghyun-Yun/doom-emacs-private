@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: d-by-dt
+# key: ddt
+# condition: (and (texmathp) 'auto)
+# group: math
+# --
+\\frac{\\dd $1}{\\dd ${2:t}}$0

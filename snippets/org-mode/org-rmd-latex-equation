@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: org-rmd-latex-equation
+# key: org-rmd-latex-equation
+# --
+#+begin_src latex :exports results :results value html
+$0
+#+end_src

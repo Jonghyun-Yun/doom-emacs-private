@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: gamma density
+# condition: (and (texmathp) 'auto)
+# group: math
+# key: dgamma                                                           
+# --
+\frac{1}{\Gamma(\alpha)\beta^{\alpha}}x^{\alpha - 1}e^{-\frac{x}{\beta}}$0

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: display math
+# key: M
+# condition: (and (not (texmathp)) (quote auto) (looking-back "\s*M" 2))
+# expand-env: ((yas-after-exit-snippet-hook (lambda () (org-edit-latex-fragment) (evil-insert-state) (insert "\n  \n") (left-char))))
+# --
+\\[`%`$0\\]

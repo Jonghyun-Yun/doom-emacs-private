@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: propto
+# key: prop
+# condition: (and (texmathp) 'auto)
+# group: math
+# --
+\propto $0

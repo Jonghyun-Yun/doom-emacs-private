@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: startup options
+# key: st
+# condition: (looking-back "^st" 2)
+# --
+#+startup: ${1:showeverything}

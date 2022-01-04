@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: sumi
+# condition: (and (texmathp) 'auto)
+# group: math
+# key: sumi
+# --
+\sum_{i=1}^{\infty}$0

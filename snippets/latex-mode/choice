@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: \begin{choices} ... \end{choices}
+# key: \begchoice
+# --
+\begin{choices}
+\correctchoice $0
+\choice
+\choice
+\choice
+\end{choices}

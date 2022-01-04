@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: inline_src_R
+# key: sR
+# --
+src_R[:session *R-Org* :exports results]{$1} $0

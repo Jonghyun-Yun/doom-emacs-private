@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# contributor: Song Qiang <tsiangsung@gmail.com>
+# key: binom
+# condition: (and (texmathp) 'auto)
+# group: math
+# name: \binom{n}{k}
+# --
+\binom{${1:n}}{${2:k}}$0

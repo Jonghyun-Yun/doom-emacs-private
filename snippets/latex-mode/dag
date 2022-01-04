@@ -1,0 +1,38 @@
+# -*- mode: snippet -*-
+# name: dag
+# key: dag
+# --
+%% DAG example
+%% Put these before \begin{document}
+%% \usepackage{tikz}
+%% \usetikzlibrary{positioning,shapes.geometric}$0
+
+\begin{center}
+\begin{tikzpicture}[%
+  ->,
+  shorten >=2pt,
+  >=stealth,
+  node distance=1cm,
+  pil/.style={
+    ->,
+    thick,
+    shorten =2pt,}
+  ]
+
+  %% Nodes
+  \node (A) {A};
+  \node[right = 2cm of A] (B) {B};
+  \node[right = 2cm of B] (C) {C};
+  \node[right = 2cm of C] (F) {F};
+
+  %% Edges
+  \draw[->] (A) to (B);
+
+  \draw[->] (A) to [out=25,in=155] (C);
+  \draw[->] (B) to (C);
+
+  \draw[->] (A) to [out=25,in=155] (F);
+  \draw[->] (B) to [out=-25,in=-155] (F);
+  \draw[->] (C) to (F);
+\end{tikzpicture}
+\end{center}

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# key: size
+# name: size
+# --
+`(concat "\\")`${1:$$(yas-choose-value '("tiny" "scriptsize" "footnotesize" "small" "normalsize" "large" "Large" "LARGE" "huge" "Huge"))}$0

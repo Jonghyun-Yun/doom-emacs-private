@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: minipage
+# key: minipage
+# --
+#+latex: \begin{minipage}{0.50\textwidth}
+
+#+latex: \end{minipage}
+#+latex: \begin{minipage}{0.50\textwidth}
+
+#+latex: \end{minipage}

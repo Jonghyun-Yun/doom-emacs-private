@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: exit
+# uuid: exit
+# key: e
+# condition: (looking-back "^>>> e" 1)
+# --
+exit()$0

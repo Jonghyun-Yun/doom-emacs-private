@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: global_property
+# uuid: global_property
+# key: p
+# condition: (and (looking-back "^p" 1) (> 20 (line-number-at-pos)))
+# --
+#+property: $0

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: downarrow
+# condition: (and (texmathp) 'auto)
+# group: math
+# key: da
+# --
+\downarrow $0

@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: simapply
+# key: simapply
+# group: apply
+# --
+res.$1 <- sapply($1,
+                 FUN = function(i) {
+                    
+                    $0
+                },
+                 simplify = FALSE)

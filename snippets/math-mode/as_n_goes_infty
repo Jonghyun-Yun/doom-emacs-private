@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: as_n_goes_to_infty
+# key: asn
+# condition: (and (texmathp) 'auto)
+# group: math
+# binding: direct-keybinding
+# --
+\text{ as } n \rightarrow \infty $0

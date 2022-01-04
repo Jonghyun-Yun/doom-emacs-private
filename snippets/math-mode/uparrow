@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: uparrow
+# key: ua
+# condition: (and (texmathp) 'auto)
+# group: math
+# --
+\uparrow $0

@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# contributor: Song Qiang <tsiangsung@gmail.com>
+# key: bigl
+# condition: (and (texmathp) 'auto)
+# group: math
+# name: \bigl( ... \bigr)
+# --
+\\${1:$$(yas-choose-value '("big" "Big" "bigg" "Bigg"))}l( $0  \\$1r)

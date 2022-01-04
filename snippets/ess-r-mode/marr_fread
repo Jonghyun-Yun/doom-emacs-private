@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: MARR path to datasets
+# key: marr_fread
+# --
+fread(paste0(marr_path, "${0:data.txt}"))

@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: fn
+# key: fn
+# contributor: conscat
+# NOTE: https://www.reddit.com/r/emacs/comments/rphl36/dynamic_c_snippet_i_wrote/
+# --
+${3:$(map-void yas-text "void " "auto ")}${1:name}($2)${3:$(map-void yas-text "" " -> ")}$3 {
+$0
+}

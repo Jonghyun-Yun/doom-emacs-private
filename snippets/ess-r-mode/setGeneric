@@ -1,0 +1,7 @@
+# key: sg
+# name: setGeneric
+# condition: t
+# --
+setGeneric("${1:generic}", function(${2:x, ...}) {
+	standardGeneric("$1")
+})

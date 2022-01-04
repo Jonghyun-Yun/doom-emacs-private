@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: exit
+# key: q
+# condition: (looking-back "^> q" 1)
+# --
+q()$0

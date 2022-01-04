@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: boldsymbol
+# key: bs
+# condition: (and (texmathp) 'auto)
+# group: math
+# binding: direct-keybinding
+# --
+\boldsymbol{$0}

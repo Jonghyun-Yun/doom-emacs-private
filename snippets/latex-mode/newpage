@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: newpage
+# key: np
+# binding: direct-keybinding
+# --
+\newpage
+$0

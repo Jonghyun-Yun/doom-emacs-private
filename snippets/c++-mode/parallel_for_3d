@@ -1,0 +1,21 @@
+# -*- mode: snippet -*-
+# name: parallel_for_3d
+# uuid: parallel_for_3d
+# key: parallel_for
+# condition: t
+# --
+tbb::parallel_for(
+tbb::blocked_range3d<int>(0, ${1:P}, 0, ${2:I}, 0, ${3,J}),
+  [&](tbb::blocked_range3d<int> r)
+  {
+  for (int ${4:p} = r.pages().begin(); $4 < r.pages().end(); ++$4)
+    {
+    for (int ${5:i} = r.rows().begin(); $5 < r.rows().end(); ++$5)
+      {
+      for (int ${6:j} = r.cols().begin(); $6 < r.cols().end(); ++$6)
+        {
+        $0
+        }
+      }
+    }
+  });

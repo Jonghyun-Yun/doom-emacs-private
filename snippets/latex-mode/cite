@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# key: c
+# uuid: c
+# group: references
+# name : cite
+# condition: (and (not (save-restriction (widen) (texmathp))) (or (looking-back " c" 2) (looking-back "^c" 2)))
+# --
+\cite{${1:label$(unless yas-modified-p (+company/complete))}}$0

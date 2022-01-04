@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: source
+# key: src
+# condition: (looking-back "^src" 4)
+# --
+source("${1:`(file-relative-name (read-file-name "File: "))`}")$0

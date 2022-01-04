@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# contributor: Mads D. Kristensen <madsdk@gmail.com>
+# key: case
+# condition: (and (texmathp) 'auto)
+# group: math
+# name: \begin{cases} ... \end{cases}
+# --
+\begin{cases}
+$1, & \text{{$2:if $n$ odd}} `(concat "\\" "\\")`
+$3, & \text{{$4:otherwise}}  `(concat "\\" "\\")`$0
+\end{cases}

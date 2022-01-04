@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: diagonal bmatrix
+# key: diag3
+# condition: (and (texmathp) 'auto)
+# group: math
+# --
+\\begin{bmatrix}
+${1:\\ddots} &  & \\\\
+ & ${2:\\ddots}  & \\\\
+ &  & ${3:\\ddots}
+\\end{bmatrix}

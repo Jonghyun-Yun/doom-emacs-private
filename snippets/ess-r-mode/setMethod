@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: setMethod
+# uuid: setMethod
+# key: sm
+# condition: t
+# --
+setMethod("${1:generic}", ${2:class}, function(${3:x, ...}) {
+	${0:`%`}
+})
