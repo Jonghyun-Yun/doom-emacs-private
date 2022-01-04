@@ -1541,6 +1541,19 @@ capture was not aborted."
       (ess-r-mode)
       (+popup/buffer)
       (buffer-disable-undo))))
+;;; clean local elc
+(defun jyun/clean-and-rebuild-local-pacakges ()
+  (interactive)
+  (let* ((pkg-list '("scimax" "doom-snippets" "langtool-posframe" "emacs-overleaf"))
+         (build-dir (concat doom-local-dir "straight/build-27.2/")))
+    (when (y-or-n-p "Do you want delete local package builds?")
+      (dolist (pkg pkg-list)
+        (delete-directory (concat build-dir pkg) t t)))
+    (when (y-or-n-p "Do you want rebuild local packages?")
+      (start-process "doom-sync" "*doom-sync" "doom" "sync")
+      (set-process-sentinel (get-process "doom-sync") 'msg-me))))
+
+
 ;;; svg-tag
 ;; (progn
 ;;   (defface font-svg-tag-tags
