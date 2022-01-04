@@ -120,7 +120,7 @@
 (defun org-roam-node-insert-immediate (arg &rest args)
   (interactive "P")
   (let ((args (push arg args))
-        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+        (org-roam-capture-templates (list (append (cadr org-roam-capture-templates)
                                                   '(:immediate-finish t)))))
     (apply #'org-roam-node-insert args)))
 
@@ -197,3 +197,66 @@
     (setf (alist-get :session org-babel-default-header-args:R) sname)
     )
   )
+
+;;; yank org-babel-src content
+;;;###autoload
+(defun jyun/org-babel-yank-src-block ()
+  "Copy the src-block contents."
+  (interactive)
+  (let*
+      ((area
+        (org-src--contents-area
+         (org-element-at-point)))
+       (beg
+        (car area))
+       (end
+        (cadr area)))
+    (copy-region-as-kill beg end)))
+
+;;;###autoload
+(defun jyun/org-babel-goto-src-block-end ()
+  "Goto the end of src-block."
+  (interactive)
+  (let*
+      ((area
+        (org-src--contents-area
+         (org-element-at-point)))
+       (end
+        (cadr area)))
+    (goto-char end)))
+
+;;; org-capture
+;;;###autoload
+(defun jyun/org-link-truncated-description-or-annotation ()
+  "Insert a org-link with truncated description or insert annotation."
+  (let ((link (plist-get org-store-link-plist :link))
+            (desc (plist-get org-store-link-plist :description))
+            (anno (plist-get org-store-link-plist :annotation)))
+    (if link
+ (concat "[[" link "][" (truncate-string-to-width desc 80 nil nil t) "]]")
+ anno)))
+
+;;;###autoload
+(defun jyun/org-link-truncate-initial-content-or-description ()
+  "Insert a org-link with truncated initial-conent (%i) or description."
+  (let ((link (plist-get org-store-link-plist :link))
+        (v-id (or (plist-get org-store-link-plist :initial)
+                  (plist-get org-store-link-plist :description)))
+        (anno (plist-get org-store-link-plist :annotation)))
+    (if link
+        (concat "[[" link "][" (truncate-string-to-width v-id 80 nil nil t) "]]")
+      anno)))
+
+;;; ipynb2org: clean org html blocks
+;;;###autoload
+(defun jyun/clean-org-html-block ()
+  (interactive)
+  (save-excursion
+    ;; hide all comments
+    (goto-char (point-min))
+    (while (re-search-forward
+            "^#\\+BEGIN_HTML[ \r\n]" nil t)
+      (let ((beg (match-beginning 0))
+            (end (re-search-forward
+                  "^#\\+END_HTML[ \r\n]" nil t)))
+        (kill-region beg end)))))

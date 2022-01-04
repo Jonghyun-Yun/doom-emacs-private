@@ -377,3 +377,11 @@
  :desc "Tangle src block and Rscrit its target"
  :g "C-c e t" #'jyun/tangle-and-run-Rscript-src-block
  )
+
+;;; org babel
+(after! org
+  (map!
+   (:map org-mode-map
+    :g "C-c C-v y" #'jyun/org-babel-yank-src-block
+    :g "C-c C-v C-u" #'jyun/org-babel-goto-src-block-end
+    )))
