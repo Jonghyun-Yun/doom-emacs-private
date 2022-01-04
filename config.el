@@ -869,7 +869,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;;         (0.5 . org-upcoming-deadline)
 ;;         (0.0 . org-upcoming-distant-deadline)))
 
-;;; coding
+;;; coding + lsp-mode
 ;; disable flycheck by default
 (remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
 
@@ -882,19 +882,48 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;;       large-file-warning-threshold nil
 ;;       line-move-visual nil)
 
-;;;; conda
-(use-package! conda
-  :after python
-  :config
-  (setq conda-anaconda-home (expand-file-name "/opt/intel/oneapi/intelpython/latest")
-        conda-env-home-directory (expand-file-name "~/.conda"))
+;;;; python
+(setq ein:jupyter-default-kernel "tf")
+(setq python-shell-interpreter "python"
+      python-shell-interpreter-args "-i")
+(after! python
+  (setq conda-env-home-directory (expand-file-name "~/.conda"))
   (conda-env-activate "tf")
-  ;; integration with term/eshell
-  (conda-env-initialize-interactive-shells)
-  (after! eshell (conda-env-initialize-eshell))
-  (add-to-list 'global-mode-string
-               '(conda-env-current-name (" conda:" conda-env-current-name " "))
-               'append))
+  (add-to-list 'python-shell-completion-native-disabled-interpreters
+               "jupyter")
+  (add-to-list 'python-shell-completion-native-disabled-interpreters
+               "python"))
+(setq lsp-pyright-python-executable-cmd "python")
+(setq dap-python-executable lsp-pyright-python-executable-cmd)
+
+;;;; lsp
+;; ccls takes too much resources
+(setq lsp-disabled-clients '((python-mode . pyls)
+                             (c-mode . ccls)
+                             (c++-mode . ccls)))
+(setq lsp-clangd-binary-path "/usr/local/opt/llvm/bin/clangd")
+
+(setq
+ lsp-ui-peek-mode nil                   ;; buggy if t before starting lsp
+ lsp-ui-doc-show-with-mouse t
+ ;; lsp-ui-sideline-show-hover nil
+ ;; lsp-ui-doc-show-with-cursor       nil
+ ;; lsp-ui-sideline-show-code-actions nil
+ lsp-headerline-breadcrumb-enable t)
+
+;;;; conda
+;; (use-package! conda
+;;   :after python
+;;   :config
+;;   (setq conda-anaconda-home (expand-file-name "/opt/intel/oneapi/intelpython/latest")
+;;         conda-env-home-directory (expand-file-name "~/.conda"))
+;;   (conda-env-activate "tf")
+;;   ;; integration with term/eshell
+;;   (conda-env-initialize-interactive-shells)
+;;   (after! eshell (conda-env-initialize-eshell))
+;;   (add-to-list 'global-mode-string
+;;                '(conda-env-current-name (" conda:" conda-env-current-name " "))
+;;                'append))
 
 ;;;; matlab
 (after! all-the-icons
@@ -1540,6 +1569,7 @@ capture was not aborted."
       (ess-r-mode)
       (+popup/buffer)
       (buffer-disable-undo))))
+
 ;;; clean local elc
 (defun jyun/clean-and-rebuild-local-pacakges ()
   (interactive)
