@@ -150,7 +150,6 @@
 ;;; coding
 (package! ess-view-data :pin "283251e8ac19ac0c0f89a4b0f0eb38482167e52b")
 (package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")
-(package! conda :pin "dce431b25f5a13af58cc7cacfa7968b5a888609c")
 
 ;;; convenience
 (package! ctrlf)
@@ -248,3 +247,10 @@
 ;; (package! auctex :pin "3b0a080ae596c26c17b15ba9c71fc5542eae238b"
 ;;   :recipe (:files ("*.el" "*.info" "dir"
 ;;                    "doc" "etc" "images" "latex" "style")))
+
+;;; python
+;; (package! conda :pin "7a34e06931515d46f9e22154762e06e66cfbc81c")
+(package! elpy :disable t)
+
+;;; svg
+(package! svg-tag-mode)
