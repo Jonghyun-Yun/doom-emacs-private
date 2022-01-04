@@ -1612,3 +1612,11 @@ capture was not aborted."
 ;;              ((lambda (tag)
 ;;                 (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date))))
 ;;             ))))
+
+;;; dired
+(after! dired
+  ;; block size 900kb = same as default
+  (setf (alist-get "\\.tar\\.bz2\\'" dired-compress-files-alist nil nil #'equal) "tar -cf - %i | pbzip2 -c9 > %o")
+  ;; level 9 compression
+  (push  '("\\.tar\\.lz\\'" .  "tar -cf - %i | plzip -9c > %o") dired-compress-files-alist))
+
