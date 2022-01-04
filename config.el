@@ -841,29 +841,27 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 (setq +zen-text-scale 0.8) ;; The text-scaling level for writeroom-mode
 
 ;;;; outline faces
-(custom-set-faces!
-  '(outline-1 :weight semi-bold :height 1.25)
-  '(outline-2 :weight semi-bold :height 1.15)
-  '(outline-3 :weight semi-bold :height 1.12)
-  '(outline-4 :weight semi-bold :height 1.09)
-  '(outline-5 :weight semi-bold :height 1.06)
-  '(outline-6 :weight semi-bold :height 1.03)
-  '(outline-8 :weight semi-bold)
-  '(outline-9 :weight semi-bold))
-;; latex faces
-(custom-set-faces!
-  '(font-latex-sectioning-0-face :inherit 'outline-1)
-  '(font-latex-sectioning-1-face :inherit 'outline-2)
-  '(font-latex-sectioning-2-face :inherit 'outline-3)
-  '(font-latex-sectioning-3-face :inherit 'outline-4)
-  '(font-latex-sectioning-4-face :inherit 'outline-5)
-  '(font-latex-sectioning-5-face :inherit 'outline-6)
-  '(font-latex-sectioning-6-face :inherit 'outline-7)
-  '(font-latex-sectioning-7-face :inherit 'outline-8)
-  )
+;; (custom-set-faces!
+;;   '(outline-1 :weight semi-bold :height 1.25)
+;;   '(outline-2 :weight semi-bold :height 1.15)
+;;   '(outline-3 :weight semi-bold :height 1.12)
+;;   '(outline-4 :weight semi-bold :height 1.09)
+;;   '(outline-5 :weight semi-bold :height 1.06)
+;;   '(outline-6 :weight semi-bold :height 1.03)
+;;   '(outline-8 :weight semi-bold)
+;;   '(outline-9 :weight semi-bold))
+;; (custom-set-faces!
+;;   '(outline-1 :inherit 'variable-pitch :weight light :height 1.5)
+;;   '(outline-2 :inherit 'variable-pitch :weight light :height 1.3)
+;;   '(outline-3 :weight light :height 1.2)
+;;   '(outline-4 :weight regular :height 1.1)
+;;   '(outline-5 :weight regular :height 1.05)
+;;   '(outline-6 :weight semi-bold :height 1.05)
+;;   '(outline-7 :weight semi-bold :height 1.05)
+;;   '(outline-8 :weight semi-bold :height 1.05)
 ;; org-title
-(custom-set-faces!
-  '(org-document-title :height 1.2))
+;; (custom-set-faces!
+;;   '(org-document-title :height 1.2))
 ;; deadlines in the error face when they're passed.
 ;; (setq org-agenda-deadline-faces
 ;;       '((1.001 . error)
@@ -1228,6 +1226,7 @@ of the buffer text to be displayed in the popup"
           "synctex.gz"
           "toc"
           "cb"
+          "cb2"
           ;; LaTeX - glossary
           "glg"
           "glo"

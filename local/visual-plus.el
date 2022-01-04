@@ -1,6 +1,7 @@
 ;;; ../Dropbox/emacs/.doom.d/local/visual-plus.el -*- lexical-binding: t -*-
 
-(when (eq doom-theme 'modus-operandi)
+;;; modus-theme
+(when (or (eq doom-theme 'modus-operandi) (eq doom-theme 'modus-vivendi))
   (use-package! modus-themes
     :init
     ;; Add all your customizations prior to loading the themes
@@ -23,7 +24,7 @@
 
           ;; Options for `modus-themes-mode-line' are either nil, or a list
           ;; that can combine any of `3d' OR `moody', `borderless',
-          ;; `accented', `padded'.
+          ;; `accented', number.
           modus-themes-mode-line '()
 
           ;; Options for `modus-themes-syntax' are either nil (the default),
@@ -69,20 +70,38 @@
 
           modus-themes-org-blocks 'tinted-background
 
-          modus-themes-org-agenda ; this is an alist: read the manual or its doc string
-          '((header-block . (variable-pitch scale-title))
-            (header-date . (grayscale workaholic bold-today))
-            (event . (accented scale-small))
+          ;; modus-themes-org-agenda ; this is an alist: read the manual or its doc string
+          ;; '((header-block . (variable-pitch scale-title))
+          ;;   (header-date . (grayscale workaholic bold-today))
+          ;;   (event . (accented scale-small))
+          ;;   (scheduled . uniform)
+          ;;   (habit . traffic-light-deuteranopia))
+          ;; This is an alist: read the manual or its doc string.
+          modus-themes-org-agenda
+          '((header-block . (variable-pitch light 1.4))
+            (header-date . (bold-today grayscale underline-today 1.2))
+            (event . (accented varied))
             (scheduled . uniform)
-            (habit . traffic-light-deuteranopia))
-
-          modus-themes-headings '((t . (rainbow))) ; this is an alist: read the manual or its doc string
-          modus-themes-variable-pitch-ui t
-          modus-themes-variable-pitch-headings t)
+            (habit . traffic-light))
+          ;; This is an alist: read the manual or its doc string.
+          ;; modus-themes-headings '((t . (rainbow))) ; this is an alist: read the manual or its doc string
+          modus-themes-headings
+          '((1 . (variable-pitch light 1.4))
+            (2 . (variable-pitch rainbow light 1.3))
+            (3 . (background monochrome light 1.2))
+            (4 . (rainbow regular 1.1))
+            (5 . (background rainbow regular 1.05))
+            (6 . (monochrome semibold 1.05))
+            (7 . (background rainbow semibold 1.05))
+            (t . (rainbow semibold 1.05)))
+          modus-themes-variable-pitch-ui t)
     ;; Load the theme files before enabling a theme
     (modus-themes-load-themes)
     :config
-    (modus-themes-load-operandi)
+    (when (eq doom-theme 'modus-operandi)
+      (modus-themes-load-operandi))
+    (when (eq doom-theme 'modus-vivendi)
+      (modus-themes-load-vivendi))
     ;; :bind ("<f5>" . modus-themes-toggle)
     ))
 
@@ -195,7 +214,8 @@
   (setq doom-modeline-irc nil)
 
   ;; Whether display the environment version.
-  (setq doom-modeline-env-version nil))
+  (setq doom-modeline-env-version nil)
+  )
 
 ;;; evil-cursor
 ;; (defun jyun/evil-state-cursors ()
