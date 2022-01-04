@@ -1620,3 +1620,10 @@ capture was not aborted."
   ;; level 9 compression
   (push  '("\\.tar\\.lz\\'" .  "tar -cf - %i | plzip -9c > %o") dired-compress-files-alist))
 
+;;; emacs-everywhere
+(setq emacs-everywhere-frame-parameters
+  `((name . "emacs-everywhere")
+    (width . 80)
+    (height . 24)))
+;; export to markdown when closing the frame
+;; (setq emacs-everywhere-major-mode-function #'org-mode)
