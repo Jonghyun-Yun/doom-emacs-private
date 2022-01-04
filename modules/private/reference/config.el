@@ -192,7 +192,7 @@ Creates new notes where none exist yet."
   (add-hook 'org-capture-prepare-finalize-hook #'+reference/append-org-id-to-skim-hook))
 
 (after! org
-  ;; (require 'org-mac-link)
+  (require 'org-mac-link)
   ;; (require 'org-id)
   (org-link-set-parameters "skim" :follow #'+reference/org-mac-skim-open))
 
@@ -200,7 +200,7 @@ Creates new notes where none exist yet."
   (add-to-list 'org-capture-templates
                '("GSA" "General Skim Annotation" entry
                  (file+function (lambda () (buffer-file-name)) +org-move-point-to-heading)
-                 "* %? \n:PROPERTIES: \n:CREATED: %U
+                 "* %? \n:PROPERTIES:
 :SKIM_NOTE: %(+reference/skim-get-annotation)
 :SKIM_PAGE: %(+reference/get-skim-page-number)
 :END: \n%i"))
@@ -236,7 +236,7 @@ Creates new notes where none exist yet."
                                             ;;        (org-previous-visible-heading
                                             ;;         1)))
                                             )))
-                     "* %? \n:PROPERTIES: \n:CREATED: %U
+                     "* %? \n:PROPERTIES:
 :SKIM_NOTE: %(+reference/skim-get-annotation)
 :SKIM_PAGE: %(+reference/get-skim-page-number)
 :END: \n%i"))
@@ -245,7 +245,7 @@ Creates new notes where none exist yet."
         (add-to-list 'org-capture-templates
                      '("SA" "Skim Annotation" entry
                        (file+function org-ref-bibliography-notes +reference/org-move-point-to-capture-skim-annotation)
-                       "* %? \n:PROPERTIES: \n:CREATED: %U \n:CITE: cite:%(+reference/skim-get-bibtex-key)
+                       "* %? \n:PROPERTIES: \n:CITE: cite:%(+reference/skim-get-bibtex-key)
 :SKIM_NOTE: %(+reference/skim-get-annotation)
 :SKIM_PAGE: %(+reference/get-skim-page-number)
 :END: \n%i")))))

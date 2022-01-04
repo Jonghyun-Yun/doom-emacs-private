@@ -150,20 +150,33 @@
              ;; other commands go here
              )
 
+
+
+;;;; jobs
+(add-to-list 'org-agenda-custom-commands
+             '("gj" "Jobs"
+               ((alltodo ""
+                         ((org-agenda-files '("~/org/jobs.org"))
+                          (org-agenda-overriding-header "Jobs")
+                          (org-super-agenda-groups
+                           '(
+                             (:auto-ts t)
+                             )))))))
+
 ;;;; projects
 (add-to-list 'org-agenda-custom-commands
              '("gc" "Current project"
                (
                 (search (concat "+" (projectile-project-name))
-                 ((org-agenda-files '("~/org/projects.org"))
-                  (org-agenda-overriding-header (concat "Current project: " (projectile-project-name)))
-                  (org-super-agenda-groups
-                   '(
-                     (:name none        ; Disable super group header
-                      :auto-outline-path t)
-                     (:discard (:anything t))
-                     ))
-                  ))
+                        ((org-agenda-files '("~/org/projects.org"))
+                         (org-agenda-overriding-header (concat "Current project: " (projectile-project-name)))
+                         (org-super-agenda-groups
+                          '(
+                            (:name none ; Disable super group header
+                             :auto-outline-path t)
+                            (:discard (:anything t))
+                            ))
+                         ))
                 )))
 
 (add-to-list 'org-agenda-custom-commands

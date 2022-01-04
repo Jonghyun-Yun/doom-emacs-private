@@ -256,97 +256,108 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
   (expand-file-name +org-capture-tickler-file org-directory))
 
 ;;; Org capture templates
+(defun jyun/org-capture-template-h ()
+  "Load org-capture-templates."
+  (progn
+    (setq org-capture-templates
+          '(
+            ("r" "Reminder" entry
+             (file+headline +org-capture-tickler-file "Reminders")
+             "* TODO %^{Reminder for...} \nSCHEDULED: %^t \n%i \n%a"
+             :prepend t)
+            ("t" "Todo")
+            ("tt" "Todo" entry
+             (file+headline +org-capture-inbox-file "Tasks")
+             "* TODO %? \n%i \n%a"
+             :prepend t)
+            ("td" "Todo deadline" entry
+             (file+headline +org-capture-inbox-file "Task Deadlines")
+             "* TODO %? \nDEADLINE: %^t \n%i \n%a"
+             :prepend t)
+            ("tr" "Rapid task" entry
+             (file+headline +org-capture-inbox-file "Rapid Tasks")
+             "* TODO %(jyun/org-link-truncated-description-or-annotation) \nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+1d\")) \n%i \n%?"
+             :prepend t)
+            ("tj" "Apply for jobs" entry
+             (file "~/org/jobs.org")
+             "* TODO %(jyun/org-link-truncated-description-or-annotation) :job:\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+1d\")) \n%i \n%?"
+             :heading "Job search"
+             :prepend t)
+            ("ti" "Jobs: initial to link description" entry
+             (file "~/org/jobs.org")
+             "* TODO %(jyun/org-link-truncate-initial-content-or-description) :job:\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+1d\")) \n%?"
+             :heading "Job search"
+             :prepend t)
+            ("ts" "Clocked subtask" entry (clock)
+             "* TODO %? \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a")
+            ("n" "Note" entry
+             (file+headline +org-capture-notes-file "Inbox")
+             "* %u %? \n%i \n%a"
+             :prepend t)
+            ("j" "Journal" entry
+             (file+olp+datetree +org-capture-journal-file)
+             "* %U %? \n%i \n%a"
+             :prepend t
+             ;; :tree-type week
+             ;; :clock-in :clock-resume
+             ;; :empty-lines 1
+             )
+            ;; ("je" "General Entry" entry
+            ;;  (file+olp+datetree +org-capture-journal-file)
+            ;;  "\n* %<%I:%M %p> - %^{Title} \n\n%?\n\n"
+            ;;  ;; :tree-type week
+            ;;  :clock-in :clock-resume
+            ;;  :empty-lines 1)
+            ;; ("jt" "Task Entry" entry
+            ;;  (file+olp+datetree +org-capture-journal-file)
+            ;;  "\n* %<%I:%M %p> - Task Notes: %a\n\n%?\n\n"
+            ;;  ;; :tree-type week
+            ;;  :clock-in :clock-resume
+            ;;  :empty-lines 1)
+            ;; ;; Will use {project-root}/{todo,notes,changelog}.org, unless a
+            ;; ;; {todo,notes,changelog}.org file is found in a parent directory.
+            ;; ;; Uses the basename from `+org-capture-todo-file',
+            ;; ;; `+org-capture-changelog-file' and `+org-capture-notes-file'.
+            ;; ("p" "Templates for projects")
+            ;; ("pt" "Project-local todo" entry  ; {project-root}/todo.org
+            ;;  (file+headline +org-capture-project-todo-file "Inbox")
+            ;;  "* TODO %?\n%i\n%a" :prepend t)
+            ;; ("pn" "Project-local notes" entry  ; {project-root}/notes.org
+            ;;  (file+headline +org-capture-project-notes-file "Inbox")
+            ;;  "* %U %?\n%i\n%a" :prepend t)
+            ;; ("pc" "Project-local changelog" entry  ; {project-root}/changelog.org"
+            ;;  (file+headline +org-capture-project-changelog-file "Unreleased")
+            ;;  "* %U %?\n%i\n%a" :prepend t)
+            ;; Will use {org-directory}/{+org-capture-projects-file} and store
+            ;; these under {ProjectName}/{Tasks,Notes,Changelog} headings. They
+            ;; support `:parents' to specify what headings to put them under, e.g.
+            ;; :parents ("Projects")
+            ("p" "Project")
+            ("pt" "Project todo" entry
+             #'+org-capture-central-project-todo-file
+             "* TODO %? \n%i \n%a"
+             :heading "Tasks"
+             :prepend nil)
+            ("pn" "Project note" entry
+             #'+org-capture-central-project-notes-file
+             "* %U %? \n%i \n%a"
+             :heading "Notes"
+             :prepend t)
+            ("pc" "Project changelog" entry
+             #'+org-capture-central-project-changelog-file
+             "* %U %? \n%i \n%a"
+             :heading "Changelog"
+             :prepend t)
+            ("pp" "New Project" entry
+             (file+headline +org-capture-todo-file "Projects")
+             "* %^{Project for...} [/] %^{GOAL}p \n%i"
+             :prepend t)))
+    ;; (require 'org-gcal)
+    (add-to-list 'org-capture-templates org-gcal-capture-templates)
+    (jyun/org-capture-skim-template-h)))
+
 (with-eval-after-load 'org-capture
-  ;; sheduleing
-  (setq org-capture-templates
-        '(
-          ("r" "Reminder" entry
-           (file+headline +org-capture-tickler-file "Reminders")
-           "* TODO %^{Reminder for...} \nSCHEDULED: %^t \n%i \n%a"
-           :prepend t)
-          ("t" "Todo")
-          ("tt" "Todo" entry
-           (file+headline +org-capture-inbox-file "Tasks")
-           "* TODO %? \n%i \n%a"
-           :prepend t)
-          ("td" "Todo deadline" entry
-           (file+headline +org-capture-inbox-file "Task Deadlines")
-           "* TODO %? \nDEADLINE: %^t \n%i \n%a"
-           :prepend t)
-          ("tr" "Rapid task" entry
-           (file+headline +org-capture-inbox-file "Rapid Tasks")
-           "* TODO %? \nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+1d\")) \n%i \n%a"
-           :prepend t)
-          ("ts" "Clocked subtask" entry (clock)
-           "* TODO %? \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a")
-          ("n" "Note" entry
-           (file+headline +org-capture-notes-file "Inbox")
-           "* %u %? \n%i \n%a"
-           :prepend t)
-          ("j" "Journal" entry
-           (file+olp+datetree +org-capture-journal-file)
-           "* %U %? \n%i \n%a"
-           :prepend t
-           ;; :tree-type week
-           ;; :clock-in :clock-resume
-           ;; :empty-lines 1
-           )
-          ;; ("je" "General Entry" entry
-          ;;  (file+olp+datetree +org-capture-journal-file)
-          ;;  "\n* %<%I:%M %p> - %^{Title} \n\n%?\n\n"
-          ;;  ;; :tree-type week
-          ;;  :clock-in :clock-resume
-          ;;  :empty-lines 1)
-          ;; ("jt" "Task Entry" entry
-          ;;  (file+olp+datetree +org-capture-journal-file)
-          ;;  "\n* %<%I:%M %p> - Task Notes: %a\n\n%?\n\n"
-          ;;  ;; :tree-type week
-          ;;  :clock-in :clock-resume
-          ;;  :empty-lines 1)
-          ;; ;; Will use {project-root}/{todo,notes,changelog}.org, unless a
-          ;; ;; {todo,notes,changelog}.org file is found in a parent directory.
-          ;; ;; Uses the basename from `+org-capture-todo-file',
-          ;; ;; `+org-capture-changelog-file' and `+org-capture-notes-file'.
-          ;; ("p" "Templates for projects")
-          ;; ("pt" "Project-local todo" entry  ; {project-root}/todo.org
-          ;;  (file+headline +org-capture-project-todo-file "Inbox")
-          ;;  "* TODO %?\n%i\n%a" :prepend t)
-          ;; ("pn" "Project-local notes" entry  ; {project-root}/notes.org
-          ;;  (file+headline +org-capture-project-notes-file "Inbox")
-          ;;  "* %U %?\n%i\n%a" :prepend t)
-          ;; ("pc" "Project-local changelog" entry  ; {project-root}/changelog.org"
-          ;;  (file+headline +org-capture-project-changelog-file "Unreleased")
-          ;;  "* %U %?\n%i\n%a" :prepend t)
-
-          ;; Will use {org-directory}/{+org-capture-projects-file} and store
-          ;; these under {ProjectName}/{Tasks,Notes,Changelog} headings. They
-          ;; support `:parents' to specify what headings to put them under, e.g.
-          ;; :parents ("Projects")
-          ("p" "Project")
-          ("pt" "Project todo" entry
-           #'+org-capture-central-project-todo-file
-           "* TODO %? \n%i \n%a"
-           :heading "Tasks"
-           :prepend nil)
-          ("pn" "Project note" entry
-           #'+org-capture-central-project-notes-file
-           "* %U %? \n%i \n%a"
-           :heading "Notes"
-           :prepend t)
-          ("pc" "Project changelog" entry
-           #'+org-capture-central-project-changelog-file
-           "* %U %? \n%i \n%a"
-           :heading "Changelog"
-           :prepend t)
-          ("pp" "New Project" entry
-           (file+headline +org-capture-todo-file "Projects")
-           "* %^{Project for...} [/] %^{GOAL}p \n%i"
-           :prepend t)))
-
-  ;; (require 'org-gcal)
-  (add-to-list 'org-capture-templates org-gcal-capture-templates)
-  (jyun/org-capture-skim-template-h)
-  )
+  (jyun/org-capture-template-h))
 
 ;;; org-config
 (setq org-structure-template-alist
@@ -407,8 +418,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
                      :latex-compiler
                      ("pdflatex -interaction nonstopmode -output-directory %o %f")
                      :image-converter
-                     ("convert -density %D -trim -antialias %f -quality 100 %O")))
-       ))
+                     ("convert -density %D -trim -antialias %f -quality 100 %O")))))
 
 ;;; view org output: SPC m v
   (map! :map org-mode-map
@@ -419,35 +429,17 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
   (defvar org-view-external-file-extensions '("html" "docx")
     "File formats that should be opened externally.")
 
-;;; youtube link
 (with-eval-after-load 'org
+;;; org-refile
   (setq org-refile-targets '(("~/org/todo.org" :maxlevel . 3)
                              ("~/org/projects.org" :maxlevel . 3)
                              ("~/org/tickler.org" :maxlevel . 1)
-                             ("~/org/someday.org" :level . 1)
+                             ("~/org/someday.org" :maxlevel . 1)
                              ("~/org/notes.org" :maxlevel . 2)
+                             ("~/org/jobs.org" :maxlevel . 1)
                              ))
 
   ;; (add-to-list 'org-refile-targets '(("~/org/someday.org" :level . 3) ("~/org/notes.org" :maxlevel . 3)))
-
-  ;; ;; (setq org-export-headline-levels 5) ; I like nesting
-  ;; ;; ignore heading not content
-  ;; (require 'ox-extra)
-  ;; (ox-extras-activate '(ignore-headlines))
-
-  ;;   ;; doom implemented this already
-  ;;   ;; embed youtube in exported html
-  ;;   (org-link-set-parameters "yt" :export #'+org-export-yt)
-  ;;   (defun +org-export-yt (path desc backend _com)
-  ;;     (cond ((org-export-derived-backend-p backend 'html)
-  ;;            (format "<iframe width='440' \
-  ;; height='335' \
-  ;; src='https://www.youtube.com/embed/%s' \
-  ;; frameborder='0' \
-  ;; allowfullscreen>%s</iframe>" path (or "" desc)))
-  ;;           ((org-export-derived-backend-p backend 'latex)
-  ;;            (format "\\href{https://youtu.be/%s}{%s}" path (or desc "youtube")))
-  ;;           (t (format "https://youtu.be/%s" path))))
 
 ;;; program for org latex preview
   ;; ;; fast, no unicode-math
@@ -486,17 +478,6 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
           ("\\.pptx\\'" . default)
           ))
 
-  ;; (org-defkey org-mode-map [(meta return)] 'org-meta-return)  ;; The actual fix
-
-  ;; M-RET broken in org-mode
-  ;; (use-package org
-  ;; :bind (:map spacemacs-org-mode-map-root-map ("M-RET" . nil)))
-
-  ;; Spell-checking exceptions
-  ;; (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
-  ;; (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
-  ;; (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
-
   (after! ispell
     ;; some org elements
     (pushnew! ispell-skip-region-alist
@@ -526,8 +507,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
               '("\\\\eqref\{" . "\}")
               '("\\\\label\{" . "\}")
               '("\\\\printbibliography\\[" . "\\]")
-              )
-    )
+              ))
 
   ;; org-mode and knitr
   ;; (require 'ox-md) ;; required to markdown export
@@ -555,12 +535,11 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
                                   "~/org/tickler.org"
                                   "~/org/routines.org"
                                   "~/org/journal.org"
+                                  "~/org/jobs.org"
                                   "~/org/notes.org")
     "A list of org-agneda files that are not resided in `org-roam-directory'.")
 
   (setq org-agenda-files (append org-agenda-base-files (list org-roam-directory)))
-  ;; (require 'vulpea-agenda)
-  ;; (vulpea-agenda-files-update)
 
   ;; Don't ask to evaluate code block
   ;; (setq org-confirm-babel-evaluate nil)
