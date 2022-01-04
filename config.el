@@ -172,6 +172,16 @@
              emacs-overleaf-mode))
 
 ;;;; reftex
+(defface font-roboto-condensed
+  '((t (:family "Roboto Condensed")))
+  "TODO"
+  :group 'basic-faces)
+(after! reftex
+  (setq reftex-toc-split-windows-horizontally t
+        reftex-toc-split-windows-fraction 0.2
+        reftex-level-indent 2)
+  (add-hook 'reftex-toc-mode-hook (lambda () (variable-pitch-mode 1))))
+
 (setq reftex-ref-style-default-list '("Default"
                                       "Cleveref"
                                       "AMSmath"))
