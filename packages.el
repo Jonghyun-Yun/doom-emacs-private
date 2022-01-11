@@ -190,12 +190,12 @@
 ;; (package! doom-snippets
 ;;   :recipe (:host github
 ;;            :repo "jonghyun-yun/doom-snippets"
-;;            :files ("*.el" "*"))
+;;            :files (:defaults "*"))
 ;;   :pin "f1f18df5898233d3b1a4a28fc4df48e257d21667")
 
 (package! doom-snippets
   :recipe (:local-repo "local/doom-snippets"
-           :files ("*.el" "*")))
+           :files (:defaults "*")))
 
 ;;; tempo fixes
 ;; missing org-mac-link.el

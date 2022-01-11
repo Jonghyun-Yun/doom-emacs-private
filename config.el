@@ -485,6 +485,7 @@
 ;;;; projectile
 (after! projectile
   (projectile-add-known-project "/Users/yunj/Dropbox/emacs/.doom.d/")
+  (projectile-add-known-project "/Users/yunj/OneDrive/workspace/python-tutorial/HarvardX-Using_Python_for_Research/")
   ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt")
   ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt/GEPS")
   (projectile-add-known-project "/Users/yunj/Dropbox/research/lsjm-art/lsjm-draft/")
@@ -875,6 +876,9 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;; disable flycheck by default
 (remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
 
+;; line-number
+(add-hook! 'prog-mode-hook (setq display-line-numbers t))
+
 ;; ibuffer and R buffers need to be manually added
 (advice-add 'ibuffer :around #'jyun/persp-add-buffer)
 (advice-add 'R :around #'jyun/persp-add-buffer)
@@ -907,11 +911,12 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 
 (setq
  lsp-ui-peek-mode nil                   ;; buggy if t before starting lsp
- lsp-ui-doc-show-with-mouse t
  ;; lsp-ui-sideline-show-hover nil
  ;; lsp-ui-doc-show-with-cursor       nil
  ;; lsp-ui-sideline-show-code-actions nil
  lsp-headerline-breadcrumb-enable t)
+(after! lsp-mode
+  (setq lsp-ui-doc-show-with-mouse t))
 
 ;;;; conda
 ;; (use-package! conda
