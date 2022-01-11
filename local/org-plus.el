@@ -279,17 +279,19 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
              "* TODO %(jyun/org-link-truncated-description-or-annotation) \nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+1d\")) \n%i \n%?"
              :prepend t)
             ("tj" "Apply for jobs" entry
-             (file "~/org/jobs.org")
+             (file+headline +org-capture-job-file "Job posting")
              "* TODO %(jyun/org-link-truncated-description-or-annotation) :job:\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+1d\")) \n%i \n%?"
-             :heading "Job search"
              :prepend t)
             ("ti" "Jobs: initial to link description" entry
-             (file "~/org/jobs.org")
+             (file+headline +org-capture-job-file "Job posting")
              "* TODO %(jyun/org-link-truncate-initial-content-or-description) :job:\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+1d\")) \n%?"
-             :heading "Job search"
              :prepend t)
             ("ts" "Clocked subtask" entry (clock)
              "* TODO %? \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a")
+            ("b" "Bookmark" entry
+             (file+headline +org-capture-bookmark-file "Bookmark")
+             "* %u %(jyun/org-link-truncated-description-or-annotation 70) %? \n%i"
+             :empty-lines 1)
             ("n" "Note" entry
              (file+headline +org-capture-notes-file "Inbox")
              "* %u %? \n%i \n%a"

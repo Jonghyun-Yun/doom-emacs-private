@@ -227,24 +227,24 @@
 
 ;;; org-capture
 ;;;###autoload
-(defun jyun/org-link-truncated-description-or-annotation ()
+(defun jyun/org-link-truncated-description-or-annotation (&optional len)
   "Insert a org-link with truncated description or insert annotation."
   (let ((link (plist-get org-store-link-plist :link))
-            (desc (plist-get org-store-link-plist :description))
-            (anno (plist-get org-store-link-plist :annotation)))
+        (desc (plist-get org-store-link-plist :description))
+        (anno (plist-get org-store-link-plist :annotation)))
     (if link
- (concat "[[" link "][" (truncate-string-to-width desc 80 nil nil t) "]]")
+        (concat "[[" link "][" (truncate-string-to-width desc (or len 80) nil nil t) "]]")
  anno)))
 
 ;;;###autoload
-(defun jyun/org-link-truncate-initial-content-or-description ()
+(defun jyun/org-link-truncate-initial-content-or-description (&optional len)
   "Insert a org-link with truncated initial-conent (%i) or description."
   (let ((link (plist-get org-store-link-plist :link))
         (v-id (or (plist-get org-store-link-plist :initial)
                   (plist-get org-store-link-plist :description)))
         (anno (plist-get org-store-link-plist :annotation)))
     (if link
-        (concat "[[" link "][" (truncate-string-to-width v-id 80 nil nil t) "]]")
+        (concat "[[" link "][" (truncate-string-to-width v-id (or len 80) nil nil t) "]]")
       anno)))
 
 ;;; ipynb2org: clean org html blocks

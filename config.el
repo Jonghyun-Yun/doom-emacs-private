@@ -105,7 +105,8 @@
   (remove-hook 'org-load-hook #'+org-init-capture-defaults-h)
   (add-to-list 'org-tags-exclude-from-inheritance "roadmap")
   (load! "local/vulpea-agenda/vulpea-agenda")
-  )
+  (setq +org-capture-job-file "~/org/jobs.org")
+  (setq +org-capture-bookmark-file "~/org/inbox.org"))
 (load! "local/org-plus")
 
 ;; ;; (when (featurep! :ui ligatures +extra)
