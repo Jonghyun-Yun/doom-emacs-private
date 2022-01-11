@@ -813,6 +813,8 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   ;; to use visual-regexp-steroids's isearch instead of the built-in regexp isearch, also include the following lines:
   ;; (define-key esc-map (kbd "C-r") 'vr/isearch-backward) ;; C-M-r
   ;; (define-key esc-map (kbd "C-s") 'vr/isearch-forward) ;; C-M-s)
+  :config
+  (require 'visual-regexp-steroids)
   )
 
 ;;; visual, ui, window mangement
@@ -1584,76 +1586,76 @@ capture was not aborted."
 
 
 ;;; svg-tag
-;; (progn
-;;   (defface font-svg-tag-tags
-;;     '((t (:family "Roboto Slab" :weight light)))
-;;     "TODO"
-;;     :group 'basic-faces)
-;;   (use-package! svg-tag-mode
-;;     :init
-;;     (add-hook! '(org-mode-hook) #'svg-tag-mode)
-;;     :commands (svg-tag-mode global-svg-tag-mode)
-;;     :config
-;;     (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
-;;     (defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}")
-;;     (defconst day-re "[A-Za-z]\\{3\\}")
-;;     (defun svg-progress-percent (value)
-;;       (svg-image (svg-lib-concat
-;;                   (svg-lib-progress-bar (/ (string-to-number value) 100.0)
-;;                                         nil :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
-;;                   (svg-lib-tag (concat value "%")
-;;                                nil :stroke 0 :margin 0)) :ascent 'center))
-;;     (defun svg-progress-count (value)
-;;       (let* ((seq (mapcar #'string-to-number (split-string value "/")))
-;;              (count (float (car seq)))
-;;              (total (float (cadr seq))))
-;;         (svg-image (svg-lib-concat
-;;                     (svg-lib-progress-bar (/ count total) nil
-;;                                           :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
-;;                     (svg-lib-tag value nil
-;;                                  :stroke 0 :margin 0)) :ascent 'center)))
-;;     (setq svg-tag-tags
-;;           `(
-;;             ;; Task priority
-;;             ("\\[#[A-Z]\\]" . ( (lambda (tag)
-;;                                   (svg-tag-make tag :face 'org-priority
-;;                                                 :beg 2 :end -1 :margin 0))))
-;;             ;; TODO / DONE
-;;             ("TODO" . ((lambda (tag) (svg-tag-make "TODO" :face 'org-todo :inverse t :margin 0))))
-;;             ("DONE" . ((lambda (tag) (svg-tag-make "DONE" :face 'org-done :margin 0))))
-;;             ("NEXT" . ((lambda (tag) (svg-tag-make "NEXT" :face '+org-todo-next :margin 0))))
-;;             ("HOLD" . ((lambda (tag) (svg-tag-make "HOLD" :face '+org-todo-hold :margin 0))))
-;;             ("IDEA" . ((lambda (tag) (svg-tag-make "IDEA" :face '+org-todo-idea :margin 0))))
-;;             ("WAIT" . ((lambda (tag) (svg-tag-make "WAIT" :face '+org-todo-wait :margin 0))))
-;;             ("KILL" . ((lambda (tag) (svg-tag-make "KILL" :face '+org-todo-kill :margin 0))))
-;;             ;; Org @tags
-;;             ("\\(:@[A-Za-z0-9]+\\)" . ((lambda (tag) (svg-tag-make tag :beg 1 :face 'org-tag))))
-;;             ("\\(:@[A-Za-z0-9]+:\\)$" . ((lambda (tag) (svg-tag-make tag :beg 1 :end -1 :face 'org-tag))))
-;;             ;; Org tags
-;;             (":\\([A-Za-z0-9]+\\)" . ((lambda (tag) (svg-tag-make tag :face 'org-tag))))
-;;             (":\\([A-Za-z0-9]+[ \-]\\)" . ((lambda (tag) tag)))
-;;             (,(format "%s" time-re) . ((lambda (tag) tag)))
-;;             ;; Active date (with day name, with or without time)
-;;             (,(format "\\(<%s %s>\\)" date-re day-re) .
-;;              ((lambda (tag)
-;;                 (svg-tag-make tag :beg 1 :end -1 :margin 0))))
-;;             (,(format "\\(<%s %s *\\)%s>" date-re day-re time-re) .
-;;              ((lambda (tag)
-;;                 (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0))))
-;;             (,(format "<%s %s *\\(%s>\\)" date-re day-re time-re) .
-;;              ((lambda (tag)
-;;                 (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0))))
-;;             ;; Inactive date  (with day name, with or without time)
-;;             (,(format "\\(\\[%s %s\\]\\)" date-re day-re) .
-;;              ((lambda (tag)
-;;                 (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'org-date))))
-;;             (,(format "\\(\\[%s %s *\\)%s\\]" date-re day-re time-re) .
-;;              ((lambda (tag)
-;;                 (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0 :face 'org-date))))
-;;             (,(format "\\[%s %s *\\(%s\\]\\)" date-re day-re time-re) .
-;;              ((lambda (tag)
-;;                 (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date))))
-;;             ))))
+(progn
+  (defface font-svg-tag-tags
+    '((t (:family "Roboto Slab" :weight light)))
+    "TODO"
+    :group 'basic-faces)
+  (use-package! svg-tag-mode
+    :init
+    (add-hook! '(org-mode-hook) #'svg-tag-mode)
+    :commands (svg-tag-mode global-svg-tag-mode)
+    :config
+    (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
+    (defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}")
+    (defconst day-re "[A-Za-z]\\{3\\}")
+    (defun svg-progress-percent (value)
+      (svg-image (svg-lib-concat
+                  (svg-lib-progress-bar (/ (string-to-number value) 100.0)
+                                        nil :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
+                  (svg-lib-tag (concat value "%")
+                               nil :stroke 0 :margin 0)) :ascent 'center))
+    (defun svg-progress-count (value)
+      (let* ((seq (mapcar #'string-to-number (split-string value "/")))
+             (count (float (car seq)))
+             (total (float (cadr seq))))
+        (svg-image (svg-lib-concat
+                    (svg-lib-progress-bar (/ count total) nil
+                                          :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
+                    (svg-lib-tag value nil
+                                 :stroke 0 :margin 0)) :ascent 'center)))
+    (setq svg-tag-tags
+          `(
+            ;; Task priority
+            ("\\[#[A-Z]\\]" . ( (lambda (tag)
+                                  (svg-tag-make tag :face 'org-priority
+                                                :beg 2 :end -1 :margin 0))))
+            ;; TODO / DONE
+            ("TODO" . ((lambda (tag) (svg-tag-make "TODO" :face 'org-todo :inverse t :margin 0))))
+            ("DONE" . ((lambda (tag) (svg-tag-make "DONE" :face 'org-done :margin 0))))
+            ("NEXT" . ((lambda (tag) (svg-tag-make "NEXT" :face '+org-todo-next :margin 0))))
+            ("HOLD" . ((lambda (tag) (svg-tag-make "HOLD" :face '+org-todo-hold :margin 0))))
+            ("IDEA" . ((lambda (tag) (svg-tag-make "IDEA" :face '+org-todo-idea :margin 0))))
+            ("WAIT" . ((lambda (tag) (svg-tag-make "WAIT" :face '+org-todo-wait :margin 0))))
+            ("KILL" . ((lambda (tag) (svg-tag-make "KILL" :face '+org-todo-kill :margin 0))))
+            ;; Org @tags
+            ("\\(:@[A-Za-z0-9]+\\)" . ((lambda (tag) (svg-tag-make tag :beg 1 :face 'org-tag))))
+            ("\\(:@[A-Za-z0-9]+:\\)$" . ((lambda (tag) (svg-tag-make tag :beg 1 :end -1 :face 'org-tag))))
+            ;; ;; Org tags
+            ;; (":\\([A-Za-z0-9]+\\)" . ((lambda (tag) (svg-tag-make tag :face 'org-tag))))
+            ;; (":\\([A-Za-z0-9]+[ \-]\\)" . ((lambda (tag) tag)))
+            ;; (,(format "%s" time-re) . ((lambda (tag) tag)))
+            ;; ;; Active date (with day name, with or without time)
+            ;; (,(format "\\(<%s %s>\\)" date-re day-re) .
+            ;;  ((lambda (tag)
+            ;;     (svg-tag-make tag :beg 1 :end -1 :margin 0))))
+            ;; (,(format "\\(<%s %s *\\)%s>" date-re day-re time-re) .
+            ;;  ((lambda (tag)
+            ;;     (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0))))
+            ;; (,(format "<%s %s *\\(%s>\\)" date-re day-re time-re) .
+            ;;  ((lambda (tag)
+            ;;     (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0))))
+            ;; ;; Inactive date  (with day name, with or without time)
+            ;; (,(format "\\(\\[%s %s\\]\\)" date-re day-re) .
+            ;;  ((lambda (tag)
+            ;;     (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'org-date))))
+            ;; (,(format "\\(\\[%s %s *\\)%s\\]" date-re day-re time-re) .
+            ;;  ((lambda (tag)
+            ;;     (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0 :face 'org-date))))
+            ;; (,(format "\\[%s %s *\\(%s\\]\\)" date-re day-re time-re) .
+            ;;  ((lambda (tag)
+            ;;     (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date))))
+            ))))
 
 ;;; dired
 (after! dired
@@ -1669,3 +1671,114 @@ capture was not aborted."
     (height . 24)))
 ;; export to markdown when closing the frame
 ;; (setq emacs-everywhere-major-mode-function #'org-mode)
+
+
+
+;;; Tab-bar
+(use-package! tab-bar
+  :if (not (version-list-<
+            (version-to-list emacs-version)
+            '(27 0 1 0)))
+  ;; :after cus-face
+  :commands (tab-bar-mode)
+  :bind-keymap ("H-t" . tab-prefix-map)
+  :bind
+  (("C-M-<tab>" . tab-bar-switch-to-next-tab)
+   ("C-M-S-<tab>" . tab-bar-switch-to-prev-tab)
+   ("H-<tab>" . tab-bar-switch-to-next-tab)
+   ("H-<iso-lefttab>" . tab-bar-switch-to-prev-tab)
+   ("s-u" . tab-bar-history-back)
+   ("C-c u" . tab-bar-history-back)
+   ("s-S-U" . tab-bar-history-forward)
+   :map tab-prefix-map
+   ("h" . my/tab-bar-show-hide-tabs)
+   ("H-t" . tab-bar-select-tab-by-name))
+  :config
+  (tab-bar-history-mode 1)
+  (setq  tab-bar-close-last-tab-choice 'tab-bar-mode-disable
+         tab-bar-show                   1
+         tab-bar-tab-name-truncated-max 14
+         tab-bar-new-tab-choice        'ibuffer
+         ;; tab-bar-tab-name-function '(lambda nil
+         ;;                              "Use directory as tab name."
+         ;;                              (let ((dir (expand-file-name
+         ;;                                          (or (if (fboundp 'project-root)
+         ;;                                                  (project-root (project-current)))
+         ;;                                              default-directory))))
+         ;;                                (substring dir (1+ (string-match "/[^/]+/$" dir)) -1 )))
+         ;; tab-bar-select-tab-modifiers  '(meta)
+         ;; tab-bar-tab-name-function 'tab-bar-tab-name-truncated
+         ;; tab-bar-tab-name-function '(lambda nil (upcase (tab-bar-tab-name-truncated)))
+         tab-bar-close-button-show nil
+         )
+  (defun my/tab-bar-show-hide-tabs ()
+    "Show or hide tabs."
+    (interactive)
+    (setq tab-bar-show (if tab-bar-show nil 1)))
+  (custom-set-faces
+  '(tab-bar ((t (:height 1.0))))
+  '(tab-bar-tab-inactive ((t (:inherit tab-bar :weight light))))
+  ;; '(tab-bar-tab ((t (:inherit variable-pitch :background "#ffffff" :underline t :height 0.95)))))
+  '(tab-bar-tab ((t (:inherit tab-bar :background "#ffffff" :underline t :height 1.0))))
+  )
+  ;; (advice-add 'tab-bar-rename-tab
+  ;;             :after
+  ;;             (defun +tab-bar-name-upcase (_name &optional _arg)
+  ;;               "Upcase current tab name"
+  ;;               (let* ((tab (assq 'current-tab (frame-parameter nil 'tabs)))
+  ;;                      (tab-name (alist-get 'name tab)))
+  ;;                 (setf (alist-get 'name tab) (upcase tab-name)
+  ;;                       (alist-get 'explicit-name tab) t))
+  ;;               ))
+  )
+(use-package! tab-bar-echo-area
+  :ensure
+  :demand
+  :after tab-bar
+  :init
+  (defvar tab-bar-format nil "Format for tab-bar-echo-area-mode")
+  :config
+  (tab-bar-echo-area-mode 1)
+  (add-to-list 'tab-bar-format #'tab-bar-format-menu-bar)
+  :bind (:map tab-prefix-map
+              ("c" . tab-bar-echo-area-display-tab-name)
+              ("P" . tab-bar-echo-area-display-tab-names)))
+(use-package! tab-bar-groups
+  :ensure
+  :after tab-bar
+  :config
+  (tab-bar-groups-activate))
+
+;;; remove ^M
+(defun delete-carrage-returns ()
+  (interactive)
+  (save-excursion
+    (goto-char 0)
+    (while (search-forward "\r" nil :noerror)
+      (replace-match ""))))
+
+;;; vertico extension
+;; karthink
+;; https://www.reddit.com/r/emacs/comments/ryqfz1/vertico_extensions_demo/
+;; (vertico-indexed-mode)
+(use-package! vertico-quick
+  ;; :load-path "~/.local/share/git/vertico/extensions/"
+  :after vertico
+  :bind (:map vertico-map
+         ("M-i" . vertico-quick-insert)
+         ("C-'" . vertico-quick-exit)
+         ("C-o" . vertico-quick-embark))
+  :config
+  (defun vertico-quick-embark (&optional arg)
+    "Embark on candidate using quick keys."
+    (interactive)
+    (when (vertico-quick-jump)
+      (embark-act arg))))
+
+;;; very large files
+;; make VLF available without delaying startup,
+(use-package! vlf-setup
+  :defer-incrementally vlf-tune vlf-base vlf-write vlf-search vlf-occur vlf-follow vlf-ediff vlf)
+
+;;; initial evil state
+(evil-set-initial-state 'sql-interactive-mode 'insert)

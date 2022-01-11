@@ -157,7 +157,7 @@
 (package! easy-kill)
 ;; (package! git-link :pin "2b510cf3f28bed842853294fc4ee23c7f8b6435a") ; use browse-at-remote SPC g y/Y
 (package! visual-regexp :pin "48457d42a5e0fe10fa3a9c15854f1f127ade09b5")
-;; (package! visual-regexp-steroids :pin "a6420b25ec0fbba43bf57875827092e1196d8a9e")
+(package! visual-regexp-steroids :pin "a6420b25ec0fbba43bf57875827092e1196d8a9e")
 (package! key-chord)
 (package! golden-ratio.el
   :recipe (:host github :repo "roman/golden-ratio.el"))
@@ -254,3 +254,14 @@
 
 ;;; svg
 (package! svg-tag-mode)
+
+;;; tab-bar
+(package! tab-bar-echo-area
+:recipe (:host github :repo "fritzgrabo/tab-bar-echo-area"))
+(package! tab-bar-groups
+:recipe (:host github :repo "fritzgrabo/tab-bar-groups"))
+
+;;; very large file
+(package! vlf :recipe (:host github :repo "m00natic/vlfi"
+                       :files (:defaults "*"))
+  :pin "cc02f2533782d6b9b628cec7e2dcf25b2d05a27c")
