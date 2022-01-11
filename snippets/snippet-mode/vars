@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: Snippet header
+# key:#
+# uuid: #
+# --
+# -*- mode: snippet -*-
+${1:# contributor: `(user-full-name)`
+}# name: $2
+# key: ${3:trigger-key}${4:
+# condition: t}
+# --
+$0

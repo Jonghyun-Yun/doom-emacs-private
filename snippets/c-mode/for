@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: for
 # key: for
+# condition: t
 # --
 for (int ${1:index} = ${2:begin}; $1 < ${3:end}; $1++) {
   $0

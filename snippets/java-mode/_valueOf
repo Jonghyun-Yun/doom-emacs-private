@@ -1,0 +1,5 @@
+# key: val
+# name: .valueOf
+# condition: t
+# --
+${1:$$(yas-choose-value '("Boolean" "Integer" "Double" "String"))}.valueOf($2);$0

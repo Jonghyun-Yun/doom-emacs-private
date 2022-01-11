@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: ei
+# key: ei
+# group: control structure
+# type: command
+# --
+(doom-snippets-expand :uuid "elif")

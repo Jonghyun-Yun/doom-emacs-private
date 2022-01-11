@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: else 
+# key: else
+# condition: t
+# --
+else (${1:true}) {
+    `%`$2
+}
+$0

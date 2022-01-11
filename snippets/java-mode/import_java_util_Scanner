@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: import java.util.Scanner
+# uuid: java_util_Scanner
+# key: Scanner
+# condition: t
+# --
+import java.util.Scanner;

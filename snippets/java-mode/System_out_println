@@ -1,0 +1,5 @@
+# key: sout
+# name: System.out.println
+# condition: t
+# --
+System.out.println(`yas-selected-text`$1);$0

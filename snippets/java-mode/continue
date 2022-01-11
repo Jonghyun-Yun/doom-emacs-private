@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: continue
+# key: cont
+# condition: t
+# --
+continue;
+$0

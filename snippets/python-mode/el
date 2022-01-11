@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: el
+# key: el
+# group: control structure
+# type: command
+# --
+(doom-snippets-expand :uuid "else")

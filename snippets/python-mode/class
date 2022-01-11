@@ -5,4 +5,5 @@
 # group: object oriented
 # --
 class ${1:Name}($2):
-    $0
+  def __init__(${3:self}$4):
+      pass

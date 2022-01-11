@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: elif
+# key: elif
+# uuid: elif
+# group: control structure
+# --
+elif ${1:cond}:
+    ${2:`(or % "pass")`}

@@ -1,0 +1,21 @@
+;;; Elfeed score file                                     -*- lisp -*-
+((version 9)
+ ("title")
+ ("content")
+ ("title-or-content"
+  (:text ".*[- ]Bayes[- ian]" :title-value 100 :content-value 10 :type R)
+  (:text "sptial" :title-value 100 :content-value 10 :type s)
+  (:text "process data" :title-value 100 :content-value 10 :type w)
+  (:text "ensemble" :title-value 100 :content-value 10 :type w)
+  (:text ".*Monte Carlo.*" :title-value 100 :content-value 10 :type R)
+  (:text "natural language processing" :title-value 50 :content-value 10 :type w)
+  (:text ".*[- ]random matrix[- s].*" :title-value 5 :content-value 1 :type r)
+  (:text ".*[- ]dirichlet[- s].*" :title-value 5 :content-value 1 :type r))
+ ("tag")
+ ("authors"
+  (:text "Yuguo Chen" :value 100 :type S)
+  (:text "Andrew Gelman" :value 100 :type S))
+ ("feed")
+ ("link")
+ (mark -600)
+ ("adjust-tags"))

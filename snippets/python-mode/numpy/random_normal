@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: random.normal
+# uuid: random.normal
+# key: rnorm
+# condition: t
+# --
+random.normal(0, 1, ${1:size})$0

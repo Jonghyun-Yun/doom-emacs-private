@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: random.random
+# uuid: random.random
+# key: runif
+# condition: t
+# --
+random.random(${1:size})$0

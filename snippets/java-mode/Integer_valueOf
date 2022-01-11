@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Integer.valueOf
+# key: strtol
+# uuid: Integer.valueOf
+# --
+Integer.valueOf($1);$0

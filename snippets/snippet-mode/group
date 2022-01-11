@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: group
+# key: group
+# uuid: group
+# --
+# group : ${1:group}

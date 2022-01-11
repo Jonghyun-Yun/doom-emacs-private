@@ -1,0 +1,6 @@
+# key: rdunif
+# name: random.randinit
+# condition: t
+# note: high won't be generated.
+# --
+random.randint(${1:low}, ${2:high}, ${3:size})$0
