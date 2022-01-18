@@ -181,7 +181,8 @@
 ;;; mathpix
 (map! :g "C-c s t" #'+lookup/dictionary-definition
       :leader
-      "i m" #'mathpix-screenshot)
+      ;; "i m" #'mathpix-screenshot
+      "i m" #'jyun/mathpix-screenshot)
 
 ;;; dictionary
 (when (featurep! :private write)
