@@ -1788,3 +1788,50 @@ capture was not aborted."
 
 ;;; initial evil state
 (evil-set-initial-state 'sql-interactive-mode 'insert)
+
+;;; mathpix
+(defun jyun/mathpix-screenshot (&optional arg)
+  "Mathpix in math env. C-u: display math, C-u C-u: inline math"
+  (interactive "P")
+  (cond ((equal arg '(4)) (progn (insert "\n\\[\n") (mathpix-screenshot) (insert "\n\\]\n")))
+        ((equal arg '(16)) (progn (insert "\\(") (mathpix-screenshot) (insert "\\)")))
+        (t (mathpix-screenshot))))
+
+;;; scala
+;; https://ag91.github.io/blog/2020/10/16/my-emacs-setup-for-scala-development/
+(use-package ob-ammonite
+  ;; :ensure-system-package (amm . "sudo sh -c '(echo \"#!/usr/bin/env sh\" && curl -L https://github.com/lihaoyi/Ammonite/releases/download/2.0.4/2.13-2.0.4) > /usr/local/bin/amm && chmod +x /usr/local/bin/amm' && amm")
+  :defer t
+  :when (featurep! :lang scala)
+  :config
+  (use-package ammonite-term-repl)
+  (setq ammonite-term-repl-auto-detect-predef-file nil)
+  (setq ammonite-term-repl-program-args '("--no-default-predef" "--no-home-predef"))
+  ;; (defun ag91/substitute-sbt-deps-with-ammonite ()
+  ;;   "Substitute sbt-style dependencies with ammonite ones."
+  ;;   (interactive)
+  ;;   (apply 'narrow-to-region (if (region-active-p) (my/cons-cell-to-list (region-bounds)) `(,(point-min) ,(point-max))))
+  ;;   (goto-char (point-min))
+  ;;   (let ((regex "\"\\(.+?\\)\"[ ]+%\\{1,2\\}[ ]+\"\\(.+?\\)\"[ ]+%\\{1,2\\}[ ]+\"\\(.+?\\)\"")
+  ;;         (res))
+  ;;     (while (re-search-forward regex nil t)
+  ;;       (let* ((e (point))
+  ;;              (b (search-backward "\"" nil nil 6))
+  ;;              (s (buffer-substring-no-properties b e))
+  ;;              (s-without-percent (apply 'concat (split-string s "%")))
+  ;;              (s-without-quotes (remove-if (lambda (x) (eq x ?" ;"
+  ;;                                                      ))
+  ;;                                           s-without-percent))
+  ;;              (s-as-list (split-string s-without-quotes)))
+  ;;         (delete-region b e)
+  ;;         (goto-char b)
+  ;;         (insert (format "import $ivy.`%s::%s:%s`" (first s-as-list) (second s-as-list) (third s-as-list)))
+  ;;         )
+  ;;       )
+  ;;     res)
+  ;;   (widen))
+  )
+(use-package! ob-scala
+  :when (featurep! :lang scala)
+  ;; :after org
+  :after scala-mode)
