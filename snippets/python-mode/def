@@ -5,4 +5,5 @@
 # group: definitions
 # --
 def ${1:func_name}($2):
+    """TODO"""
     ${3:`(or % "pass")`}

@@ -1,5 +1,6 @@
 # -*- mode: snippet -*-
 # name: inline math
+# uuid: inline_math
 # key: m
 # condition: (and (not (texmathp)) 'auto (looking-back "\s*m" 2))
 # expand-env: ((yas-after-exit-snippet-hook (lambda () (org-edit-latex-fragment) (evil-insert-state) (goto-char 3))))
