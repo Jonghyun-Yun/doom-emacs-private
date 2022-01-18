@@ -208,8 +208,7 @@
 (package! org-mac-link
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/org-mac-link.el"))
-  :pin "e14dfea59491f889f35868813122c5b8c0b4b3db"
-  )
+  :pin "e14dfea59491f889f35868813122c5b8c0b4b3db")
 
 ;;; posframe
 (package! company-posframe :disable t)
@@ -253,15 +252,30 @@
 (package! elpy :disable t)
 
 ;;; svg
-(package! svg-tag-mode)
+(package! svg-tag-mode :disable t)
 
 ;;; tab-bar
-(package! tab-bar-echo-area
+(package! tab-bar-echo-area :disable t
 :recipe (:host github :repo "fritzgrabo/tab-bar-echo-area"))
-(package! tab-bar-groups
+(package! tab-bar-groups :disable t
 :recipe (:host github :repo "fritzgrabo/tab-bar-groups"))
 
 ;;; very large file
-(package! vlf :recipe (:host github :repo "m00natic/vlfi"
-                       :files (:defaults "*"))
+(package! vlf :disable t
+  :recipe (:host github :repo "m00natic/vlfi"
+           :files (:defaults "*"))
   :pin "cc02f2533782d6b9b628cec7e2dcf25b2d05a27c")
+
+;;; turbo-log
+(package! turbo-log :disable t
+  :recipe (:host github :repo "artawower/turbo-log"))
+
+;;; scala
+(when (featurep! :lang scale)
+  (package! ob-scala :recipe (:local-repo "local/ob-scala")))
+
+;;; toml
+(package! toml-mode)
+
+;;; org-cv
+(package! org-cv :recipe (:local-repo "local/org-cv"))
