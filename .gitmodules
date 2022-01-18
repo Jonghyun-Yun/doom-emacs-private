@@ -25,3 +25,6 @@
 [submodule "doom-snippets"]
 	path = local/doom-snippets
 	url = https://github.com/Jonghyun-Yun/doom-snippets.git
+[submodule "org-cv"]
+	path = local/org-cv
+	url = https://gitlab.com/Titan-C/org-cv.git

@@ -19,13 +19,13 @@
 ;;   (run-at-time nil nil #'org-appear--set-elements))
 
 (use-package org-cv
-  :load-path "~/Dropbox/emacs/packages/org-cv"
-  :after ox
-  :init
+  ;; :load-path "~/Dropbox/emacs/packages/org-cv"
+  :defer t
+  ;; :after ox
+  :config
   ;; (require 'ox-moderncv)
   (require 'ox-altacv)
   ;; (require 'ox-hugocv)
-  :defer t
   )
 
 ;;; ox-ravel
@@ -265,6 +265,14 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
              (file+headline +org-capture-tickler-file "Reminders")
              "* TODO %^{Reminder for...} \nSCHEDULED: %^t \n%i \n%a"
              :prepend t)
+            ("c" "Clock a task" entry
+             (file+headline +org-capture-inbox-file "Clocked")
+             "* NEXT %(jyun/org-link-truncate-initial-content-or-description 70) \n%?"
+             :clock-in t
+             :clock-keep t
+             :prepend t
+             ;; :immediate-finish t
+             )
             ("t" "Todo")
             ("tt" "Todo" entry
              (file+headline +org-capture-inbox-file "Tasks")
@@ -357,7 +365,6 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
     ;; (require 'org-gcal)
     (add-to-list 'org-capture-templates org-gcal-capture-templates)
     (jyun/org-capture-skim-template-h)))
-
 (with-eval-after-load 'org-capture
   (jyun/org-capture-template-h))
 
