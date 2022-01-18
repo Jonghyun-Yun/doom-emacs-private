@@ -81,3 +81,19 @@
     (apply orig-fun args)
     (let ((bname (buffer-name)))
       (persp-add-buffer bname))))
+
+;;; hugo
+;;;###autoload
+(defun jyun/run-hugo-server (&optional wd fl)
+  ""
+  (interactive)
+  (let ((default-directory (or wd default-directory))
+        (flag (or fl "--disableFastRender"))
+        (buf (current-buffer))
+        (bname (concat "*hugo-server:" default-directory "*")))
+    (start-process "hugo-server" bname "hugo" "server" flag)
+    (set-process-sentinel (get-process "hugo-server") 'msg-me)
+    (with-current-buffer bname
+      (ess-r-mode)
+      (+popup/buffer)
+      (buffer-disable-undo))))

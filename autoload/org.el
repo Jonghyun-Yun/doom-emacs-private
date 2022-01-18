@@ -250,6 +250,7 @@
 ;;; ipynb2org: clean org html blocks
 ;;;###autoload
 (defun jyun/clean-org-html-block ()
+  "TODO"
   (interactive)
   (save-excursion
     ;; hide all comments
@@ -260,3 +261,15 @@
             (end (re-search-forward
                   "^#\\+END_HTML[ \r\n]" nil t)))
         (kill-region beg end)))))
+
+;;;###autoload
+(defun jyun/org-src-python-to-jupyter-python ()
+  "TODO"
+  (interactive)
+  (let ((case-replace t)
+        (case-fold-search t))
+    (save-excursion
+      (goto-char (point-min))
+      (replace-regexp "^#\\+begin_src \\(.*\\) :session [^:].*" "#+begin_src \\1")
+      (replace-regexp "^#\\+begin_src \\(.*\\) :session" "#+begin_src \\1")
+      (replace-regexp "^#\\+begin_src python" "#+begin_src jupyter-python"))))
