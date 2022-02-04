@@ -98,6 +98,8 @@
   :recipe (:host github :repo "nobiot/org-transclusion"))
 ;; (package! org-clock-budget
 ;;   :recipe (:host github :repo "Fuco1/org-clock-budget"))
+(package! org-remark
+  :recipe (:host github :repo "nobiot/org-remark"))
 
 ;; ;; export doesn't work. problem in compiling; defmacro and marco eval in the same file
 ;; ;; ;; Load it localy

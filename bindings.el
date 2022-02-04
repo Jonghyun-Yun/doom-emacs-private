@@ -122,6 +122,7 @@
   :ie "TAB"           #'cdlatex-tab)
 
  (:map dired-mode-map
+  :nvme "W" #'+macos-open-with
   :nvme "S" #'dired-do-symlink
   :nvme [tab] #'dired-subtree-toggle)
  )

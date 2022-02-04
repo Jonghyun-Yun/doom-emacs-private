@@ -57,7 +57,13 @@
       (:session . "*R-Org*")
       (:export . "both")
       (:results . "output replace"))
-     (TeX-engine . xetex))))
+     (TeX-engine . xetex)))
+ '(warning-suppress-types
+   '((org-babel)
+     (org-babel)
+     (org-babel)
+     (undo)
+     (yasnippet backquote-change))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

@@ -303,7 +303,7 @@
 
 ;;;; org-latex + tab behavior
 (after! org
-  (setq org-image-actual-width 500)
+  (setq org-image-actual-width t)
   ;; visual-mode tab binds back to org-cycle
   (remove-hook 'org-tab-first-hook #'+org-yas-expand-maybe-h)
   ;; insert-mode tab binds back to org-cycle
@@ -391,6 +391,25 @@
   :config
   (setq org-transclusion-exclude-elements nil))
 
+;;;; org-remark
+(use-package! org-remark
+  :init
+  (require 'org-remark-global-tracking)
+  (org-remark-global-tracking-mode +1)
+  ;; Key-bind `org-remark-mark' to global-map so that you can call it globally
+  ;; before the library is loaded.  In order to make `org-remark-mark' and
+  ;; `org-remark-mode' callable, use `autoload'.
+  (autoload #'org-remark-mark "org-remark" nil t)
+  (autoload #'org-remark-mode "org-remark" nil t)
+  (define-key global-map (kbd "C-c n m") #'org-remark-mark)
+  :after org
+  :config
+  ;; The rest of keybidings are done only on loading `org-remark'
+  (define-key org-remark-mode-map (kbd "C-c n o") #'org-remark-open)
+  (define-key org-remark-mode-map (kbd "C-c n ]") #'org-remark-view-next)
+  (define-key org-remark-mode-map (kbd "C-c n [") #'org-remark-view-prev)
+  (define-key org-remark-mode-map (kbd "C-c n r") #'org-remark-remove)
+  )
 ;;;; org-noter
 (when (featurep! :lang org +noter)
   (after! org-noter
@@ -1310,7 +1329,7 @@ of the buffer text to be displayed in the popup"
   (when IS-MAC
     (setq fd-dired-ls-option '("| xargs -0 gls -ld --quoting-style=literal" . "-ld"))))
 ;; display icons with colors
-(setq all-the-icons-dired-monochrome nil)
+;; (setq all-the-icons-dired-monochrome nil)
 
 ;;; temporary fixes
 ;;;; eldoc error
@@ -1357,8 +1376,8 @@ of the buffer text to be displayed in the popup"
 ;;;; org hangs on save, ox-hugo export, etc...
 ;;     https://lists.gnu.org/r/emacs-orgmode/2021-11/msg00638.html
 ;;     This has been fixed in faf8ce7de ??
-(eval-after-load "org-element"
-  (setq org-element-use-cache nil))
+;; (eval-after-load "org-element"
+  ;; (setq org-element-use-cache nil))
 ;; (add-hook 'after-init-hook  (lambda () (setq! gcmh-high-cons-threshold (* 64 1024 1024))))
 ;; (setq! gcmh-high-cons-threshold (* 64 1024 1024))
                                         ; xx mb
