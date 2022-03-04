@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: jupyter-python src
+# uuid: src_jupyter-python
+# key: <jp
+# condition: t
+# expand-env: ((yas-after-exit-snippet-hook (lambda () (progn (org-edit-src-code) (evil-insert-state)))))
+# --
+#+begin_src jupyter-python
+`%`$0
+#+end_src
