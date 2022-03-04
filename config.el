@@ -852,7 +852,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;; ;; thinning all faces
 (after! doom-modeline
   (add-hook! '(doom-load-theme-hook window-setup-hook)
-             #'jyun/doom-modeline-height
+             ;; #'jyun/doom-modeline-height
              ;; #'jyun/thin-all-faces
              ;; #'jyun/evil-state-cursors
              ))
@@ -1588,3 +1588,15 @@ capture was not aborted."
   :when (featurep! :lang scala)
   ;; :after org
   :after scala-mode)
+
+;;; org-mode jupyter
+(eval-after-load "jupyter-client"
+  ;; (map! :map org-src-mode-map
+  ;;       "C-c C-c" #'org-edit-src-exit)
+  (map! :map jupyter-repl-interaction-mode-map
+        "C-c C-c" nil)
+  )
+
+;;; spell-fu
+(add-hook! 'org-mode-hook (lambda () (setq spell-fu-mode -1)))
+(remove-hook 'text-mode-hook #'spell-fu-mode)

@@ -55,7 +55,10 @@
           modus-themes-prompts nil
 
           ;; modus-themes-completions 'opinionated ; {nil,'moderate,'opinionated}
-          modus-themes-completions 'opinionated ; {nil,'moderate,'opinionated}
+          modus-themes-completions
+          (quote ((matches . (extrabold background intense))
+                  (selection . (semibold accented intense))
+                  (popup . (accented))))
 
           modus-themes-mail-citations nil ; {nil,'faint,'monochrome}
 
