@@ -118,7 +118,8 @@
 
        :os
        (:if IS-MAC macos)  ; improve compatibility with macOS
-       ;;tty               ; improve the terminal Emacs experience
+       (:if IS-LINUX
+        (tty +osc))        ; improve the terminal Emacs experience
 
        :lang
        ;;agda              ; types of types of types of types...
@@ -223,14 +224,16 @@
 
        :private
        (reference +roam-bibtex)
-       write
+
        gcal
        dired-hacks
        ;; stan
        gtd
        grammar
-       outshine
        reading
-       scimax
-       ebook
+       (:unless IS-LINUX
+        outshine
+        write
+        scimax
+        ebook)
        )

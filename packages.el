@@ -285,3 +285,7 @@
 ;;; org to ipynb
 (package! ox-ipynb :recipe (:host github
                             :repo "jkitchin/ox-ipynb"))
+
+;;; Linux disabled package
+(when IS-LINUX
+  (package! org-roam :disalbe t))

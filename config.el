@@ -57,6 +57,8 @@
 ;; (load-theme 'doom-one-light t)
 ;; (load-theme 'doom-nord t)
 (load-theme 'modus-operandi t)
+;; (when IS-LINUX
+;;   (load-theme 'doom-one t))
 (unless (display-graphic-p)
   (load-theme 'doom-nord t))
 ;; (load-theme 'spacemacs-light t)
@@ -87,6 +89,10 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 
+(when IS-LINUX 
+(setq org-roam-directory "~/org/roam")
+  )
+
 (defvar IS-GUI (display-graphic-p)
 "(display-graphic-p)")
 
@@ -104,7 +110,8 @@
 (after! org
   (remove-hook 'org-load-hook #'+org-init-capture-defaults-h)
   (add-to-list 'org-tags-exclude-from-inheritance "roadmap")
-  (load! "local/vulpea-agenda/vulpea-agenda")
+  (unless IS-LINUX
+    (load! "local/vulpea-agenda/vulpea-agenda"))
   (setq +org-capture-job-file "~/org/jobs.org")
   (setq +org-capture-bookmark-file "~/org/inbox.org"))
 (load! "local/org-plus")
@@ -1520,11 +1527,12 @@ capture was not aborted."
 
 
 ;;; dired
-(after! dired
-  ;; block size 900kb = same as default
-  (setf (alist-get "\\.tar\\.bz2\\'" dired-compress-files-alist nil nil #'equal) "tar -cf - %i | pbzip2 -c9 > %o")
-  ;; level 9 compression
-  (push  '("\\.tar\\.lz\\'" .  "tar -cf - %i | plzip -9c > %o") dired-compress-files-alist))
+(unless IS-LINUX
+  (after! dired
+    ;; block size 900kb = same as default
+    (setf (alist-get "\\.tar\\.bz2\\'" dired-compress-files-alist nil nil #'equal) "tar -cf - %i | pbzip2 -c9 > %o")
+    ;; level 9 compression
+    (push  '("\\.tar\\.lz\\'" .  "tar -cf - %i | plzip -9c > %o") dired-compress-files-alist)))
 
 ;;; emacs-everywhere
 (setq emacs-everywhere-frame-parameters
