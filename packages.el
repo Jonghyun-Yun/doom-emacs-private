@@ -281,3 +281,7 @@
 
 ;;; org-cv
 (package! org-cv :recipe (:local-repo "local/org-cv"))
+
+;;; org to ipynb
+(package! ox-ipynb :recipe (:host github
+                            :repo "jkitchin/ox-ipynb"))

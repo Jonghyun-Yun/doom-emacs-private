@@ -125,8 +125,8 @@
 (with-eval-after-load 'doom-modeline
   ;; (set-face-attribute 'mode-line nil :family "Noto Sans")
   ;; (set-face-attribute 'mode-line-inactive nil :family "Noto Sans")
-  (set-face-attribute 'mode-line nil :inherit 'variable-pitch :height 0.9)
-  (set-face-attribute 'mode-line-inactive nil :inherit 'variable-pitch :height 0.9)
+  (set-face-attribute 'mode-line nil :inherit 'variable-pitch :height 0.95)
+  (set-face-attribute 'mode-line-inactive nil :inherit 'variable-pitch :height 0.95)
 
   ;; The right side of the modeline is cut off
   (setq all-the-icons-scale-factor 1.1)
@@ -136,7 +136,7 @@
 
   ;; How tall the mode-line should be. It's only respected in GUI.
   ;; If the actual char height is larger, it respects the actual height.
-  (setq doom-modeline-height 20)
+  (setq doom-modeline-height 18)
 
   ;; to see letters instead of the colored circles
   (setq doom-modeline-modal-icon nil)

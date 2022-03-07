@@ -425,7 +425,7 @@
 ;;;; org-gcal
 ;; (require 'password-store)
 ;; org-gcal credintial after init
-(add-hook! 'after-init-hook #'jyun/get-org-gcal-credential)
+;;(add-hook! 'after-init-hook #'jyun/get-org-gcal-credential)
 (setq! org-gcal-cancelled-todo-keyword "KILL"
        org-gcal-auto-archive nil)
 
@@ -697,6 +697,13 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;;                                              (elfeed-set-max-connections 3)
 ;;                                              (elfeed-update))))
 
+(defvar doom-elfeed-dir (concat doom-private-dir ".local/elfeed/")
+  "TODO")
+(after! elfeed
+  (setq elfeed-db-directory (concat doom-elfeed-dir "db/")
+        elfeed-enclosure-default-dir (concat doom-elfeed-dir "enclosures/"))
+  )
+
 ;;;; elfeed-score
 (use-package! elfeed-score
   :after elfeed
@@ -902,6 +909,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;; ibuffer and R buffers need to be manually added
 (advice-add 'ibuffer :around #'jyun/persp-add-buffer)
 (advice-add 'R :around #'jyun/persp-add-buffer)
+;; (advice-add 'jupyter-run-repl :around #'jyun/persp-add-buffer)
 
 ;; ;; speed up comint
 ;; (setq gud-gdb-command-name "gdb --annotate=1"
@@ -909,7 +917,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;;       line-move-visual nil)
 
 ;;;; python
-(setq ein:jupyter-default-kernel "tf")
+(setq ein:jupyter-default-kernel "ds")
 (setq python-shell-interpreter "ipython"
       ;; python-shell-interpreter-args "--simple-prompt"
       python-shell-interpreter-args "-i")
@@ -920,7 +928,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 
 (after! python
   (setq conda-env-home-directory (expand-file-name "~/.conda"))
-  (conda-env-activate "tf")
+  (conda-env-activate "ds")
   (add-to-list 'python-shell-completion-native-disabled-interpreters
                "jupyter")
   (add-to-list 'python-shell-completion-native-disabled-interpreters
@@ -1019,10 +1027,11 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
              lorem-ipsum-insert-list))
 
 ;;; evil
-(setq ;; evil-ex-substitute-global t     ; I like my s/../.. to by global by default
- evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
- ;; evil-kill-on-visual-paste nil
- ) ; Don't put overwritten text in the kill ring
+;; (setq ;; evil-ex-substitute-global t     ; I like my s/../.. to by global by default
+;;  evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
+;;  ;; evil-kill-on-visual-paste nil
+;;  )
+                                        ; Don't put overwritten text in the kill ring
 
 ;; no key stroke for exiting INSERT mode: doom default jk
 (setq evil-escape-key-sequence (kbd "jk")
@@ -1541,6 +1550,7 @@ capture was not aborted."
 
 ;;; initial evil state
 (evil-set-initial-state 'sql-interactive-mode 'insert)
+(evil-set-initial-state 'jupyter-repl-mode 'insert)
 
 ;;; mathpix
 (defun jyun/mathpix-screenshot (&optional arg)
@@ -1596,7 +1606,58 @@ capture was not aborted."
   (map! :map jupyter-repl-interaction-mode-map
         "C-c C-c" nil)
   )
+(setq jupyter-repl-echo-eval-p t)
+
 
 ;;; spell-fu
 (add-hook! 'org-mode-hook (lambda () (setq spell-fu-mode -1)))
 (remove-hook 'text-mode-hook #'spell-fu-mode)
+
+;;; ox-ipynb
+(after! org
+  (require 'ox-ipynb)
+  ;; conflict with +org-redisplay-inline-images-in-babel-result-h
+  (advice-remove 'org-display-inline-images 'font-lock-fontify-buffer)
+  )
+
+;;; org-babel ansi color
+;; (defun ek/babel-ansi ()
+;;   (when-let ((beg (org-babel-where-is-src-block-result nil nil)))
+;;     (save-excursion
+;;       (goto-char beg)
+;;       (when (looking-at org-babel-result-regexp)
+;;         (let ((end (org-babel-result-end))
+;;               (ansi-color-context-region nil))
+;;           (ansi-color-apply-on-region beg end))))))
+;; (add-hook 'org-babel-after-execute-hook 'ek/babel-ansi)
+
+(defun jupyter-org-font-lock-ansi-escapes (limit)
+  (let ((case-fold-search t))
+    (when (re-search-forward
+           "^[ \t]*\\(#\\+begin_example[ \t]*\\|: .*\\)$" limit t)
+      (let ((beg (match-beginning 1))
+            (beg1 (line-beginning-position 2))
+            end)
+        (cond
+         ;; example block
+         ((not (eq (char-after beg) ?:))
+          (when (re-search-forward
+                 "^[ \t]*#\\+end_example\\>.*"
+                 nil t) ;; on purpose, we look further than LIMIT
+            (setq end (min (point-max) (1- (match-beginning 0))))
+            (jupyter-org--ansi-color-apply-on-region beg1 end)))
+         ;; fixed width
+         (t
+          (setq end (or (and (re-search-forward "^[ \t]*[^ \t:]" nil t)
+                             (1- (match-beginning 0)))
+                        (point-max)))
+          (jupyter-org--ansi-color-apply-on-region beg end)))))))
+
+(defun org-babel-jupyter-handle-result-ansi-escapes ()
+  "Handle ANSI escapes in Jupyter src-block result."
+  (org-babel-map-src-blocks nil
+      (save-excursion
+        (when-let ((beg (org-babel-where-is-src-block-result))
+                   (end (progn (goto-char beg) (forward-line) (org-babel-result-end))))
+          (ansi-color-apply-on-region beg end)))))
+(add-hook 'org-babel-after-execute-hook #'org-babel-jupyter-handle-result-ansi-escapes)
