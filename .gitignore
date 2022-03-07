@@ -1,4 +1,5 @@
 /custom.el
 /sounds/
-/misc/
 /.local/
+misc/config-publishing/
+misc/org-css/
