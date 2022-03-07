@@ -288,4 +288,4 @@
 
 ;;; Linux disabled package
 (when IS-LINUX
-  (package! org-roam :disalbe t))
+  (package! org-roam :disable t))
