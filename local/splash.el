@@ -182,7 +182,7 @@
    (doom-dashboard-phrase)
    "\n"))
 
-(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+ (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-mode-hook (hide-mode-line-mode 1) (hl-line-mode -1))
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
 
@@ -203,5 +203,5 @@
                "\n"))
      'face 'doom-dashboard-banner)))
 
-(unless (display-graphic-p) ; for some reason this messes up the graphical splash screen atm
+(unless (and (display-graphic-p) (not IS-LINUX)) ; for some reason this messes up the graphical splash screen atm
   (setq +doom-dashboard-ascii-banner-fn #'doom-dashboard-draw-ascii-emacs-banner-fn))

@@ -230,8 +230,8 @@
        ;; stan
        gtd
        grammar
-       reading
        (:unless IS-LINUX
+        reading
         outshine
         write
         scimax

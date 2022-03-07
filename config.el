@@ -98,8 +98,7 @@
 
 ;;; load lisp
 (setq load-prefer-newer t)
-(unless IS-LINUX
-  (load! "local/splash"))
+(load! "local/splash")
 (with-eval-after-load 'hydra
   (load! "local/hydra-plus"))
 (load! "bindings")
