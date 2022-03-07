@@ -287,5 +287,5 @@
                             :repo "jkitchin/ox-ipynb"))
 
 ;;; Linux disabled package
-(when IS-LINUX
-  (package! org-roam :disable t))
+;; (when IS-LINUX
+;;   (package! org-roam :disable t))
