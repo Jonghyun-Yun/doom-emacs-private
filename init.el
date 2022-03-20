@@ -230,6 +230,7 @@
        ;; stan
        gtd
        grammar
+       ;; corfu
        (:unless IS-LINUX
         reading
         outshine
