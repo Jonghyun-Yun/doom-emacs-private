@@ -124,7 +124,7 @@ Creates new notes where none exist yet."
   ;; if the user has not set a template mechanism set a reasonable one of them
   ;; The package already tests for nil itself so we define a dummy tester
   (setq orb-preformat-keywords
-    '("=key=" "title" "url" "file" "author-or-editor" "keywords" "citekey" "pdf"))
+        '("=key=" "title" "url" "file" "author-or-editor" "keywords" "citekey" "pdf"))
   ;; - org-ref-v2: Old Org-ref cite:links
   ;; - org-ref-v3: New Org-ref cite:&links
   ;; - org-cite  : Org-cite @elements
@@ -144,24 +144,37 @@ Creates new notes where none exist yet."
   (setq orb-process-file-keyword t
         orb-attached-file-extensions '("pdf"))
 
+  ;; don't insert heading
   (add-to-list 'org-roam-capture-templates
                '("b" "Bibliography note" plain
                  "%?
 - keywords :: %^{keywords}
 - related ::
-\n* %^{title}
-:PROPERTIES:
-:Custom_ID: %^{citekey}
-:URL: %^{url}
-:AUTHOR: %^{author-or-editor}
-:NOTER_DOCUMENT: %^{file}
-:NOTER_PAGE:
-:END:\n\n"
+\n\n"
                  :if-new (file+head "${=key=}.org" ":PROPERTIES:
 :ROAM_REFS: cite:${=key=}
 :END:
 #+TITLE: ${title}\n")
                  :unnarrowed t))
+
+ ;;  (add-to-list 'org-roam-capture-templates
+;;                '("b" "Bibliography note" plain
+;;                  "%?
+;; - keywords :: %^{keywords}
+;; - related ::
+;; \n* %^{title}
+;; :PROPERTIES:
+;; :Custom_ID: %^{citekey}
+;; :URL: %^{url}
+;; :AUTHOR: %^{author-or-editor}
+;; :NOTER_DOCUMENT: %^{file}
+;; :NOTER_PAGE:
+;; :END:\n\n"
+;;                  :if-new (file+head "${=key=}.org" ":PROPERTIES:
+;; :ROAM_REFS: cite:${=key=}
+;; :END:
+;; #+TITLE: ${title}\n")
+;;                  :unnarrowed t))
   (require 'org-ref))
 
 ;; (use-package! citeproc :defer t)
