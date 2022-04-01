@@ -705,12 +705,12 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;;                                              (elfeed-set-max-connections 3)
 ;;                                              (elfeed-update))))
 
-(defvar doom-elfeed-dir (concat doom-private-dir ".local/elfeed/")
-  "TODO")
-(after! elfeed
-  (setq elfeed-db-directory (concat doom-elfeed-dir "db/")
-        elfeed-enclosure-default-dir (concat doom-elfeed-dir "enclosures/"))
-  )
+;; (defvar doom-elfeed-dir (concat doom-private-dir ".local/elfeed/")
+;;   "TODO")
+;; (after! elfeed
+;;   (setq elfeed-db-directory (concat doom-elfeed-dir "db/")
+;;         elfeed-enclosure-default-dir (concat doom-elfeed-dir "enclosures/"))
+;;   )
 
 ;;;; elfeed-score
 (use-package! elfeed-score
