@@ -505,18 +505,19 @@
                '(undo)))
 
 ;;;; projectile
-(after! projectile
-  (projectile-add-known-project "/Users/yunj/Dropbox/emacs/.doom.d/")
-  (projectile-add-known-project "/Users/yunj/OneDrive/workspace/python-tutorial/HarvardX-Using_Python_for_Research/")
-  ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt")
-  ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt/GEPS")
-  (projectile-add-known-project "/Users/yunj/Dropbox/research/lsjm-art/lsjm-draft/")
-  ;; (projectile-add-known-project "~/Dropbox/research/lsjm-art")
-  ;; (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
-  ;; (projectile-add-known-project "~/OneDrive/research/lapf")
-  ;; (projectile-add-known-project "~/research/s.ham/RAS")
-  ;; (projectile-add-known-project "~/research/mj.jeon")
-  )
+(unless IS-LINUX
+  (after! projectile
+    (projectile-add-known-project "/Users/yunj/Dropbox/emacs/.doom.d/")
+    (projectile-add-known-project "/Users/yunj/OneDrive/workspace/python-tutorial/HarvardX-Using_Python_for_Research/")
+    ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt")
+    ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt/GEPS")
+    (projectile-add-known-project "/Users/yunj/Dropbox/research/lsjm-art/lsjm-draft/")
+    ;; (projectile-add-known-project "~/Dropbox/research/lsjm-art")
+    ;; (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
+    ;; (projectile-add-known-project "~/OneDrive/research/lapf")
+    ;; (projectile-add-known-project "~/research/s.ham/RAS")
+    ;; (projectile-add-known-project "~/research/mj.jeon")
+    ))
 
 ;;;; riksy local variables
 ;; old tricks stopped working. risky variables are ignored (doom updates)
