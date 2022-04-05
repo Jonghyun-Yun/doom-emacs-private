@@ -203,5 +203,5 @@
                "\n"))
      'face 'doom-dashboard-banner)))
 
-(unless (and (display-graphic-p) (not IS-LINUX)) ; for some reason this messes up the graphical splash screen atm
+(unless (display-graphic-p) ; for some reason this messes up the graphical splash screen atm
   (setq +doom-dashboard-ascii-banner-fn #'doom-dashboard-draw-ascii-emacs-banner-fn))

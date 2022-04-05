@@ -89,10 +89,6 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 
-(when IS-LINUX 
-(setq org-roam-directory "~/org/roam")
-  )
-
 (defvar IS-GUI (display-graphic-p)
 "(display-graphic-p)")
 
@@ -110,8 +106,7 @@
 (after! org
   (remove-hook 'org-load-hook #'+org-init-capture-defaults-h)
   (add-to-list 'org-tags-exclude-from-inheritance "roadmap")
-  (unless IS-LINUX
-    (load! "local/vulpea-agenda/vulpea-agenda"))
+  (load! "local/vulpea-agenda/vulpea-agenda")
   (setq +org-capture-job-file "~/org/jobs.org")
   (setq +org-capture-bookmark-file "~/org/inbox.org"))
 (load! "local/org-plus")

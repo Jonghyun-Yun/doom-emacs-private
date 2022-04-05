@@ -136,7 +136,7 @@
 
   ;; How tall the mode-line should be. It's only respected in GUI.
   ;; If the actual char height is larger, it respects the actual height.
-  (setq doom-modeline-height 18)
+  (setq doom-modeline-height 16)
 
   ;; to see letters instead of the colored circles
   (setq doom-modeline-modal-icon nil)

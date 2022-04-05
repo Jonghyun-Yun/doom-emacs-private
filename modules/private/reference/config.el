@@ -149,12 +149,12 @@ Creates new notes where none exist yet."
                '("b" "Bibliography note" plain
                  "%?
 - keywords :: %^{keywords}
-- related ::
-\n\n"
+- related :: \n\n"
                  :if-new (file+head "${=key=}.org" ":PROPERTIES:
 :ROAM_REFS: cite:${=key=}
 :END:
-#+TITLE: ${title}\n")
+#+TITLE: ${title}\n\n")
+
                  :unnarrowed t))
 
  ;;  (add-to-list 'org-roam-capture-templates
