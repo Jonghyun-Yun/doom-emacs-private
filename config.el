@@ -92,9 +92,13 @@
 (defvar IS-GUI (display-graphic-p)
 "(display-graphic-p)")
 
+(if (version<= emacs-version "29.0.50")
+    (pixel-scroll-precision-mode))
+
 ;;; load lisp
 (setq load-prefer-newer t)
-(load! "local/splash")
+(when IS-MAC
+(load! "local/splash"))
 (with-eval-after-load 'hydra
   (load! "local/hydra-plus"))
 (load! "bindings")

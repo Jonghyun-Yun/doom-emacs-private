@@ -225,13 +225,13 @@
        :private
        (reference +roam-bibtex)
 
-       gcal
        dired-hacks
        ;; stan
        gtd
        grammar
        ;; corfu
        (:unless IS-LINUX
+        gcal                            ; no credential in LINUX
         reading
         outshine
         write
