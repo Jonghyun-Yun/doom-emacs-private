@@ -363,8 +363,11 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
              "* %^{Project for...} [/] %^{GOAL}p \n%i"
              :prepend t)))
     ;; (require 'org-gcal)
-    (add-to-list 'org-capture-templates org-gcal-capture-templates)
-    (jyun/org-capture-skim-template-h)))
+    (featurep! :private gcal
+               (add-to-list 'org-capture-templates org-gcal-capture-templates))
+    (featurep! :private reference
+               (jyun/org-capture-skim-template-h))
+    ))
 (with-eval-after-load 'org-capture
   (jyun/org-capture-template-h))
 
