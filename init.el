@@ -229,6 +229,7 @@
        ;; stan
        gtd
        grammar
+       google-translate
        ;; corfu
        (:unless IS-LINUX
         gcal                            ; no credential in LINUX

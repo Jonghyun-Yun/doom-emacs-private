@@ -135,6 +135,7 @@
 ;;; elfeed
 (package! elfeed-goodies :disable t)
 (package! elfeed-score)
+(package! elfeed-summary)
 (package! elfeed-web :disable t)
 
 ;;; jabber
@@ -239,6 +240,7 @@
 ;; (package! github-review :disable t)
 ;; (package! magit-flow :disable t)        ; have no gitflow
 ;; (package! eshell-up :disable t)
+(package! org-superstar :disable t)
 
 
 ;;; https://github.com/hlissner/doom-emacs/pull/5883
@@ -289,3 +291,6 @@
 ;;; Linux disabled package
 ;; (when IS-LINUX
 ;;   (package! org-roam :disable t))
+
+;;; org-mode
+(package! org-modern)

@@ -92,7 +92,7 @@
 (defvar IS-GUI (display-graphic-p)
 "(display-graphic-p)")
 
-(if (version<= emacs-version "29.0.50")
+(if (version= emacs-version "29.0.50")
     (pixel-scroll-precision-mode))
 
 ;;; load lisp
@@ -684,6 +684,11 @@
    elfeed-search-date-format '("%m/%d/%y" 10 :left)
    ))
 
+;;;; elfeed-summary
+;; https://github.com/SqrtMinusOne/elfeed-summary
+(use-package! elfeed-summary
+  :after elfeed
+  )
 
 ;;;; elfeed org-capture
 (after! (org-capture elfeed)
@@ -1669,3 +1674,44 @@ capture was not aborted."
                    (end (progn (goto-char beg) (forward-line) (org-babel-result-end))))
           (ansi-color-apply-on-region beg end)))))
 (add-hook 'org-babel-after-execute-hook #'org-babel-jupyter-handle-result-ansi-escapes)
+
+;;; native-comp
+(add-to-list 'native-comp-deferred-compilation-deny-list "\\`/Users/yunj/doom-emacs/\\.local/.*/vertico-posframe\\.el\\'")
+
+;;; org-modern
+;; Add frame borders and window dividers
+;; (modify-all-frames-parameters
+;;  '((right-divider-width . 40)
+;;    (internal-border-width . 40)))
+;; (dolist (face '(window-divider
+;;                 window-divider-first-pixel
+;;                 window-divider-last-pixel))
+;;   (face-spec-reset-face face)
+;;   (set-face-foreground face (face-attribute 'default :background)))
+;; (set-face-background 'fringe (face-attribute 'default :background))
+
+(setq
+ ;; Edit settings
+ ;; org-auto-align-tags nil
+ ;; org-tags-column 0
+ org-catch-invisible-edits 'show-and-error
+ ;; org-special-ctrl-a/e t
+ ;; org-insert-heading-respect-content t
+ org-modern-star ["♠""♡""♦""♧"]
+ ;; org-modern-star ["◉""○""◈""◇""⁕"]
+ ;; Org styling, hide markup etc.
+ org-hide-emphasis-markers t
+ org-pretty-entities t
+ ;; org-ellipsis "…"
+
+ ;; Agenda styling
+ org-agenda-block-separator ?─
+ org-agenda-time-grid
+ '((daily today require-timed)
+   (800 1000 1200 1400 1600 1800 2000)
+   " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+ org-agenda-current-time-string
+ "⭠ now ─────────────────────────────────────────────────")
+
+(add-hook 'org-mode-hook #'org-modern-mode)
+(add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
