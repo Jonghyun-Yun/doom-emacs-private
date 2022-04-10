@@ -296,10 +296,24 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
              :prepend t)
             ("ts" "Clocked subtask" entry (clock)
              "* TODO %? \n:PROPERTIES: \n:CAPTURED: %U \n:END: \n%i \n%a")
-            ("b" "Bookmark" entry
+            ("b" "Bookmark")
+            ("bc" "Custom bookmark" entry
              (file+headline +org-capture-bookmark-file "Bookmark")
              "* %u %(jyun/org-link-truncated-description-or-annotation 70) %? \n%i"
-             :empty-lines 1)
+             :empty-lines 1
+             )
+            ("bb" "Quick bookmark" entry
+             (file+headline +org-capture-bookmark-file "Bookmark")
+             "* %u %(jyun/org-link-truncated-description-or-annotation 70) \n%i"
+             :empty-lines 1
+             :immediate-finish t
+             )
+            ("bf" "Finance bookmark" entry
+             (file+headline +org-capture-bookmark-file "Bookmark - finance")
+             "* %u %(jyun/org-link-truncated-description-or-annotation 70) :fin: \n%i"
+             :empty-lines 1
+             :immediate-finish t
+             )
             ("n" "Note" entry
              (file+headline +org-capture-notes-file "Inbox")
              "* %u %? \n%i \n%a"
