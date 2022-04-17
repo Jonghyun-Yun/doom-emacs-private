@@ -1039,10 +1039,10 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
              lorem-ipsum-insert-list))
 
 ;;; evil
-;; (setq ;; evil-ex-substitute-global t     ; I like my s/../.. to by global by default
-;;  evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
-;;  ;; evil-kill-on-visual-paste nil
-;;  )
+(setq ;; evil-ex-substitute-global t     ; I like my s/../.. to by global by default
+ evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
+ ;; evil-kill-on-visual-paste nil
+ )
                                         ; Don't put overwritten text in the kill ring
 
 ;; no key stroke for exiting INSERT mode: doom default jk
@@ -1253,16 +1253,23 @@ of the buffer text to be displayed in the popup"
        :override-parameters which-key-posframe-parameters)))))
 
 ;;;; vertigo posframe
-(use-package! vertico-posframe
-  :after vertico
-  :if IS-GUI
-  :config
-  (vertico-posframe-mode 1)
-  (setq vertico-posframe-poshandler #'posframe-poshandler-frame-bottom-center)
-  ;; (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center)
-  (setq vertico-posframe-parameters
-        '((left-fringe . 8)
-          (right-fringe . 8))))
+;; (use-package! vertico-posframe
+;;   :after vertico
+;;   :if IS-GUI
+;;   :config
+;;   (vertico-posframe-mode 1)
+;;   (setq vertico-posframe-poshandler #'posframe-poshandler-frame-bottom-center)
+;;   ;; (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center)
+;;   (setq vertico-posframe-parameters
+;;         '((left-fringe . 8)
+;;           (right-fringe . 8))))
+
+;; (after! vertico-posframe
+;;   (setq vertico-posframe-poshandler #'posframe-poshandler-frame-bottom-center)
+;;   ;; (setq vertico-posframe-parameters
+;;   ;;       '((left-fringe . 8)
+;;   ;;         (right-fringe . 8)))
+;;   )
 
 ;;;; abbrev
 (use-package abbrev
@@ -1715,3 +1722,296 @@ capture was not aborted."
 
 (add-hook 'org-mode-hook #'org-modern-mode)
 (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+
+;;; appearance
+(use-package! lin
+:config
+(setq lin-face 'lin-blue) ; check doc string for alternative styles
+
+;; You can use this to live update the face:
+;;
+;; (customize-set-variable 'lin-face 'lin-green)
+
+(setq lin-mode-hooks
+      '(bongo-mode-hook
+        dired-mode-hook
+        elfeed-search-mode-hook
+        git-rebase-mode-hook
+        grep-mode-hook
+        ibuffer-mode-hook
+        ilist-mode-hook
+        ledger-report-mode-hook
+        log-view-mode-hook
+        magit-log-mode-hook
+        mu4e-headers-mode
+        notmuch-search-mode-hook
+        notmuch-tree-mode-hook
+        occur-mode-hook
+        org-agenda-mode-hook
+        proced-mode-hook
+        tabulated-list-mode-hook))
+
+(lin-global-mode 1)
+  )
+
+(use-package! pulsar
+:config
+(setq pulsar-pulse-functions
+      ;; NOTE 2022-04-09: The commented out functions are from before
+      ;; the introduction of `pulsar-pulse-on-window-change'.  Try that
+      ;; instead.
+      '(recenter-top-bottom
+        move-to-window-line-top-bottom
+        reposition-window
+        ;; bookmark-jump
+        ;; other-window
+        ;; delete-window
+        ;; delete-other-windows
+        forward-page
+        backward-page
+        scroll-up-command
+        scroll-down-command
+        ;; windmove-right
+        ;; windmove-left
+        ;; windmove-up
+        ;; windmove-down
+        ;; windmove-swap-states-right
+        ;; windmove-swap-states-left
+        ;; windmove-swap-states-up
+        ;; windmove-swap-states-down
+        ;; tab-new
+        ;; tab-close
+        ;; tab-next
+        org-next-visible-heading
+        org-previous-visible-heading
+        org-forward-heading-same-level
+        org-backward-heading-same-level
+        outline-backward-same-level
+        outline-forward-same-level
+        outline-next-visible-heading
+        outline-previous-visible-heading
+        outline-up-heading))
+
+(setq pulsar-pulse-on-window-change t)
+(setq pulsar-pulse t)
+(setq pulsar-delay 0.055)
+(setq pulsar-iterations 10)
+(setq pulsar-face 'pulsar-magenta)
+(setq pulsar-highlight-face 'pulsar-yellow)
+
+(pulsar-global-mode 1)
+
+;; OR use the local mode for select mode hooks
+
+(dolist (hook '(org-mode-hook emacs-lisp-mode-hook))
+  (add-hook hook #'pulsar-mode))
+
+;; pulsar does not define any key bindings.  This is just a sample that
+;; respects the key binding conventions.  Evaluate:
+;;
+;;     (info "(elisp) Key Binding Conventions")
+;;
+;; The author uses C-x l for `pulsar-pulse-line' and C-x L for
+;; `pulsar-highlight-line'.
+;;
+;; You can replace `pulsar-highlight-line' with the command
+;; `pulsar-highlight-dwim'.
+(let ((map global-map))
+  (define-key map (kbd "C-c h p") #'pulsar-pulse-line)
+  (define-key map (kbd "C-c h h") #'pulsar-highlight-line))
+;; integration with the `consult' package:
+(add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
+(add-hook 'consult-after-jump-hook #'pulsar-reveal-entry)
+
+;; integration with the built-in `imenu':
+(add-hook 'imenu-after-jump-hook #'pulsar-recenter-top)
+(add-hook 'imenu-after-jump-hook #'pulsar-reveal-entry)
+  )
+
+;;; window split
+(defun jyun/window-split-grid ()
+  (interactive)
+  (delete-other-windows)
+  (evil-window-vsplit)
+  (evil-window-vsplit)
+  (evil-window-split)
+  (winum-select-window-2)
+  (evil-window-split)
+  (winum-select-window-1)
+  (evil-window-split)
+  )
+
+;; Window Split
+(defun spacemacs--window-split-splittable-windows ()
+  (seq-remove
+   (lambda (window)
+     ;; TODO: find a way to identify unsplittable side windows reliably!
+     nil)
+   (spacemacs--window-split-non-ignored-windows)))
+
+(defun spacemacs--window-split-non-ignored-windows ()
+  "Determines the list of windows to be deleted."
+  (seq-filter
+   (lambda (window)
+     (let* ((name (buffer-name (window-buffer window)))
+            (prefixes-matching
+             (seq-filter
+              (lambda (prefix) (string-prefix-p prefix name))
+              spacemacs-window-split-ignore-prefixes)))
+       (not prefixes-matching)))
+   (window-list (selected-frame))))
+
+(defun spacemacs/window-split-default-delete ()
+  "Deletes other windows, except a list of excluded ones."
+  (if spacemacs-window-split-ignore-prefixes
+      (let* ((deletable (spacemacs--window-split-non-ignored-windows))
+             (splittable (spacemacs--window-split-splittable-windows)))
+        (when splittable
+          (let* ((selected (car splittable))
+                 (to-delete (delq selected deletable)))
+            (select-window selected)
+            (dolist (window to-delete) (delete-window window)))))
+    (delete-other-windows)))
+
+(defvar spacemacs-window-split-ignore-prefixes nil
+  "Prefixes for windows that are not deleted when changing split layout.
+
+You can add an entry here by using the following:
+(add-to-list 'spacemacs-window-split-ignore-prefixes \"Buffer prefix\")")
+
+(defvar spacemacs-window-split-delete-function
+  'spacemacs/window-split-default-delete
+  "Function used to delete other windows when changing layout.
+
+Used as a callback by the following functions:
+  - spacemacs/window-split-grid
+  - spacemacs/window-split-triple-columns
+  - spacemacs/window-split-double-columns
+  - spacemacs/window-split-single-column
+
+Possible values:
+  - 'spacemacs/window-split-default-delete (default)
+  - 'delete-other-windows
+  - 'treemacs-delete-other-windows (when using the treemacs package)
+  - a lambda: (lambda () (delete-other-windows))
+  - a custom function:
+    (defun my-delete-other-windows () (delete-other-windows))
+    (setq spacemacs-window-split-delete-function 'my-delete-other-windows)")
+
+(defun spacemacs/window-split-2by3-grid (&optional purge)
+  "Set the layout to a 2x3 grid.
+
+Uses the funcion defined in `spacemacs-window-split-delete-function'
+as a means to remove windows.
+
+When called with a prefix argument, it uses `delete-other-windows'
+as a means to remove windows, regardless of the value in
+`spacemacs-window-split-delete-function'."
+  (interactive "P")
+  (if purge
+      (let ((ignore-window-parameters t))
+        (delete-other-windows))
+    (funcall spacemacs-window-split-delete-function))
+  (if (spacemacs--window-split-splittable-windows)
+      (let* ((previous-files (seq-filter #'buffer-file-name
+                                         (delq (current-buffer) (buffer-list))))
+             (second (split-window-right))
+             (third (split-window-right))
+             (fourth (split-window-below))
+             (fifth (split-window second nil 'below))
+             (sixth (split-window third nil 'below)))
+        (set-window-buffer second (or (car previous-files) (dired-jump)))
+        (set-window-buffer third (or (cadr previous-files) "*doom:scratch*"))
+        (set-window-buffer fourth (or (caddr previous-files) "*doom:scratch*"))
+        (set-window-buffer fifth (or (cadddr previous-files) "*doom:scratch*"))
+        (set-window-buffer sixth (or (car (cddddr previous-files)) "*doom:scratch*"))
+        (balance-windows))
+    (message "There are no main windows available to split!")))
+
+(defun spacemacs/window-split-grid (&optional purge)
+  "Set the layout to a 2x2 grid.
+
+Uses the funcion defined in `spacemacs-window-split-delete-function'
+as a means to remove windows.
+
+When called with a prefix argument, it uses `delete-other-windows'
+as a means to remove windows, regardless of the value in
+`spacemacs-window-split-delete-function'."
+  (interactive "P")
+  (if purge
+      (let ((ignore-window-parameters t))
+        (delete-other-windows))
+    (funcall spacemacs-window-split-delete-function))
+  (if (spacemacs--window-split-splittable-windows)
+      (let* ((previous-files (seq-filter #'buffer-file-name
+                                         (delq (current-buffer) (buffer-list))))
+             (second (split-window-below))
+             (third (split-window-right))
+             (fourth (split-window second nil 'right)))
+        (set-window-buffer third (or (car previous-files) "*scratch*"))
+        (set-window-buffer second (or (cadr previous-files) "*scratch*"))
+        (set-window-buffer fourth (or (caddr previous-files) "*scratch*"))
+        (balance-windows))
+    (message "There are no main windows available to split!")))
+
+(defun spacemacs/window-split-triple-columns (&optional purge)
+  "Set the layout to triple columns.
+
+Uses the funcion defined in `spacemacs-window-split-delete-function'
+as a means to remove windows.
+
+When called with a prefix argument, it uses `delete-other-windows'
+as a means to remove windows, regardless of the value in
+`spacemacs-window-split-delete-function'."
+  (interactive "P")
+  (if purge
+      (let ((ignore-window-parameters t))
+        (delete-other-windows))
+    (funcall spacemacs-window-split-delete-function))
+  (if (spacemacs--window-split-splittable-windows)
+      (let* ((previous-files (seq-filter #'buffer-file-name
+                                         (delq (current-buffer) (buffer-list))))
+             (second (split-window-right))
+             (third (split-window second nil 'right)))
+        (set-window-buffer second (or (car previous-files) "*scratch*"))
+        (set-window-buffer third (or (cadr previous-files) "*scratch*"))
+        (balance-windows))
+    (message "There are no main windows available to split!")))
+
+(defun spacemacs/window-split-double-columns (&optional purge)
+  "Set the layout to double columns.
+
+Uses the funcion defined in `spacemacs-window-split-delete-function'
+as a means to remove windows.
+
+When called with a prefix argument, it uses `delete-other-windows'
+as a means to remove windows, regardless of the value in
+`spacemacs-window-split-delete-function'."
+  (interactive "P")
+  (if purge
+      (let ((ignore-window-parameters t))
+        (delete-other-windows))
+    (funcall spacemacs-window-split-delete-function))
+  (if (spacemacs--window-split-splittable-windows)
+      (let* ((previous-files (seq-filter #'buffer-file-name
+                                         (delq (current-buffer) (buffer-list)))))
+        (set-window-buffer (split-window-right)
+                           (or (car previous-files) "*scratch*"))
+        (balance-windows))
+    (message "There are no main windows available to split!")))
+
+(defun spacemacs/window-split-single-column (&optional purge)
+  "Set the layout to single column.
+
+Uses the funcion defined in `spacemacs-window-split-delete-function'
+as a means to remove windows.
+
+When called with a prefix argument, it uses `delete-other-windows'
+as a means to remove windows, regardless of the value in
+`spacemacs-window-split-delete-function'."
+  (interactive "P")
+  (if purge
+      (let ((ignore-window-parameters t))
+        (delete-other-windows))
+    (funcall spacemacs-window-split-delete-function))
+  (balance-windows))

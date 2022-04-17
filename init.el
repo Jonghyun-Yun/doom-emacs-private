@@ -29,8 +29,10 @@
        ;;+fuzzy
        ;;+prescient
        ;; )
-       (vertico              ; the search engine of the future
-        +icons)
+       (vertico                         ; the search engine of the future
+        +icons
+        +childframe
+        )
 
        :ui
        deft              ; notational velocity for Emacs
@@ -118,8 +120,7 @@
 
        :os
        (:if IS-MAC macos)  ; improve compatibility with macOS
-       (:if IS-LINUX
-        (tty +osc))        ; improve the terminal Emacs experience
+       (tty +osc)        ; improve the terminal Emacs experience
 
        :lang
        ;;agda              ; types of types of types of types...
@@ -231,11 +232,14 @@
        grammar
        google-translate
        ;; corfu
+       write
+       scimax
+       ebook
+       (:if (display-graphic-p)
+        reading
+        )
        (:unless IS-LINUX
         gcal                            ; no credential in LINUX
-        reading
         outshine
-        write
-        scimax
-        ebook)
+        )
        )
