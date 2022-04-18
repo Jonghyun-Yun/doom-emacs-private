@@ -81,7 +81,9 @@ Creates new notes where none exist yet."
    (IS-LINUX
     (setq bibtex-completion-pdf-open-function
           (lambda (fpath)
-            (async-start-process "open-pdf" "/usr/bin/xdg-open" nil fpath)))))
+            (async-start-process "open" "open" nil fpath) ;; system default
+            ;; (async-start-process "open-pdf" "/usr/bin/xdg-open" nil fpath)
+            ))))
 
   ;; (setq bibtex-completion-pdf-open-function 'find-file) ;; using pdf-tools
 

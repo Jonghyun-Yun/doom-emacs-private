@@ -86,10 +86,12 @@
 ;; (package! org-noter :recipe (:local-repo "local/org-noter"
 ;;                              :branch "patch"))
 
-(package! org-noter :recipe (:host github 
-                             :repo "jonghyun-yun/org-noter" 
-                             :branch "patch")
-  :pin "e0a5644a1eea921cf5945e56b09a1ef9688f363b")
+(package! org-noter :recipe (:host github
+                             :repo "jonghyun-yun/org-noter"
+                             ;; :branch "patch"
+                             )
+  ;; :pin "e0a5644a1eea921cf5945e56b09a1ef9688f363b"
+  )
 
 ;; Github flavored markdown exporter
 (package! ox-gfm)
@@ -294,3 +296,7 @@
 
 ;;; org-mode
 (package! org-modern)
+
+;; org-noter
+;; (package! org-noter :recipe (:host github
+;;            :repo "c1-g/org-noter-plus-djvu"))

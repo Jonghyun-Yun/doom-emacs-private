@@ -496,13 +496,29 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
           (directory . emacs)
           ("\\.mm\\'" . default)
           ("\\.x?html?\\'" . default)
-          ("\\.pdf\\'" . "open -a Skim %s")
+          ("\\.pdf\\'" . default)
           ;; ("\\.pdf\\'" . default)
           ;; ("\\.pdf\\'" . emacs)
           ("\\.docx\\'" . default)
           ("\\.xlsx\\'" . default)
           ("\\.pptx\\'" . default)
           ))
+
+  (when IS-LINUX
+    ;; org-mode apps to open files
+    (setq org-file-apps
+          '((auto-mode . emacs)
+            (directory . emacs)
+            ("\\.mm\\'" . default)
+            ("\\.x?html?\\'" . default)
+            ;; ("\\.pdf\\'" . "open -a Skim %s")
+            ("\\.pdf\\'" . default)
+            ;; ("\\.pdf\\'" . emacs)
+            ("\\.docx\\'" . default)
+            ("\\.xlsx\\'" . default)
+            ("\\.pptx\\'" . default)
+            ))
+    )
 
   (after! ispell
     ;; some org elements
