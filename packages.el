@@ -219,7 +219,7 @@
 (package! company-posframe :disable t)
 (package! which-key-posframe)
 (package! transient-posframe :disable t)
-(package! vertico-posframe)
+;; (package! vertico-posframe)
 (package! hydra-posframe :recipe (:host github
                                   :repo "Ladicle/hydra-posframe"))
 (package! emacs-overleaf :recipe (:local-repo "local/emacs-overleaf"))
@@ -297,6 +297,16 @@
 ;;; org-mode
 (package! org-modern)
 
-;; org-noter
-;; (package! org-noter :recipe (:host github
-;;            :repo "c1-g/org-noter-plus-djvu"))
+;;; No GUI
+(unless (display-graphic-p)
+  (package! writeroom-mode :disable)
+  (package! mixed-pitch :disable)
+  )
+
+;;; appearance
+(package! lin
+  :recipe (:host nil
+           :repo "https://git.sr.ht/~protesilaos/lin"))
+(package! pulsar
+  :recipe (:host nil
+           :repo "https://git.sr.ht/~protesilaos/pulsar"))
