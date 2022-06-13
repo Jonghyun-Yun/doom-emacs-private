@@ -34,17 +34,25 @@
 ;;  doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
 ;;  doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
 
-(setq doom-font (font-spec :family "JetBrains Mono" :size 20)
-      doom-big-font (font-spec :family "JetBrains Mono" :size 30)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 20)
-      doom-unicode-font (font-spec :family "JuliaMono" :size 20)
-      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light :size 20))
+(setq doom-font (font-spec :family "JetBrains Mono" :size 18)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 28)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 18)
+      doom-unicode-font (font-spec :family "JuliaMono" :size 18)
+      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light :size 18))
 
-(setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 22))
+(setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 20))
 ;; (setq variable-pitch-serif-font (font-spec :family "Roboto Slab" :size 24 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Libre Baskerville" :size 23 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Libertinus Serif" :size 27 :weight 'light))
 ;; (setq variable-pitch-serif-font (font-spec :family "Merriweather" :size 24 :weight 'light))
+
+(when IS-LINUX
+  (setq doom-font (font-spec :family "JetBrains Mono" :size 16)
+        doom-big-font (font-spec :family "JetBrains Mono" :size 26)
+        doom-variable-pitch-font (font-spec :family "Overpass" :size 16)
+        doom-unicode-font (font-spec :family "JuliaMono" :size 16)
+        doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light :size 16))
+  (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 18)))
 
 ;; missing out on the following Alegreya ligatures:
 (set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
@@ -1587,9 +1595,7 @@ capture was not aborted."
   :defer t
   :when (featurep! :lang scala)
   :config
-  (use-package ammonite-term-repl)
-  (setq ammonite-term-repl-auto-detect-predef-file nil)
-  (setq ammonite-term-repl-program-args '("--no-default-predef" "--no-home-predef"))
+  (require 'ammonite-term-repl)
   ;; (defun ag91/substitute-sbt-deps-with-ammonite ()
   ;;   "Substitute sbt-style dependencies with ammonite ones."
   ;;   (interactive)
@@ -1614,6 +1620,13 @@ capture was not aborted."
   ;;     res)
   ;;   (widen))
   )
+
+(use-package ammonite-term-repl
+  :defer t
+  :config
+  (setq ammonite-term-repl-auto-detect-predef-file nil
+        ammonite-term-repl-program-args '("--no-default-predef" "--no-home-predef")))
+
 (use-package! ob-scala
   :when (featurep! :lang scala)
   ;; :after org
@@ -1708,8 +1721,8 @@ capture was not aborted."
  org-modern-star ["♠""♡""♦""♧"]
  ;; org-modern-star ["◉""○""◈""◇""⁕"]
  ;; Org styling, hide markup etc.
- org-hide-emphasis-markers t
- org-pretty-entities t
+ ;; org-hide-emphasis-markers nil
+ ;; org-pretty-entities nil
  ;; org-ellipsis "…"
 
  ;; Agenda styling
@@ -1830,6 +1843,13 @@ capture was not aborted."
   )
 
 ;;; window split
+(defun jyun/resize-window-legal-pdf ()
+  "resize a selected window to fit a legal size pdf file."
+  (interactive)
+  (doom-resize-window nil 62)
+  (doom-resize-window nil 90 t)
+  )
+
 (defun spacemacs--window-split-splittable-windows ()
   (seq-remove
    (lambda (window)
@@ -1886,7 +1906,41 @@ Possible values:
     (defun my-delete-other-windows () (delete-other-windows))
     (setq spacemacs-window-split-delete-function 'my-delete-other-windows)")
 
-(defun spacemacs/window-split-2by3-grid (&optional purge)
+(defun spacemacs/window-split-grid-2by4 (&optional purge)
+  "Set the layout to a 2x4 grid.
+
+Uses the funcion defined in `spacemacs-window-split-delete-function'
+as a means to remove windows.
+
+When called with a prefix argument, it uses `delete-other-windows'
+as a means to remove windows, regardless of the value in
+`spacemacs-window-split-delete-function'."
+  (interactive "P")
+  (if purge
+      (let ((ignore-window-parameters t))
+        (delete-other-windows))
+    (funcall spacemacs-window-split-delete-function))
+  (if (spacemacs--window-split-splittable-windows)
+      (let* ((previous-files (seq-filter #'buffer-file-name
+                                         (delq (current-buffer) (buffer-list))))
+             (second (split-window-right))
+             (third (split-window-right))
+             (fourth (split-window-right))
+             (fifth (split-window-below))
+             (sixth (split-window second nil 'below))
+             (seventh (split-window third nil 'below))
+             (eighth (split-window fourth nil 'below)))
+        (set-window-buffer second (or (car previous-files) (dired-jump)))
+        (set-window-buffer third (or (cadr previous-files) "*doom:scratch*"))
+        (set-window-buffer fourth (or (caddr previous-files) "*doom:scratch*"))
+        (set-window-buffer fifth (or (cadddr previous-files) "*doom:scratch*"))
+        (set-window-buffer sixth (or (car (cddddr previous-files)) "*doom:scratch*"))
+        (set-window-buffer seventh (or (car (cdr (cddddr previous-files))) "*doom:scratch*"))
+        (set-window-buffer eighth (or (car (cdr (cdr (cddddr previous-files)))) "*doom:scratch*"))
+        (balance-windows))
+    (message "There are no main windows available to split!")))
+
+(defun spacemacs/window-split-grid-2by3 (&optional purge)
   "Set the layout to a 2x3 grid.
 
 Uses the funcion defined in `spacemacs-window-split-delete-function'
@@ -2003,3 +2057,160 @@ as a means to remove windows, regardless of the value in
         (delete-other-windows))
     (funcall spacemacs-window-split-delete-function))
   (balance-windows))
+
+;;; ace-window + embark
+;; https://karthinks.com/software/fifteen-ways-to-use-embark/
+(eval-when-compile
+  (defmacro kerthinks/embark-ace-action (fn)
+    `(defun ,(intern (concat "kerthinks/embark-ace-" (symbol-name fn))) ()
+       (interactive)
+       (with-demoted-errors "%s"
+         (require 'ace-window)
+         (let ((aw-dispatch-always t))
+           (aw-switch-to-window (aw-select nil))
+           (call-interactively (symbol-function ',fn)))))))
+
+(after! embark
+  (define-key embark-file-map     (kbd "C-w") (kerthinks/embark-ace-action find-file))
+  (define-key embark-buffer-map   (kbd "C-w") (kerthinks/embark-ace-action switch-to-buffer))
+  (define-key embark-bookmark-map (kbd "C-w") (kerthinks/embark-ace-action bookmark-jump)))
+
+;; https://localauthor.github.io/posts/aw-select.html
+(map! (:map org-mode-map
+       :leader "s C-l" #'link-hint-aw-select))
+(defun link-hint-aw-select ()
+  "Use avy to open a link in a window selected with ace-window."
+  (interactive)
+  (unless
+      (avy-with link-hint-aw-select
+        (link-hint--one :aw-select))
+    (message "No visible links")))
+
+(defun link-hint--aw-select-org-link (_link)
+  (let ((org-link-frame-setup
+         '((file . find-file))))
+    (with-demoted-errors "%s"
+      (if (and (> (length (aw-window-list)) 1)
+               (not (member (org-element-property
+                             :type (org-element-context))
+                       '("http" "https"))))
+          (let ((window (aw-select nil))
+                (buffer (current-buffer))
+                (new-buffer))
+            (org-open-at-point)
+            (setq new-buffer
+                  (current-buffer))
+            (switch-to-buffer buffer)
+            (aw-switch-to-window window)
+            (switch-to-buffer new-buffer))
+        (link-hint-open-link-at-point)))))
+
+(link-hint-define-type 'file-link
+  :aw-select #'link-hint--aw-select-file-link)
+
+(defmacro define-link-hint-aw-select (link-type fn)
+  `(progn
+     (link-hint-define-type ',link-type
+       :aw-select #',(intern (concat "link-hint--aw-select-"
+                                     (symbol-name link-type))))
+     (defun ,(intern (concat "link-hint--aw-select-"
+                             (symbol-name link-type))) (_link)
+       (with-demoted-errors "%s"
+         (if (> (length (aw-window-list)) 1)
+             (let ((window (aw-select nil))
+                   (buffer (current-buffer))
+                   (new-buffer))
+               (,fn)
+               (setq new-buffer (current-buffer))
+               (switch-to-buffer buffer)
+               (aw-switch-to-window window)
+               (switch-to-buffer new-buffer))
+           (link-hint-open-link-at-point))))))
+
+(define-link-hint-aw-select button push-button)
+(define-link-hint-aw-select dired-filename dired-find-file)
+(define-link-hint-aw-select org-link org-open-at-point)
+(link-hint-define-type 'org-link :aw-select #'link-hint--aw-select-org-link)
+
+;;; fit window to pdf
+(defvar fit-window-to-pdf-p nil)
+(defun jyun/fit-window-to-pdf ()
+  (interactive)
+  (fit-window-to-buffer))
+(defun jyun/toggle-fit-window-to-pdf ()
+  (interactive)
+  (if (not fit-window-to-pdf-p)
+      (progn
+        (jyun/fit-window-to-pdf)
+        (pdf-view-redisplay t)
+        (add-hook 'pdf-view-after-change-page-hook #'jyun/fit-window-to-pdf)
+        (setq fit-window-to-pdf-p t))
+    (progn
+      (remove-hook 'pdf-view-after-change-page-hook #'jyun/fit-window-to-pdf)
+      (setq fit-window-to-pdf-p nil))
+    )
+  )
+
+;; elfeed
+(map! :map elfeed-search-mode-map
+      :e "B" #'ar/elfeed-search-browse-background-url)
+  (defun ar/elfeed-search-browse-background-url ()
+    "Open current `elfeed' entry (or region entries) in browser without losing focus."
+    (interactive)
+    (let ((entries (elfeed-search-selected)))
+      (mapc (lambda (entry)
+              (cl-assert (memq system-type '(darwin)) t "open command is macOS only")
+              (start-process (concat "open " (elfeed-entry-link entry))
+                             nil "open" "--background" (elfeed-entry-link entry))
+              (elfeed-untag entry 'unread)
+              (elfeed-search-update-entry entry))
+            entries)
+      (unless (or elfeed-search-remain-on-entry (use-region-p))
+        (forward-line))))
+
+;; vundo
+(use-package! vundo
+  :unless (featurep! +tree)
+  :custom
+  (vundo-glyph-alist     vundo-unicode-symbols)
+  (vundo-compact-display t)
+  :config
+  (when (featurep! :editor evil)
+    (set-evil-initial-state! 'vundo-mode 'motion)
+    (add-hook! vundo-mode #'evil-normalize-keymaps)
+    (map! :map vundo-mode-map
+          [remap evil-backward-char] #'vundo-backward
+          [remap evil-forward-char]  #'vundo-forward
+          [remap evil-next-line]     #'vundo-next
+          [remap evil-previous-line] #'vundo-previous
+          [remap evil-window-top]    #'vundo-stem-root
+          [remap evil-window-bottom] #'vundo-stem-end
+          [remap evil-record-macro]  #'vundo-quit
+          [remap doom/escape]        #'vundo-quit
+          [remap evil-ret]           #'vundo-confirm))
+  :defer t)
+
+;;; elfeed-tube
+(use-package elfeed-tube
+  ;; :straight (:host github :repo "karthink/elfeed-tube")
+  :after elfeed
+  ;; :demand t
+  :config
+  ;; (setq elfeed-tube-auto-save-p nil) ;; t is auto-save (not default)
+  ;; (setq elfeed-tube-auto-fetch-p t) ;;  t is auto-fetch (default)
+  (elfeed-tube-setup)
+
+  :bind (:map elfeed-show-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)
+         :map elfeed-search-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)))
+(setq elfeed-tube-captions-languages
+      '("ko" "en" "english (auto generated)"))
+
+(use-package elfeed-tube-mpv
+  ;; :straight (:host github :repo "karthink/elfeed-tube")
+  :bind (:map elfeed-show-mode-map
+              ("C-c C-f" . elfeed-tube-mpv-follow-mode)
+              ("C-c C-w" . elfeed-tube-mpv-where)))
