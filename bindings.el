@@ -100,6 +100,8 @@
  :nv "gLl"            #'evil-lion-left
  :nv "gLr"            #'evil-lion-right
 
+
+
 ;;;; Navigation
  (:map evil-window-map
   "C-h"            nil
@@ -115,7 +117,8 @@
 ;;; misc
 (map!
  ;; C-x C-b to ibuffer
- [remap list-buffers] #'ibuffer
+ ;; [remap list-buffers]
+ ;; #'ibuffer
  ;; window management (prefix "C-w")
 
  (:map cdlatex-mode-map
@@ -177,7 +180,23 @@
  :g "s-7"   #'+workspace/switch-to-6
  :g "s-8"   #'+workspace/switch-to-7
  :g "s-9"   #'+workspace/switch-to-8
- :g "s-0"   #'+workspace/switch-to-final)
+ :g "s-0"   #'+workspace/switch-to-final
+
+ (:leader
+  :desc "2 by 4 grid"
+  "wg4" #'my-hydra-window/spacemacs/window-split-grid-2by4
+  :desc "2 by 3 grid"
+  "wg3" #'my-hydra-window/spacemacs/window-split-grid-2by3
+  :desc "2 by 2 grid"
+  "wg2" #'my-hydra-window/spacemacs/window-split-grid)
+
+ (:map persp-mode-map
+  :leader
+  "wc" nil
+  :desc "Triple columns"
+  "wc3" #'my-hydra-window/spacemacs/window-split-triple-columns)
+  )
+
 
 ;;; mathpix
 (map! :g "C-c s t" #'+lookup/dictionary-definition
@@ -331,7 +350,10 @@
 ;;; emacs binding in insert mode
 (map! :i "C-p" 'previous-line
       :i "C-n" 'next-line
-      :i "C-u" 'universal-argument)
+      :i "C-u" 'universal-argument
+      :i "C-c y" 'company-yasnippet
+      :i "C-x C-s" 'save-buffer
+      )
 
 ;;; ignore bindings
 ;; (global-set-key [C-wheel-up]  'ignore)
@@ -387,3 +409,8 @@
     :g "C-c C-v y" #'jyun/org-babel-yank-src-block
     :g "C-c C-v C-u" #'jyun/org-babel-goto-src-block-end
     )))
+
+;;; pdf
+(map! :map pdf-view-mode-map
+      :ng "C-w" #'jyun/fit-window-to-pdf
+      :ng "M-C-w" #'jyun/toggle-fit-window-to-pdf)
