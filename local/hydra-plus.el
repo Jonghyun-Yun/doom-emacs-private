@@ -169,14 +169,19 @@
 (defhydra my-hydra-window
   (:hint nil)
   "
- Select^^^^               Move^^^^              Split^^^^^^               Resize^^             Other^^
- ──────^^^^─────────────  ────^^^^────────────  ─────^^^^^^─────────────  ──────^^───────────  ─────^^──────────────────
- [_j_/_k_]  down/up       [_J_/_K_] down/up     [_S_]^^^^ horizontal      [_[_] shrink horiz   [_d_] close current
- [_h_/_l_]  left/right    [_H_/_L_] left/right  [_s_]^^^^ horiz & follow  [_]_] enlarge horiz  [_D_] close other
- [_0_.._9_] window 0..9   [_r_]^^   rotate fwd  [_V_]^^^^ vertical        [_{_] shrink verti   [_u_] restore prev layout
- [_a_]^^    ace-window    [_R_]^^   rotate bwd  [_v_]^^^^ verti & follow  [_}_] enlarge verti  [_U_] restore next layout
- [_o_]^^    other frame   ^^^^                  [_m_/_|_/___] maximize    [_g_] golden ratio   [_q_] quit
- [_w_]^^    other window"
+ Config^^^^               Select^^^^               Move^^^^              Split^^^^^^               Resize^^             Other^^
+ ──────^^^^───────────  ──────^^^^─────────────  ────^^^^────────────  ─────^^^^^^─────────────  ──────^^───────────  ─────^^──────────────────
+ [_g4_]^^^^ 2X4 grid      [_j_/_k_]  down/up       [_J_/_K_] down/up     [_S_]^^^^ horizontal      [_[_] shrink horiz   [_d_] close current
+ [_g3_]^^^^ 2X3 grid      [_h_/_l_]  left/right    [_H_/_L_] left/right  [_s_]^^^^ horiz & follow  [_]_] enlarge horiz  [_D_] close other
+ [_g2_]^^^^ 2X2 grid      [_0_.._9_] window 0..9   [_r_]^^   rotate fwd  [_V_]^^^^ vertical        [_{_] shrink verti   [_u_] restore prev layout
+ [_c3_]^^^^ 3 columns     [_a_]^^    ace-window    [_R_]^^   rotate bwd  [_v_]^^^^ verti & follow  [_}_] enlarge verti  [_U_] restore next layout
+ ^^^^^^                   [_o_]^^    other frame   ^^^^                  [_m_/_|_/___] maximize    [_r_] golden ratio   [_=_] balance windows
+ ^^^^^^                   [_w_]^^    other window  ^^^^                  ^^^^                      ^^^^                 [_q_] quit "
+  ;; Config
+  ("g4" spacemacs/window-split-grid-2by4)
+  ("g3" spacemacs/window-split-grid-2by3)
+  ("g2" spacemacs/window-split-grid)
+  ("c3" spacemacs/window-split-triple-columns)
   ;; Select
   ("j" evil-window-down)
   ("<down>" evil-window-down)
@@ -225,12 +230,13 @@
   ("]" enlarge-window-horizontally)
   ("{" shrink-window)
   ("}" enlarge-window)
-  ("g" golden-ratio)
+  ("gr" golden-ratio)
   ;; Other
   ("d" delete-window)
   ("D" delete-other-windows)
   ("u" winner-undo)
   ("U" winner-redo)
+  ("=" balance-windows)
   ("q" nil :exit t))
 (map! :leader
       :desc "Window Hydra" "w." #'my-hydra-window/body
