@@ -377,13 +377,14 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
              "* %^{Project for...} [/] %^{GOAL}p \n%i"
              :prepend t)))
     ;; (require 'org-gcal)
-    (featurep! :private gcal
-               (add-to-list 'org-capture-templates org-gcal-capture-templates))
-    (featurep! :private reference
-               (jyun/org-capture-skim-template-h))
+    (when (featurep! :private gcal)
+                     (add-to-list 'org-capture-templates org-gcal-capture-templates))
+    (when (featurep! :private reference)
+                     (jyun/org-capture-skim-template-h))
     ))
 (with-eval-after-load 'org-capture
   (jyun/org-capture-template-h))
+;; (jyun/org-capture-template-h)
 
 ;;; org-config
 (setq org-structure-template-alist
@@ -496,7 +497,8 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
           (directory . emacs)
           ("\\.mm\\'" . default)
           ("\\.x?html?\\'" . default)
-          ("\\.pdf\\'" . default)
+          ;; ("\\.pdf\\'" . emacs)
+          ("\\.pdf\\'" . "open -a Skim %s")
           ;; ("\\.pdf\\'" . default)
           ;; ("\\.pdf\\'" . emacs)
           ("\\.docx\\'" . default)

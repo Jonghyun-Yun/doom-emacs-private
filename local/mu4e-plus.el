@@ -87,8 +87,8 @@
   (setq! +org-capture-emails-file "inbox.org")
 
   ;; set mu4e-use-maildirs-extension-load to be evaluated after mu4e has been loaded.
-  (require 'mu4e-maildirs-extension)
-  (mu4e-maildirs-extension)
+  ;; (require 'mu4e-maildirs-extension)
+  ;; (mu4e-maildirs-extension)
   (setq mu4e-maildirs-extension-action-key ""
         mu4e-maildirs-extension-action-text nil)
 
@@ -96,7 +96,7 @@
   ;; (setq mu4e-mu-binary "/usr/local/bin/mu")
 
   ;; to use mu4e-headers-mark-all
-  (require 'mu4e-contrib)
+  ;; (require 'mu4e-contrib)
 
   ;; Turn off auto-fill-mode when compose an email.
   (add-hook 'mu4e-compose-mode-hook 'turn-off-auto-fill)
