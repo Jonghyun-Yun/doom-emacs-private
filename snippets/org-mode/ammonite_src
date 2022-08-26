@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: ammonite src
+# uuid: src_ammonite
+# key: <am
+# condition: t
+# --
+#+begin_src amm
+`%`$0
+#+end_src

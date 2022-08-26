@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: #+begin_notes
+# key: <n
+# uuid: <n
+# --
+#+begin_notes
+`%`$0
+#+end_notes

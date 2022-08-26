@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: scala src
+# uuid: src_scala
+# key: <sc
+# condition: t
+# --
+#+begin_src scala
+`%`$0
+#+end_src
