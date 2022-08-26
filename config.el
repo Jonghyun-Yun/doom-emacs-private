@@ -434,7 +434,9 @@
       (progn
         (pdf-view-fit-width-to-window)
         (pdf-view-auto-slice-minor-mode)))
-    (add-hook 'pdf-view-mode-hook 'org-noter-init-pdf-view)))
+    ;; (add-hook 'pdf-view-mode-hook 'org-noter-init-pdf-view)
+    )
+  )
 
 ;;;; org-gcal
 ;; (require 'password-store)
@@ -1024,9 +1026,13 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;; jar configuration needs for math typesetting.
 ;; version is pinned (brew pin plantuml)
 (after! plantuml-mode
-  (setq plantuml-jar-path "/usr/local/Cellar/plantuml/1.2021.4/libexec/plantuml.jar"
-        plantuml-default-exec-mode 'jar
-        org-plantuml-jar-path plantuml-jar-path))
+  (setq plantuml-default-exec-mode 'jar
+        org-plantuml-jar-path plantuml-jar-path)
+  (when IS-LINUX
+    (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
+  (when IS-MAC
+    (setq plantuml-jar-path "/usr/local/Cellar/plantuml/1.2021.4/libexec/plantuml.jar"))
+  )
 
 ;;;; graphviz
 (use-package! graphviz-dot-mode
@@ -1419,13 +1425,13 @@ of the buffer text to be displayed in the popup"
                                         ; xx mb
 
 ;;; tree-sitter
-(use-package! tree-sitter
-  :hook
-  (prog-mode . global-tree-sitter-mode)
-  :config
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
-(use-package! tree-sitter-langs
-  :after tree-sitter)
+;; (use-package! tree-sitter
+;;   :hook
+;;   (prog-mode . global-tree-sitter-mode)
+;;   :config
+;;   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+;; (use-package! tree-sitter-langs
+;;   :after tree-sitter)
 
 
 ;;; testing
@@ -2169,37 +2175,27 @@ as a means to remove windows, regardless of the value in
         (forward-line))))
 
 ;; vundo
-(use-package! vundo
+ (use-package! vundo
   :unless (featurep! +tree)
   :custom
   (vundo-glyph-alist     vundo-unicode-symbols)
   (vundo-compact-display t)
   :config
   (when (featurep! :editor evil)
-    (set-evil-initial-state! 'vundo-mode 'motion)
-    (add-hook! vundo-mode #'evil-normalize-keymaps)
     (map! :map vundo-mode-map
-          [remap evil-backward-char] #'vundo-backward
-          [remap evil-forward-char]  #'vundo-forward
-          [remap evil-next-line]     #'vundo-next
-          [remap evil-previous-line] #'vundo-previous
-          [remap evil-window-top]    #'vundo-stem-root
-          [remap evil-window-bottom] #'vundo-stem-end
-          [remap evil-record-macro]  #'vundo-quit
-          [remap doom/escape]        #'vundo-quit
-          [remap evil-ret]           #'vundo-confirm))
+          [remap doom/escape] #'vundo-quit))
   :defer t)
 
 ;;; elfeed-tube
 (use-package elfeed-tube
   ;; :straight (:host github :repo "karthink/elfeed-tube")
   :after elfeed
-  ;; :demand t
+  :demand t
   :config
-  ;; (setq elfeed-tube-auto-save-p nil) ;; t is auto-save (not default)
-  ;; (setq elfeed-tube-auto-fetch-p t) ;;  t is auto-fetch (default)
+  (setq elfeed-tube-auto-save-p nil) ;; t is auto-save (not default)
+  (setq elfeed-tube-auto-fetch-p nil) ;;  t is auto-fetch (default)
   (elfeed-tube-setup)
-
+  (require 'mpv)
   :bind (:map elfeed-show-mode-map
          ("F" . elfeed-tube-fetch)
          ([remap save-buffer] . elfeed-tube-save)
@@ -2214,3 +2210,12 @@ as a means to remove windows, regardless of the value in
   :bind (:map elfeed-show-mode-map
               ("C-c C-f" . elfeed-tube-mpv-follow-mode)
               ("C-c C-w" . elfeed-tube-mpv-where)))
+
+;; (use-package! mu4e
+;;   :load-path  "/usr/local/share/emacs/site-lisp/mu/mu4e"
+;;     )
+;; (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
+;; (require 'mu4e)
+
+;; cypher
+(use-package! cypher-mode)

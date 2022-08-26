@@ -56,10 +56,10 @@
 ;;   :pin "2c980de07341b015741dc2fdad27a3078c9618fb") ;https://github.com/emacs-straight/org-mode/releases/tag/release_9.3.7
 
 ;;; mu4e
-(when (featurep! :email mu4e)
-  (package! mu4e-maildirs-extension)
-  (package! mu4e-alert :disable t)
-  )
+;; (when (featurep! :email mu4e)
+;;   (package! mu4e-maildirs-extension)
+;;   (package! mu4e-alert :disable t)
+;;   )
 
 ;;; latex
 (package! latexdiff)
@@ -86,12 +86,21 @@
 ;; (package! org-noter :recipe (:local-repo "local/org-noter"
 ;;                              :branch "patch"))
 
-(package! org-noter :recipe (:host github
-                             :repo "jonghyun-yun/org-noter"
-                             ;; :branch "patch"
-                             )
-  ;; :pin "e0a5644a1eea921cf5945e56b09a1ef9688f363b"
-  )
+(when (featurep! :lang org +noter)
+  (package! org-noter :recipe
+    ;; (:local-repo "local/org-noter"
+    ;;  :branch "djvu")
+    (:host github
+     :repo "jonghyun-yun/org-noter"
+     :branch "djvu")
+    :pin "d10aa0c2a0f76bd82b33fd037ded545d6109d391"
+    ;; (:host github
+    ;;  :repo "jonghyun-yun/org-noter"
+    ;;  ;; :branch "patch"
+    ;;  )
+    ;; :pin "05305ce1859dce651c75b7c7bae3bd650ebe06bc"
+    )
+)
 
 ;; Github flavored markdown exporter
 (package! ox-gfm)
@@ -227,8 +236,8 @@
   (package! langtool-posframe :recipe (:local-repo "local/langtool-posframe")))
 
 ;;; tree-sitter
-(package! tree-sitter)
-(package! tree-sitter-langs)
+;; (package! tree-sitter)
+;; (package! tree-sitter-langs)
 
 ;;; testing new packages
 (package! org-clock-convenience :disable t)
@@ -277,8 +286,8 @@
   :recipe (:host github :repo "artawower/turbo-log"))
 
 ;;; scala
-(when (featurep! :lang scale)
-  (package! ob-scala :recipe (:local-repo "local/ob-scala")))
+(when (featurep! :lang scala)
+  (package! ob-scala :recipe (:local-repo "local/ob-scala") :disable nil))
 
 ;;; toml
 (package! toml-mode)
@@ -310,3 +319,29 @@
 (package! pulsar
   :recipe (:host nil
            :repo "https://git.sr.ht/~protesilaos/pulsar"))
+
+;; vundo
+(package! undo-fu-session :pin "3e810c7c9ab75d2b6f92c7c876290abbc164e750")
+(package! vundo 
+          ;;:pin "9692bde8e2f1c2826871edb5588bbe3892527e63"
+          :disable (not EMACS28+))
+
+;;; elfeed tube
+(package! elfeed-tube
+  :recipe
+  (:host github
+   :repo "karthink/elfeed-tube"))
+(package! elfeed-tube-mpv
+  :recipe
+  (:host github
+   :repo "karthink/elfeed-tube")
+  )
+(package! mpv)
+
+;; cypher
+(package! cypher-mode
+  :recipe (:host github
+           :repo "jonghyun-yun/cypher-mode"
+           :branch "master")
+  ;; :pin "1f875262b152aa0e57844b4c83aae4951d52a3fe"
+  )
