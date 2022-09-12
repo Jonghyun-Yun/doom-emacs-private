@@ -130,7 +130,7 @@
 ;;               ("<" . nil)
 ;;               ;; ;; TAB is used for cdlatex's snippets and navigation. But we have
 ;;               ;; ;; yasnippet for that.
-;;               ;; (:when (featurep! :editor snippets)
+;;               ;; (:when (modulep! :editor snippets)
 ;;               ;;        :g "TAB" nil)
 ;;               ;; AUCTeX takes care of auto-inserting {} on _^ if you want, with
 ;;               ;; `TeX-electric-sub-and-superscript'

@@ -82,7 +82,7 @@
 ;; deprecated: use default one
 ;; (map! :leader
 ;;       (:prefix-map ("n" . "notes")
-;;        (:when (featurep! :lang org +roam)
+;;        (:when (modulep! :lang org +roam)
 ;;         (:prefix ("r" . "roam")
 ;;          (:prefix ("d" . "by date")
 ;;           "." #'org-roam-dailies-find-directory
@@ -205,7 +205,7 @@
       "i m" #'jyun/mathpix-screenshot)
 
 ;;; dictionary
-(when (featurep! :private write)
+(when (modulep! :private write)
   (map!
    :g "C-c s T" #'wordnut-lookup-current-word
    :g "C-c s w" #'wordnut-search
@@ -217,7 +217,7 @@
    :g "C-c s i" #'synosaurus-choose-and-insert))
 
 ;;; langtool
-(when (featurep! :private grammar)
+(when (modulep! :private grammar)
   (map!
    :g "C-c s c" #'langtool-correct-buffer
    :g "C-c s d" #'langtool-check-done
@@ -336,7 +336,7 @@
 
 ;;; multiple-cursours
 (map!
- (:when (featurep! :editor multiple-cursors)
+ (:when (modulep! :editor multiple-cursors)
   :nv "C-M-d" nil
   :nv "C-M-S-d" #'evil-multiedit-restore))
 
@@ -376,7 +376,7 @@
  :desc "Toggle truncate lines" "t n" #'toggle-truncate-lines)
 
 ;;; make
-(when (featurep! :tools make)
+(when (modulep! :tools make)
   (map!
    :leader
    :desc "Run make" "c m" #'jyun/make

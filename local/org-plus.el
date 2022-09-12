@@ -3,7 +3,7 @@
 ;; https://gitlab.com/oer/org-re-reveal-ref/-/blob/master/org-re-reveal-ref.el
 ;; it changes some of org-ref custom variables
 (use-package! org-re-reveal-ref
-  :when (featurep! :lang org +present)
+  :when (modulep! :lang org +present)
   :after org-re-reveal
   )
 
@@ -377,9 +377,9 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
              "* %^{Project for...} [/] %^{GOAL}p \n%i"
              :prepend t)))
     ;; (require 'org-gcal)
-    (when (featurep! :private gcal)
+    (when (modulep! :private gcal)
                      (add-to-list 'org-capture-templates org-gcal-capture-templates))
-    (when (featurep! :private reference)
+    (when (modulep! :private reference)
                      (jyun/org-capture-skim-template-h))
     ))
 (with-eval-after-load 'org-capture

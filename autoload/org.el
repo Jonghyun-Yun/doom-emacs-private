@@ -1,5 +1,5 @@
 ;;; ~/.doom.d/autoload/org.el -*- lexical-binding: t; -*-
-;;;###if (featurep! :lang org)
+;;;###if (modulep! :lang org)
 
 
 ;;;###autoload

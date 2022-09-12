@@ -61,7 +61,11 @@
       (:results . "output replace"))
      (TeX-engine . xetex)))
  '(warning-suppress-types
-   '((org-babel-after-execute-hook)
+   '((org-roam)
+     (org-roam)
+     (org-roam)
+     (org-roam)
+     (org-babel-after-execute-hook)
      (org-babel)
      (org-babel)
      (org-babel)

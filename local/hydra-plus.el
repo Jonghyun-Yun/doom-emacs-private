@@ -1,5 +1,5 @@
 ;;; lisp/hydra-plus.el -*- lexical-binding: t; -*-
-;;;###if (featurep! :ui hydra)
+;;;###if (modulep! :ui hydra)
 
 ;; ;;; smerge
 ;; ;; (add-hook 'find-file-hook #'jethro/enable-smerge-maybe :append)
@@ -286,7 +286,7 @@ mc-pattern: %(evil-mc-get-pattern-text)"
 ;; g z z           +multiple-cursors/evil-mc-toggle-cursor-here
 
 (map!
- (:when (featurep! :editor multiple-cursors)
+ (:when (modulep! :editor multiple-cursors)
   :prefix "g"
   :desc "Multiple Cursors Hydra" :nv "z." #'my-hydra-mc/body))
 

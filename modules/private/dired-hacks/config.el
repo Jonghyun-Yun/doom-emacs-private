@@ -2,7 +2,7 @@
 
 (use-package! ivy-dired-history
   :after dired
-  :if (featurep! :completion ivy)
+  :if (modulep! :completion ivy)
   :config
   (after! savehist
     (add-to-list 'savehist-additional-variables 'ivy-dired-history-variable)))
@@ -51,7 +51,7 @@
          "g C" #'dired-ranger-copy)))
 
 (use-package! dired-sidebar
-  :unless (featurep! :emacs dired +ranger)
+  :unless (modulep! :emacs dired +ranger)
   :commands (dired-sidebar-toggle-sidebar dired-sidebar-show-sidebar)
   :config
   (setq dired-sidebar-width 25

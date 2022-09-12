@@ -56,7 +56,7 @@
 ;;   :pin "2c980de07341b015741dc2fdad27a3078c9618fb") ;https://github.com/emacs-straight/org-mode/releases/tag/release_9.3.7
 
 ;;; mu4e
-;; (when (featurep! :email mu4e)
+;; (when (modulep! :email mu4e)
 ;;   (package! mu4e-maildirs-extension)
 ;;   (package! mu4e-alert :disable t)
 ;;   )
@@ -86,7 +86,7 @@
 ;; (package! org-noter :recipe (:local-repo "local/org-noter"
 ;;                              :branch "patch"))
 
-(when (featurep! :lang org +noter)
+(when (modulep! :lang org +noter)
   (package! org-noter :recipe
     ;; (:local-repo "local/org-noter"
     ;;  :branch "djvu")
@@ -186,16 +186,17 @@
 
 ;;; scimax
 ;; keep it here (not in scimax module)
-(package! scimax :recipe (:local-repo "local/scimax"
-                          :files (
-                                  "scimax-org.el"
-                                  "scimax-stealing.el"
-                                  "scimax-elfeed.el"            ;; email elfeed
-                                  "scimax-autoformat-abbrev.el" ;; abbrev
-                                  "emacs-keybinding-command-tooltip-mode.el"
-                                  ;; "scimax-hydra.el"
-                                  )
-                          :branch "patch"))
+(package! scimax
+  :recipe (:local-repo "local/scimax"
+           :files (
+                   "scimax-org.el"
+                   "scimax-stealing.el"
+                   "scimax-elfeed.el"            ;; email elfeed
+                   "scimax-autoformat-abbrev.el" ;; abbrev
+                   "emacs-keybinding-command-tooltip-mode.el"
+                   ;; "scimax-hydra.el"
+                   )
+           :branch "patch"))
 
 ;;; misc
 (package! lorem-ipsum)
@@ -232,7 +233,7 @@
 (package! hydra-posframe :recipe (:host github
                                   :repo "Ladicle/hydra-posframe"))
 (package! emacs-overleaf :recipe (:local-repo "local/emacs-overleaf"))
-(when (featurep! :private grammar)
+(when (modulep! :private grammar)
   (package! langtool-posframe :recipe (:local-repo "local/langtool-posframe")))
 
 ;;; tree-sitter
@@ -286,7 +287,7 @@
   :recipe (:host github :repo "artawower/turbo-log"))
 
 ;;; scala
-(when (featurep! :lang scala)
+(when (modulep! :lang scala)
   (package! ob-scala :recipe (:local-repo "local/ob-scala") :disable nil))
 
 ;;; toml

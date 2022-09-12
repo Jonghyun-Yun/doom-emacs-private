@@ -123,7 +123,7 @@
   (setq +org-capture-bookmark-file "~/org/inbox.org"))
 (load! "local/org-plus")
 
-;; ;; (when (featurep! :ui ligatures +extra)
+;; ;; (when (modulep! :ui ligatures +extra)
 ;; ;;   (load! "local/ligature"))
 (load! "local/ess-plus")
 (load! "local/latex-plus")
@@ -142,9 +142,9 @@
 ;;   )
 
 ;;; email
-(when (featurep! :email mu4e)
+(when (modulep! :email mu4e)
   (load! "local/mu4e-plus"))
-(when (featurep! :email notmuch)
+(when (modulep! :email notmuch)
   (setq +notmuch-sync-backend 'mbsync))
 
 ;;; LaTeX
@@ -268,7 +268,7 @@
         (?a    "\\abs"           nil          t    nil  nil)))
 
 ;;; org-mode
-(when (featurep! :lang org +pretty)
+(when (modulep! :lang org +pretty)
   (after! org-superstar
     ;; (remove-hook 'org-mode-hook 'org-superstar-mode) ; manually turn it on!
     (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
@@ -425,7 +425,7 @@
   (define-key org-remark-mode-map (kbd "C-c n r") #'org-remark-remove)
   )
 ;;;; org-noter
-(when (featurep! :lang org +noter)
+(when (modulep! :lang org +noter)
   (after! org-noter
     ;; (org-noter-doc-split-fraction '(0.57 0.43))
     (setq org-noter-always-create-frame t
@@ -1183,7 +1183,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 ;;; auto completition
 ;;;; ivy
 ;; https://github.com/hlissner/doom-emacs/issues/1317#issuecomment-483884401
-(when (featurep! :completion ivy)
+(when (modulep! :completion ivy)
   ;; (remove-hook 'ivy-mode-hook #'ivy-rich-mode)
   ;; (setq ivy-height 15)
   (after! ivy-posframe
@@ -1362,8 +1362,8 @@ of the buffer text to be displayed in the popup"
 ;; `counsel-find-file' more `M-o' actions
 (with-eval-after-load 'dired
   (evil-define-key 'normal dired-mode-map "J"
-    (cond ((featurep! :completion helm) 'helm-find-files)
-          ((featurep! :completion ivy) 'counsel-find-file)
+    (cond ((modulep! :completion helm) 'helm-find-files)
+          ((modulep! :completion ivy) 'counsel-find-file)
           (t 'find-file))))
 
 ;; OS X ls not working with --quoting-style=literal
@@ -1599,7 +1599,7 @@ capture was not aborted."
 (use-package ob-ammonite
   ;; :ensure-system-package (amm . "sudo sh -c '(echo \"#!/usr/bin/env sh\" && curl -L https://github.com/lihaoyi/Ammonite/releases/download/2.0.4/2.13-2.0.4) > /usr/local/bin/amm && chmod +x /usr/local/bin/amm' && amm")
   :defer t
-  :when (featurep! :lang scala)
+  :when (modulep! :lang scala)
   :config
   (require 'ammonite-term-repl)
   ;; (defun ag91/substitute-sbt-deps-with-ammonite ()
@@ -1634,7 +1634,7 @@ capture was not aborted."
         ammonite-term-repl-program-args '("--no-default-predef" "--no-home-predef")))
 
 (use-package! ob-scala
-  :when (featurep! :lang scala)
+  :when (modulep! :lang scala)
   ;; :after org
   :after scala-mode)
 
@@ -2176,12 +2176,12 @@ as a means to remove windows, regardless of the value in
 
 ;; vundo
  (use-package! vundo
-  :unless (featurep! +tree)
+  :unless (modulep! +tree)
   :custom
   (vundo-glyph-alist     vundo-unicode-symbols)
   (vundo-compact-display t)
   :config
-  (when (featurep! :editor evil)
+  (when (modulep! :editor evil)
     (map! :map vundo-mode-map
           [remap doom/escape] #'vundo-quit))
   :defer t)

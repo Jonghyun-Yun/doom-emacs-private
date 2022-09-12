@@ -1,5 +1,5 @@
 ;;; private/gcal/config.el -*- lexical-binding: t; -*-
-;;;###if (featurep! :app calendar)
+;;;###if (modulep! :app calendar)
 
 ;; sync gcal.org and google calendar
 (setq org-gcal-file-alist '(("jonghyun.yun@gmail.com" . "~/org/gcal.org") ;; google calendar

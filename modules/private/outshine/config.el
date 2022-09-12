@@ -25,7 +25,7 @@
     (spacemacs|hide-lighter outline-minor-mode)
     (spacemacs|hide-lighter outshine-mode)
     (map! :leader
-          (:when (featurep! :private outshine)
+          (:when (modulep! :private outshine)
            (:prefix-map ("o O" . "out(line/org/shine)")
             "."  #'outshine-hydra/body
             "S"  #'outline-show-all

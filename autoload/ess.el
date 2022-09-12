@@ -1,5 +1,5 @@
 ;;; ~/.doom.d/autoload/ess.el -*- lexical-binding: t; -*-
-;;;###if (featurep! :lang ess)
+;;;###if (modulep! :lang ess)
 
 ;;; Rscript
 

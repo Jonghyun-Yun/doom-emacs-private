@@ -9,7 +9,7 @@
     (cond ((eq symbol '+biblio-pdf-library-dir)
            (setq bibtex-completion-library-path value))
           ((eq symbol '+biblio-default-bibliography-files)
-           (when (featurep! :lang org)
+           (when (modulep! :lang org)
              (setq reftex-default-bibliography value))
            (setq bibtex-completion-bibliography value))
           ((eq symbol '+biblio-notes-path)
@@ -42,7 +42,7 @@ In case of directory the path must end with a slash."
   ;; fallback.
   (defvar bibtex-completion-notes-template-multiple-files nil)
   :config
-  (when (featurep! :completion ivy)
+  (when (modulep! :completion ivy)
   (add-to-list 'ivy-re-builders-alist '(ivy-bibtex . ivy--regex-plus)))
 
   (setq bibtex-completion-additional-search-fields '(keywords)
@@ -54,7 +54,7 @@ In case of directory the path must end with a slash."
   (setq bibtex-completion-notes-path +biblio-notes-path)
   ;; orb will define handlers for note taking so not needed to use the
   ;; ones set for bibtex-completion
-  (unless (featurep! :lang org +roam2)
+  (unless (modulep! :lang org +roam2)
     (unless bibtex-completion-notes-template-multiple-files
       (setq bibtex-completion-notes-template-multiple-files
             "${title} : (${=key=})
@@ -62,7 +62,7 @@ In case of directory the path must end with a slash."
 - tags ::
 - keywords :: ${keywords}
 \n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: /${file}\n  :NOTER_PAGE: \n  :END:\n\n")))
-  (when (featurep! :lang org +roam2)
+  (when (modulep! :lang org +roam2)
     (setq bibtex-completion-notes-path +biblio-notes-path)
     (setq bibtex-completion-edit-notes-function 'orb-edit-notes-default)
     (defun orb-edit-notes-default (keys)
@@ -98,13 +98,13 @@ Creates new notes where none exist yet."
 ;; TODO which set of keys that should be bound for commonly used functions
 ;; see https://github.com/jkitchin/org-ref/blob/master/org-ref-core.el#L3998
 (use-package! org-ref
-  ;; :when (featurep! :lang org)
+  ;; :when (modulep! :lang org)
   :after org
   ;; :preface
   ;; This need to be set before the package is loaded, because org-ref will
   ;; automatically `require' an associated package during its loading.
-  ;; (setq org-ref-completion-library (cond ((featurep! :completion ivy)  #'org-ref-ivy-cite)
-  ;;                                        ((featurep! :completion helm) #'org-ref-helm-bibtex)
+  ;; (setq org-ref-completion-library (cond ((modulep! :completion ivy)  #'org-ref-ivy-cite)
+  ;;                                        ((modulep! :completion helm) #'org-ref-helm-bibtex)
   ;;                                        (t                            #'org-ref-reftex)))
   ;; (setq org-ref-completion-library #'org-ref-ivy-cite)
   ;; (require 'org-ref-ivy-cite)
@@ -120,7 +120,7 @@ Creates new notes where none exist yet."
      "]" #'org-remove-file))))
 
 (use-package! org-roam-bibtex
-  :when (featurep! +roam-bibtex)
+  :when (modulep! +roam-bibtex)
   :after org-roam
   :preface
   ;; if the user has not set a template mechanism set a reasonable one of them
@@ -132,16 +132,16 @@ Creates new notes where none exist yet."
   ;; - org-cite  : Org-cite @elements
   (setq orb-roam-ref-format 'org-ref-v3)
   :custom
-  (orb-note-actions-interface (cond ((featurep! :completion ivy)  'ivy)
-                                    ((featurep! :completion helm) 'helm)
+  (orb-note-actions-interface (cond ((modulep! :completion ivy)  'ivy)
+                                    ((modulep! :completion helm) 'helm)
                                     (t                           'default)))
   :config
   ;; https://github.com/org-roam/org-roam-bibtex/blob/master/doc/orb-manual.org
   ;; (setq orb-note-actions-interface 'hydra)
 
   ;; (setq orb-insert-interface 'generic)
-  (setq orb-insert-interface (cond ((featurep! :completion ivy)  'ivy-bibtex)
-                                   ((featurep! :completion helm) 'helm-bibtex)
+  (setq orb-insert-interface (cond ((modulep! :completion ivy)  'ivy-bibtex)
+                                   ((modulep! :completion helm) 'helm-bibtex)
                                    (t                           'generic)))
   (setq orb-process-file-keyword t
         orb-attached-file-extensions '("pdf"))
@@ -186,7 +186,7 @@ Creates new notes where none exist yet."
   :commands (citeproc-org-setup))
 
 (after! citar
-  (when (featurep! :lang org +roam2)
+  (when (modulep! :lang org +roam2)
     ;; Include property drawer metadata for 'org-roam' v2.
     ;; (setq citar-file-note-org-include '(org-id org-roam-ref))
     (setq citar-open-note-function 'orb-citar-edit-note))
@@ -238,7 +238,7 @@ Creates new notes where none exist yet."
   ;; :SKIM_PAGE: %(+reference/get-skim-page-number)
   ;; :END:
   ;; %i")))
-  (if (featurep! +roam-bibtex)
+  (if (modulep! +roam-bibtex)
       (add-to-list 'org-capture-templates
                    '("SA" "Skim Annotation" entry
                      (function (lambda () (progn (;; orb-notes-fn

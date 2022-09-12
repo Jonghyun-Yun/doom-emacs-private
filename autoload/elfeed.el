@@ -1,5 +1,5 @@
 ;; ;;; ../Dropbox/emacs/.doom.d/autoload/elfeed.el -*- lexical-binding: t; -*-
-;; ;;;###if (featurep! :app rss)
+;; ;;;###if (modulep! :app rss)
 
 
 ;; (defvar +my-elfeed-workspace-name "*elfeed*")
@@ -10,7 +10,7 @@
 ;; ;;;###autoload
 ;; (defun my-elfeed ()
 ;;   (interactive)
-;;   (if (featurep! :ui workspaces)
+;;   (if (modulep! :ui workspaces)
 ;;       (+workspace-switch +my-elfeed-workspace-name t)
 ;;     (setq +my-elfeed--old-wconf (current-window-configuration))
 ;;     (delete-other-windows)
@@ -26,7 +26,7 @@
 ;; (defun +my-elfeed-kill-elfeed-h ()
 ;;   ;; (prolusion-mail-hide)
 ;;   (cond
-;;    ((and (featurep! :ui workspaces) (+workspace-exists-p +my-elfeed-workspace-name))
+;;    ((and (modulep! :ui workspaces) (+workspace-exists-p +my-elfeed-workspace-name))
 ;;     (+workspace/delete +my-elfeed-workspace-name))
 
 ;;    (+my-elfeed--old-wconf
@@ -206,7 +206,7 @@
         (remove-hook 'kill-buffer-hook #'+rss-cleanup-h :local)
         (kill-buffer b)))
     (mapc #'kill-buffer show-buffers))
-  (if (featurep! :ui workspaces)
+  (if (modulep! :ui workspaces)
       (+workspace/delete "rss")
     (when (window-configuration-p +rss--wconf)
       (set-window-configuration +rss--wconf))

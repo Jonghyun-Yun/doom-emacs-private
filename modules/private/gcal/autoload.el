@@ -1,5 +1,5 @@
 ;;; private/gcal/autoload/gcal.el -*- lexical-binding: t; -*-
-;;;###if (and (featurep! :lang org) (featurep! :app calendar))
+;;;###if (and (modulep! :lang org) (modulep! :app calendar))
 
 ;;;###autoload
 ;; (defun sync-gcal-after-capture ()
@@ -60,7 +60,7 @@
 ;; (defun my-open-calendar ()
 ;;   (interactive)
 ;;   (org-gcal-fetch)
-;;   (if (featurep! :ui workspaces)
+;;   (if (modulep! :ui workspaces)
 ;;       (+workspace-switch +my-cfw-workspace-name t)
 ;;     (setq +my-cfw--old-wconf (current-window-configuration))
 ;;     (delete-other-windows)
@@ -115,7 +115,7 @@
 ;; (defun my-open-org-calendar ()
 ;;   (interactive)
 ;;   (org-gcal-fetch)
-;;   (if (featurep! :ui workspaces)
+;;   (if (modulep! :ui workspaces)
 ;;       (+workspace-switch +my-cfw-workspace-name t)
 ;;     (setq +my-cfw--old-wconf (current-window-configuration))
 ;;     (delete-other-windows)
@@ -134,7 +134,7 @@
 ;; (defun +my-cfw-kill-cfw-h ()
 ;;   ;; (prolusion-mail-hide)
 ;;   (cond
-;;    ((and (featurep! :ui workspaces) (+workspace-exists-p +my-cfw-workspace-name))
+;;    ((and (modulep! :ui workspaces) (+workspace-exists-p +my-cfw-workspace-name))
 ;;     (+workspace/delete +my-cfw-workspace-name))
 
 ;;    (+my-cfw--old-wconf

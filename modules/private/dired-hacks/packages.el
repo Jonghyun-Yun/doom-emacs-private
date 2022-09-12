@@ -1,7 +1,7 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; private/dired-hacks/packages.el
 
-(when (featurep! :completion ivy)
+(when (modulep! :completion ivy)
   (package! ivy-dired-history))
 (package! dired-quick-sort)
 (package! dired-filter)

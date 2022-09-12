@@ -1,5 +1,5 @@
 ;;; ~/.doom.d/autoload/vc.el -*- lexical-binding: t; -*-
-;;;###if (featurep! :emacs vc)
+;;;###if (modulep! :emacs vc)
 
 ;; Ediff the init.example.el and my init.el
 ;;;###autoload
