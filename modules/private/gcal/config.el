@@ -12,6 +12,14 @@
   (setq! org-gcal-client-id (funcall #'password-store-get "org-gcal/client-id")
          org-gcal-client-secret (funcall #'password-store-get "org-gcal/client-secret")))
 
+;;;###autoload
+(defun jyun/get-gcal-fetch ()
+  "Get google calendar credientials."
+  (progn
+    (jyun/get-org-gcal-credential)
+    (org-gcal-fetch)
+    ))
+
 ;; (setq org-gcal-down-days 365)   ;; Set org-gcal to download events a year in advance
 ;; (add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) ))
 ;;
@@ -23,7 +31,7 @@
 ;; (remove-hook 'org-capture-before-finalize-hook #'org-gcal--capture-post)
 ;; (add-hook 'org-capture-after-finalize-hook #'sync-gcal-after-capture)
 
-(run-with-idle-timer 3600 t 'org-gcal-fetch)
+(run-with-idle-timer 3600 t 'jyun/org-gcal-fetch)
 
 (defcustom org-gcal-capture-templates
   '("s" "Scedule an event" entry
