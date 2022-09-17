@@ -2219,3 +2219,23 @@ as a means to remove windows, regardless of the value in
 
 ;; cypher
 (use-package! cypher-mode)
+
+;; yt-dlp
+(defun emacs-yt-dlp (&optional link)
+  (interactive)
+  (let ((fpath (or link (elfeed-get-link-at-point))))
+    (async-start-process "yt-dlp" "yt-dlp" (message (concat "Starting download: " fpath)) "-o/Users/yunj/Desktop/%(title)s-%(id)s.%(ext)s" fpath))
+  )
+
+(defun yt-dlp-elfeed ()
+  "Download the current entry's Youtube video using `yt-dlp'. "
+  (interactive)
+  (let ((link (elfeed-entry-link elfeed-show-entry)))
+    (when link
+      (message "Downloading the Youtube Video: %s" link)
+      (emacs-yt-dlp link))))
+
+(map!
+ (:map elfeed-show-mode-map
+  :n "g C-o" #'yt-dlp-elfeed
+  ))
