@@ -2217,10 +2217,10 @@ as a means to remove windows, regardless of the value in
 ;; (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
 ;; (require 'mu4e)
 
-;; cypher
+;;; cypher
 (use-package! cypher-mode)
 
-;; yt-dlp
+;;; yt-dlp
 (defun emacs-yt-dlp (&optional link)
   (interactive)
   (let ((fpath (or link (elfeed-get-link-at-point))))
@@ -2239,3 +2239,26 @@ as a means to remove windows, regardless of the value in
  (:map elfeed-show-mode-map
   :n "g C-o" #'yt-dlp-elfeed
   ))
+
+;;; osm
+(use-package! osm
+  :bind (("C-c m h" . osm-home)
+         ("C-c m s" . osm-search)
+         ("C-c m v" . osm-server)
+         ("C-c m t" . osm-goto)
+         ("C-c m x" . osm-gpx-show)
+         ("C-c m j" . osm-bookmark-jump))
+
+  :custom
+  ;; Take a look at the customization group `osm' for more options.
+  (osm-server 'default) ;; Configure the tile server
+  (osm-copyright t)     ;; Display the copyright information
+
+  :init
+  ;; Load Org link support
+  (with-eval-after-load 'org
+    (require 'osm-ol))
+
+  :config
+  (setq osm-home '(32.5590711 -97.0643973 15))
+  )
