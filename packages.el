@@ -339,10 +339,13 @@
   )
 (package! mpv)
 
-;; cypher
+;;; cypher
 (package! cypher-mode
   :recipe (:host github
            :repo "jonghyun-yun/cypher-mode"
            :branch "master")
   ;; :pin "1f875262b152aa0e57844b4c83aae4951d52a3fe"
   )
+
+;;; osm
+(package! osm)
