@@ -2221,10 +2221,23 @@ as a means to remove windows, regardless of the value in
 (use-package! cypher-mode)
 
 ;;; yt-dlp
+
+(defvar yt-dlp-video-dir "/Users/yunj/Desktop/")
+(when IS-LINUX
+  (setq yt-dlp-video-dir "/home/yunj/")
+  )
+
+(defun wsl-open-exploer ()
+  (interactive)
+  (shell-command "explorer.exe .")
+  )
+
 (defun emacs-yt-dlp (&optional link)
   (interactive)
   (let ((fpath (or link (elfeed-get-link-at-point))))
-    (async-start-process "yt-dlp" "yt-dlp" (message (concat "Starting download: " fpath)) "-o/Users/yunj/Desktop/%(title)s-%(id)s.%(ext)s" fpath))
+    (async-start-process "yt-dlp" "yt-dlp" nil (concat  "-o" yt-dlp-video-dir "%(title)s-%(id)s.%(ext)s") fpath)
+    (message (concat "Starting download: " fpath))
+    )
   )
 
 (defun yt-dlp-elfeed ()
@@ -2261,4 +2274,10 @@ as a means to remove windows, regardless of the value in
 
   :config
   (setq osm-home '(32.5590711 -97.0643973 15))
+  )
+
+;;; WSL functions
+(defun wsl-open-exploer ()
+  (interactive)
+  (shell-command "explorer.exe .")
   )
