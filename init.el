@@ -36,9 +36,9 @@
         )
 
        :ui
-       deft              ; notational velocity for Emacs
-       doom              ; what makes DOOM look the way it does
-       doom-dashboard    ; a nifty splash screen for Emacs
+       ;;deft              ; notational velocity for Emacs
+       doom                ; what makes DOOM look the way it does
+       ;; doom-dashboard    ; a nifty splash screen for Emacs
        ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
        ;;(emoji +unicode)  ; 🙂
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
@@ -65,7 +65,7 @@
        :editor
        (evil +everywhere); come to the dark side, we have cookies
        file-templates    ; auto-snippets for empty files
-       fold              ; (nigh) universal code folding
+       ;; fold              ; (nigh) universal code folding
        format            ; automated prettiness
        ;;god               ; run Emacs commands without modifier keys
        lispy             ; vim for lisp, for people who don't like vim
@@ -77,7 +77,7 @@
        word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
-       (dired                           ; making dired pretty [functional]
+       (dired            ; making dired pretty [functional]
         +icons
         +dirvish)
        electric          ; smarter, keyword-based electric-indent
@@ -104,14 +104,14 @@
        ;;direnv
        ;;docker
        editorconfig          ; let someone else argue about tabs vs spaces
-       ein                   ; tame Jupyter notebooks with emacs
+       ;; ein                   ; tame Jupyter notebooks with emacs
        (eval +overlay)       ; run code, run (also, repls)
        ;;gist              ; interacting with github gists
        (lookup             ; navigate your code and its documentation
         +dictionary)
        (lsp +peek)         ; M-x vscode
        (magit +forge)      ; a git porcelain for Emacs
-       make                 run make tasks from Emacs
+       make                ; run make tasks from Emacs
        (pass +auth)        ; password manager for nerds
        pdf                 ; pdf enhancements
        ;;prodigy           ; FIXME managing external services & code builders
@@ -155,11 +155,11 @@
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
        json              ; At least it ain't XML
-       (java             ; the poster child for carpal tunnel syndrome
-        ;; +meghanada
-        +lsp
-        )
-       (javascript +lsp)   ; all(hope(abandon(ye(who(enter(here))))))
+       ;; (java             ; the poster child for carpal tunnel syndrome
+       ;;  ;; +meghanada
+       ;;  +lsp
+       ;;  )
+       ;; (javascript +lsp)   ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
        (latex              ; writing papers in Emacs has never been so fun
@@ -168,7 +168,7 @@
         +lsp
         +fold)
        ;;lean              ; for folks with too much to prove
-       ledger            ; be audit you can be
+       ;; ledger            ; be audit you can be
        ;;lua               ; one-based indices? one-based indices
        markdown          ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
