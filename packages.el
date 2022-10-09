@@ -125,12 +125,14 @@
 ;;   :recipe (:local-repo "local/ox-hugo"
 ;;            :branch "patch"))
 
-(package! ox-hugo
-  :recipe (:host github
-           :repo "jonghyun-yun/ox-hugo"
-           :branch "patch")
-  :pin "1f875262b152aa0e57844b4c83aae4951d52a3fe"
-  )
+;   (package! ox-hugo
+;     :recipe (:host github
+;              :repo "jonghyun-yun/ox-hugo"
+;              :branch "patch-2")
+;     ;; :pin "1f875262b152aa0e57844b4c83aae4951d52a3fe"
+;     :pin "144f646a090156ab828aa30552aaedea27b5e5c1"
+;     :disable nil
+;     )
 
 ;; (package! org-cv
 ;;   :recipe (:host github
