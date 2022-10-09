@@ -265,8 +265,8 @@ Turning on wordnut mode runs the normal hook `mw-syno-mode-hook'.
         org-todo-keyword-wait
         org-verbatim
         org-property-drawer-re
-        org-ref-cite-re
-        org-ref-ref-re
+        ;; org-ref-cite-re
+        ;; org-ref-ref-re
         org-ref-label-re
         org-latex-math-environments-re
         "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
