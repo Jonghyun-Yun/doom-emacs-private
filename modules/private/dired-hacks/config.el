@@ -45,10 +45,11 @@
 (use-package! dired-ranger
   :after dired
   :commands (dired-ranger-copy)
-  :init
-  (map! (:map dired-mode-map
-         "g P" #'dired-ranger-paste
-         "g C" #'dired-ranger-copy)))
+  ;; :init
+  ;; (map! (:map dired-mode-map
+  ;;        "g P" #'dired-ranger-paste
+  ;;        "g C" #'dired-ranger-copy))
+  )
 
 (use-package! dired-sidebar
   :unless (modulep! :emacs dired +ranger)
