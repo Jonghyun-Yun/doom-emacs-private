@@ -162,6 +162,7 @@
 (package! modus-themes)
 (package! spacemacs-theme :disable t)
 ;; (package! doom-themes :disable t)
+(package! ef-themes :disable t)
 
 ;;; coding
 (package! ess-view-data :pin "283251e8ac19ac0c0f89a4b0f0eb38482167e52b")
@@ -222,10 +223,17 @@
 ;;            )
 ;;   :pin "e14dfea59491f889f35868813122c5b8c0b4b3db")
 
-(package! org-mac-link
-  :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
-           :files ("lisp/org-mac-link.el"))
-  :pin "e14dfea59491f889f35868813122c5b8c0b4b3db")
+;; (package! org-mac-link
+;;   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
+;;            :files ("lisp/org-mac-link.el"))
+;;   :pin "e14dfea59491f889f35868813122c5b8c0b4b3db")
+
+;; (package! org-mac-link
+;;   :pin "0b18c1d070b9601cc65c40e902169e367e4348c9")
+
+;; somehow it looks for this package during the initialization of org-roam
+(when IS-LINUX
+  (package! org-mac-link :pin "0b18c1d070b9601cc65c40e902169e367e4348c9"))
 
 ;;; posframe
 (package! company-posframe :disable t)
@@ -351,3 +359,6 @@
 
 ;;; osm
 (package! osm)
+
+;;; openwith
+(package! openwith)
