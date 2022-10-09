@@ -2280,3 +2280,9 @@ as a means to remove windows, regardless of the value in
   (interactive)
   (shell-command "explorer.exe .")
   )
+
+;;; openwith
+(when IS-MAC
+  (require 'openwith)
+  (openwith-mode t)
+  (setq openwith-associations '(("\\.pdf\\'" "open -a Skim" (file)))))
