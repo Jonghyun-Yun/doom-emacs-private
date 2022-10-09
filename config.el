@@ -679,7 +679,7 @@
 ;;; elfeed
 (after! elfeed
   ;; number of concurrent fetches
-  (elfeed-set-max-connections 2)
+  (elfeed-set-max-connections 5)
   ;; (run-at-time nil (* 4 60 60) #'elfeed-update)
                                         ;update every 4 * 60 * 60 sec
   (setq
@@ -2187,23 +2187,24 @@ as a means to remove windows, regardless of the value in
   :defer t)
 
 ;;; elfeed-tube
-(use-package elfeed-tube
-  ;; :straight (:host github :repo "karthink/elfeed-tube")
+ (use-package elfeed-tube
+  ;; :ensure t ;; or :straight t
   :after elfeed
   :demand t
   :config
-  (setq elfeed-tube-auto-save-p nil) ;; t is auto-save (not default)
-  (setq elfeed-tube-auto-fetch-p nil) ;;  t is auto-fetch (default)
+  ;; (setq elfeed-tube-auto-save-p nil) ; default value
+  ;; (setq elfeed-tube-auto-fetch-p t)  ; default value
   (elfeed-tube-setup)
-  (require 'mpv)
+
+  (setq elfeed-tube-captions-languages
+        '("ko" "en" "english (auto generated)"))
+
   :bind (:map elfeed-show-mode-map
          ("F" . elfeed-tube-fetch)
          ([remap save-buffer] . elfeed-tube-save)
          :map elfeed-search-mode-map
          ("F" . elfeed-tube-fetch)
          ([remap save-buffer] . elfeed-tube-save)))
-(setq elfeed-tube-captions-languages
-      '("ko" "en" "english (auto generated)"))
 
 (use-package elfeed-tube-mpv
   ;; :straight (:host github :repo "karthink/elfeed-tube")
@@ -2222,15 +2223,13 @@ as a means to remove windows, regardless of the value in
 
 ;;; yt-dlp
 
-(defvar yt-dlp-video-dir "/Users/yunj/Desktop/")
+(defvar yt-dlp-video-dir "/Users/yunj/Desktop/Videos")
 (when IS-LINUX
-  (setq yt-dlp-video-dir "/home/yunj/")
-  )
+  (setq yt-dlp-video-dir "/home/yunj/Videos"))
 
 (defun wsl-open-exploer ()
   (interactive)
-  (shell-command "explorer.exe .")
-  )
+  (shell-command "explorer.exe ."))
 
 (defun emacs-yt-dlp (&optional link)
   (interactive)
