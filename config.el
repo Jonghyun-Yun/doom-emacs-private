@@ -628,6 +628,12 @@
        org-cite-csl-locales-dir "~/Zotero/locales/"
        )
 
+(when (modulep! :tools biblio)
+  (after! org-ref
+    (setq org-ref-insert-cite-function
+          (lambda ()
+	    (org-cite-insert nil)))))
+
 (after! citar
   ;; list of paths
   (setq! citar-bibliography +biblio-default-bibliography-files
