@@ -1,7 +1,7 @@
 ;;; ../Dropbox/emacs/.doom.d/local/visual-plus.el -*- lexical-binding: t -*-
 
 ;;; modus-theme
-(when (or (eq doom-theme 'modus-operandi) (eq doom-theme 'modus-vivendi))
+;; (when (or (eq doom-theme 'modus-operandi) (eq doom-theme 'modus-vivendi))
   (use-package! modus-themes
     :init
     ;; Add all your customizations prior to loading the themes
@@ -98,27 +98,67 @@
             (7 . (background rainbow semibold 1.05))
             (t . (rainbow semibold 1.05)))
           modus-themes-variable-pitch-ui t)
+
     ;; Load the theme files before enabling a theme
     (modus-themes-load-themes)
     :config
     (when (eq doom-theme 'modus-operandi)
       (modus-themes-load-operandi))
-    (when (eq doom-theme 'modus-vivendi)
-      (modus-themes-load-vivendi))
+    ;; (when (eq doom-theme 'modus-vivendi)
+    ;;   (modus-themes-load-vivendi))
     ;; :bind ("<f5>" . modus-themes-toggle)
-    ))
+    )
+;; )
+
+;; (use-package! ef-themes
+;;   :init
+;;   ;; If you like two specific themes and want to switch between them, you
+;;   ;; can specify them in `ef-themes-to-toggle' and then invoke the command
+;;   ;; `ef-themes-toggle'.  All the themes are included in the variable
+;;   ;; `ef-themes-collection'.
+;;   (setq ef-themes-to-toggle '(ef-frost ef-light))
+
+;;   ;; Make customisations that affect Emacs faces BEFORE loading a theme
+;;   ;; (any change needs a theme re-load to take effect).
+
+;;   ;; (setq ef-themes-headings           ; read the manual's entry or the doc string
+;;   ;;       '((0 . (variable-pitch light 1.9))
+;;   ;;         (1 . (variable-pitch light 1.8))
+;;   ;;         (2 . (variable-pitch regular 1.7))
+;;   ;;         (3 . (variable-pitch regular 1.6))
+;;   ;;         (4 . (variable-pitch regular 1.5))
+;;   ;;         (5 . (variable-pitch 1.4))    ; absence of weight means `bold'
+;;   ;;         (6 . (variable-pitch 1.3))
+;;   ;;         (7 . (variable-pitch 1.2))
+;;   ;;         (t . (variable-pitch 1.1))))
+
+;;   (setq ef-themes-headings modus-themes-headings)
+
+;;   ;; They are nil by default...
+;;   (setq ef-themes-mixed-fonts t
+;;         ef-themes-variable-pitch-ui t)
+
+;;   ;; Disable all other themes to avoid awkward blending:
+;;   (mapc #'disable-theme custom-enabled-themes)
+
+;;   :config
+;;   ;; Load the theme of choice:
+;;   ;; (load-theme 'ef-frost :no-confirm)
+
+;;   ;; OR use this to load the theme which also calls `ef-themes-post-load-hook':
+;;   (ef-themes-select 'ef-frost))
 
 ;;; doom-theme
 (setq doom-themes-padded-modeline nil
-       doom-themes-treemacs-theme "doom-colors")
+      doom-themes-treemacs-theme "doom-colors")
 (setq doom-themes-treemacs-enable-variable-pitch t
       doom-themes-treemacs-line-spacing 1
       doom-themes-treemacs-bitmap-indicator-width 2)
 (defface jyun/treemacs-face
-  '((t (:family "Roboto Consensed" :height 0.9)))
+  '((t (:family "Roboto Consensed" :height 0.95)))
   "A face to display file/diretory in treemacs."
   :group 'basic-faces)
-(setq doom-themes-treemacs-variable-pitch-face 'jyun/treemacs-face)
+;; (setq doom-themes-treemacs-variable-pitch-face 'jyun/treemacs-face)
 
 ;;; doom-modeline
 ;; https://github.com/seagle0128/doom-modeline
@@ -136,7 +176,7 @@
 
   ;; How tall the mode-line should be. It's only respected in GUI.
   ;; If the actual char height is larger, it respects the actual height.
-  (setq doom-modeline-height 16)
+  (setq doom-modeline-height 18)
 
   ;; to see letters instead of the colored circles
   (setq doom-modeline-modal-icon nil)
