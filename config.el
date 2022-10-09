@@ -106,7 +106,8 @@
 ;;; load lisp
 (setq load-prefer-newer t)
 (when IS-MAC
-(load! "local/splash"))
+;(load! "local/splash")
+)
 (with-eval-after-load 'hydra
   (load! "local/hydra-plus"))
 (load! "bindings")
@@ -576,7 +577,8 @@
   (setq alert-default-style 'notifier))
 
 ;;;; maximize frame at startup
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(unless IS-LINUX
+  (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 ;; OS X native full screen
 ;; (add-to-list 'initial-frame-alist '(fullscreen . fullscreen))
 
