@@ -107,7 +107,7 @@
 
 ;;; email send
   ;; sending mail
-  (setq sendmail-program "/usr/local/bin/msmtp"
+  (setq sendmail-program "msmtp"
         message-send-mail-function 'message-send-mail-with-sendmail
         ;; user-full-name "Jonghyun Yun")
         )
