@@ -975,11 +975,11 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
 (setq lsp-clangd-binary-path "/usr/local/opt/llvm/bin/clangd")
 
 (setq
- lsp-ui-peek-mode nil                   ;; buggy if t before starting lsp
- ;; lsp-ui-sideline-show-hover nil
- ;; lsp-ui-doc-show-with-cursor       nil
- ;; lsp-ui-sideline-show-code-actions nil
- lsp-headerline-breadcrumb-enable t)
+   ;; lsp-ui-peek-mode nil ;; buggy if t before starting lsp
+   ;; lsp-ui-sideline-show-hover nil
+   ;; lsp-ui-doc-show-with-cursor       nil
+   ;; lsp-ui-sideline-show-code-actions t
+   lsp-headerline-breadcrumb-enable t)
 (after! lsp-mode
   (setq lsp-ui-doc-show-with-mouse t))
 
@@ -1210,7 +1210,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
               '(swiper . ivy-display-function-fallback))))
 
 ;;;; company
-(setq company-idle-delay 5.0
+(setq company-idle-delay 1.0
       company-minimum-prefix-length 2
       company-box-enable-icon t     ; disable all-the-icons
       company-tooltip-limit 10
