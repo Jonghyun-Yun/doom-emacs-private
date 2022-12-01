@@ -24,7 +24,7 @@
              wordnut-lookup-dwim)
   :hook (wordnut-mode . +write/buffer-face-mode-dict)
   :config
-  (setq wordnut-cmd "/usr/local/bin/wn")
+  (setq wordnut-cmd "wn")
   (map! (:map wordnut-mode-map
          :nm [remap +org/dwim-at-point] #'wordnut-lookup-dwim
          :nm "s" #'wordnut-search

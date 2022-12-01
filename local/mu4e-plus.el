@@ -396,7 +396,7 @@
 
 
 ;;; email send
-  (setq sendmail-program "/usr/local/bin/msmtp"
+  (setq sendmail-program "msmtp"
         message-send-mail-function 'message-send-mail-with-sendmail
         ;; user-full-name "Jonghyun Yun")
         ;; tell msmtp to choose the SMTP server according to the from field in the outgoing email
