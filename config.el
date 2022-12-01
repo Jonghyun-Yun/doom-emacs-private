@@ -2232,9 +2232,9 @@ as a means to remove windows, regardless of the value in
 
 ;;; yt-dlp
 
-(defvar yt-dlp-video-dir "/Users/yunj/Desktop/Videos")
+(defvar yt-dlp-video-dir "/Users/yunj/Desktop/Videos/")
 (when IS-LINUX
-  (setq yt-dlp-video-dir "/home/yunj/Videos"))
+  (setq yt-dlp-video-dir "/home/yunj/Videos/"))
 
 (defun wsl-open-exploer ()
   (interactive)
