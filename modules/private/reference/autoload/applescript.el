@@ -135,7 +135,7 @@
   (interactive)
   (message
    "Applescript: Getting Skim page link...")
-  (org-mac-paste-applescript-links
+  (org-mac-link-paste-applescript-links
    (+reference/clean-skim-page-link
     (+reference/get-skim-page-link))))
 
