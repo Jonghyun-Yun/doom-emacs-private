@@ -158,7 +158,8 @@
   (defun latex-init-pdf-view ()
     (progn
       (pdf-view-fit-height-to-window)
-      (pdf-view-auto-slice-minor-mode)))
+      ;; (pdf-view-auto-slice-minor-mode)
+      ))
   (add-hook 'pdf-view-mode-hook 'latex-init-pdf-view)
 
   ;; This variable was introduced in AUCTeX 11.90.
