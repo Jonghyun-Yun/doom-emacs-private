@@ -368,7 +368,7 @@
                     "[[mu4e:msgid:"
                     (plist-get MSG :message-id) "]["
                     (truncate-string-to-width
-                     (or (caar from) (cdar from)) 25 nil nil t)
+                     (or (plist-get (car from) :name) (plist-get (car from) :email)) 25 nil nil t)
                     " - "
                     (truncate-string-to-width
                      (plist-get MSG :subject) 40 nil nil t)
