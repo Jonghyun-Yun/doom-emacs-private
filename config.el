@@ -580,6 +580,7 @@
 ;;;; maximize frame at startup
 (unless IS-LINUX
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
+
 ;; OS X native full screen
 ;; (add-to-list 'initial-frame-alist '(fullscreen . fullscreen))
 
@@ -2292,6 +2293,7 @@ as a means to remove windows, regardless of the value in
 
 ;;; openwith
 (when IS-MAC
-  (require 'openwith)
-  (openwith-mode t)
-  (setq openwith-associations '(("\\.pdf\\'" "open -a Skim" (file)))))
+  ;; (require 'openwith)
+  ;; (openwith-mode t)
+  ;; (setq openwith-associations '(("\\.pdf\\'" "open -a Skim" (file))))
+  )
