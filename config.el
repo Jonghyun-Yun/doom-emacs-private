@@ -153,7 +153,8 @@
 ;; (remove-hook 'TeX-update-style-hook #'rainbow-delimiters-mode)
 
 (setq +latex-viewers '(pdf-tools skim))
-  ;; (setq +latex-viewers '(skim pdf-tools))
+;; (setq +latex-viewers '(skim pdf-tools))
+
 (after! latex
   (defun latex-init-pdf-view ()
     (progn
@@ -975,14 +976,16 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
                              (c++-mode . ccls)))
 (setq lsp-clangd-binary-path "/usr/local/opt/llvm/bin/clangd")
 
-(setq
-   ;; lsp-ui-peek-mode nil ;; buggy if t before starting lsp
-   ;; lsp-ui-sideline-show-hover nil
-   ;; lsp-ui-doc-show-with-cursor       nil
-   ;; lsp-ui-sideline-show-code-actions t
-   lsp-headerline-breadcrumb-enable t)
+;; (setq
+;;    ;; lsp-ui-peek-mode nil ;; buggy if t before starting lsp
+;;    ;; lsp-ui-sideline-show-hover nil
+;;    ;; lsp-ui-doc-show-with-cursor       nil
+;;    ;; lsp-ui-sideline-show-code-actions t
+;;  )
 (after! lsp-mode
-  (setq lsp-ui-doc-show-with-mouse t))
+  (setq
+   lsp-headerline-breadcrumb-enable t
+   lsp-ui-doc-show-with-mouse t))
 
 ;;;; conda
 ;; (use-package! conda
