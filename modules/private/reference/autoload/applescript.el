@@ -31,104 +31,104 @@
       (+reference/append-org-id-to-skim (org-id-get-create))))
 
 ;;;###autoload
-  (defun +reference/append-org-id-to-skim (id)
-    (do-applescript (concat
-                     "tell application \"Skim\"\n"
-                     "set runstatus to \"not set\"\n"
-                     "set theDoc to front document\n"
-                     "try\n"
-                     "    set theNote to active note of theDoc\n"
-                     "end try\n"
-                     "if theNote is not missing value then\n"
-                     "    set newText to text of theNote\n"
-                     "    set startpoint to  (offset of \"org-id:{\" in newtext)\n"
-                     "    set endpoint to  (offset of \"}:org-id\" in newtext)\n"
-                     "    if (startpoint is equal to endpoint) and (endpoint is equal to 0) then\n"
-                     "        set newText to text of theNote & \"\norg-id:{\" & "
-                     (applescript-quote-string id)
-                     " & \"}:org-id\"\n"
-                     "        set text of theNote to newText\n"
-                     "        return \"set success\"\n"
-                     "    end if\n"
-                     "end if\n"
-                     "end tell\n"
-                     "return \"unset\"\n"
-                     )))
-
-;;;###autoload
-  (defun +reference/get-skim-page-link ()
-    (do-applescript
-     (concat
-      "tell application \"Skim\"\n"
-      "set theDoc to front document\n"
-      "set theTitle to (name of theDoc)\n"
-      "set thePath to (path of theDoc)\n"
-      "set thePage to (get index for current page of theDoc)\n"
-      "set theSelection to selection of theDoc\n"
-      "set theContent to (contents of (get text for theSelection))\n"
-      "try\n"
-      "    set theNote to active note of theDoc\n"
-      "end try\n"
-      "if theNote is not missing value then\n"
-      "    set theContent to contents of (get text for theNote)\n"
-      "    set theNotePage to get page of theNote\n"
-      "    set thePage to (get index for theNotePage)\n"
-      "    set theNoteIndex to (get index for theNote on theNotePage)\n"
-      "else\n"
-      "    if theContent is missing value then\n"
-      "        set theContent to theTitle & \", p. \" & thePage\n"
-      "        set theNoteIndex to 0\n"
-      "    else\n"
-      "        tell theDoc\n"
-      "            set theNote to make new note with data theSelection with properties {type:highlight note}\n"
-      "            set active note of theDoc to theNote\n"
-      "            set text of theNote to (get text for theSelection)\n"
-      "            set theNotePage to get page of theNote\n"
-      "            set thePage to (get index for theNotePage)\n"
-      "            set theNoteIndex to (get index for theNote on theNotePage)\n"
-      "            set theContent to contents of (get text for theNote)\n"
-      "        end tell\n"
-      "    end if\n"
-      "end if\n"
-      "set theLink to \"skim://\" & thePath & \"::\" & thePage & \";;\" & theNoteIndex & "
-      "\"::split::\" & theContent\n"
-      "end tell\n"
-      "return theLink as string\n")))
-
-;;;###autoload
-  (defun +reference/skim-get-bibtex-key ()
-    (let* ((name (do-applescript
-                  (concat
+(defun +reference/append-org-id-to-skim (id)
+  (do-applescript (concat
                    "tell application \"Skim\"\n"
+                   "set runstatus to \"not set\"\n"
                    "set theDoc to front document\n"
-                   "set theTitle to (name of theDoc)\n"
+                   "try\n"
+                   "    set theNote to active note of theDoc\n"
+                   "end try\n"
+                   "if theNote is not missing value then\n"
+                   "    set newText to text of theNote\n"
+                   "    set startpoint to  (offset of \"org-id:{\" in newtext)\n"
+                   "    set endpoint to  (offset of \"}:org-id\" in newtext)\n"
+                   "    if (startpoint is equal to endpoint) and (endpoint is equal to 0) then\n"
+                   "        set newText to text of theNote & \"\norg-id:{\" & "
+                   (applescript-quote-string id)
+                   " & \"}:org-id\"\n"
+                   "        set text of theNote to newText\n"
+                   "        return \"set success\"\n"
+                   "    end if\n"
+                   "end if\n"
                    "end tell\n"
-                   "return theTitle as string\n")))
-           ;; (key (when (string-match "\\(.+\\).pdf" name) (match-string 1 name))))
-           (key (when (string-match ".\\(.+\\).pdf" name) (match-string 1 name)))) ;; otherwise extract "key instead of key
-      key)
-    )
+                   "return \"unset\"\n"
+                   )))
 
 ;;;###autoload
-  (defun +reference/get-skim-page-number ()
-    (let* ((page (do-applescript
-                  (concat
-                   "tell application \"Skim\"\n"
-                   "set theDoc to front document\n"
-                   "set thePage to (get index for current page of theDoc)\n"
-                   "end tell\n"
-                   "return thePage as integer\n"))))
-      (cond ((integerp page)
-             (int-to-string page))
-            ((numberp page)
-             (number-to-string page))
-            ((stringp page) page))))
+(defun +reference/get-skim-page-link ()
+  (do-applescript
+   (concat
+    "tell application \"Skim\"\n"
+    "set theDoc to front document\n"
+    "set theTitle to (name of theDoc)\n"
+    "set thePath to (path of theDoc)\n"
+    "set thePage to (get index for current page of theDoc)\n"
+    "set theSelection to selection of theDoc\n"
+    "set theContent to (contents of (get text for theSelection))\n"
+    "try\n"
+    "    set theNote to active note of theDoc\n"
+    "end try\n"
+    "if theNote is not missing value then\n"
+    "    set theContent to contents of (get text for theNote)\n"
+    "    set theNotePage to get page of theNote\n"
+    "    set thePage to (get index for theNotePage)\n"
+    "    set theNoteIndex to (get index for theNote on theNotePage)\n"
+    "else\n"
+    "    if theContent is missing value then\n"
+    "        set theContent to theTitle & \", p. \" & thePage\n"
+    "        set theNoteIndex to 0\n"
+    "    else\n"
+    "        tell theDoc\n"
+    "            set theNote to make new note with data theSelection with properties {type:highlight note}\n"
+    "            set active note of theDoc to theNote\n"
+    "            set text of theNote to (get text for theSelection)\n"
+    "            set theNotePage to get page of theNote\n"
+    "            set thePage to (get index for theNotePage)\n"
+    "            set theNoteIndex to (get index for theNote on theNotePage)\n"
+    "            set theContent to contents of (get text for theNote)\n"
+    "        end tell\n"
+    "    end if\n"
+    "end if\n"
+    "set theLink to \"skim://\" & thePath & \"::\" & thePage & \";;\" & theNoteIndex & "
+    "\"::split::\" & theContent\n"
+    "end tell\n"
+    "return theLink as string\n")))
 
 ;;;###autoload
-  (defun +reference/clean-skim-page-link (link)
-    (let* ((link (replace-regexp-in-string "\n" " " link))
-           (link (replace-regexp-in-string "- " " " link)))
-      link))
+(defun +reference/skim-get-bibtex-key ()
+  (let* ((name (do-applescript
+                (concat
+                 "tell application \"Skim\"\n"
+                 "set theDoc to front document\n"
+                 "set theTitle to (name of theDoc)\n"
+                 "end tell\n"
+                 "return theTitle as string\n")))
+         ;; (key (when (string-match "\\(.+\\).pdf" name) (match-string 1 name))))
+         (key (when (string-match ".\\(.+\\).pdf" name) (match-string 1 name)))) ;; otherwise extract "key instead of key
+    key)
+  )
+
+;;;###autoload
+(defun +reference/get-skim-page-number ()
+  (let* ((page (do-applescript
+                (concat
+                 "tell application \"Skim\"\n"
+                 "set theDoc to front document\n"
+                 "set thePage to (get index for current page of theDoc)\n"
+                 "end tell\n"
+                 "return thePage as integer\n"))))
+    (cond ((integerp page)
+           (int-to-string page))
+          ((numberp page)
+           (number-to-string page))
+          ((stringp page) page))))
+
+;;;###autoload
+(defun +reference/clean-skim-page-link (link)
+  (let* ((link (replace-regexp-in-string "\n" " " link))
+         (link (replace-regexp-in-string "- " " " link)))
+    link))
 
 ;;;###autoload
 (defun +reference/skim-get-annotation ()
