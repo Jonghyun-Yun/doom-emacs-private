@@ -1,20 +1,20 @@
 ;;; checkers/grammar/config.el -*- lexical-binding: t; -*-
 
 ;; (setq langtool-bin "languagetool")
-;; (setq langtool-language-tool-server-jar "/usr/local/Cellar/languagetool/5.4/libexec/languagetool-server.jar")
+;; (setq langtool-language-tool-server-jar "/opt/homebrew/Cellar/languagetool/*/libexec/languagetool-server.jar")
 ;; (setq langtool-language-tool-server-jar (concat
 ;;  (file-name-directory
 ;;   (directory-file-name
 ;;    (file-name-directory
-;;     (directory-file-name (file-truename "/usr/local/bin/languagetool"))))) "libexec/languagetool-server.jar"))
+;;     (directory-file-name (file-truename "/opt/homebrew/bin/languagetool"))))) "libexec/languagetool-server.jar"))
 ;; (setq langtool-http-server-host "localhost"
 ;;       langtool-http-server-port 8081)
 
 (setq langtool-language-tool-server-jar
-      (when (file-directory-p "/usr/local/Cellar/languagetool")
+      (when (file-directory-p "/opt/homebrew/Cellar/languagetool")
         (setq langtool-language-tool-jar
               (locate-file "libexec/languagetool-server.jar"
-                           (doom-files-in "/usr/local/Cellar/languagetool"
+                           (doom-files-in "/opt/homebrew/Cellar/languagetool"
                                           :type 'dirs
                                           :depth 2)))))
 
@@ -32,10 +32,10 @@
     (cond (IS-MAC
            (cond
             ;; is user using home brew?
-            ((file-directory-p "/usr/local/Cellar/languagetool")
+            ((file-directory-p "/opt/homebrew/Cellar/languagetool")
              (setq langtool-language-tool-jar
                    (locate-file "libexec/languagetool-commandline.jar"
-                                (doom-files-in "/usr/local/Cellar/languagetool"
+                                (doom-files-in "/opt/homebrew/languagetool"
                                                :type 'dirs
                                                :depth 2))))
             ;; macports compatibility

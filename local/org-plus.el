@@ -589,7 +589,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
   ;; (setq org-confirm-babel-evaluate nil)
 
   ;; https://gist.github.com/ertwro/4e1fde4ddcd989ad7e3277df8b7f611a
-  ;; (setq inferior-julia-program-name "/usr/local/bin/julia")
+  ;; (setq inferior-julia-program-name "/opt/homebrew/bin/julia")
   ;; (org-babel-do-load-languages
   ;;  'org-babel-load-languages
   ;;  '(

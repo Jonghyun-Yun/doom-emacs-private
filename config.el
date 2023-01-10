@@ -466,7 +466,7 @@
       pdf-misc-print-program-args nil)
 (setq search-highlight t
       search-whitespace-regexp ".*?")
-(setq omnisharp-server-executable-path "/usr/local/bin/omnisharp"
+(setq omnisharp-server-executable-path "/opt/homebrew/bin/omnisharp"
       ;; doom-scratch-intial-major-mode 'lisp-interaction-mode
       )
 
@@ -1044,7 +1044,7 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   (when IS-LINUX
     (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
   (when IS-MAC
-    (setq plantuml-jar-path "/usr/local/Cellar/plantuml/1.2021.4/libexec/plantuml.jar"))
+    (setq plantuml-jar-path "/opt/homebrew/Cellar/plantuml/1.2022.14/libexec/plantuml.jar"))
   )
 
 ;;;; graphviz
