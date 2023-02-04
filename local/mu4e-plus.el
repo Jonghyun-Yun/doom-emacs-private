@@ -109,7 +109,8 @@
 
   ;; Set up some common mu4e variables
   (setq ;; mu4e-maildir "~/.mail"
-   mu4e-get-mail-command "mbsync --pull-new --push gmail"
+   ;; mu4e-get-mail-command "mbsync --pull-new --push gmail"
+   mu4e-get-mail-command "mbsync gmail"
    ;; mu4e-get-mail-command "mbsync -a"
    ;; mu4e-get-mail-command "mbsync gmail"
    ;; update database every x seconds
