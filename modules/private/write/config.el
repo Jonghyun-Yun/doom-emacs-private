@@ -170,7 +170,9 @@ Turning on wordnut mode runs the normal hook `mw-syno-mode-hook'.
   ;; (require 'pass t)
   ;; (map! "C-c n m" #'mathpix-screenshot)
   :custom
-  (mathpix-screenshot-method "screencapture -i %s")
+  ;; this capture background image in Mac M1
+  ;; (mathpix-screenshot-method "screencapture -i %s")
+  (mathpix-screenshot-method system-screenshot-method)
   (mathpix-app-id (password-store-get "mathpix/app-id"))
   (mathpix-app-key (password-store-get "mathpix/app-key"))
   )

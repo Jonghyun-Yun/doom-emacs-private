@@ -112,16 +112,24 @@
   (load! "local/hydra-plus"))
 (load! "bindings")
 
+(when IS-MAC
+  (setq system-screenshot-method "pngpaste %s"))
+
 ;; https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e
 ;; don't add all org-roam files to agenda
 ;; only those who with TODO keywords, schedule, or deadline
 ;; run before org-plus
 (after! org
+  ;; https://zzamboni.org/post/how-to-insert-screenshots-in-org-documents-on-macos/
   (remove-hook 'org-load-hook #'+org-init-capture-defaults-h)
   (add-to-list 'org-tags-exclude-from-inheritance "roadmap")
   (load! "local/vulpea-agenda/vulpea-agenda")
   (setq +org-capture-job-file "~/org/jobs.org")
-  (setq +org-capture-bookmark-file "~/org/inbox.org"))
+  (setq +org-capture-bookmark-file "~/org/inbox.org")
+  )
+(after! org-download
+  (setq org-download-screenshot-method system-screenshot-method)
+  )
 (load! "local/org-plus")
 
 ;; ;; (when (modulep! :ui ligatures +extra)
