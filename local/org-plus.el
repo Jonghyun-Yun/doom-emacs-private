@@ -464,6 +464,7 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
                              ("~/org/someday.org" :maxlevel . 1)
                              ("~/org/notes.org" :maxlevel . 2)
                              ("~/org/jobs.org" :maxlevel . 1)
+                             ("~/org/finance.org" :maxlevel . 1)
                              ))
 
   ;; (add-to-list 'org-refile-targets '(("~/org/someday.org" :level . 3) ("~/org/notes.org" :maxlevel . 3)))
@@ -580,7 +581,10 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
                                   "~/org/routines.org"
                                   "~/org/journal.org"
                                   "~/org/jobs.org"
-                                  "~/org/notes.org")
+                                  "~/org/notes.org"
+                                  "~/workspace/cyber.org"
+                                  "~/workspace/swap.org"
+                                  )
     "A list of org-agneda files that are not resided in `org-roam-directory'.")
 
   (setq org-agenda-files (append org-agenda-base-files (list org-roam-directory)))

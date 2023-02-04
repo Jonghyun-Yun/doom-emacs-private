@@ -533,6 +533,7 @@
 (unless IS-LINUX
   (after! projectile
     (projectile-add-known-project "/Users/yunj/Dropbox/emacs/.doom.d/")
+    (projectile-add-known-project "/Users/yunj/Dropbox/workspace/swap/")
     (projectile-add-known-project "/Users/yunj/OneDrive/workspace/python-tutorial/HarvardX-Using_Python_for_Research/")
     ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt")
     ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt/GEPS")
@@ -1723,7 +1724,7 @@ capture was not aborted."
 (add-hook 'org-babel-after-execute-hook #'org-babel-jupyter-handle-result-ansi-escapes)
 
 ;;; native-comp
-(add-to-list 'native-comp-deferred-compilation-deny-list "\\`/Users/yunj/doom-emacs/\\.local/.*/vertico-posframe\\.el\\'")
+;; (add-to-list 'native-comp-deferred-compilation-deny-list "\\`/Users/yunj/doom-emacs/\\.local/.*/vertico-posframe\\.el\\'")
 
 (when IS-GUI
 ;;; org-modern
