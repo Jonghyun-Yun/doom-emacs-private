@@ -69,7 +69,6 @@
 ;;   (load-theme 'doom-one t))
 (unless (display-graphic-p)
   (load-theme 'doom-nord t))
-;; (load-theme 'spacemacs-light t)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -588,8 +587,8 @@
   (setq alert-default-style 'notifier))
 
 ;;;; maximize frame at startup
-(unless IS-LINUX
-  (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
+;; (unless IS-LINUX
+;;   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 
 ;; OS X native full screen
 ;; (add-to-list 'initial-frame-alist '(fullscreen . fullscreen))
