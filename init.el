@@ -130,7 +130,9 @@
        :lang
        ;;agda              ; types of types of types of types...
        ;;beancount         ; mind the GAAP
-       (cc +lsp)           ; C > C++ == 1
+       (cc
+        +tree-sitter
+        +lsp)           ; C > C++ == 1
        ;;clojure           ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
@@ -143,7 +145,8 @@
        ;;elm               ; care for a cup of TEA?
        emacs-lisp        ; drown in parentheses
        ;;erlang            ; an elegant language for a more civilized age
-       (ess +lsp +stan)    ; emacs speaks statistics
+       (ess
+        +lsp +stan)    ; emacs speaks statistics
        ;;factor
        ;;faust             ; dsp, but you get to keep your soul
        ;;fortran           ; in FORTRAN, GOD is REAL (unless declared INTEGER)
@@ -155,11 +158,12 @@
        ;;(haskell +lsp)    ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
-       json              ; At least it ain't XML
-       ;; (java             ; the poster child for carpal tunnel syndrome
-       ;;  ;; +meghanada
-       ;;  +lsp
-       ;;  )
+       (json               ; At least it ain't XML
+        +tree-sitter)
+       (java             ; the poster child for carpal tunnel syndrome
+        +lsp
+        +tree-sitter
+        )
        ;; (javascript +lsp)   ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
@@ -193,7 +197,8 @@
        (python             ; beautiful is better than ugly
         +pyright
         +conda           ; export ANACONDA_HOME=...
-        +cython
+        ;;+cython
+        +tree-sitter
         +lsp)
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
@@ -202,14 +207,19 @@
        ;;rst               ; ReST in peace
        ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       (scala +lsp)        ; java, but good
+       (scala
+        +tree-sitter
+        +lsp)        ; java, but good
        ;;(scheme +guile)   ; a fully conniving family of lisps
-       sh                ; she sells {ba,z,fi}sh shells on the C xor
+       (sh              ; she sells {ba,z,fi}sh shells on the C xor
+        +tree-sitter)
        ;;sml
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
-       (web +lsp)          ; the tubes
+       (web
+        +tree-sitter
+        +lsp)          ; the tubes
        yaml              ; JSON, but readable
        ;;zig               ; C, but simpler
 
