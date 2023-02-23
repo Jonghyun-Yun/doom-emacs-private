@@ -130,9 +130,9 @@
        :lang
        ;;agda              ; types of types of types of types...
        ;;beancount         ; mind the GAAP
-       (cc
+       (cc                 ; C > C++ == 1
         +tree-sitter
-        +lsp)           ; C > C++ == 1
+        +lsp)
        ;;clojure           ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
@@ -207,9 +207,9 @@
        ;;rst               ; ReST in peace
        ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       (scala
+       (scala              ; java, but good
         +tree-sitter
-        +lsp)        ; java, but good
+        +lsp)
        ;;(scheme +guile)   ; a fully conniving family of lisps
        (sh              ; she sells {ba,z,fi}sh shells on the C xor
         +tree-sitter)
@@ -224,8 +224,8 @@
        ;;zig               ; C, but simpler
 
        :email
-       (mu4e +gmail)
-       ;;(notmuch +afew)
+       ;;(mu4e +org +gmail)
+       ;;notmuch
        ;;(wanderlust +gmail)
 
        :app
