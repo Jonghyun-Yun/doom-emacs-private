@@ -2,151 +2,113 @@
 
 ;;; modus-theme
 ;; (when (or (eq doom-theme 'modus-operandi) (eq doom-theme 'modus-vivendi))
-  (use-package! modus-themes
-    :init
-    ;; Add all your customizations prior to loading the themes
-    (setq modus-themes-italic-constructs t
-          modus-themes-scale-headings t
-          modus-themes-mixed-fonts t
-          modus-themes-subtle-line-numbers nil
-          modus-themes-intense-markup nil
-          modus-themes-success-deuteranopia nil
-          modus-themes-tabs-accented nil
-          modus-themes-inhibit-reload t ; only applies to `customize-set-variable' and related
+(use-package! modus-themes
+  :ensure t
+  :init
+  ;; Add all your customizations prior to loading the themes
+  (setq modus-themes-italic-constructs t
+        modus-themes-scale-headings t
+        modus-themes-mixed-fonts t
+        modus-themes-subtle-line-numbers nil
+        modus-themes-intense-markup nil
+        modus-themes-success-deuteranopia nil
+        modus-themes-tabs-accented nil
+        modus-themes-inhibit-reload t ; only applies to `customize-set-variable' and related
 
-          modus-themes-fringes nil      ; {nil,'subtle,'intense}
+        modus-themes-fringes nil        ; {nil,'subtle,'intense}
 
-          ;; Options for `modus-themes-lang-checkers' are either nil (the
-          ;; default), or a list of properties that may include any of those
-          ;; symbols: `straight-underline', `text-also', `background',
-          ;; `intense' OR `faint'.
-          modus-themes-lang-checkers nil
+        ;; Options for `modus-themes-lang-checkers' are either nil (the
+        ;; default), or a list of properties that may include any of those
+        ;; symbols: `straight-underline', `text-also', `background',
+        ;; `intense' OR `faint'.
+        modus-themes-lang-checkers nil
 
-          ;; Options for `modus-themes-mode-line' are either nil, or a list
-          ;; that can combine any of `3d' OR `moody', `borderless',
-          ;; `accented', number.
-          modus-themes-mode-line '()
+        ;; Options for `modus-themes-mode-line' are either nil, or a list
+        ;; that can combine any of `3d' OR `moody', `borderless',
+        ;; `accented', number.
+        modus-themes-mode-line '()
 
-          ;; Options for `modus-themes-syntax' are either nil (the default),
-          ;; or a list of properties that may include any of those symbols:
-          ;; `faint', `yellow-comments', `green-strings', `alt-syntax'
-          modus-themes-syntax '(alt-syntax green-strings)
+        ;; Options for `modus-themes-syntax' are either nil (the default),
+        ;; or a list of properties that may include any of those symbols:
+        ;; `faint', `yellow-comments', `green-strings', `alt-syntax'
+        modus-themes-syntax '(alt-syntax green-strings)
 
-          ;; Options for `modus-themes-hl-line' are either nil (the default),
-          ;; or a list of properties that may include any of those symbols:
-          ;; `accented', `underline', `intense'
-          ;; modus-themes-hl-line '(accented)
-          modus-themes-hl-line nil
+        ;; Options for `modus-themes-hl-line' are either nil (the default),
+        ;; or a list of properties that may include any of those symbols:
+        ;; `accented', `underline', `intense'
+        ;; modus-themes-hl-line '(accented)
+        modus-themes-hl-line nil
 
-          ;; Options for `modus-themes-paren-match' are either nil (the
-          ;; default), or a list of properties that may include any of those
-          ;; symbols: `bold', `intense', `underline'
-          modus-themes-paren-match '(bold intense)
+        ;; Options for `modus-themes-paren-match' are either nil (the
+        ;; default), or a list of properties that may include any of those
+        ;; symbols: `bold', `intense', `underline'
+        modus-themes-paren-match '(bold intense)
 
-          ;; Options for `modus-themes-links' are either nil (the default),
-          ;; or a list of properties that may include any of those symbols:
-          ;; `neutral-underline' OR `no-underline', `faint' OR `no-color',
-          ;; `bold', `italic', `background'
-          modus-themes-links '(neutral-underline background)
+        ;; Options for `modus-themes-links' are either nil (the default),
+        ;; or a list of properties that may include any of those symbols:
+        ;; `neutral-underline' OR `no-underline', `faint' OR `no-color',
+        ;; `bold', `italic', `background'
+        modus-themes-links '(neutral-underline background)
 
-          ;; Options for `modus-themes-prompts' are either nil (the
-          ;; default), or a list of properties that may include any of those
-          ;; symbols: `background', `bold', `gray', `intense', `italic'
-          modus-themes-prompts nil
+        ;; Options for `modus-themes-prompts' are either nil (the
+        ;; default), or a list of properties that may include any of those
+        ;; symbols: `background', `bold', `gray', `intense', `italic'
+        modus-themes-prompts nil
 
-          ;; modus-themes-completions 'opinionated ; {nil,'moderate,'opinionated}
-          modus-themes-completions
-          (quote ((matches . (extrabold background intense))
-                  (selection . (semibold accented intense))
-                  (popup . (accented))))
+        ;; modus-themes-completions 'opinionated ; {nil,'moderate,'opinionated}
+        modus-themes-completions
+        (quote ((matches . (extrabold background intense))
+                (selection . (semibold accented intense))
+                (popup . (accented))))
 
-          modus-themes-mail-citations nil ; {nil,'faint,'monochrome}
+        modus-themes-mail-citations nil ; {nil,'faint,'monochrome}
 
-          ;; Options for `modus-themes-region' are either nil (the default),
-          ;; or a list of properties that may include any of those symbols:
-          ;; `no-extend', `bg-only', `accented'
-          modus-themes-region '(bg-only)
+        ;; Options for `modus-themes-region' are either nil (the default),
+        ;; or a list of properties that may include any of those symbols:
+        ;; `no-extend', `bg-only', `accented'
+        modus-themes-region '(bg-only)
 
-          ;; Options for `modus-themes-diffs': nil, 'desaturated,
-          ;; 'bg-only, 'deuteranopia, 'fg-only-deuteranopia
-          modus-themes-diffs nil
+        ;; Options for `modus-themes-diffs': nil, 'desaturated,
+        ;; 'bg-only, 'deuteranopia, 'fg-only-deuteranopia
+        modus-themes-diffs nil
 
-          modus-themes-org-blocks 'tinted-background
+        modus-themes-org-blocks 'tinted-background
 
-          ;; modus-themes-org-agenda ; this is an alist: read the manual or its doc string
-          ;; '((header-block . (variable-pitch scale-title))
-          ;;   (header-date . (grayscale workaholic bold-today))
-          ;;   (event . (accented scale-small))
-          ;;   (scheduled . uniform)
-          ;;   (habit . traffic-light-deuteranopia))
-          ;; This is an alist: read the manual or its doc string.
-          modus-themes-org-agenda
-          '((header-block . (variable-pitch light 1.4))
-            (header-date . (bold-today grayscale underline-today 1.2))
-            (event . (accented varied))
-            (scheduled . uniform)
-            (habit . traffic-light))
-          ;; This is an alist: read the manual or its doc string.
-          ;; modus-themes-headings '((t . (rainbow))) ; this is an alist: read the manual or its doc string
-          modus-themes-headings
-          '((1 . (variable-pitch light 1.4))
-            (2 . (variable-pitch rainbow light 1.3))
-            (3 . (background monochrome light 1.2))
-            (4 . (rainbow regular 1.1))
-            (5 . (background rainbow regular 1.05))
-            (6 . (monochrome semibold 1.05))
-            (7 . (background rainbow semibold 1.05))
-            (t . (rainbow semibold 1.05)))
-          modus-themes-variable-pitch-ui t)
+        ;; modus-themes-org-agenda ; this is an alist: read the manual or its doc string
+        ;; '((header-block . (variable-pitch scale-title))
+        ;;   (header-date . (grayscale workaholic bold-today))
+        ;;   (event . (accented scale-small))
+        ;;   (scheduled . uniform)
+        ;;   (habit . traffic-light-deuteranopia))
+        ;; This is an alist: read the manual or its doc string.
+        modus-themes-org-agenda
+        '((header-block . (variable-pitch light 1.4))
+          (header-date . (bold-today grayscale underline-today 1.2))
+          (event . (accented varied))
+          (scheduled . uniform)
+          (habit . traffic-light))
+        ;; This is an alist: read the manual or its doc string.
+        ;; modus-themes-headings '((t . (rainbow))) ; this is an alist: read the manual or its doc string
+        modus-themes-headings
+        '((1 . (variable-pitch light 1.4))
+          (2 . (variable-pitch rainbow light 1.3))
+          (3 . (background monochrome light 1.2))
+          (4 . (rainbow regular 1.1))
+          (5 . (background rainbow regular 1.05))
+          (6 . (monochrome semibold 1.05))
+          (7 . (background rainbow semibold 1.05))
+          (t . (rainbow semibold 1.05)))
+        modus-themes-variable-pitch-ui t)
 
-    ;; Load the theme files before enabling a theme
-    (modus-themes-load-themes)
-    :config
-    (when (eq doom-theme 'modus-operandi)
-      (modus-themes-load-operandi))
-    ;; (when (eq doom-theme 'modus-vivendi)
-    ;;   (modus-themes-load-vivendi))
-    ;; :bind ("<f5>" . modus-themes-toggle)
-    )
+  :config
+  ;; (when (eq doom-theme 'modus-operandi)
+  ;;   (load-theme 'modus-operandi))
+  ;; (when (eq doom-theme 'modus-vivendi)
+  ;;   (load-theme 'modus-vivendi))
+  ;; :bind ("<f5>" . modus-themes-toggle)
+  )
 ;; )
 
-;; (use-package! ef-themes
-;;   :init
-;;   ;; If you like two specific themes and want to switch between them, you
-;;   ;; can specify them in `ef-themes-to-toggle' and then invoke the command
-;;   ;; `ef-themes-toggle'.  All the themes are included in the variable
-;;   ;; `ef-themes-collection'.
-;;   (setq ef-themes-to-toggle '(ef-frost ef-light))
-
-;;   ;; Make customisations that affect Emacs faces BEFORE loading a theme
-;;   ;; (any change needs a theme re-load to take effect).
-
-;;   ;; (setq ef-themes-headings           ; read the manual's entry or the doc string
-;;   ;;       '((0 . (variable-pitch light 1.9))
-;;   ;;         (1 . (variable-pitch light 1.8))
-;;   ;;         (2 . (variable-pitch regular 1.7))
-;;   ;;         (3 . (variable-pitch regular 1.6))
-;;   ;;         (4 . (variable-pitch regular 1.5))
-;;   ;;         (5 . (variable-pitch 1.4))    ; absence of weight means `bold'
-;;   ;;         (6 . (variable-pitch 1.3))
-;;   ;;         (7 . (variable-pitch 1.2))
-;;   ;;         (t . (variable-pitch 1.1))))
-
-;;   (setq ef-themes-headings modus-themes-headings)
-
-;;   ;; They are nil by default...
-;;   (setq ef-themes-mixed-fonts t
-;;         ef-themes-variable-pitch-ui t)
-
-;;   ;; Disable all other themes to avoid awkward blending:
-;;   (mapc #'disable-theme custom-enabled-themes)
-
-;;   :config
-;;   ;; Load the theme of choice:
-;;   ;; (load-theme 'ef-frost :no-confirm)
-
-;;   ;; OR use this to load the theme which also calls `ef-themes-post-load-hook':
-;;   (ef-themes-select 'ef-frost))
 
 ;;; doom-theme
 (setq doom-themes-padded-modeline nil
