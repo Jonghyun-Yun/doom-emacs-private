@@ -1,9 +1,7 @@
 ;;; ../Dropbox/emacs/.doom.d/local/visual-plus.el -*- lexical-binding: t -*-
 
 ;;; modus-theme
-;; (when (or (eq doom-theme 'modus-operandi) (eq doom-theme 'modus-vivendi))
 (use-package! modus-themes
-  :ensure t
   :init
   ;; Add all your customizations prior to loading the themes
   (setq modus-themes-italic-constructs t
@@ -101,14 +99,13 @@
         modus-themes-variable-pitch-ui t)
 
   :config
+  (load-theme 'modus-operandi t)
   ;; (when (eq doom-theme 'modus-operandi)
-  ;;   (load-theme 'modus-operandi))
+  ;;   (load-theme 'modus-operandi t))
   ;; (when (eq doom-theme 'modus-vivendi)
   ;;   (load-theme 'modus-vivendi))
   ;; :bind ("<f5>" . modus-themes-toggle)
   )
-;; )
-
 
 ;;; doom-theme
 (setq doom-themes-padded-modeline nil
