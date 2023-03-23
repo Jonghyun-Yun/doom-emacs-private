@@ -72,7 +72,7 @@
 
 
 ;;; matlab
-(package! matlab-mode)
+(package! matlab-mode :disable t)
 ;; (package! matlab-mode :recipe (:host github :repo "matlab-mode/mirror"))
 
 
@@ -182,10 +182,10 @@
 ;;; org-roam
 ;; (package! org-roam
   ;; :pin "d93423d4e11da95bcf177b2bc3c74cb1d1acf807")
-(package! org-roam-ui :pin "9ed0c5705a302a91fab2b8bcc777a12dcf9b3682")
+(package! org-roam-ui :pin "9ed0c5705a302a91fab2b8bcc777a12dcf9b3682" :disable t)
 ;; (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "c745d07018a46b1a20b9f571d999ecf7a092c2e1")
 ;; (package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
-(package! websocket) ; dependency of `org-roam-ui'
+;; (package! websocket) ; dependency of `org-roam-ui'
 
 ;;; scimax
 ;; keep it here (not in scimax module)
@@ -332,7 +332,7 @@
            :repo "https://git.sr.ht/~protesilaos/pulsar"))
 
 ;; vundo
-(package! undo-fu-session :pin "3e810c7c9ab75d2b6f92c7c876290abbc164e750")
+;; (package! undo-fu-session :pin "3e810c7c9ab75d2b6f92c7c876290abbc164e750")
 (package! vundo 
           ;;:pin "9692bde8e2f1c2826871edb5588bbe3892527e63"
           :disable (not EMACS28+))
