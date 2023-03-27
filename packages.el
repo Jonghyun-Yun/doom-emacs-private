@@ -353,3 +353,8 @@
 
 ;;; openwith
 (package! openwith)
+
+;;; Copilot-like AI autocomplete
+(package! codeium
+  :recipe (:host github
+           :repo "Exafunction/codeium.el"))
