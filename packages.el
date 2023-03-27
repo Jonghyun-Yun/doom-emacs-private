@@ -324,9 +324,9 @@
 
 ;; vundo
 ;; (package! undo-fu-session :pin "3e810c7c9ab75d2b6f92c7c876290abbc164e750")
-(package! vundo 
-          ;;:pin "9692bde8e2f1c2826871edb5588bbe3892527e63"
-          :disable (not EMACS28+))
+;; (package! vundo
+;;           ;;:pin "9692bde8e2f1c2826871edb5588bbe3892527e63"
+;;           :disable (not EMACS28+))
 
 ;;; elfeed tube
 (package! elfeed-tube

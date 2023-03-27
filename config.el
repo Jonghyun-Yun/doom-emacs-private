@@ -2196,16 +2196,13 @@ as a means to remove windows, regardless of the value in
         (forward-line))))
 
 ;; vundo
- (use-package! vundo
-  :unless (modulep! +tree)
-  :custom
-  (vundo-glyph-alist     vundo-unicode-symbols)
-  (vundo-compact-display t)
-  :config
-  (when (modulep! :editor evil)
-    (map! :map vundo-mode-map
-          [remap doom/escape] #'vundo-quit))
-  :defer t)
+;; (use-package! vundo
+;;   :unless (modulep! +tree)
+;;   :defer t
+;;   :config
+;;   (setq vundo-glyph-alist vundo-unicode-symbols
+;;         vundo-compact-display t)
+;;   (define-key vundo-mode-map [remap doom/escape] #'vundo-quit))
 
 ;;; elfeed-tube
  (use-package elfeed-tube
