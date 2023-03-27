@@ -88,17 +88,8 @@
 
 (when (modulep! :lang org +noter)
   (package! org-noter :recipe
-    ;; (:local-repo "local/org-noter"
-    ;;  :branch "djvu")
     (:host github
-     :repo "jonghyun-yun/org-noter"
-     :branch "djvu")
-    :pin "d10aa0c2a0f76bd82b33fd037ded545d6109d391"
-    ;; (:host github
-    ;;  :repo "jonghyun-yun/org-noter"
-    ;;  ;; :branch "patch"
-    ;;  )
-    ;; :pin "05305ce1859dce651c75b7c7bae3bd650ebe06bc"
+     :repo "org-noter/org-noter")
     )
 )
 
