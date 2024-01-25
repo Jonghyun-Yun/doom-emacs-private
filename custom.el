@@ -3,8 +3,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(codeium/metadata/api_key "3e5dd730-f509-4271-95cf-123bbb0d3b56")
  '(custom-safe-themes
-   '("bfc0b9c3de0382e452a878a1fb4726e1302bf9da20e69d6ec1cd1d5d82f61e3d" default))
+   '("90eb3b47cd9bf5eec0f5820682fcb40b4a37fc128b12eceb39e09f64758a8ebe" "9a456f2aac10f18204e8ece27c84950c359f91bb06bda8c711bf4f5095ca8250" "bebec7cd48f56fbca1c878d7f43ece10d5390ab95790883d95ae4c0f6045600a" "14ba61945401e42d91bb8eef15ab6a03a96ff323dd150694ab8eb3bb86c0c580" "a8a5fd1c8afea56c5943ead67442a652f1f64c8191c257d76988edb0b1ad5dfa" "64c4ff0a617e6bf33443821525f7feb3ef925a939c4575e77f3811c5b32e72c0" "438f0e2b9fd637c53b20c27c140d2fc14fa154acf9ef92630666cab497c69742" "bfc0b9c3de0382e452a878a1fb4726e1302bf9da20e69d6ec1cd1d5d82f61e3d" default))
  '(hl-todo-keyword-faces
    '(("TODO" . "#dc752f")
      ("NEXT" . "#dc752f")
@@ -21,6 +22,7 @@
      ("FIXME" . "#dc752f")
      ("XXX+" . "#dc752f")
      ("\\?\\?\\?+" . "#dc752f")))
+ '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(mathpix-app-id (password-store-get "mathpix/app-id") nil nil "Customized with use-package mathpix.el")
  '(mathpix-app-key (password-store-get "mathpix/app-key") nil nil "Customized with use-package mathpix.el")
  '(org-agenda-files
@@ -62,7 +64,9 @@
       (:results . "output replace"))
      (TeX-engine . xetex)))
  '(warning-suppress-types
-   '((org-roam)
+   '((eglot)
+     (emacs)
+     (org-roam)
      (org-roam)
      (org-roam)
      (org-roam)

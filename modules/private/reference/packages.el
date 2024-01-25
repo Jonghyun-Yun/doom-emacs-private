@@ -3,7 +3,8 @@
 
 (package! org-ref
     ;; :pin "8aa2bb45268f660956151547533689d4ec30378d" ;; version 2
-  :pin "12e5f9e89b92e731d5c199ff46f4f887ace9b791")
+  ;:pin "12e5f9e89b92e731d5c199ff46f4f887ace9b791")
+  :pin "3439af230056b1ff880299c87575b74229f8bd5e")
 
 (package! bibtex-completion :pin "aa775340ba691d2322948bfdc6a88158568a1399")
 (package! ivy-bibtex :pin "aa775340ba691d2322948bfdc6a88158568a1399")

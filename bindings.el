@@ -383,10 +383,10 @@
    ))
 
 ;;; citar
-(map! (:map citar-map
-       "p" #'citar-open-bibtex-pdf)
-      (:map citar-citation-map
-       "p" #'citar-open-bibtex-pdf))
+;; (map! (:map citar-map
+;;        "p" #'citar-open-bibtex-pdf)
+;;       (:map citar-citation-map
+;;        "p" #'citar-open-bibtex-pdf))
 
 ;;; ess
 (map!

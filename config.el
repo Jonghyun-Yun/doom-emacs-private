@@ -99,16 +99,16 @@
 (defvar IS-GUI (display-graphic-p)
 "(display-graphic-p)")
 
-(if (version= emacs-version "29.0.50")
-    (pixel-scroll-precision-mode))
+;; (if (version= emacs-version "29.0.50")
+;;     (pixel-scroll-precision-mode))
 
 ;;; load lisp
-(setq load-prefer-newer t)
+ (setq load-prefer-newer t)
+(with-eval-after-load 'hydra
+  (load! "local/hydra-plus"))
 (when IS-MAC
 ;(load! "local/splash")
 )
-(with-eval-after-load 'hydra
-  (load! "local/hydra-plus"))
 (load! "bindings")
 
 (when IS-MAC
@@ -434,6 +434,7 @@
   (define-key org-remark-mode-map (kbd "C-c n [") #'org-remark-view-prev)
   (define-key org-remark-mode-map (kbd "C-c n r") #'org-remark-remove)
   )
+
 ;;;; org-noter
 (when (modulep! :lang org +noter)
   (after! org-noter
@@ -651,7 +652,17 @@
   ;; list of paths
   (setq! citar-bibliography +biblio-default-bibliography-files
          citar-library-paths (list +biblio-pdf-library-dir)
-         citar-notes-paths (list org-roam-directory)))
+         citar-notes-paths (list org-roam-directory))
+  (add-to-list 'org-roam-capture-templates
+               '("n" "literature note" plain
+                 "%?"
+                 :target
+                 (file+head
+                  "${citekey}.org"
+                  "#+title: ${title}\n
+                  \n* Notes\n  :PROPERTIES:\n  :NOTER_DOCUMENT: %(replace-home-to-tilde (car (bibtex-completion-find-pdf \"${citekey}\")))\n  :END:\n\n")
+                 :unnarrowed t))
+  (setq citar-org-roam-capture-template-key "n"))
 
 ;; (setq bibtex-completion-pdf-open-function 'org-open-file)
 
@@ -726,9 +737,9 @@
                '("EFE" "Elfeed entry" entry
                  (file+headline +org-capture-inbox-file "Reading")
                  "* TODO %(message jyun/target-elfeed-title-link) :rss:
-DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
-%(message jyun/target-elfeed-entry-url)
-%i \n%?"
+                  DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
+                  %(message jyun/target-elfeed-entry-url)
+                  %i \n%?"
                  :prepend t
                  :immediate-finish t)))
 
@@ -1222,11 +1233,11 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
               '(swiper . ivy-display-function-fallback))))
 
 ;;;; company
-(setq company-idle-delay 0.05
+(setq company-idle-delay 1
       company-require-match nil
-      company-minimum-prefix-length 0
+      company-minimum-prefix-length 2
       ;; get only preview
-      company-frontends '(company-preview-frontend)
+      ;; company-frontends '(company-preview-frontend)
       ;; also get a drop down
       ;; company-frontends '(company-pseudo-tooltip-frontend company-preview-frontend)
       company-box-enable-icon t     ; disable all-the-icons
@@ -1276,8 +1287,8 @@ DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
   ;; fix wrong `height'
   (defun which-key-posframe--show-buffer (act-popup-dim)
   "Show which-key buffer when popup type is posframe.
-Argument ACT-POPUP-DIM includes the dimension, (height . width)
-of the buffer text to be displayed in the popup"
+                  Argument ACT-POPUP-DIM includes the dimension, (height . width)
+                  of the buffer text to be displayed in the popup"
   (when (posframe-workable-p)
     (save-window-excursion
       (posframe-show
@@ -1521,7 +1532,7 @@ of the buffer text to be displayed in the popup"
 
   (defun dw/org-roam-project-finalize-hook ()
     "Adds the captured project file to `org-agenda-files' if the
-capture was not aborted."
+                  capture was not aborted."
     ;; Remove the hook since it was added temporarily
     (remove-hook 'org-capture-after-finalize-hook #'dw/org-roam-project-finalize-hook)
 
@@ -1642,17 +1653,17 @@ capture was not aborted."
   ;;              (s (buffer-substring-no-properties b e))
   ;;              (s-without-percent (apply 'concat (split-string s "%")))
   ;;              (s-without-quotes (remove-if (lambda (x) (eq x ?" ;"
-  ;;                                                      ))
-  ;;                                           s-without-percent))
-  ;;              (s-as-list (split-string s-without-quotes)))
-  ;;         (delete-region b e)
-  ;;         (goto-char b)
-  ;;         (insert (format "import $ivy.`%s::%s:%s`" (first s-as-list) (second s-as-list) (third s-as-list)))
-  ;;         )
-  ;;       )
-  ;;     res)
-  ;;   (widen))
-  )
+                                                                      ;;                                                      ))
+                                                                      ;;                                           s-without-percent))
+                                                                      ;;              (s-as-list (split-string s-without-quotes)))
+                                                                      ;;         (delete-region b e)
+                                                                      ;;         (goto-char b)
+                                                                      ;;         (insert (format "import $ivy.`%s::%s:%s`" (first s-as-list) (second s-as-list) (third s-as-list)))
+                                                                      ;;         )
+                                                                      ;;       )
+                                                                      ;;     res)
+                                                                      ;;   (widen))
+                  )
 
 (use-package ammonite-term-repl
   :defer t
@@ -2277,27 +2288,27 @@ as a means to remove windows, regardless of the value in
   ))
 
 ;;; osm
-(use-package! osm
-  :bind (("C-c m h" . osm-home)
-         ("C-c m s" . osm-search)
-         ("C-c m v" . osm-server)
-         ("C-c m t" . osm-goto)
-         ("C-c m x" . osm-gpx-show)
-         ("C-c m j" . osm-bookmark-jump))
+;; (use-package! osm
+;;   :bind (("C-c m h" . osm-home)
+;;          ("C-c m s" . osm-search)
+;;          ("C-c m v" . osm-server)
+;;          ("C-c m t" . osm-goto)
+;;          ("C-c m x" . osm-gpx-show)
+;;          ("C-c m j" . osm-bookmark-jump))
 
-  :custom
-  ;; Take a look at the customization group `osm' for more options.
-  (osm-server 'default) ;; Configure the tile server
-  (osm-copyright t)     ;; Display the copyright information
+;;   :custom
+;;   ;; Take a look at the customization group `osm' for more options.
+;;   (osm-server 'default) ;; Configure the tile server
+;;   (osm-copyright t)     ;; Display the copyright information
 
-  :init
-  ;; Load Org link support
-  (with-eval-after-load 'org
-    (require 'osm-ol))
+;;   :init
+;;   ;; Load Org link support
+;;   (with-eval-after-load 'org
+;;     (require 'osm-ol))
 
-  :config
-  (setq osm-home '(32.5590711 -97.0643973 15))
-  )
+;;   :config
+;;   (setq osm-home '(32.5590711 -97.0643973 15))
+;;   )
 
 ;;; WSL functions
 (defun wsl-open-exploer ()
@@ -2313,71 +2324,96 @@ as a means to remove windows, regardless of the value in
   )
 
 ;; we recommend using use-package to organize your init.el
-(use-package codeium
-    ;; if you use straight
-    ;; :straight '(:type git :host github :repo "Exafunction/codeium.el")
-    ;; otherwise, make sure that the codeium.el file is on load-path
+(use-package! codeium
+  ;; if you use straight
+  ;; :straight '(:type git :host github :repo "Exafunction/codeium.el")
+  ;; otherwise, make sure that the codeium.el file is on load-path
 
-    :init
-    ;; use globally
-    ;; (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
-    ;; or on a hook
-    (add-hook 'python-mode-hook
-        (lambda ()
-            (setq-local completion-at-point-functions '(codeium-completion-at-point))))
+  :init
+  ;; use globally
+  ;; (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
+  ;; or on a hook
+  (defun jyun/setup-company-for-codeium ()
+    (setq-local company-idle-delay 0.5
+                company-minimum-prefix-length 0)
+    (setq-local completion-at-point-functions '(codeium-completion-at-point)))
+  (add-hook 'python-mode-hook #'jyun/setup-company-for-codeium)
+  (add-hook 'java-mode-hook #'jyun/setup-company-for-codeium)
+  (add-hook 'sql-mode-hook #'jyun/setup-company-for-codeium)
 
-    (add-hook 'java-mode-hook
-        (lambda ()
-            (setq-local completion-at-point-functions '(codeium-completion-at-point))))
+  ;; if you want multiple completion backends, use cape (https://github.com/minad/cape):
+  ;; (add-hook 'python-mode-hook
+  ;;     (lambda ()
+  ;;         (setq-local completion-at-point-functions
+  ;;             (list (cape-super-capf #'codeium-completion-at-point #'lsp-completion-at-point)))))
+  ;; an async company-backend is coming soon!
 
-    (add-hook 'sql-mode-hook
-        (lambda ()
-            (setq-local completion-at-point-functions '(codeium-completion-at-point))))
+  ;; codeium-completion-at-point is autoloaded, but you can
+  ;; optionally set a timer, which might speed up things as the
+  ;; codeium local language server takes ~0.2s to start up
+  ;; (add-hook 'emacs-startup-hook
+  ;;  (lambda () (run-with-timer 0.1 nil #'codeium-init)))
 
-    ;; if you want multiple completion backends, use cape (https://github.com/minad/cape):
-    ;; (add-hook 'python-mode-hook
-    ;;     (lambda ()
-    ;;         (setq-local completion-at-point-functions
-    ;;             (list (cape-super-capf #'codeium-completion-at-point #'lsp-completion-at-point)))))
-    ;; an async company-backend is coming soon!
+  ;; :defer t ;; lazy loading, if you want
+  :config
+  (setq use-dialog-box nil) ;; do not use popup boxes
 
-    ;; codeium-completion-at-point is autoloaded, but you can
-    ;; optionally set a timer, which might speed up things as the
-    ;; codeium local language server takes ~0.2s to start up
-    ;; (add-hook 'emacs-startup-hook
-    ;;  (lambda () (run-with-timer 0.1 nil #'codeium-init)))
+  ;; if you don't want to use customize to save the api-key
+  ;; (setq codeium/metadata/api_key "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
 
-    ;; :defer t ;; lazy loading, if you want
-    :config
-    (setq use-dialog-box nil) ;; do not use popup boxes
-
-    ;; if you don't want to use customize to save the api-key
-    ;; (setq codeium/metadata/api_key "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
-
-    ;; get codeium status in the modeline
-    (setq codeium-mode-line-enable
+  ;; get codeium status in the modeline
+  (setq codeium-mode-line-enable
         (lambda (api) (not (memq api '(CancelRequest Heartbeat AcceptCompletion)))))
-    (add-to-list 'mode-line-format '(:eval (car-safe codeium-mode-line)) t)
-    ;; alternatively for a more extensive mode-line
-    ;; (add-to-list 'mode-line-format '(-50 "" codeium-mode-line) t)
+  (add-to-list 'mode-line-format '(:eval (car-safe codeium-mode-line)) t)
+  ;; alternatively for a more extensive mode-line
+  ;; (add-to-list 'mode-line-format '(-50 "" codeium-mode-line) t)
 
-    ;; use M-x codeium-diagnose to see apis/fields that would be sent to the local language server
-    (setq codeium-api-enabled
+  ;; use M-x codeium-diagnose to see apis/fields that would be sent to the local language server
+  (setq codeium-api-enabled
         (lambda (api)
-            (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
-    ;; you can also set a config for a single buffer like this:
-    ;; (add-hook 'python-mode-hook
-    ;;     (lambda ()
-    ;;         (setq-local codeium/editor_options/tab_size 4)))
+          (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
+  ;; you can also set a config for a single buffer like this:
+  ;; (add-hook 'python-mode-hook
+  ;;     (lambda ()
+  ;;         (setq-local codeium/editor_options/tab_size 4)))
 
-    ;; You can overwrite all the codeium configs!
-    ;; for example, we recommend limiting the string sent to codeium for better performance
-    (defun my-codeium/document/text ()
-        (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (min (+ (point) 1000) (point-max))))
-    ;; if you change the text, you should also change the cursor_offset
-    ;; warning: this is measured by UTF-8 encoded bytes
-    (defun my-codeium/document/cursor_offset ()
-        (codeium-utf8-byte-length
-            (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))
-    (setq codeium/document/text 'my-codeium/document/text)
-    (setq codeium/document/cursor_offset 'my-codeium/document/cursor_offset))
+  ;; You can overwrite all the codeium configs!
+  ;; for example, we recommend limiting the string sent to codeium for better performance
+  (defun my-codeium/document/text ()
+    (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (min (+ (point) 1000) (point-max))))
+  ;; if you change the text, you should also change the cursor_offset
+  ;; warning: this is measured by UTF-8 encoded bytes
+  (defun my-codeium/document/cursor_offset ()
+    (codeium-utf8-byte-length
+     (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))
+  (setq codeium/document/text 'my-codeium/document/text)
+  (setq codeium/document/cursor_offset 'my-codeium/document/cursor_offset))
+
+;;; java
+(setq lsp-java-import-gradle-java-home "/Library/Java/JavaVirtualMachines/openjdk-8.jdk/Contents/Home/")
+
+;; ;;; https://github.com/doomemacs/doomemacs/issues/7438
+;; ;; HACK: since some upstream changes, formatting a specific region seems broken, and
+;; ;; calling `+format/region' raises: "with Symbol’s function definition is void:
+;; ;; apheleia--get-formatters", ensure to autoload the required function.
+(use-package! apheleia
+  :commands (apheleia--get-formatters))
+
+;; ;; HACK: re the above hack, for some reason it also seems to break the tree-sitter
+;; ;; syntax highlighting, this function adds a wrapper to re-enable tree-sitter after
+;; ;; calling `+format/region', in case the highlighting was broken.
+;; (defun my/format-region (beg end &optional arg)
+;;   (interactive "rP")
+;;   (+format/region beg end arg)
+;;   (ignore-errors
+;;     (tree-sitter--teardown)
+;;     (turn-on-tree-sitter-mode)))
+
+(after! evil
+  (map! :map evil-visual-state-map
+        ";f" #'my/format-region))
+
+(defun jyun/open-default-directory ()
+ (interactive)
+ (async-shell-command (concat "open " default-directory) nil nil)
+ )

@@ -97,11 +97,13 @@
 (package! ox-gfm)
 (package! org-re-reveal-ref)
 (package! org-transclusion
-  :recipe (:host github :repo "nobiot/org-transclusion"))
+  :recipe (:host github :repo "nobiot/org-transclusion")
+  :disable t)
 ;; (package! org-clock-budget
 ;;   :recipe (:host github :repo "Fuco1/org-clock-budget"))
 (package! org-remark
-  :recipe (:host github :repo "nobiot/org-remark"))
+  :recipe (:host github :repo "nobiot/org-remark")
+  :disable t)
 
 ;; ;; export doesn't work. problem in compiling; defmacro and marco eval in the same file
 ;; ;; ;; Load it localy
@@ -153,7 +155,7 @@
 (package! modus-themes)
 (package! spacemacs-theme :disable t)
 ;; (package! doom-themes :disable t)
-(package! ef-themes :disable t)
+(package! ef-themes)
 
 ;;; coding
 (package! ess-view-data :pin "283251e8ac19ac0c0f89a4b0f0eb38482167e52b")
@@ -237,6 +239,14 @@
 (when (modulep! :private grammar)
   (package! langtool-posframe :recipe (:local-repo "local/langtool-posframe")))
 
+(when IS-LINUX
+  (package! which-key-posframe :disable t)
+  (package! vertico-posframe :disable t)
+  (package! hydra-posframe :disable t)
+  ;; (package! emacs-everywhere :disable t)
+  )
+;; (package! vertico-posframe)
+
 ;;; tree-sitter
 ;; (package! tree-sitter)
 ;; (package! tree-sitter-langs)
@@ -310,8 +320,8 @@
 
 ;;; No GUI
 (unless (display-graphic-p)
-  (package! writeroom-mode :disable)
-  (package! mixed-pitch :disable)
+  (package! writeroom-mode :disable t)
+  (package! mixed-pitch :disable t)
   )
 
 ;;; appearance
@@ -349,7 +359,7 @@
   )
 
 ;;; osm
-(package! osm)
+;; (package! osm)
 
 ;;; openwith
 (package! openwith)
@@ -357,4 +367,5 @@
 ;;; Copilot-like AI autocomplete
 (package! codeium
   :recipe (:host github
-           :repo "Exafunction/codeium.el"))
+           :repo "Exafunction/codeium.el")
+  :disable t)

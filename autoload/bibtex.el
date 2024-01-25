@@ -34,16 +34,16 @@
 
 
 ;;;###autoload
-(defun citar-open-bibtex-pdf ()
-  "Open pdf file associated with the CITE-KEY at point.
+;; (defun citar-open-bibtex-pdf ()
+;;   "Open pdf file associated with the CITE-KEY at point.
 
-With prefix, rebuild the cache before offering candidates."
-  (interactive)
-  (let* ((results (org-ref-get-bibtex-key-and-file))
-         (key (replace-regexp-in-string "@" "" (car results)))
-         (pdf-file (car (bibtex-completion-find-pdf key))))
-    ;; (pdf-file (car (bibtex-completion-find-pdf-in-field key))))
-    (if (file-exists-p pdf-file)
-        (org-open-file pdf-file)
-      (message "No PDF found for %s" key)))
-  )
+;; With prefix, rebuild the cache before offering candidates."
+;;   (interactive)
+;;   (let* ((results (org-ref-get-bibtex-key-and-file))
+;;          (key (replace-regexp-in-string "@" "" (car results)))
+;;          (pdf-file (car (bibtex-completion-find-pdf key))))
+;;     ;; (pdf-file (car (bibtex-completion-find-pdf-in-field key))))
+;;     (if (file-exists-p pdf-file)
+;;         (org-open-file pdf-file)
+;;       (message "No PDF found for %s" key)))
+;;   )

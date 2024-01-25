@@ -65,11 +65,11 @@ In case of directory the path must end with a slash."
   (when (modulep! :lang org +roam2)
   (setq bibtex-completion-notes-path +biblio-notes-path)
   (setq bibtex-completion-edit-notes-function 'orb-edit-notes-default)
-  (push
-   '("b" "Bibliography note" plain "%?\n- keywords :: %^{keywords}\n- related :: \n\n" :if-new
-     (file+head "${=key=}.org" ":PROPERTIES:\n:ROAM_REFS: cite:${=key=}\n:END:\n#+TITLE: ${title}\n\n
-\n* Notes  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: ${file}\n  :NOTER_PAGE: \n  :END:\n\n")
-     :unnarrowed t) org-roam-capture-templates)
+  ;; (push
+;;    '("b" "Bibliography note" plain "%?\n- keywords :: %^{keywords}\n- related :: \n\n" :if-new
+;;      (file+head "${=key=}.org" ":PROPERTIES:\n:ROAM_REFS: cite:${=key=}\n:END:\n#+TITLE: ${title}\n\n
+;; \n* Notes  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: ${file}\n  :NOTER_PAGE: \n  :END:\n\n")
+;;      :unnarrowed t) org-roam-capture-templates)
   (defun orb-edit-notes-default (keys)
     "Open the notes associated with the entries in KEYS.
 Creates new notes where none exist yet."
@@ -125,6 +125,10 @@ Creates new notes where none exist yet."
      "[" #'org-agenda-file-to-front
      "]" #'org-remove-file))))
 
+(defun replace-home-to-tilde (filename)
+  (replace-regexp-in-string (getenv "HOME") "~" filename)
+  )
+
 (use-package! org-roam-bibtex
   :when (modulep! +roam-bibtex)
   :after org-roam
@@ -158,31 +162,30 @@ Creates new notes where none exist yet."
                  "%?
 - keywords :: %^{keywords}
 - related :: \n\n"
-                 :if-new (file+head "${=key=}.org" ":PROPERTIES:
-:ROAM_REFS: cite:${=key=}
-:END:
-#+TITLE: ${title}\n\n")
+                 :if-new (file+head "${=key=}.org"
+                                    "\n#+TITLE: ${author-or-editor} :: ${title}\n\n
 
+\n* Notes\n  :PROPERTIES:\n  :NOTER_DOCUMENT: %(replace-home-to-tilde ${file})\n  :END:\n\n")
                  :unnarrowed t))
 
- ;;  (add-to-list 'org-roam-capture-templates
-;;                '("b" "Bibliography note" plain
-;;                  "%?
-;; - keywords :: %^{keywords}
-;; - related ::
-;; \n* %^{title}
-;; :PROPERTIES:
-;; :Custom_ID: %^{citekey}
-;; :URL: %^{url}
-;; :AUTHOR: %^{author-or-editor}
-;; :NOTER_DOCUMENT: %^{file}
-;; :NOTER_PAGE:
-;; :END:\n\n"
-;;                  :if-new (file+head "${=key=}.org" ":PROPERTIES:
-;; :ROAM_REFS: cite:${=key=}
-;; :END:
-;; #+TITLE: ${title}\n")
-;;                  :unnarrowed t))
+  ;;  (add-to-list 'org-roam-capture-templates
+  ;;                '("b" "Bibliography note" plain
+  ;;                  "%?
+  ;; - keywords :: %^{keywords}
+  ;; - related ::
+  ;; \n* %^{title}
+  ;; :PROPERTIES:
+  ;; :Custom_ID: %^{citekey}
+  ;; :URL: %^{url}
+  ;; :AUTHOR: %^{author-or-editor}
+  ;; :NOTER_DOCUMENT: %^{file}
+  ;; :NOTER_PAGE:
+  ;; :END:\n\n"
+  ;;                  :if-new (file+head "${=key=}.org" ":PROPERTIES:
+  ;; :ROAM_REFS: cite:${=key=}
+  ;; :END:
+  ;; #+TITLE: ${title}\n")
+  ;;                  :unnarrowed t))
   (require 'org-ref))
 
 ;; (use-package! citeproc :defer t)
@@ -208,14 +211,15 @@ Creates new notes where none exist yet."
 ;;         org-ref-insert-ref-function 'org-ref-insert-ref-link
 ;;         org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body))))
 
-(after! org-capture
-  ;; create org-id for skim to org jump
-  (add-hook 'org-capture-prepare-finalize-hook #'+reference/append-org-id-to-skim-hook))
+(when IS-MAC
+  (after! org-capture
+    ;; create org-id for skim to org jump
+    (add-hook 'org-capture-prepare-finalize-hook #'+reference/append-org-id-to-skim-hook))
 
-(after! org
-  (require 'org-mac-link)
-  ;; (require 'org-id)
-  (org-link-set-parameters "skim" :follow #'+reference/org-mac-skim-open))
+  (after! org
+    (require 'org-mac-link)
+    (org-link-set-parameters "skim" :follow #'+reference/org-mac-skim-open))
+  )
 
 (defun jyun/org-capture-skim-template-h ()
   (add-to-list 'org-capture-templates
