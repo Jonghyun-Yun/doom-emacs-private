@@ -1009,104 +1009,23 @@
     (error "Minibuffer is not active")))
 (global-set-key "\C-co" 'switch-to-minibuffer) ;; Bind to `C-c o'
 
-;;; lsp-ltex
-(use-package! lsp-ltex
-  :after latex
-  ;; :hook (LaTeX-mode . (lambda () (require 'lsp-ltex) (lsp!)))
-  :config
-  (setq lsp-ltex-enabled nil)
-  (setq lsp-ltex-server-store-path "~/local/ltex-ls/"
-        lsp-ltex-version "15.2.0")
-  (setq lsp-ltex-dictionary "~/.hunspell_en_US")
-  ;; (setq lsp-ltex-disabled-rules ;; '(({"MORFOLOGIK_RULE_EN_US"}))
-  ;;       '(("{\"en-US\": [\"MORFOLOGIK_RULE_EN_US\"]}")))
-  ;; (setq lsp-ltex--filename "ltex-ls-15.2.0-mac-x64"
-  ;;      lsp-ltex--extension-name "ltex-ls-15.2.0-mac-x64.tar.gz")
-  ;; (setq lsp-ltex--executable-path "~/local/ltex-ls/ltex-ls-15.2.0/bin/")
+(when (modulep! :lang org +roam2)
+  ;; include roam files with roadmap filetag
+  (load! "local/org-roam-dw")
   )
 
-;;; desktop.el
-;; (desktop-save-mode 1)
-;; (add-to-list 'desktop-globals-to-save 'file-name-history)
-
-;;; org-roam
-(after! org-roam
-  (defun dw/org-roam-filter-by-tag (tag-name)
-    (lambda (node)
-      (member tag-name (org-roam-node-tags node))))
-
-  (defun dw/org-roam-list-notes-by-tag (tag-name)
-    (mapcar #'org-roam-node-file
-            (seq-filter
-             (dw/org-roam-filter-by-tag tag-name)
-             (org-roam-node-list))))
-
-  (defun dw/org-roam-refresh-agenda-list ()
-    (interactive)
-    (setq org-agenda-files (dw/org-roam-list-notes-by-tag "roadmap")))
-
-  ;; Build the agenda list the first time for the session
-  (dw/org-roam-refresh-agenda-list)
-
-  (defun dw/org-roam-project-finalize-hook ()
-    "Adds the captured project file to `org-agenda-files' if the
-                  capture was not aborted."
-    ;; Remove the hook since it was added temporarily
-    (remove-hook 'org-capture-after-finalize-hook #'dw/org-roam-project-finalize-hook)
-
-    ;; Add project file to the agenda list if the capture was confirmed
-    (unless org-note-abort
-      (with-current-buffer (org-capture-get :buffer)
-        (add-to-list 'org-agenda-files (buffer-file-name)))))
-
-  (defun dw/org-roam-find-project ()
-    (interactive)
-    ;; Add the project file to the agenda after capture is finished
-    (add-hook 'org-capture-after-finalize-hook #'dw/org-roam-project-finalize-hook)
-
-    ;; Select a project file to open, creating it if necessary
-    (org-roam-node-find
-     nil
-     nil
-     (dw/org-roam-filter-by-tag "roadmap")
-     :templates
-     '(("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+category: ${title}\n#+filetags: roadmap")
-        :unnarrowed t))))
-
-  ;; (defun dw/org-roam-capture-inbox ()
-  ;;   (interactive)
-  ;;   (org-roam-capture- :node (org-roam-node-create)
-  ;;                      :templates '(("i" "inbox" plain "* %?"
-  ;;                                    :if-new (file+head "Inbox.org" "#+title: Inbox\n")))))
-
-  (defun dw/org-roam-capture-task ()
-    (interactive)
-    ;; Add the project file to the agenda after capture is finished
-    (add-hook 'org-capture-after-finalize-hook #'dw/org-roam-project-finalize-hook)
-
-    ;; Capture the new task, creating the project file if necessary
-    (org-roam-capture- :node (org-roam-node-read
-                              nil
-                              (dw/org-roam-filter-by-tag "roadmap"))
-                       :templates '(("p" "project" plain "** TODO %?"
-                                     :if-new (file+head+olp "%<%Y%m%d%H%M%S>-${slug}.org"
-                                                            "#+title: ${title}\n#+category: ${title}\n#+filetags: roadmap"
-                                                            ("Tasks [/]")))))))
-
-
 ;;; clean local elc
-(defun jyun/clean-and-rebuild-local-pacakges ()
+(defun jyun/clean-and-rebuild-local-packages ()
   (interactive)
   (let* ((pkg-list '("scimax" "doom-snippets" "langtool-posframe" "emacs-overleaf" "org-cv"))
-         (build-dir (concat doom-local-dir "straight/build-27.2/")))
+  ;(let* ((pkg-list '("doom-snippets" "langtool-posframe" "emacs-overleaf" "org-cv"))
+         (build-dir (concat doom-local-dir "straight/build-29.1/")))
     (when (y-or-n-p "Do you want delete local package builds?")
       (dolist (pkg pkg-list)
         (delete-directory (concat build-dir pkg) t t)))
     (when (y-or-n-p "Do you want rebuild local packages?")
       (start-process "doom-sync" "*doom-sync" "doom" "sync")
       (set-process-sentinel (get-process "doom-sync") 'msg-me))))
-
 
 ;;; dired
 (unless IS-LINUX
