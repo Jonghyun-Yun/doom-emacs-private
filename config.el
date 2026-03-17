@@ -1223,11 +1223,15 @@
   ;; or on a hook
   (defun jyun/setup-company-for-codeium ()
     (setq-local company-idle-delay 0.5
-                company-minimum-prefix-length 0)
+                company-minimum-prefix-length 0
+                ;; corfu-auto-prefix 0
+                ;; corfu-auto-delay 0.5
+                )
     (setq-local completion-at-point-functions '(codeium-completion-at-point)))
   (add-hook 'python-mode-hook #'jyun/setup-company-for-codeium)
   (add-hook 'java-mode-hook #'jyun/setup-company-for-codeium)
   (add-hook 'sql-mode-hook #'jyun/setup-company-for-codeium)
+  (add-hook 'prog-mode-hook #'jyun/setup-company-for-codeium)
 
   ;; if you want multiple completion backends, use cape (https://github.com/minad/cape):
   ;; (add-hook 'python-mode-hook
