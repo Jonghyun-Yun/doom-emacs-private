@@ -485,26 +485,26 @@
   ;; (setq mac-function-modifier 'hyper)  ; make Fn key do Hyper
   (setq mac-mouse-wheel-smooth-scroll t))
 
-;;;; Hangout
-(use-package! jabber
-  :commands (jabber-connect-all
-             jabber-connect)
-  :init
-  (add-hook 'jabber-post-connect-hooks 'spacemacs/jabber-connect-hook)
-  :config
-  ;; https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
-  ;; password encrypted in ~/doom-emacs/.local/etc/authinfo.gpg
-  ;; machine gmail.com login jonghyun.yun port xmpp password *******
-  ;; or I can use =pass=
-  ;; see https://github.com/DamienCassou/auth-source-pass
-  ;; pass insert jonghyun.yun@gmail.com:xmpp
-  (setq jabber-account-list '(("jonghyun.yun@gmail.com"
-                               (:network-server . "talk.google.com")
-                               (:connection-type . starttls))))
+;; ;;;; Hangout
+;; (use-package! jabber
+;;   :commands (jabber-connect-all
+;;              jabber-connect)
+;;   :init
+;;   (add-hook 'jabber-post-connect-hooks 'spacemacs/jabber-connect-hook)
+;;   :config
+;;   ;; https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
+;;   ;; password encrypted in ~/doom-emacs/.local/etc/authinfo.gpg
+;;   ;; machine gmail.com login jonghyun.yun port xmpp password *******
+;;   ;; or I can use =pass=
+;;   ;; see https://github.com/DamienCassou/auth-source-pass
+;;   ;; pass insert jonghyun.yun@gmail.com:xmpp
+;;   (setq jabber-account-list '(("jonghyun.yun@gmail.com"
+;;                                (:network-server . "talk.google.com")
+;;                                (:connection-type . starttls))))
 
-  ;; (jabber-connect-all)
-  ;; (jabber-keepalive-start)
-  (evil-set-initial-state 'jabber-chat-mode 'insert))
+;;   ;; (jabber-connect-all)
+;;   ;; (jabber-keepalive-start)
+;;   (evil-set-initial-state 'jabber-chat-mode 'insert))
 
 ;;;; disable warnings
 (after! warnings
@@ -513,21 +513,21 @@
                ;;   '(undo discard-info)
                '(undo)))
 
-;;;; projectile
-(unless IS-LINUX
-  (after! projectile
-    (projectile-add-known-project "/Users/yunj/Dropbox/emacs/.doom.d/")
-    (projectile-add-known-project "/Users/yunj/Dropbox/workspace/swap/")
-    (projectile-add-known-project "/Users/yunj/OneDrive/workspace/python-tutorial/HarvardX-Using_Python_for_Research/")
-    ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt")
-    ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt/GEPS")
-    (projectile-add-known-project "/Users/yunj/Dropbox/research/lsjm-art/lsjm-draft/")
-    ;; (projectile-add-known-project "~/Dropbox/research/lsjm-art")
-    ;; (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
-    ;; (projectile-add-known-project "~/OneDrive/research/lapf")
-    ;; (projectile-add-known-project "~/research/s.ham/RAS")
-    ;; (projectile-add-known-project "~/research/mj.jeon")
-    ))
+;; ;;;; projectile
+;; ;;;; (unless IS-LINUX
+;; ;;;;   (after! projectile
+;; ;;;;     (projectile-add-known-project "/Users/yunj/Dropbox/emacs/.doom.d/")
+;; ;;;;     (projectile-add-known-project "/Users/yunj/Dropbox/workspace/swap/")
+;; ;;;;     (projectile-add-known-project "/Users/yunj/OneDrive/workspace/python-tutorial/HarvardX-Using_Python_for_Research/")
+;; ;;;;     ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt")
+;; ;;;;     ;; (projectile-add-known-project "~/Dropbox/research/hnet-irt/GEPS")
+;; ;;;;     (projectile-add-known-project "/Users/yunj/Dropbox/research/lsjm-art/lsjm-draft/")
+;; ;;;;     ;; (projectile-add-known-project "~/Dropbox/research/lsjm-art")
+;; ;;;;     ;; (projectile-add-known-project "~/Dropbox/utsw-projects/HITS-CLIP")
+;; ;;;;     ;; (projectile-add-known-project "~/OneDrive/research/lapf")
+;; ;;;;     ;; (projectile-add-known-project "~/research/s.ham/RAS")
+;; ;;;;     ;; (projectile-add-known-project "~/research/mj.jeon")
+;; ;;;;     ))
 
 ;;;; riksy local variables
 ;; old tricks stopped working. risky variables are ignored (doom updates)
@@ -595,17 +595,6 @@
 ;; (setq history-delete-duplicates t)
 
 ;;; recentf
-;; ;; https://github.com/kaz-yos/emacs/blob/master/init.d/500_recentf-related.el
-;; (setq recentf-max-saved-items 300)
-;; (setq recentf-max-menu-items 0)
-
-;; disable recentf-cleanup on Emacs start, because it can cause problems with remote files
-;; (setq recentf-auto-cleanup 'never)
-;; (setq recentf-auto-cleanup 300)         ;; long recentf slow down emacs
-;; (after! recentf
-  ;; (setq recentf-auto-cleanup 600)
-  ;; (add-to-list 'recentf-exclude 'file-remote-p)
-  ;; )
 (setq recentf-exclude '("recentf_.*$"
                         ;; ".*/elpa/.*"
                         ".*\\.maildir.*"
