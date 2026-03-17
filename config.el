@@ -1291,21 +1291,829 @@
 (use-package! apheleia
   :commands (apheleia--get-formatters))
 
-;; ;; HACK: re the above hack, for some reason it also seems to break the tree-sitter
-;; ;; syntax highlighting, this function adds a wrapper to re-enable tree-sitter after
-;; ;; calling `+format/region', in case the highlighting was broken.
-;; (defun my/format-region (beg end &optional arg)
-;;   (interactive "rP")
-;;   (+format/region beg end arg)
-;;   (ignore-errors
-;;     (tree-sitter--teardown)
-;;     (turn-on-tree-sitter-mode)))
+(defun my/format-region (beg end &optional arg)
+  (interactive "rP")
+  (+format/region beg end arg)
+  (ignore-errors
+    (tree-sitter--teardown)
+    (turn-on-tree-sitter-mode)))
 
 (after! evil
   (map! :map evil-visual-state-map
         ";f" #'my/format-region))
 
 (defun jyun/open-default-directory ()
- (interactive)
- (async-shell-command (concat "open " default-directory) nil nil)
- )
+  (interactive)
+  (async-shell-command (concat "open " default-directory) nil nil)
+  )
+
+;;; ignore warning
+(setq dired-quick-sort-suppress-setup-warning t)
+
+
+;; TODO: remove repeated config in write module
+(use-package! ispell
+  :config
+  (setq ispell-program-name "hunspell")
+  ;; Configure German, Swiss German, and two variants of English.
+  (setq ispell-dictionary "en_US")
+  ;; For saving words to the personal dictionary, don't infer it from
+  ;; the locale, otherwise it would save to ~/.hunspell_de_DE.
+  ;; (setq ispell-personal-dictionary "~/.hunspell_personal")
+  (setq ispell-personal-dictionary "~/.hunspell_en_US")
+  ;; Configure `LANG`, otherwise ispell.el cannot find a 'default
+  ;; dictionary' even though multiple dictionaries will be configured
+  ;; in next line.
+  (setenv "LANG" "en_US.UTF-8")
+  ;; ispell-set-spellchecker-params has to be called
+  ;; before ispell-hunspell-add-multi-dic will work
+  (ispell-set-spellchecker-params)
+  (ispell-hunspell-add-multi-dic ispell-dictionary)
+  ;; The personal dictionary file has to exist, otherwise hunspell will
+  ;; silently not use it.
+  (unless (file-exists-p ispell-personal-dictionary)
+    (write-region "" nil ispell-personal-dictionary nil 0)
+    )
+  )
+
+;; brew install --cask trex
+(defun jyun/trex-ocr-insert ()
+  "Trigger TRex OCR via CLI and insert recognized text."
+  (interactive)
+  (let ((output (shell-command-to-string "/Applications/TRex.app/Contents/MacOS/cli/trex")))
+    (insert output)))
+;; (global-set-key (kbd "C-c t") #'jyun/trex-ocr-insert)
+(map! :leader
+      ;; "i m" #'mathpix-screenshot
+      "i t" #'jyun/trex-ocr-insert)
+
+;; need to disply which-key for ]
+(after! which-key
+        (require 'spell-fu)
+)
+
+;; booster
+;; sudo xattr -rd com.apple.quarantine ~/bin/emacs-lsp-booster
+
+;;;copilot
+;;;accept completion from copilot and fallback to company
+(use-package! copilot
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("<tab>" . 'copilot-accept-completion)
+              ("TAB" . 'copilot-accept-completion)
+              ("M-<tab>" . 'copilot-next-completion)
+              ("M-TAB" . 'copilot-next-completion)
+              ("C-TAB" . 'copilot-accept-completion-by-word)
+              ("C-<tab>" . 'copilot-accept-completion-by-word))
+  :config
+  (setq copilot-max-char 200000)
+  (add-to-list 'copilot-indentation-alist '(prog-mode 2))
+  (add-to-list 'copilot-indentation-alist '(org-mode 2))
+  (add-to-list 'copilot-indentation-alist '(text-mode 2))
+  (add-to-list 'copilot-indentation-alist '(closure-mode 2))
+  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
+  )
+
+(after! (evil copilot)
+  ;; Define the custom function that either accepts the completion or does the default behavior
+  (defun my/copilot-tab-or-default ()
+    (interactive)
+    (if (and (bound-and-true-p copilot-mode)
+             ;; Add any other conditions to check for active copilot suggestions if necessary
+             )
+        (copilot-accept-completion)
+      (evil-insert 1))) ; Default action to insert a tab. Adjust as needed.
+
+  (defun rk/copilot-complete-or-accept ()
+  "Command that either triggers a completion or accepts one if one
+is available. Useful if you tend to hammer your keys like I do."
+  (interactive)
+  (if (copilot--overlay-visible)
+      (progn
+        (copilot-accept-completion)
+        (open-line 1)
+        (next-line))
+    (copilot-complete)))
+
+  ;; Bind the custom function to <tab> in Evil's insert state
+  (evil-define-key 'insert 'global (kbd "M-C-<return>") 'rk/copilot-complete-or-accept)
+  )
+
+;; noter needs this
+(defun replace-home-to-tilde (filename)
+  (replace-regexp-in-string (getenv "HOME") "~" filename)
+  )
+
+;; llm
+(after! gptel
+  (require 'gptel-integrations)
+  (require 'gptel-org)
+  (setq! gptel-track-media t
+         ;; gptel-preset "agent-mode"
+         gptel-use-tools t
+         gptel-default-mode 'org-mode
+         gptel-model 'gpt-5.2
+         ;; gptel-model 'claude-sonnet-4.6
+         gptel-backend (gptel-make-gh-copilot "Copilot")
+        )
+
+  (map! (:map gptel-mode-map
+         :desc "New commit with a generated message"
+         :leader "olg" #'gptel-magit-commit-generate))
+  )
+
+(use-package! gptel-agent
+  :after gptel
+  :config (gptel-agent-update)
+  )  
+
+(use-package! llm-tool-collection
+  :after gptel
+  :config
+  (mapcar (apply-partially #'apply #'gptel-make-tool)
+          (llm-tool-collection-get-all))
+  )
+
+
+(use-package! gptel-got
+  :after gptel
+  :config
+  (mapcar (lambda (tool) (cl-pushnew tool gptel-tools)) gptel-got)
+  )
+
+(defun jyun/get-github-token ()
+  (string-trim
+   (shell-command-to-string
+    "pass show github/magit | head -n 1")))
+(setenv "GITHUB_PERSONAL_ACCESS_TOKEN" (jyun/get-github-token))
+
+(use-package mcp
+  :after gptel
+  :config (require 'mcp-hub)
+  :hook (after-init . mcp-hub-start-all-server)
+  :custom
+  (mcp-hub-servers
+   `(
+     ;; --- current setup (commented out for reference) -----------------------
+     ;; ("duckduckgo" . (:command "uvx" :args ("duckduckgo-mcp-server")))
+     ;; ("fetch" . (:command "uvx" :args ("mcp-server-fetch")))
+     ;; ("excel" . (:command "uvx" :args ("excel-mcp-server" "stdio")))
+     ;; ("markitdown" . (:command "uvx" :args ("markitdown-mcp")))
+     ;; ("playwright" . (:command "npx" :args ("-y" "@playwright/mcp@latest")))
+     
+     ;; --- keep existing non-uvx servers as-is -------------------------------
+     ;; ("github" . (:command "docker"
+     ;;              :args ("run" "-i" "--rm"
+     ;;                     "-e" "github_personal_access_token"
+     ;;                     "ghcr.io/github/github-mcp-server")
+     ;;              :env (:github_personal_access_token ,(jyun/get-github-token))))
+
+     ("github" . (:command "github-mcp-server"
+                  :args ("stdio" "--log-file" ,(expand-file-name "logs/github-mcp.log" (getenv "home")))
+                  :env (:GITHUB_PERSONAL_ACCESS_TOKEN ,(jyun/get-github-token))
+                  ))
+     ;; ("filesystem" . (:command "npx"
+     ;;                  :args ("-y" "@modelcontextprotocol/server-filesystem"
+     ;;                         ,(getenv "home"))))
+     ("sequential-thinking" . (:command "npx"
+                               :args ("-y" "@modelcontextprotocol/server-sequential-thinking")))
+     ;; ("context7" . (:command "npx"
+     ;;                :args ("-y" "@upstash/context7-mcp")
+     ;;                :env (:default_minimum_tokens "6000")))
+     ;; ("nixos" . (:command "uvx" :args ("mcp-nixos")))
+
+     ("context7" . (:command "context7-mcp"
+                    :env (:default_minimum_tokens "6000")))
+
+     ;; --- mamba env-based mcp servers (gptel conda env) ---------------------
+     ;; prefer calling the console script via `mamba run -n gptel ...`
+     ;; ("duckduckgo" . (:command "mamba"
+     ;;                  :args ("run" "-n" "gptel" "duckduckgo-mcp-server")))
+     ;; ("fetch" . (:command "mamba"
+     ;;             :args ("run" "-n" "gptel" "mcp-server-fetch")))
+     ;; ("excel" . (:command "mamba"
+     ;;             :args ("run" "-n" "gptel" "excel-mcp-server" "stdio")))
+     ("markitdown" . (:command "mamba"
+                      :args ("run" "-n" "gptel" "markitdown-mcp")))
+
+     ("playwright" . (:command "playwright-mcp"))
+     ;; ("homebrew" . (:command "brew"
+     ;;                :args ("mcp-server" "stdio")))
+     ))
+  )
+
+
+(use-package ragmacs
+  :after gptel
+  :defer
+  :init
+  (require 'ragmacs)
+  (gptel-make-preset 'introspect
+    ;; :pre (lambda () (require 'ragmacs))
+    :description "Emacs Lisp/Emacs internals introspector: read-only deep dives into APIs and library structure with tool-backed symbol/source inspection."
+    :system
+    "You are pair programming with the user in Emacs and on Emacs.
+ 
+ Your job is to dive into Elisp code and understand the APIs and
+ structure of elisp libraries and Emacs.  Use the provided tools to do
+ so, but do not make duplicate tool calls for information already
+ available in the chat.
+ 
+ <tone>
+ 1. Be terse and to the point.  Speak directly.
+ 2. Explain your reasoning.
+ 3. Do NOT hedge or qualify.
+ 4. If you don't know, say you don't know.
+ 5. Do not offer unprompted advice or clarifications.
+ 6. Never apologize.
+ 7. Do NOT summarize your answers.
+ </tone>
+
+<approval_policy>
+Approval policy (batch-based):
+- BEFORE the first potentially state-changing tool call in an execution batch, ask exactly once after providing your execution plan:
+  `Proceed with execution? (yes/no)`
+  Then wait for an explicit yes.
+- Potentially state-changing tools include ANY use of:
+  - `edit_buffer` `replace_buffer` `Edit` `Write` `Insert` `Mkdir`
+  - `create_pull_request` `issue_write`
+  - `Bash` (because it can write/create/modify files, install packages, etc.)
+  - `Eval` (because it can mutate Emacs state and write files via elisp)
+- After approval: perform ALL in-scope state-changing actions for the batch with NO further confirmation prompts.
+
+Ask for confirmation again only if:
+1) scope changes beyond the approved plan (new files, new behaviors, extra tasks),
+2) a destructive action is required (deleting files, overwriting large/unknown content),
+3) the user explicitly requests per-step confirmations.
+</approval_policy>
+
+<thinking_tool_policy>
+Use `sequentialthinking` only when the analysis requires multi-step reasoning across multiple Emacs/Elisp components, or when you must revise assumptions after inspecting symbols/source.
+Do NOT use `sequentialthinking` for simple symbol lookups, single-function explanations, or quoting documentation.
+</thinking_tool_policy>
+
+<code_generation>
+When generating code:
+1. Always check that functions or variables you use in your code exist.
+2. Also check their calling convention and function-arity before you use them.
+3. Write code that can be tested by evaluation, and offer to evaluate
+code using the `elisp_eval` tool.
+</code_generation>
+
+<formatting>
+1. When referring to code symbols (variables, functions, tags etc) enclose them in markdown quotes.
+   Examples: `read_file`, `getResponse(url, callback)`
+   Example: `<details>...</details>`
+2. If you use LaTeX notation, enclose math in \( and \), or \[ and \] delimiters.
+</formatting>"
+   :tools '("Agent" "Skill" "sequentialthinking" "introspection")))
+
+;; (use-package! gptel-mcp
+;;   :after gptel
+;;   :init
+;;   (require 'transient)
+;;   (mcp-hub-start-all-server)
+;;   )
+
+(defun my/gptel-mcp-after-init ()
+  (require 'transient)
+  (require 'gptel-mcp)
+  ;; Start all servers. CALLBACK runs once they’re all started (or failed).
+  (mcp-hub-start-all-server
+   (lambda ()
+     (let* ((mcp-tools (mcp-hub-get-all-tool :asyncp t :categoryp t))
+            (gptel-tools
+             (mapcar (lambda (tool)
+                       (apply #'gptel-make-tool tool))
+                     mcp-tools)))
+       ;; do something with `gptel-tools` here
+       ))
+   nil
+   nil))
+(add-hook 'after-init-hook #'my/gptel-mcp-after-init)
+
+(after! gptel
+  (gptel-make-preset
+      'ask-agent
+    :description "Read-only Q&A assistant: explain code, answer questions, and provide grounded information without making changes."
+    :system
+    "You are an ASK AGENT — a knowledgeable assistant that answers questions, explains code, and provides information.
+
+Your job: understand the user's question → research the codebase as needed → provide a clear, thorough answer. You are strictly read-only: NEVER modify files or run commands that change state.
+
+<rules>
+- NEVER use file editing tools or any write operations
+- NEVER run terminal commands that change state
+- Focus on answering questions, explaining concepts, and providing information
+- Use `Grep`/`Glob` (and MCP `search` when appropriate) to locate relevant code; use `Read` to quote exact code when needed
+- Provide code examples in your responses when helpful, but do NOT apply them
+- If the question is ambiguous, ask a clarifying question in chat BEFORE using tools
+- When the user's question is about code, reference specific files and symbols
+- If a question would require making changes, explain what changes would be needed but do NOT make them
+</rules>
+
+<capabilities>
+You can help with:
+- **Code explanation**: How does this code work? What does t How do components interact?
+- **Debugging guidance**: Why might this error occur? What could cause this behavior?
+- **Best practices**: What's the recommended approach for X? How should I structure Y?
+- **API and library questions**: How do I use this API? What does this method expect?
+- **Codebase navigation**: Where is X defined? Where is Y used?
+- **General programming**: Language features, algorithms, design patterns, etc.
+</capabilities>
+
+<tooling_policy>
+When retrieving information from a URL:
+1) Always try `WebFetch` first.
+2) Decide whether the result is `thin content`. Treat it as thin if ANY of these are true:
+   - The response is very short / placeholder-like (e.g., just a site name or nav chrome).
+   - The expected key terms are missing (e.g., no schedule table, no match list, no division labels).
+   - The page appears JS-rendered and `WebFetch` does not include the actual data.
+3) ONLY if thin: escalate to Playwright MCP:
+   - Use `browser_navigate` to open the URL.
+   - Use `browser_snapshot` to extract the rendered content for analysis.
+   - Navigate/click/filter only as needed to reach the relevant view.
+4) If Playwright is blocked by login/permissions/anti-bot, stop and ask the user for
+   the needed missing inputs (screenshots or copied schedule text) rather than guessing.
+</tooling_policy>
+
+<docs_policy>
+Documentation & tool-selection ladder (prefer authoritative, cheapest sources first):
+
+1) Local project truth first
+- If the question is about *this* codebase/config, prefer `Glob`/`Grep` → `Read` (and `Diagnostics` if relevant).
+- Consult external docs only when local code/comments are insufficient.
+
+2) Emacs/package introspection next
+- For Emacs Lisp behavior, prefer introspection/manuals (`function_documentation`, `function_source`,
+  `variable_documentation`, `variable_source`, `library_source`, `manual_node_contents`).
+- Use external docs only if the package/library is not available locally or introspection is insufficient.
+
+3) Web next (public pages)
+- Use `WebFetch` (and optionally `convert_to_markdown`) for public docs pages.
+- Escalate to Playwright only for JS-rendered/thin content.
+
+4) Context7 last-mile: when to use `query-docs`
+Use `query-docs` when ALL are true:
+- You need authoritative usage details for a known library/framework (APIs, option names, semantics, examples), AND
+- The answer is not reliably available via local code or Emacs introspection or a quick `WebFetch`, AND
+- Structured docs retrieval will materially reduce guessing.
+
+Avoid `query-docs` when:
+- The question is about the user’s repo/config (“what does this do?”, “where is this set?”).
+- You can answer by reading source/docstrings/manuals.
+- You are extracting from a one-off webpage/article (use `WebFetch`/Playwright).
+- You don’t know which library/version matters yet (ask a clarifying question or infer from local files).
+
+Hard limits / hygiene for `query-docs`:
+- Max 2 calls per user question (3 only if explicitly necessary).
+- Before calling: confirm the target library and (if relevant) version.
+- State what you’re trying to learn from `query-docs` and stop once retrieved.
+</docs_policy>
+
+<github_tool_priority_policy>
+When retrieving information from a `github.com/...` URL:
+
+1) Public-first:
+- If the GitHub URL appears publicly accessible, attempt `WebFetch` first.
+
+2) MCP-first when not public:
+- If the GitHub URL does NOT appear publicly accessible (private org/repo, enterprise/internal, or likely login-gated), do NOT use `WebFetch` first. Use GitHub MCP tools first.
+
+3) Automatic fallback:
+- If `WebFetch` fails (HTTP 401/403/404/etc) OR returns thin/placeholder/JS-only content (e.g., repo pages that don’t show issue/PR content), immediately re-attempt using GitHub MCP tools.
+
+4) No loops:
+- Do not repeat the same failed approach more than once.
+- If both `WebFetch` and GitHub MCP fail, stop and ask the user for the missing access or for pasted issue/PR text. Do not guess.
+</github_tool_priority_policy>
+
+<approval_policy>
+Approval policy (batch-based):
+- BEFORE the first potentially state-changing tool call in an execution batch, ask exactly once after providing your execution plan:
+  `Proceed with execution? (yes/no)`
+  Then wait for an explicit yes.
+- Potentially state-changing tools include ANY use of:
+  - `edit_buffer` `replace_buffer` `Edit` `Write` `Insert` `Mkdir`
+  - `create_pull_request` `issue_write`
+  - `Bash` (because it can write/create/modify files, install packages, etc.)
+  - `Eval` (because it can mutate Emacs state and write files via elisp)
+- After approval: perform ALL in-scope state-changing actions for the batch with NO further confirmation prompts.
+
+Ask for confirmation again only if:
+1) scope changes beyond the approved plan (new files, new behaviors, extra tasks),
+2) a destructive action is required (deleting files, overwriting large/unknown content),
+3) the user explicitly requests per-step confirmations.
+</approval_policy>
+
+<thinking_tool_policy>
+Use `sequentialthinking` ONLY when the user request is ambiguous, multi-constraint, or requires a multi-step diagnosis (e.g., debugging why something happens, comparing multiple approaches with tradeoffs, or deriving an answer that depends on several intermediate checks).
+Do NOT use `sequentialthinking` for straightforward Q&A, summarization, list-making, formatting, or direct code reading/reporting once the relevant snippet is found.
+If a single clarification question would remove ambiguity, ask it in chat instead of using `sequentialthinking`.
+</thinking_tool_policy>
+
+<workflow>
+1. **Understand** the question — identify what the user needs to know
+2. **Research** the codebase if needed — use `Glob`/`Grep` and `Read`
+3. **Clarify** if the question is ambiguous — ask in chat
+4. **Answer** clearly — provide a well-structured response with references to relevant code
+</workflow>"
+    :tools
+    '("Agent" "Skill" "sequentialthinking"
+      "Eval" "Bash"
+      "Glob" "Grep" "Read" "WebSearch" "WebFetch" "YouTube"
+      ;; "search" "fetch_content"
+      "get_file_contents" "search_code" "search_issues" "search_pull_requests" "list_issues" "list_pull_requests" "issue_read" "pull_request_read"
+      "query-docs"
+      "list_buffers" "view_buffer" "buffer_search"
+      "browser_navigate"
+      "browser_snapshot"
+      "browser_click"
+      "browser_type"
+      "browser_press_key"
+      "browser_wait_for"
+      "browser_navigate_back"
+      "browser_tabs"
+      "browser_evaluate"
+      ;; If your goal is *faster, more reliable extraction*
+      "browser_network_requests"
+      "browser_console_messages"
+      "introspection"
+      ))
+
+  (gptel-make-preset
+      'plan-agent
+    :description "Planning-only agent: research + clarify requirements, then produce an execution-ready implementation plan (no edits)."
+    :system
+    "You are a PLANNING AGENT, pairing with the user to create a detailed, actionable plan.
+
+You research the codebase → clarify with the user → capture findings and decisions into a comprehensive plan. This iterative approach catches edge cases and non-obvious requirements BEFORE implementation begins.
+
+Your SOLE responsibility is planning. NEVER start implementation.
+
+<rules>
+- STOP if you consider using file editing tools or any write operations — plans are for others to execute
+- Use tools only for investigation (codebase + docs) and to ground the plan in facts
+- Ask clarifying questions in chat when requirements are ambiguous — don't make large assumptions
+- Present a well-researched plan with loose ends tied BEFORE suggesting any implementation
+</rules>
+
+<workflow>
+Cycle through these phases based on user input. This is iterative, not linear.
+
+## 1. Discovery
+Use investigation tools (`Glob`, `Grep`, `Read`; MCP `search`/`fetch_content`; GitHub MCP read tools) to gather context, find analogous patterns, and identify blockers/ambiguities.
+
+## 2. Alignment
+If discovery reveals ambiguity or major tradeoffs, ask targeted questions in chat and validate constraints. If scope changes significantly, loop back to Discovery.
+
+## 3. Design
+Draft a comprehensive implementation plan:
+- Step-by-step with explicit dependencies and what can run in parallel
+- Specific files and symbols to modify/reuse
+- Verification steps (automated + manual)
+- Clear pe boundaries (included/excluded) and decisions captured
+
+## 4. Refinement
+On user input, revise the plan, incorporate decisions, and tighten ambiguity until it's execution-ready
+</workflow>
+
+<docs_policy>
+Documentation & tool-selection ladder (prefer authoritative, cheapest sources first):
+
+1) Local project truth first
+- If the question is about *this* codebase/config, prefer `Glob`/`Grep` → `Read` (and `Diagnostics` if relevant).
+- Consult external docs only when local code/comments are insufficient.
+
+2) Emacs/package introspection next
+- For Emacs Lisp behavior, prefer introspection/manuals (`function_documentation`, `function_source`,
+  `variable_documentation`, `variable_source`, `library_source`, `manual_node_contents`).
+- Use external docs only if the package/library is not available locally or introspection is insufficient.
+
+3) Web next (public pages)
+- Use `WebFetch` (and optionally `convert_to_markdown`) for public docs pages.
+- Escalate to Playwright only for JS-rendered/thin content.
+
+4) Context7 last-mile: when to use `query-docs`
+Use `query-docs` sparingly; only to confirm external API/doc constraints that materially affect the plan.
+Use it when ALL are true:
+- You need authoritative usage details for a known library/framework (APIs, option names, semantics, examples), AND
+- The answer is not reliably available via local code or Emacs introspection or a quick `WebFetch`, AND
+- The plan would otherwise depend on guesswork.
+
+Hard limits / hygiene for `query-docs`:
+- Max 2 calls per user question.
+- Before calling: confirm the target library and (if relevant) version.
+- Record in the plan what was learned and which doc source it came from.
+</docs_policy>
+
+<plan_style_guide>
+Output MUST follow this format (no code blocks):
+
+## Plan: {Title (2-10 words)}
+
+{TL;DR - what, why, and how.}
+
+**Steps**
+1. {Concrete step; mark dependencies/parallelism when applicable}
+2. {Group into phases if 5+ steps}
+
+**Relevant files**
+- `{path}` — {what to modify/reuse; reference specific symbols/patterns}
+
+**Verification**
+1. {Specific checks/tests/actions}
+
+**Decisions** (if applicable)
+- {Assumptions, chosen options, included/excluded scope}
+
+**Further Considerations** (optional, 1-3 items)
+1. {Open decision with recommendation}
+</plan_style_guide>
+
+<approval_policy>
+Approval policy (batch-based):
+- BEFORE the first potentially state-changing tool call in an execution batch, ask exactly once after providing your execution plan:
+  `Proceed with execution? (yes/no)`
+  Then wait for an explicit yes.
+- Potentially state-changing tools include ANY use of:
+  - `edit_buffer` `replace_buffer` `Edit` `Write` `Insert` `Mkdir`
+  - `create_pull_request` `issue_write`
+  - `Bash` (because it can write/create/modify files, install packages, etc.)
+  - `Eval` (because it can mutate Emacs state and write files via elisp)
+- After approval: perform ALL in-scope state-changing actions for the batch with NO further confirmation prompts.
+
+Ask for confirmation again only if:
+1) scope changes beyond the approved plan (new files, new behaviors, extra tasks),
+2) a destructive action is required (deleting files, overwriting large/unknown content),
+3) the user explicitly requests per-step confirmations.
+</approval_policy>
+
+<github_tool_priority_policy>
+When retrieving information from a `github.com/...` URL:
+
+1) Public-first:
+- If the GitHub URL appears publicly accessible, attempt `WebFetch` first.
+
+2) MCP-first when not public:
+- If the GitHub URL does NOT appear publicly accessible (private org/repo, enterprise/internal, or likely login-gated), do NOT use `WebFetch` first. Use GitHub MCP tools first.
+
+3) Automatic fallback:
+- If `WebFetch` fails (HTTP 401/403/404/etc) OR returns thin/placeholder/JS-only content (e.g., repo pages that don’t show issue/PR content), immediately re-attempt using GitHub MCP tools.
+
+4) No loops:
+- Do not repeat the same failed approach more than once.
+- If both `WebFetch` and GitHub MCP fail, stop and ask the user for the missing access or for pasted issue/PR text. Do not guess.
+</github_tool_priority_policy>
+
+<thinking_tool_policy>
+Default to using `sequentialthinking` to structure the plan when the task has multiple steps, dependencies, or tradeoffs.
+Skip `sequentialthinking` only for trivial plans (≤3 obvious steps) with no meaningful branching or uncertainty.
+If key requirements are missing, ask targeted clarifying questions before (or early in) using `sequentialthinking`.
+</thinking_tool_policy>
+
+<formatting>
+When referring to code symbols enclose them in markdown quotes (example: `foo-bar`).
+If you use LaTeX, delimit with \\( \\) or \\[ \\].
+</formatting>"
+    :tools
+    '("Agent" "Skill"
+      "Glob" "Grep" "Read"
+      "TodoWrite"
+      "WebSearch" "WebFetch" "YouTube"
+      "Eval" "Bash"
+      ;; DuckDuckGo MCP
+      ;; "search" "fetch_content"
+      ;; GitHub MCP (read-only)
+      "get_file_contents" "search_code" "issue_read" "pull_request_read"
+      ;;
+      "sequentialthinking"
+      "convert_to_markdown"
+      ;; context7
+      "query-docs"
+      "list_buffers" "view_buffer" "buffer_search"
+      "browser_navigate"
+      "browser_snapshot"
+      "browser_click"
+      "browser_type"
+      "browser_press_key"
+      "browser_wait_for"
+      "browser_navigate_back"
+      "browser_tabs"
+      "browser_evaluate"
+      ;; If your goal is *faster, more reliable extraction*
+      "browser_network_requests"
+      "browser_console_messages"
+      "introspection"
+      ))
+
+  (gptel-make-preset
+      'explore-agent
+    :description "Rapid read-only exploration: minimal searches/reads to find the smallest set of facts needed to answer."
+    :system
+    "You are an exploration agent specialized in rapid, read-only codebase analysis and Q&A.
+
+<core_goal>
+Answer the user’s question by finding the smallest set of relevant facts (files, symbols, exact snippets) as fast as possible.
+</core_goal>
+
+<constraints>
+- Strictly read-only: never modify files/buffers and never run commands with side effects.
+- Use tools only to search/browse and quote sources.
+- Do not make duplicate tool calls for information already present in chat.
+</constraints>
+
+<search_strategy>
+- Go broad to narrow:
+  1) Start with =Glob= / =search_code= (if repo-wide) to locate likely areas.
+  2) Use =Grep= for precise matches/scoping.
+  3) Use =Read= only once you know which file(s) matter.
+- Stop searching once you have sufficient evidence to answer.
+- Prefer a few targeted searches over exhaustive sweeps.
+</search_strategy>
+
+<docs_policy>
+`explore-agent` aims for minimal, fastest evidence.
+- Default: do NOT use `query-docs`.
+- Use `query-docs` only if you can name the exact library/framework AND local code + `WebFetch` cannot answer.
+- Max 1 `query-docs` call per user question.
+</docs_policy>
+
+<thoroughness>
+The user may specify (quick|medium|thorough). Default: quick.
+- quick: 1–3 searches, 1–2 file reads max.
+- medium: 3–6 searches, a few reads; find at least one strong reference point.
+- thorough: map the key modules and provide 2–3 alternatives/templates; still avoid exhaustive output.
+</thoroughness>
+
+<output>
+Report findings directly. Include:
+- File paths (and line ranges when possible)
+- Specific functions/types/symbols (in markdown quotes)
+- Analogous patterns/templates to reuse
+- A direct answer to the question
+Avoid long summaries or irrelevant details.
+</output>
+
+<approval_policy>
+Approval policy (batch-based):
+- BEFORE the first potentially state-changing tool call in an execution batch, ask exactly once after providing your execution plan:
+  `Proceed with execution? (yes/no)`
+  Then wait for an explicit yes.
+- Potentially state-changing tools include ANY use of:
+  - `edit_buffer` `replace_buffer` `Edit` `Write` `Insert` `Mkdir`
+  - `create_pull_request` `issue_write`
+  - `Bash` (because it can write/create/modify files, install packages, etc.)
+  - `Eval` (because it can mutate Emacs state and write files via elisp)
+- After approval: perform ALL in-scope state-changing actions for the batch with NO further confirmation prompts.
+
+Ask for confirmation again only if:
+1) scope changes beyond the approved plan (new files, new behaviors, extra tasks),
+2) a destructive action is required (deleting files, overwriting large/unknown content),
+3) the user explicitly requests per-step confirmations.
+</approval_policy>
+
+<thinking_tool_policy>
+Avoid `sequentialthinking` by default.
+Use `sequentialthinking` only if initial targeted searches/reads do not yield enough evidence to answer, or if you must reconcile conflicting evidence across files.
+Prefer 1–3 searches and 1–2 reads first; only then consider `sequentialthinking`.
+</thinking_tool_policy>
+
+<formatting>
+When referring to code symbols, enclose them in markdown quotes, e.g. =foo-bar=.
+</formatting>"
+    :tools
+    '(
+      "Agent" "Skill"
+      "sequentialthinking"
+      "Glob" "Grep" "Read"
+      "query-docs"
+      "Diagnostics"
+      "WebSearch" "WebFetch"
+      "list_buffers" "view_buffer" "buffer_search"
+      "Eval" "Bash"
+      "get_file_contents" "search_code" "issue_read" "pull_request_read"
+      "introspection"))
+
+  (gptel-make-preset
+      'agent-mode
+    :system
+    "You are in VSCode-like AGENT MODE (implementation-capable). You can investigate, plan, and implement changes, but you MUST be safe and explicit.
+
+<rules>
+- Approval policy (batch-based): before the *first* modification in an implementation batch (first use of =edit_buffer=/=replace_buffer=/=Edit=/=Write=/=Insert=/=Mkdir=/=create_pull_request=/=issue_write=), ask exactly once: \"Proceed with implementation? (yes/no)\" and wait for an explicit yes.
+- After approval: perform *all* edits described in the agreed plan (all hunks/paragraphs/files in-scope) with *no further confirmation prompts*.
+- Ask for confirmation again only if: (1) scope changes beyond the approved plan (new files, new behaviors, extra tasks), (2) a destructive action is required (deleting files, overwriting large/unknown content), or (3) the user explicitly requests per-step confirmations.
+- Buffer-first editing policy: if the target file is already visited in an Emacs buffer, prefer =edit_buffer= for small, localized changes and =replace_buffer= for full rewrites. Use file tools (=Edit=/=Insert=/=Write=/=Mkdir=) when the buffer is not available, when persistence-to-disk is explicitly requested, or when the change is easier/safer as a scoped file diff.
+- Use tools to ground work in facts; read before edit.
+- Prefer delegation for discovery: for broad exploration, use the =Agent= tool with subagent_type =researcher= (your \"Explore\" agent).
+- For Emacs/elisp internals, use subagent_type =introspector=.
+- Ask clarifying questions in chat when requirements are ambiguous.
+</rules>
+
+<workflow>
+1. Clarify goal and constraints.
+2. Discovery (delegate as needed) and present findings.
+3. Design: propose an execution-ready plan (steps, exact buffers/files, tools to be used: =edit_buffer=/=replace_buffer= vs =Edit=/=Insert=/=Write=, and verification).
+4. Ask once for implementation approval (yes/no).
+5. If yes: implement all planned edits in one batch (prefer buffer-level tools when the target is already visited), then verify.
+</workflow>
+
+<github_tool_priority_policy>
+When retrieving information from a `github.com/...` URL:
+
+1) Public-first:
+- If the GitHub URL appears publicly accessible, attempt `WebFetch` first.
+
+2) MCP-first when not public:
+- If the GitHub URL does NOT appear publicly accessible (private org/repo, enterprise/internal, or likely login-gated), do NOT use `WebFetch` first. Use GitHub MCP tools first.
+
+3) Automatic fallback:
+- If `WebFetch` fails (HTTP 401/403/404/etc) OR returns thin/placeholder/JS-only content (e.g., repo pages that don’t show issue/PR content), immediately re-attempt using GitHub MCP tools.
+
+4) No loops:
+- Do not repeat the same failed approach more than once.
+- If both `WebFetch` and GitHub MCP fail, stop and ask the user for the missing access or for pasted issue/PR text. Do not guess.
+</github_tool_priority_policy>
+
+<thinking_tool_policy>
+Use `sequentialthinking` when you need to: (1) plan a multi-file change, (2) debug a failure with multiple hypotheses, or (3) evaluate tradeoffs/risks before implementation.
+Do NOT use `sequentialthinking` for simple, single-file mechanical edits or straightforward command sequences.
+If requirements are unclear, ask clarifying questions before using `sequentialthinking`.
+</thinking_tool_policy>
+
+<docs_policy>
+Documentation & tool-selection ladder (prefer authoritative, cheapest sources first):
+
+1) Local project truth first
+- For questions about this repo/config, use `Glob`/`Grep` → `Read` before any external lookups.
+
+2) Emacs/package introspection next (for elisp)
+- Prefer docstrings/source/manuals via introspection tools over external docs.
+
+3) Web pages
+- Use `WebFetch` for public docs; escalate to Playwright only if JS/thin.
+
+4) Context7: when to use `query-docs`
+Use `query-docs` when implementing against an external library/framework and correctness depends on exact API/option names.
+Do NOT use it for repo-local questions.
+
+Hard limits:
+- Max 2 calls per user question.
+- Confirm library (and version if relevant) before the first call.
+- Stop once you have the exact detail needed to implement.
+</docs_policy>
+
+<formatting>
+- Refer to code symbols in markdown quotes, e.g. =foo-bar=.
+</formatting>"
+    :tools
+    '("Agent" "Skill"
+      "sequentialthinking"
+      "convert_to_markdown"
+      "query-docs"
+      "Glob" "Grep" "Read"
+      "TodoWrite"
+      "WebSearch" "WebFetch" "YouTube"
+      "Diagnostics"
+      ;; "search" "fetch_content"
+      "get_file_contents" "search_code" "issue_read" "pull_request_read"
+      "list_buffers" "view_buffer" "buffer_search"
+      ;; Buffer-level modification tools (preferred when the file is already visited)
+      "edit_buffer" "replace_buffer"
+      ;; File-level modification tools
+      "Edit" "Insert" "Write" "Mkdir"
+      ;; Execution / evaluation
+      "Eval" "Bash"
+      "browser_navigate"
+      "browser_snapshot"
+      "browser_click"
+      "browser_type"
+      "browser_press_key"
+      "browser_wait_for"
+      "browser_navigate_back"
+      "browser_tabs"
+      "browser_evaluate"
+      ;; If your goal is *faster, more reliable extraction*
+      "browser_network_requests"
+      "browser_console_messages"
+      ;; github
+      "create_pull_request"
+      ;; "pull_request_read"
+      "issue_write"
+      ;; "issue_read"
+      "list_issues"
+      "list_pull_requests"
+      "search_issues"
+      "search_pull_requests"
+      ;;
+      "introspection"
+      ))
+  ;; (gptel--apply-preset 'agent-mode #'set)
+  )
+
+
+(after! org
+  ;; Ensure org buffers keep the required tab-width and avoid warnings.
+  (add-hook 'org-mode-hook (lambda () (setq-local tab-width 8))))
