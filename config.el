@@ -34,6 +34,16 @@
 ;;  doom-unicode-font (font-spec :family "Sarasa Mono K" :weight 'light)
 ;;  doom-serif-font (font-spec :family "Iosevka Slab" :weight 'light))
 
+;; (setq
+;;  doom-font (font-spec :family "Iosevka" :size 18)
+;;  doom-big-font (font-spec :family "Iosevka" :size 28)
+;;  ;; doom-variable-pitch-font (font-spec :family "Iosevka Etoile" :weight 'light)
+;;  doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size 18)
+;;  doom-unicode-font (font-spec :family "JuliaMono" :size 18)
+;;  ;; doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light :size 18)
+;;  doom-serif-font (font-spec :family "Iosevka Slab" :size 18)
+;; )
+
 (setq doom-font (font-spec :family "JetBrains Mono" :size 18)
       doom-big-font (font-spec :family "JetBrains Mono" :size 28)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 18)
