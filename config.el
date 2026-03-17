@@ -74,7 +74,8 @@
 ;; (setq doom-theme 'doom-one-light)
 ;; (load-theme 'doom-one-light t)
 ;; (load-theme 'doom-nord t)
-(load-theme 'modus-operandi t)
+(setq doom-theme 'modus-operandi)
+;; (load-theme 'modus-operandi t)
 ;; (when IS-LINUX
 ;;   (load-theme 'doom-one t))
 (unless (display-graphic-p)
