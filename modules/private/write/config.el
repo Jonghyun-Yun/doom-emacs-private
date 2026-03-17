@@ -187,7 +187,8 @@ Turning on wordnut mode runs the normal hook `mw-syno-mode-hook'.
   :commands
   (my-hydra-string-inflection/body)
   :init
-  (progn
+  (after! hydra
+  (progn 
     (defhydra my-hydra-string-inflection
       (:hint nil)
       "
@@ -204,16 +205,16 @@ Turning on wordnut mode runs the normal hook `mw-syno-mode-hook'.
       "k" 'string-inflection-kebab-case
       "_" 'string-inflection-underscore
       "u" 'string-inflection-underscore
-      "U" 'string-inflection-upcase))))
+      "U" 'string-inflection-upcase)))))
 
 ;;; spell checker
 (setq ispell-program-name "hunspell"
       ispell-check-comments nil
       ispell-hunspell-dict-paths-alist
       '(
-        ("en_US" "/Users/yunj/Library/Spelling/en_US.aff")
-        ("ko" "/Users/yunj/Library/Spelling/ko.aff")
-        ("en_US-med" "/Users/yunj/Library/Spelling/en_US-med.aff"))
+        ("en_US" "~/Library/Spelling/en_US.aff")
+        ("ko" "~/Library/Spelling/ko.aff")
+        ("en_US-med" "~/Library/Spelling/en_US-med.aff"))
       ispell-hunspell-dictionary-alist
       '(
         ("ko_KR"
@@ -231,75 +232,79 @@ Turning on wordnut mode runs the normal hook `mw-syno-mode-hook'.
       ispell-dictionary-alist ispell-hunspell-dictionary-alist)
 ;; (ispell-set-spellchecker-params) ; Initialize variables and dicts alists
 (setq ispell-local-dictionary "en_US")
-(setq ispell-personal-dictionary "/Users/yunj/.hunspell_en_US")
+(setq ispell-personal-dictionary "~/.hunspell_en_US")
 ;; (setq ispell-personal-dictionary "/Users/yunj/.aspell.en.pws")
 
-(require 'spell-fu) ;; otherwise error b/c `+spell/previous-error' is not defined.
-(setq spell-fu-idle-delay 0.5)
-;; (global-spell-fu-mode -1)
+;; (require 'spell-fu) ;; otherwise error b/c `+spell/previous-error' is not defined.
+(after! spell-fu
+  (setq spell-fu-idle-delay 0.5)
+  ;; (global-spell-fu-mode -1)
 
 ;;;; ignore spell checks
-;; I need these lists for langtool!
-(setf (alist-get 'org-mode +spell-excluded-faces-alist)
-      '(
-        org-level-1
-        org-document-info
-        org-list-dt
-        org-block
-        org-block-begin-line
-        org-block-end-line
-        org-code
-        org-date
-        org-formula
-        org-latex-and-related
-        org-link
-        org-meta-line
-        org-property-value
-        org-ref-cite-face
-        org-special-keyword
-        org-tag
-        org-todo
-        org-todo-keyword-done
-        org-todo-keyword-habt
-        org-todo-keyword-kill
-        org-todo-keyword-outd
-        org-todo-keyword-todo
-        org-todo-keyword-wait
-        org-verbatim
-        org-property-drawer-re
-        ;; org-ref-cite-re
-        ;; org-ref-ref-re
-        org-ref-label-re
-        org-latex-math-environments-re
-        "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
-        font-lock-comment-face
-        ))
+  ;; I need these lists for langtool!
+  (setf (alist-get 'org-mode +spell-excluded-faces-alist)
+        '(
+          org-level-1
+          org-document-info
+          org-list-dt
+          org-block
+          org-block-begin-line
+          org-block-end-line
+          org-code
+          org-date
+          org-formula
+          org-latex-and-related
+          org-link
+          org-meta-line
+          org-property-value
+          org-ref-cite-face
+          org-special-keyword
+          org-tag
+          org-todo
+          org-todo-keyword-done
+          org-todo-keyword-habt
+          org-todo-keyword-kill
+          org-todo-keyword-outd
+          org-todo-keyword-todo
+          org-todo-keyword-wait
+          org-verbatim
+          org-property-drawer-re
+          ;; org-ref-cite-re
+          ;; org-ref-ref-re
+          org-ref-label-re
+          org-latex-math-environments-re
+          "\\`[ 	]*\\\\begin{\\(?:align*\\|equation*\\|eqnarray*\\)\\*?}"
+          font-lock-comment-face
+          ))
 
-(setf (alist-get 'LaTeX-mode +spell-excluded-faces-alist)
-      '(
-        font-lock-function-name-face
-        font-lock-variable-name-face
-        font-lock-keyword-face
-        font-lock-constant-face
-        font-lock-comment-face
-        font-latex-math-face
-        font-latex-sedate-face))
-;; font-latex-verbatim-face
-;; font-latex-warning-face
+  (setf (alist-get 'LaTeX-mode +spell-excluded-faces-alist)
+        '(
+          font-lock-function-name-face
+          font-lock-variable-name-face
+          font-lock-keyword-face
+          font-lock-constant-face
+          font-lock-comment-face
+          font-latex-math-face
+          font-latex-sedate-face))
+  ;; font-latex-verbatim-face
+  ;; font-latex-warning-face
+  )
 
-;; these exculeded faces are in lists for spell-fu
-(add-hook! 'org-mode-hook
-  (defun langtool-org-mode-ignore-fonts ()
-    (setq langtool-ignore-fonts
-          (alist-get 'org-mode +spell-excluded-faces-alist))))
-(add-hook! 'markdown-mode-hook
-  (defun langtool-markdown-ignore-fonts ()
-    (setq langtool-ignore-fonts
-          (alist-get 'markdown-mode +spell-excluded-faces-alist))))
-(add-hook! 'LaTeX-mode-hook
-  (defun langtool-LaTeX-ignore-fonts ()
-    (setq langtool-ignore-fonts
-          (alist-get 'LaTeX-mode +spell-excluded-faces-alist))))
+(after! spell-fu
+  ;; these exculeded faces are in lists for spell-fu
+  (add-hook! 'org-mode-hook
+    (defun langtool-org-mode-ignore-fonts ()
+      (setq langtool-ignore-fonts
+            (alist-get 'org-mode +spell-excluded-faces-alist))))
+  (add-hook! 'markdown-mode-hook
+    (defun langtool-markdown-ignore-fonts ()
+      (setq langtool-ignore-fonts
+            (alist-get 'markdown-mode +spell-excluded-faces-alist))))
+  (add-hook! 'LaTeX-mode-hook
+    (defun langtool-LaTeX-ignore-fonts ()
+      (setq langtool-ignore-fonts
+            (alist-get 'LaTeX-mode +spell-excluded-faces-alist))))
+  )
 
 ;;; latex checkers
 (after! flycheck

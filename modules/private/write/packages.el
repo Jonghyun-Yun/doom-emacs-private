@@ -19,4 +19,6 @@
   :recipe (:host github :repo "jethrokuan/mathpix.el"))
 
 ;; string
-(package! string-inflection :pin "c4a519be102cb99dd86be3ee8c387f008d097635")
+;; (package! string-inflection :pin "c4a519be102cb99dd86be3ee8c387f008d097635")
+(package! string-inflection
+  :recipe (:host github :repo "akicho8/string-inflection" :branch "main"))

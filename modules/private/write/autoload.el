@@ -28,7 +28,8 @@
         (set-buffer temp-buf)
         (with-current-buffer temp-buf
           (read-only-mode -1)
-          (setf (buffer-string) "")
+          (erase-buffer) ;; ← instead of (setf (buffer-string) "")
+          ;; (setf (buffer-string) "")
           (setf org-hide-emphasis-markers t)
           (funcall 'org-mode)
           (funcall 'mw-thesaurus-mode)
@@ -50,7 +51,8 @@
         (set-buffer temp-buf)
         (with-current-buffer temp-buf
           (read-only-mode -1)
-          (setf (buffer-string) "")
+          (erase-buffer) ;; ← instead of (setf (buffer-string) "")
+          ;; (setf (buffer-string) "")
           (setf org-hide-emphasis-markers t)
           (funcall 'org-mode)
           (funcall 'mw-learner-mode)
