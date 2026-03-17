@@ -56,8 +56,8 @@ tasks."
   "Update the value of `org-agenda-files'."
   (setq org-agenda-files (append org-agenda-base-files (vulpea-project-files))))
 
-(add-hook 'find-file-hook #'vulpea-project-update-tag)
-(add-hook 'before-save-hook #'vulpea-project-update-tag)
+;;(add-hook 'find-file-hook #'vulpea-project-update-tag)
+;;(add-hook 'before-save-hook #'vulpea-project-update-tag)
 
 (advice-add 'org-agenda :before #'vulpea-agenda-files-update)
 
