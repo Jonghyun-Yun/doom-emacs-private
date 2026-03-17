@@ -1196,132 +1196,19 @@
     )
   )
 
-;; elfeed
-(map! :map elfeed-search-mode-map
-      :e "B" #'ar/elfeed-search-browse-background-url)
-  (defun ar/elfeed-search-browse-background-url ()
-    "Open current `elfeed' entry (or region entries) in browser without losing focus."
-    (interactive)
-    (let ((entries (elfeed-search-selected)))
-      (mapc (lambda (entry)
-              (cl-assert (memq system-type '(darwin)) t "open command is macOS only")
-              (start-process (concat "open " (elfeed-entry-link entry))
-                             nil "open" "--background" (elfeed-entry-link entry))
-              (elfeed-untag entry 'unread)
-              (elfeed-search-update-entry entry))
-            entries)
-      (unless (or elfeed-search-remain-on-entry (use-region-p))
-        (forward-line))))
-
-;; vundo
-;; (use-package! vundo
-;;   :unless (modulep! +tree)
-;;   :defer t
-;;   :config
-;;   (setq vundo-glyph-alist vundo-unicode-symbols
-;;         vundo-compact-display t)
-;;   (define-key vundo-mode-map [remap doom/escape] #'vundo-quit))
-
-;;; elfeed-tube
- (use-package elfeed-tube
-  ;; :ensure t ;; or :straight t
-  :after elfeed
-  :demand t
-  :config
-  ;; (setq elfeed-tube-auto-save-p nil) ; default value
-  ;; (setq elfeed-tube-auto-fetch-p t)  ; default value
-  (elfeed-tube-setup)
-
-  (setq elfeed-tube-captions-languages
-        '("ko" "en" "english (auto generated)"))
-
-  :bind (:map elfeed-show-mode-map
-         ("F" . elfeed-tube-fetch)
-         ([remap save-buffer] . elfeed-tube-save)
-         :map elfeed-search-mode-map
-         ("F" . elfeed-tube-fetch)
-         ([remap save-buffer] . elfeed-tube-save)))
-
-(use-package elfeed-tube-mpv
-  ;; :straight (:host github :repo "karthink/elfeed-tube")
-  :bind (:map elfeed-show-mode-map
-              ("C-c C-f" . elfeed-tube-mpv-follow-mode)
-              ("C-c C-w" . elfeed-tube-mpv-where)))
-
 ;; (use-package! mu4e
 ;;   :load-path  "/usr/local/share/emacs/site-lisp/mu/mu4e"
-;;     )
-;; (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
-;; (require 'mu4e)
-
-;;; cypher
-(use-package! cypher-mode)
-
-;;; yt-dlp
-
-(defvar yt-dlp-video-dir "/Users/yunj/Desktop/Videos/")
-(when IS-LINUX
-  (setq yt-dlp-video-dir "/home/yunj/Videos/"))
-
-(defun wsl-open-exploer ()
-  (interactive)
-  (shell-command "explorer.exe ."))
-
-(defun emacs-yt-dlp (&optional link)
-  (interactive)
-  (let ((fpath (or link (elfeed-get-link-at-point))))
-    (async-start-process "yt-dlp" "yt-dlp" nil (concat  "-o" yt-dlp-video-dir "%(title)s-%(id)s.%(ext)s") fpath)
-    (message (concat "Starting download: " fpath))
-    )
-  )
-
-(defun yt-dlp-elfeed ()
-  "Download the current entry's Youtube video using `yt-dlp'. "
-  (interactive)
-  (let ((link (elfeed-entry-link elfeed-show-entry)))
-    (when link
-      (message "Downloading the Youtube Video: %s" link)
-      (emacs-yt-dlp link))))
-
-(map!
- (:map elfeed-show-mode-map
-  :n "g C-o" #'yt-dlp-elfeed
-  ))
-
-;;; osm
-;; (use-package! osm
-;;   :bind (("C-c m h" . osm-home)
-;;          ("C-c m s" . osm-search)
-;;          ("C-c m v" . osm-server)
-;;          ("C-c m t" . osm-goto)
-;;          ("C-c m x" . osm-gpx-show)
-;;          ("C-c m j" . osm-bookmark-jump))
-
-;;   :custom
-;;   ;; Take a look at the customization group `osm' for more options.
-;;   (osm-server 'default) ;; Configure the tile server
-;;   (osm-copyright t)     ;; Display the copyright information
-
-;;   :init
-;;   ;; Load Org link support
-;;   (with-eval-after-load 'org
-;;     (require 'osm-ol))
-
 ;;   :config
-;;   (setq osm-home '(32.5590711 -97.0643973 15))
+;;   (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
 ;;   )
+
+;;; cypher - Neo4j
+;; (use-package! cypher-mode)
 
 ;;; WSL functions
 (defun wsl-open-exploer ()
   (interactive)
   (shell-command "explorer.exe .")
-  )
-
-;;; openwith
-(when IS-MAC
-  ;; (require 'openwith)
-  ;; (openwith-mode t)
-  ;; (setq openwith-associations '(("\\.pdf\\'" "open -a Skim" (file))))
   )
 
 ;; we recommend using use-package to organize your init.el
