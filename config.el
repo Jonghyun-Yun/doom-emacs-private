@@ -755,9 +755,13 @@
 ;;       python-shell-prompt-detect-failure-warning nil)
 
 
+(with-eval-after-load 'conda
+  (setq conda-executable "mamba"))
+
 (after! python
   (setq conda-env-home-directory (expand-file-name "~/.conda"))
-  (conda-env-activate "ds")
+  ;; (setq conda-env-home-directory '((expand-file-name "~/.local/share/mamba") (expand-file-name "~/.conda")))
+  ;;(conda-env-activate "kedro")
   (add-to-list 'python-shell-completion-native-disabled-interpreters
                "jupyter")
   (add-to-list 'python-shell-completion-native-disabled-interpreters
@@ -778,24 +782,11 @@
 ;;    ;; lsp-ui-doc-show-with-cursor       nil
 ;;    ;; lsp-ui-sideline-show-code-actions t
 ;;  )
+
 (after! lsp-mode
   (setq
-   lsp-headerline-breadcrumb-enable t
+   lsp-headerline-breadcrumb-enable nil ;; expensive for large project 
    lsp-ui-doc-show-with-mouse t))
-
-;;;; conda
-;; (use-package! conda
-;;   :after python
-;;   :config
-;;   (setq conda-anaconda-home (expand-file-name "/opt/intel/oneapi/intelpython/latest")
-;;         conda-env-home-directory (expand-file-name "~/.conda"))
-;;   (conda-env-activate "tf")
-;;   ;; integration with term/eshell
-;;   (conda-env-initialize-interactive-shells)
-;;   (after! eshell (conda-env-initialize-eshell))
-;;   (add-to-list 'global-mode-string
-;;                '(conda-env-current-name (" conda:" conda-env-current-name " "))
-;;                'append))
 
 ;;;; matlab
 (after! all-the-icons
