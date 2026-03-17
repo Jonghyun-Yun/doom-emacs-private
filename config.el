@@ -624,20 +624,21 @@
 (after! citar
   ;; list of paths
   (setq! citar-bibliography +biblio-default-bibliography-files
+         citar-notes-paths (list org-roam-directory)
          citar-library-paths (list +biblio-pdf-library-dir)
-         citar-notes-paths (list org-roam-directory))
-  (add-to-list 'org-roam-capture-templates
-               '("n" "literature note" plain
-                 "%?"
-                 :target
-                 (file+head
-                  "${citekey}.org"
-                  "#+title: ${title}\n
+         )
+  (when (modulep! :lang org +roam2)
+    (add-to-list 'org-roam-capture-templates
+                 '("n" "literature note" plain
+                   "%?"
+                   :target
+                   (file+head
+                    "${citekey}.org"
+                    "#+title: ${title}\n
                   \n* Notes\n  :PROPERTIES:\n  :NOTER_DOCUMENT: %(replace-home-to-tilde (car (bibtex-completion-find-pdf \"${citekey}\")))\n  :END:\n\n")
-                 :unnarrowed t))
-  (setq citar-org-roam-capture-template-key "n"))
-
-;; (setq bibtex-completion-pdf-open-function 'org-open-file)
+                   :unnarrowed t))
+    (setq citar-org-roam-capture-template-key "n"))
+  )
 
 ;;; org-roam
 (after! org-roam
@@ -663,195 +664,46 @@
   )
 
 ;;;; org-roam-ui
-(use-package! websocket
-    :after org-roam)
+;;(use-package! websocket
+;;    :after org-roam
+;;    )
 
-
-(use-package! org-roam-ui
-  :after org-roam ;; or :after org
-  ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-  ;;         a hookable mode anymore, you're advised to pick something yourself
-  ;;         if you don't care about startup time, use
-  ;;  :hook (after-init . org-roam-ui-mode)
-  :config
-  (setq org-roam-ui-sync-theme t
-        org-roam-ui-follow t
-        org-roam-ui-update-on-save t
-        org-roam-ui-open-on-start t))
-
-;;; elfeed
-(after! elfeed
-  ;; number of concurrent fetches
-  (elfeed-set-max-connections 5)
-  ;; (run-at-time nil (* 4 60 60) #'elfeed-update)
-                                        ;update every 4 * 60 * 60 sec
-  (setq
-   ;; elfeed-search-title-max-width 100
-   ;; elfeed-search-title-min-width 20
-   ;; elfeed-search-filter "@3-week-ago"
-   elfeed-show-entry-switch #'pop-to-buffer
-   elfeed-show-entry-delete #'+rss/delete-pane
-   ;; elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
-   elfeed-search-print-entry-function 'jyun/score-entry-line-draw
-   ;; shr-max-image-proportion 0.6
-   elfeed-search-date-format '("%m/%d/%y" 10 :left)
-   ))
-
-;;;; elfeed-summary
-;; https://github.com/SqrtMinusOne/elfeed-summary
-(use-package! elfeed-summary
-  :after elfeed
-  )
-
-;;;; elfeed org-capture
-(after! (org-capture elfeed)
-  ;; elfeed capture
-  (add-to-list 'org-capture-templates
-               '("EFE" "Elfeed entry" entry
-                 (file+headline +org-capture-inbox-file "Reading")
-                 "* TODO %(message jyun/target-elfeed-title-link) :rss:
-                  DEADLINE: %(org-insert-time-stamp (org-read-date nil t \"today\"))
-                  %(message jyun/target-elfeed-entry-url)
-                  %i \n%?"
-                 :prepend t
-                 :immediate-finish t)))
-
-;; ;; A snippet for periodic update for feeds (10 mins since Emacs start, then every
-;; ;; two hour)
-;; (run-at-time (* 10 60) (* 2 60 60) #'(lambda () (progn
-;;                                              (elfeed-set-max-connections 3)
-;;                                              (elfeed-update))))
-
-;; (defvar doom-elfeed-dir (concat doom-private-dir ".local/elfeed/")
-;;   "TODO")
-;; (after! elfeed
-;;   (setq elfeed-db-directory (concat doom-elfeed-dir "db/")
-;;         elfeed-enclosure-default-dir (concat doom-elfeed-dir "enclosures/"))
-;;   )
-
-;;;; elfeed-score
-(use-package! elfeed-score
-  :after elfeed
-  :init
-  (setq elfeed-score-score-file (expand-file-name "elfeed.score" doom-private-dir))
-  :config
-  (progn
-    ;; (elfeed-score-enable)
-    (evil-define-key 'normal elfeed-search-mode-map "=" elfeed-score-map)
-    ;; (define-key elfeed-search-mode-map "=" elfeed-score-map)
-    ;; scores displayed in the search buffer
-    ;; (setq elfeed-search-print-entry-function 'jyun/score-entry-line-draw)
-    )
-  )
+(when (modulep! :app rss)
+  (load! "local/elfeed-plus")
+)
 
 ;;; search
 ;;;; online lookup
-(setq +lookup-provider-url-alist
-      (append +lookup-provider-url-alist
-              '(("Google Scholar"       "http://scholar.google.com/scholar?q=%s")
-                ("Crossref"             "http://search.crossref.org/?q=%s")
-                ("PubMed"               "http://www.ncbi.nlm.nih.gov/pubmed/?term=%s")
-                ("arXiv"                "https://arxiv.org/search/?query=%s&searchtype=all&abstracts=show&order=-announced_date_first&size=50")
-                ("Semantic Scholar"     "https://www.semanticscholar.org/search?q=%s")
-                ("Dictionary.com"       "http://dictionary.reference.com/browse/%s?s=t")
-                ("Thesaurus.com"        "http://www.thesaurus.com/browse/%s")
-                ("Merriam-Webster"      "https://www.merriam-webster.com/dictionary/%s")
-                ("Weather"              "https://wttr.in/%s")
-                )))
-
+(when (modulep! :tools lookup)
+  (setq +lookup-provider-url-alist
+        (append +lookup-provider-url-alist
+                '(("Google Scholar"       "http://scholar.google.com/scholar?q=%s")
+                  ("Crossref"             "http://search.crossref.org/?q=%s")
+                  ("PubMed"               "http://www.ncbi.nlm.nih.gov/pubmed/?term=%s")
+                  ("arXiv"                "https://arxiv.org/search/?query=%s&searchtype=all&abstracts=show&order=-announced_date_first&size=50")
+                  ("Semantic Scholar"     "https://www.semanticscholar.org/search?q=%s")
+                  ("Dictionary.com"       "http://dictionary.reference.com/browse/%s?s=t")
+                  ("Thesaurus.com"        "http://www.thesaurus.com/browse/%s")
+                  ("Merriam-Webster"      "https://www.merriam-webster.com/dictionary/%s")
+                  ("Weather"              "https://wttr.in/%s")
+                  )))
+  )
 
 ;;;; deft
-(setq ;; deft-extensions '("org" "md" "txt")
- deft-strip-summary-regexp
-  (concat "\\("
+(when (modulep! :ui deft)
+  (setq ;; deft-extensions '("org" "md" "txt")
+   deft-strip-summary-regexp
+   (concat "\\("
            "[\n\t]" ;; blank
            "\\|^#\\+[[:upper:]_]+:.*$" ;; org-mode metadata
            "\\|^# #\\+[[:upper:]_]+:.*$" ;; commented org-mode metadata
            "\\|:PROPERTIES:\n\\(.+\n\\)+:END:\n" ;; proprety
            "\\)")
- deft-use-filename-as-title t
- deft-directory "~/org"
- ;; include subdirectories
- deft-recursive t)
-
-;;;; ffip
-;; for doom-modeline
-(use-package! find-file-in-project
-  :commands
-  (find-file-in-project
-   find-file-in-current-directory-by-selected)
-  :general (
-            ;; [remap projectile-find-file] #'find-file-in-project
-            [remap doom/find-file-in-private-config] #'jyun/find-file-in-private-config
-            )
-  :init
-  (map! :leader "SPC" #'find-file-in-project-by-selected)
-  :config
-  (setq ffip-use-rust-fd t)
-  ;; use ffip to find file in private config
-  ;; (advice-add 'doom/find-file-in-private-config :around #'jyun/find-file-in-private-config)
-  (setq ffip-ignore-filenames
-  '(;; VCS
-    ;; project misc
-    "*.log"
-    ;; Ctags
-    "tags"
-    "TAGS"
-    ;; compressed
-    "*.tgz"
-    "*.gz"
-    "*.xz"
-    "*.zip"
-    "*.tar"
-    "*.rar"
-    ;; Global/Cscope
-    "GTAGS"
-    "GPATH"
-    "GRTAGS"
-    "cscope.files"
-    ;; html/javascript/css
-    "*bundle.js"
-    "*min.js"
-    "*min.css"
-    ;; Images
-    "*.jpg"
-    "*.jpeg"
-    "*.gif"
-    "*.bmp"
-    "*.tiff"
-    "*.ico"
-    ;; documents
-    "*.doc"
-    "*.docx"
-    "*.xls"
-    "*.ppt"
-    "*.odt"
-    ;; C/C++
-    "*.obj"
-    "*.so"
-    "*.o"
-    "*.a"
-    "*.ifso"
-    "*.tbd"
-    "*.dylib"
-    "*.lib"
-    "*.d"
-    "*.dll"
-    "*.exe"
-    ;; Java
-    ".metadata*"
-    "*.class"
-    "*.war"
-    "*.jar"
-    ;; Emacs/Vim
-    "*flymake"
-    "#*#"
-    ".#*"
-    "*.swp"
-    "*~"
-    "*.elc"
-    ;; Python
-    "*.pyc")))
+   deft-use-filename-as-title t
+   deft-directory "~/org"
+   ;; include subdirectories
+   deft-recursive t)
+  )
 
 ;;;; regexp
 (use-package! visual-regexp
@@ -881,65 +733,17 @@
 ;; (defun +evil-update-cursor-color-h ()
 ;;   (jyun/evil-state-cursors))
 
-;; ;; thinning all faces
-(after! doom-modeline
-  (add-hook! '(doom-load-theme-hook window-setup-hook)
-             ;; #'jyun/doom-modeline-height
-             ;; #'jyun/thin-all-faces
-             ;; #'jyun/evil-state-cursors
-             ))
-
-;;;; mixed-pitch-mode
-;; (add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
-
-(add-to-list '+zen-mixed-pitch-modes 'latex-mode)
-(setq +zen-text-scale 0.8) ;; The text-scaling level for writeroom-mode
-
-;;;; outline faces
-;; (custom-set-faces!
-;;   '(outline-1 :weight semi-bold :height 1.25)
-;;   '(outline-2 :weight semi-bold :height 1.15)
-;;   '(outline-3 :weight semi-bold :height 1.12)
-;;   '(outline-4 :weight semi-bold :height 1.09)
-;;   '(outline-5 :weight semi-bold :height 1.06)
-;;   '(outline-6 :weight semi-bold :height 1.03)
-;;   '(outline-8 :weight semi-bold)
-;;   '(outline-9 :weight semi-bold))
-;; (custom-set-faces!
-;;   '(outline-1 :inherit 'variable-pitch :weight light :height 1.5)
-;;   '(outline-2 :inherit 'variable-pitch :weight light :height 1.3)
-;;   '(outline-3 :weight light :height 1.2)
-;;   '(outline-4 :weight regular :height 1.1)
-;;   '(outline-5 :weight regular :height 1.05)
-;;   '(outline-6 :weight semi-bold :height 1.05)
-;;   '(outline-7 :weight semi-bold :height 1.05)
-;;   '(outline-8 :weight semi-bold :height 1.05)
-;; org-title
-;; (custom-set-faces!
-;;   '(org-document-title :height 1.2))
-;; deadlines in the error face when they're passed.
-;; (setq org-agenda-deadline-faces
-;;       '((1.001 . error)
-;;         (1.0 . org-warning)
-;;         (0.5 . org-upcoming-deadline)
-;;         (0.0 . org-upcoming-distant-deadline)))
-
 ;;; coding + lsp-mode
 ;; disable flycheck by default
-(remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
+;; (remove-hook 'doom-first-buffer-hook #'global-flycheck-mode)
 
 ;; line-number
-(add-hook! 'prog-mode-hook (setq display-line-numbers t))
+(add-hook 'prog-mode-hook (lambda () (setq-local display-line-numbers t)))
 
 ;; ibuffer and R buffers need to be manually added
 (advice-add 'ibuffer :around #'jyun/persp-add-buffer)
 (advice-add 'R :around #'jyun/persp-add-buffer)
 ;; (advice-add 'jupyter-run-repl :around #'jyun/persp-add-buffer)
-
-;; ;; speed up comint
-;; (setq gud-gdb-command-name "gdb --annotate=1"
-;;       large-file-warning-threshold nil
-;;       line-move-visual nil)
 
 ;;;; python
 (setq ein:jupyter-default-kernel "ds")
