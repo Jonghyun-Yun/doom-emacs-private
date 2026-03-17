@@ -262,18 +262,18 @@
  ;; (lambda () (and (looking-at org-outline-regexp) (looking-back "^\\**")))
  ;; nil
  org-log-into-drawer t)
-(setq org-ellipsis
-;;       ;; " ▾ " ; FiraGo
-;;       ;; " ▼ " ; Alegreya Sans
-;;       ;; " ⬎ " ; IBM Plex Mono
-;;       ;; " ↩ " ; firacode
-            " ⤶ " ; juliamono
-;;       ;; " ⤵ "
-;;       ;; "… "
-;;       ;; " ↴ "
-;;       ;; " ⤷ "
-;;       org-cycle-separator-lines 2     ; -1 or 1 to use unicode org-ellipsis
-      )
+;; (setq org-ellipsis
+;; ;;       ;; " ▾ " ; FiraGo
+;; ;;       ;; " ▼ " ; Alegreya Sans
+;; ;;       ;; " ⬎ " ; IBM Plex Mono
+;; ;;       ;; " ↩ " ; firacode
+;;             " ⤶ " ; juliamono
+;; ;;       ;; " ⤵ "
+;; ;;       ;; "… "
+;; ;;       ;; " ↴ "
+;; ;;       ;; " ⤷ "
+;; ;;       org-cycle-separator-lines 2     ; -1 or 1 to use unicode org-ellipsis
+;;       )
 (setq
  ;; org-export-in-background t                  ; async export by default
  org-fontify-quote-and-verse-blocks nil
@@ -296,8 +296,54 @@
   ;; default attach folder
   ;;    org-attach-id-dir "data/"
 
+;;; org-modern
+(use-package! org-modern
+  :if IS-GUI
+  ;; :after org
+  :hook (
+         (org-mode . org-modern-mode)
+         (org-agenda-finalize . org-modern-agenda)
+         )
+  ;; :init
+  ;; (global-org-modern-mode)
+  :config
+  (setq
+   ;; Edit settings
+   org-auto-align-tags nil
+   org-tags-column 0
+   org-catch-invisible-edits 'show-and-error
+   org-special-ctrl-a/e t
+   org-insert-heading-respect-content t
+
+   ;; Org styling, hide markup etc.
+   ;; org-modern-star ["♠""♡""♦""♧"]
+   org-modern-replace-stars "♠♡♦♧◉○◈◇⁕"
+   org-hide-emphasis-markers nil
+   org-pretty-entities t
+
+   ;; Agenda styling
+   org-agenda-tags-column 0
+   org-agenda-block-separator ?─
+   org-agenda-time-grid
+   '((daily today require-timed)
+     (800 1000 1200 1400 1600 1800 2000)
+     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+   org-agenda-current-time-string
+   "⭠ now ─────────────────────────────────────────────────")
+
+  ;; Ellipsis styling
+  (setq org-ellipsis "…")
+  (set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
+
+  ;; table styling
+  (setq org-modern-table nil)
+  )
+
+
 ;;;; org-latex + tab behavior
 (after! org
+  ;; if <s tab doesn't work
+  (require 'org-tempo)
   (setq org-image-actual-width t)
   ;; visual-mode tab binds back to org-cycle
   (remove-hook 'org-tab-first-hook #'+org-yas-expand-maybe-h)
@@ -308,7 +354,10 @@
 ;; (add-hook! 'org-mode-hook #'my/org-latex-set-directory-name-to-background)
 ;; (add-hook! 'doom-load-theme-hook #'my/org-latex-set-directory-name-to-background)
 
-(setq org-highlight-latex-and-related '(native script entities))
+;; TODO: to resolve fontification error in copilot buffer
+;; (setq org-highlight-latex-and-related '(native script entities))
+(setq org-highlight-latex-and-related '(latex script entities))
+
 (setq org-format-latex-options
       (plist-put org-format-latex-options :background
                  ;; "Transparent"
@@ -360,51 +409,15 @@
       org-beamer-frame-level 4
       org-latex-tables-booktabs nil)
 ;; ;; Github flavored markdown exporter
-(use-package ox-gfm :after ox)
+;; (use-package! ox-gfm :after ox)
+
+;; (after! org
+;;   (setq org-export-with-sub-superscripts nil ))
 
 ;;;; ox-hugo
 (after! ox-hugo
   (setq org-hugo-auto-set-lastmod t)
   (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "csv"))
-
-;;;; easy org-clock correction (disableed)
-(use-package! org-clock-convenience
-  :commands (org-clock-convenience-timestamp-up
-             org-clock-convenience-timestamp-down
-             org-clock-convenience-fill-gap
-             org-clock-convenience-fill-gap-both)
-  :init
-  (map! (:map org-agenda-mode-map
-         "<S-up>" #'org-clock-convenience-timestamp-up
-         "<S-down>" #'org-clock-convenience-timestamp-down
-         "H-o" #'org-clock-convenience-fill-gap
-         "H-e" #'org-clock-convenience-fill-gap-both)))
-
-;;;; ref documents in org
-(use-package! org-transclusion
-  :commands (org-transclusion-mode)
-  :config
-  (setq org-transclusion-exclude-elements nil))
-
-;;;; org-remark
-(use-package! org-remark
-  :init
-  (require 'org-remark-global-tracking)
-  (org-remark-global-tracking-mode +1)
-  ;; Key-bind `org-remark-mark' to global-map so that you can call it globally
-  ;; before the library is loaded.  In order to make `org-remark-mark' and
-  ;; `org-remark-mode' callable, use `autoload'.
-  (autoload #'org-remark-mark "org-remark" nil t)
-  (autoload #'org-remark-mode "org-remark" nil t)
-  (define-key global-map (kbd "C-c n m") #'org-remark-mark)
-  :after org
-  :config
-  ;; The rest of keybidings are done only on loading `org-remark'
-  (define-key org-remark-mode-map (kbd "C-c n o") #'org-remark-open)
-  (define-key org-remark-mode-map (kbd "C-c n ]") #'org-remark-view-next)
-  (define-key org-remark-mode-map (kbd "C-c n [") #'org-remark-view-prev)
-  (define-key org-remark-mode-map (kbd "C-c n r") #'org-remark-remove)
-  )
 
 ;;;; org-noter
 (when (modulep! :lang org +noter)
