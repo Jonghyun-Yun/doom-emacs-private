@@ -2,5 +2,5 @@
 ;;; private/ebook/packages.el
 
 ;; ebook
-(package! nov :pin "b3c7cc28e95fe25ce7b443e5f49e2e45360944a3")
-(package! calibredb :pin "cb93563d0ec9e0c653210bc574f9546d1e7db437")
+(package! nov :pin "874daf5e4791a6d4f47741422c80e2736e907351")
+(package! calibredb :pin "99a234167a092bc0017d11c814f0b8c0da53a107")
