@@ -6,7 +6,7 @@
 (defun ediff-init-files ()
   (interactive)
   (ediff-files (expand-file-name "init.el" doom-private-dir)
-               (expand-file-name "init.example.el" (concat doom-emacs-dir "templates/"))))
+               (expand-file-name "init.example.el" (concat doom-emacs-dir "static/"))))
 
 ;;;###autoload
 (defun jyun/pull-overleaf ()
