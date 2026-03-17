@@ -197,7 +197,6 @@
   "wc3" #'my-hydra-window/spacemacs/window-split-triple-columns)
   )
 
-
 ;;; mathpix
 (map! :g "C-c s t" #'+lookup/dictionary-definition
       :leader
