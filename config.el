@@ -247,93 +247,13 @@
   :commands (overleaf-setup
              emacs-overleaf-mode))
 
-;;;; reftex
-(defface font-roboto-condensed
-  '((t (:family "Roboto Condensed")))
-  "TODO"
-  :group 'basic-faces)
-(after! reftex
-  (setq reftex-toc-split-windows-horizontally t
-        reftex-toc-split-windows-fraction 0.2
-        reftex-level-indent 2)
-  (add-hook 'reftex-toc-mode-hook (lambda () (variable-pitch-mode 1))))
-
-(setq reftex-ref-style-default-list '("Default"
-                                      "Cleveref"
-                                      "AMSmath"))
-(setq reftex-typekey-to-format-alist '((" " . "~\\ref{%s}")
-                                       ("n" . "~\\ref{%s}")
-                                       ("f" . "~\\ref{%s}")
-                                       ("e" . "~\\eqref{%s}")
-                                       ("i" . "~\\ref{%s}")
-                                       ("s" . "~\\ref{%s}")
-                                       ("t" . "~\\ref{%s}")
-                                       ("l" . "~\\ref{%s}")
-                                       ("N" . "~\\ref{%s}")))
-
-;;;; cdlatex
-;; (after! cdlatex
-;;   (setq cdlatex-math-symbol-alist
-;;         '((?: ("\\cdots" "\\ldots"))
-;;           )
-;;         ))
-
-(setq cdlatex-env-alist
-      '(("bmatrix" "\\begin{bmatrix}\n?\n\\end{bmatrix}" nil)
-        ("equation*" "\\begin{equation*}\n?\n\\end{equation*}" nil)
-        ("axiom" "\\begin{axiom}\n?\n\\end{axiom}\n" nil)
-        ("proof" "\\begin{proof}\n?\n\\end{proof}\n" nil)
-        ("remark" "\\begin{remark}\n?\n\\end{remark}\n" nil)
-        ("lemma" "\\begin{lemma}\n?\n\\end{lemma}\n" nil)
-        ("verbatim" "\\begin{verbatim}\n?\n\\end{verbatim}\n" nil)
-        ("theorem" "\\begin{theorem}\n?\n\\end{theorem}\n" nil)
-        ("corollary" "\\begin{corollary}\n?\n\\end{corollary}\n" nil)
-        ("exercise" "\\begin{exercise}\n?\n\\end{exercise}\n" nil)
-        ("definition" "\\begin{definition}\n?\n\\end{definition}\n" nil)
-        ("algorithmic" "\\begin{algorithmic}\n?\n\\end{algorithmic}\n" nil)
-        ("split" "\\begin{split}\n?\n\\end{split}\n" nil))
-      cdlatex-command-alist
-      '(("axm" "Insert axiom env"   "" cdlatex-environment ("axiom") t nil)
-        ("thm" "Insert theorem env" "" cdlatex-environment ("theorem") t nil)
-        ("spl" "Insert split env" "" cdlatex-environment ("split") t nil)
-        ("des" "Insert description env" "" cdlatex-environment ("description") t nil)
-        ("lmm" "Insert lemma env" "" cdlatex-environment ("lemma") t nil)
-        ("vbt" "Insert verbatim env" "" cdlatex-environment ("verbatim") t nil)
-        ("alg" "Insert algorithmic env" "" cdlatex-environment ("algorithmic") t nil)
-        ("clr" "Insert corollary env" "" cdlatex-environment ("corollary") t nil)
-        ("def" "Insert definition env" "" cdlatex-environment ("definition") t nil)
-        ("exc" "Insert exercise env" "" cdlatex-environment ("exercise") t nil)
-        ("prf" "Insert proof env" "" cdlatex-environment ("proof") t nil)
-        ("rmk" "Insert remark env" "" cdlatex-environment ("remark") t nil))
-      cdlatex-math-symbol-alist
-      '((?: ("\\cdots" "\\ldots"))
-        (?_    ("\\downarrow"  ""           "\\inf"))
-        (?2    ("^2"           "\\sqrt{?}"     ""     ))
-        (?3    ("^3"           "\\sqrt[3]{?}"  ""     ))
-        (?^    ("\\uparrow"    ""           "\\sup"))
-        ;;   (?k    ("\\kappa"      ""           "\\ker"))
-        ;;   (?m    ("\\mu"         ""           "\\lim"))
-        ;;   (?c    (""             "\\circ"     "\\cos"))
-        ;;   (?d    ("\\delta"      "\\partial"  "\\dim"))
-        ;;   (?D    ("\\Delta"      "\\nabla"    "\\deg"))
-        ;;   ;; no idea why \Phi isnt on 'F' in first place, \phi is on 'f'.
-        (?F    ("\\Phi"))
-        (?V    (""))
-        ;;   ;; now just convenience
-        ;;   (?.    ("\\cdot" "\\dots"))
-        ;;   (?:    ("\\vdots" "\\ddots"))
-        ;;   (?*    ("\\times" "\\star" "\\ast"))
-        )                             ;
-      cdlatex-math-modify-alist
-      '((?B    "\\mathbb"        nil          t    nil  nil)
-        (?a    "\\abs"           nil          t    nil  nil)))
-
 ;;; org-mode
 (when (modulep! :lang org +pretty)
   (after! org-superstar
     ;; (remove-hook 'org-mode-hook 'org-superstar-mode) ; manually turn it on!
-    (setq org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
+    (setq ;; org-superstar-headline-bullets-list '("♠" "♡" "♦" "♧")
           org-superstar-remove-leading-stars nil)))
+
 (setq ;; org-src-window-setup 'current-window
  org-src-window-setup 'other-window
  org-return-follows-link t
