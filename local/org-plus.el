@@ -2,10 +2,10 @@
 
 ;; https://gitlab.com/oer/org-re-reveal-ref/-/blob/master/org-re-reveal-ref.el
 ;; it changes some of org-ref custom variables
-(use-package! org-re-reveal-ref
-  :when (modulep! :lang org +present)
-  :after org-re-reveal
-  )
+;; (use-package! org-re-reveal-ref
+;;   :when (modulep! :lang org +present)
+;;   :after org-re-reveal
+;;   )
 
 ;; (use-package! org-appear
 ;;   ;; :hook (org-mode . org-appear-mode)
@@ -796,3 +796,61 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
     "Conditionally update Org LaTeX fragments for current background."
     (if my/org-latex-toggle-fragment-has-been-called (jyun/org-latex-update-fragments-color)))
   )
+
+
+;;;; cdlatex
+;; (after! cdlatex
+;;   (setq cdlatex-math-symbol-alist
+;;         '((?: ("\\cdots" "\\ldots"))
+;;           )
+;;         ))
+
+(setq cdlatex-env-alist
+      '(("bmatrix" "\\begin{bmatrix}\n?\n\\end{bmatrix}" nil)
+        ("equation*" "\\begin{equation*}\n?\n\\end{equation*}" nil)
+        ("axiom" "\\begin{axiom}\n?\n\\end{axiom}\n" nil)
+        ("proof" "\\begin{proof}\n?\n\\end{proof}\n" nil)
+        ("remark" "\\begin{remark}\n?\n\\end{remark}\n" nil)
+        ("lemma" "\\begin{lemma}\n?\n\\end{lemma}\n" nil)
+        ("verbatim" "\\begin{verbatim}\n?\n\\end{verbatim}\n" nil)
+        ("theorem" "\\begin{theorem}\n?\n\\end{theorem}\n" nil)
+        ("corollary" "\\begin{corollary}\n?\n\\end{corollary}\n" nil)
+        ("exercise" "\\begin{exercise}\n?\n\\end{exercise}\n" nil)
+        ("definition" "\\begin{definition}\n?\n\\end{definition}\n" nil)
+        ("algorithmic" "\\begin{algorithmic}\n?\n\\end{algorithmic}\n" nil)
+        ("split" "\\begin{split}\n?\n\\end{split}\n" nil))
+      cdlatex-command-alist
+      '(("axm" "Insert axiom env"   "" cdlatex-environment ("axiom") t nil)
+        ("thm" "Insert theorem env" "" cdlatex-environment ("theorem") t nil)
+        ("spl" "Insert split env" "" cdlatex-environment ("split") t nil)
+        ("des" "Insert description env" "" cdlatex-environment ("description") t nil)
+        ("lmm" "Insert lemma env" "" cdlatex-environment ("lemma") t nil)
+        ("vbt" "Insert verbatim env" "" cdlatex-environment ("verbatim") t nil)
+        ("alg" "Insert algorithmic env" "" cdlatex-environment ("algorithmic") t nil)
+        ("clr" "Insert corollary env" "" cdlatex-environment ("corollary") t nil)
+        ("def" "Insert definition env" "" cdlatex-environment ("definition") t nil)
+        ("exc" "Insert exercise env" "" cdlatex-environment ("exercise") t nil)
+        ("prf" "Insert proof env" "" cdlatex-environment ("proof") t nil)
+        ("rmk" "Insert remark env" "" cdlatex-environment ("remark") t nil))
+      cdlatex-math-symbol-alist
+      '((?: ("\\cdots" "\\ldots"))
+        (?_    ("\\downarrow"  ""           "\\inf"))
+        (?2    ("^2"           "\\sqrt{?}"     ""     ))
+        (?3    ("^3"           "\\sqrt[3]{?}"  ""     ))
+        (?^    ("\\uparrow"    ""           "\\sup"))
+        ;;   (?k    ("\\kappa"      ""           "\\ker"))
+        ;;   (?m    ("\\mu"         ""           "\\lim"))
+        ;;   (?c    (""             "\\circ"     "\\cos"))
+        ;;   (?d    ("\\delta"      "\\partial"  "\\dim"))
+        ;;   (?D    ("\\Delta"      "\\nabla"    "\\deg"))
+        ;;   ;; no idea why \Phi isnt on 'F' in first place, \phi is on 'f'.
+        (?F    ("\\Phi"))
+        (?V    (""))
+        ;;   ;; now just convenience
+        ;;   (?.    ("\\cdot" "\\dots"))
+        ;;   (?:    ("\\vdots" "\\ddots"))
+        ;;   (?*    ("\\times" "\\star" "\\ast"))
+        )                             ;
+      cdlatex-math-modify-alist
+      '((?B    "\\mathbb"        nil          t    nil  nil)
+        (?a    "\\abs"           nil          t    nil  nil)))
