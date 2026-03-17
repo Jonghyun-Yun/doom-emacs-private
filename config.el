@@ -980,145 +980,22 @@
   (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir)
         save-abbrevs 'silently))
 
-;;; treemac
-(after! treemacs
-  (setq treemacs-width 25)
-  (defvar treemacs-file-ignore-extensions '()
-    "File extension which `treemacs-ignore-filter' will ensure are ignored")
-  (defvar treemacs-file-ignore-globs '()
-    "Globs which will are transformed to `treemacs-file-ignore-regexps' which `treemacs-ignore-filter' will ensure are ignored")
-  (defvar treemacs-file-ignore-regexps '()
-    "RegExps to be tested to ignore files, generated from `treeemacs-file-ignore-globs'")
-  (defun treemacs-file-ignore-generate-regexps ()
-    "Generate `treemacs-file-ignore-regexps' from `treemacs-file-ignore-globs'"
-    (setq treemacs-file-ignore-regexps (mapcar 'dired-glob-regexp treemacs-file-ignore-globs)))
-  (if (equal treemacs-file-ignore-globs '()) nil (treemacs-file-ignore-generate-regexps))
-  (defun treemacs-ignore-filter (file full-path)
-    "Ignore files specified by `treemacs-file-ignore-extensions', and `treemacs-file-ignore-regexps'"
-    (or (member (file-name-extension file) treemacs-file-ignore-extensions)
-        (let ((ignore-file nil))
-          (dolist (regexp treemacs-file-ignore-regexps ignore-file)
-            (setq ignore-file (or ignore-file (if (string-match-p regexp full-path) t nil)))))))
-  (add-to-list 'treemacs-ignored-file-predicates #'treemacs-ignore-filter)
-  (setq treemacs-file-ignore-extensions
-        '(;; LaTeX
-          "aux"
-          "ptc"
-          "fdb_latexmk"
-          "fls"
-          "synctex.gz"
-          "toc"
-          "cb"
-          "cb2"
-          ;; LaTeX - glossary
-          "glg"
-          "glo"
-          "gls"
-          "glsdefs"
-          "ist"
-          "acn"
-          "acr"
-          "alg"
-          ;; LaTeX - pgfplots
-          "mw"
-          ;; LaTeX - pdfx
-          "pdfa.xmpi"
-          ;; ??
-          "blg"
-          ))
-  (setq treemacs-file-ignore-globs
-        '(;; LaTeX
-          "*/_minted-*"
-          ;; AucTeX
-          "*/.auctex-auto"
-          "*/_region_.log"
-          "*/_region_.pdf"
-          "*/_region_.tex")))
-
-;;; dired "J"
-;; replace `dired-goto-file' with equivalent helm and ivy functions:
-;; `helm-find-files' fuzzy matching and other features
-;; `counsel-find-file' more `M-o' actions
-(with-eval-after-load 'dired
-  (evil-define-key 'normal dired-mode-map "J"
-    (cond ((modulep! :completion helm) 'helm-find-files)
-          ((modulep! :completion ivy) 'counsel-find-file)
-          (t 'find-file))))
-
-;; OS X ls not working with --quoting-style=literal
-(after! fd-dired
-  (when IS-MAC
-    (setq fd-dired-ls-option '("| xargs -0 gls -ld --quoting-style=literal" . "-ld"))))
-;; display icons with colors
-;; (setq all-the-icons-dired-monochrome nil)
-
-;;; temporary fixes
-;;;; eldoc error
-;; https://github.com/hlissner/doom-emacs/issues/2972
-;; (defadvice! +org--suppress-mode-hooks-a (orig-fn &rest args)
-;;   :around #'org-eldoc-get-mode-local-documentation-function
-;;   (delay-mode-hooks (apply orig-fn args)))
-;; (after! org-eldoc
-;;   (puthash "R" #'ignore org-eldoc-local-functions-cache))
-
-;; https://github.com/hlissner/doom-emacs/issues/3185
-(defadvice! no-errors/+org-inline-image-data-fn (_protocol link _description)
-  :override #'+org-inline-image-data-fn
-  "Interpret LINK as base64-encoded image data. Ignore all errors."
-  (ignore-errors
-    (base64-decode-string link)))
-
-;; https://github.com/hlissner/doom-emacs/issues/4832
-(advice-add #'org-capture :around
-            (lambda (fun &rest args)
-              (letf! ((#'+org--restart-mode-h #'ignore))
-                (apply fun args))))
+(when (modulep! :ui treemac)
+  (load! "local/treemac-plus")
+)
 
 ;;;; dap-mode
 ;; rigger the hydra when the program hits a breakpoint
 (add-hook 'dap-stopped-hook
           (lambda (arg) (call-interactively #'dap-hydra)))
 
-;;;; lsp
-;; https://github.com/hlissner/doom-emacs/issues/5424
-(defadvice! +lsp-diagnostics--flycheck-buffer ()
-  :override #'lsp-diagnostics--flycheck-buffer
-  "Trigger flycheck on buffer."
-  (remove-hook 'lsp-on-idle-hook #'lsp-diagnostics--flycheck-buffer t)
-  (when (bound-and-true-p flycheck-mode)
-    (flycheck-buffer)))
-
-;;;; org
+ ;;;; org
 (defadvice! shut-up-org-problematic-hooks (orig-fn &rest args)
   :around #'org-fancy-priorities-mode
   :around #'org-superstar-mode
   (ignore-errors (apply orig-fn args)))
 
-;;;; org hangs on save, ox-hugo export, etc...
-;;     https://lists.gnu.org/r/emacs-orgmode/2021-11/msg00638.html
-;;     This has been fixed in faf8ce7de ??
-;; (eval-after-load "org-element"
-  ;; (setq org-element-use-cache nil))
-;; (add-hook 'after-init-hook  (lambda () (setq! gcmh-high-cons-threshold (* 64 1024 1024))))
-;; (setq! gcmh-high-cons-threshold (* 64 1024 1024))
-                                        ; xx mb
-
-;;; tree-sitter
-;; (use-package! tree-sitter
-;;   :hook
-;;   (prog-mode . global-tree-sitter-mode)
-;;   :config
-;;   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
-;; (use-package! tree-sitter-langs
-;;   :after tree-sitter)
-
-
-;;; testing
-;;;; explain pause
-(use-package! explain-pause-mode
-  :commands (explain-pause-mode))
-
-;;; eshell
+;; eshell
 ;; aliases: see `+eshell-aliases'
 (set-eshell-alias! "up" "eshell-up $1"
                    "pk" "eshell-up-peek $1")
