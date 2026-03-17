@@ -1035,6 +1035,23 @@
     ;; level 9 compression
     (push  '("\\.tar\\.lz\\'" .  "tar -cf - %i | plzip -9c > %o") dired-compress-files-alist)))
 
+;;; dired "J"
+;; replace `dired-goto-file' with equivalent helm and ivy functions:
+;; `helm-find-files' fuzzy matching and other features
+;; `counsel-find-file' more `M-o' actions
+(with-eval-after-load 'dired
+  (evil-define-key 'normal dired-mode-map "J"
+    (cond ((modulep! :completion helm) 'helm-find-files)
+          ((modulep! :completion ivy) 'counsel-find-file)
+          (t 'find-file))))
+
+;;; OS X ls not working with --quoting-style=literal
+(after! fd-dired
+  (when IS-MAC
+    (setq fd-dired-ls-option '("| xargs -0 gls -ld --quoting-style=literal" . "-ld"))))
+;; display icons with colors
+;; (setq all-the-icons-dired-monochrome nil)
+
 ;;; emacs-everywhere
 (setq emacs-everywhere-frame-parameters
   `((name . "emacs-everywhere")
@@ -1042,7 +1059,6 @@
     (height . 24)))
 ;; export to markdown when closing the frame
 ;; (setq emacs-everywhere-major-mode-function #'org-mode)
-
 
 ;;; remove ^M
 (defun delete-carrage-returns ()
