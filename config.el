@@ -1068,11 +1068,6 @@
     (while (search-forward "\r" nil :noerror)
       (replace-match ""))))
 
-;;; very large files
-;; make VLF available without delaying startup,
-(use-package! vlf-setup
-  :defer-incrementally vlf-tune vlf-base vlf-write vlf-search vlf-occur vlf-follow vlf-ediff vlf)
-
 ;;; initial evil state
 (evil-set-initial-state 'sql-interactive-mode 'insert)
 (evil-set-initial-state 'jupyter-repl-mode 'insert)
@@ -1087,259 +1082,88 @@
 
 ;;; scala
 ;; https://ag91.github.io/blog/2020/10/16/my-emacs-setup-for-scala-development/
-(use-package ob-ammonite
-  ;; :ensure-system-package (amm . "sudo sh -c '(echo \"#!/usr/bin/env sh\" && curl -L https://github.com/lihaoyi/Ammonite/releases/download/2.0.4/2.13-2.0.4) > /usr/local/bin/amm && chmod +x /usr/local/bin/amm' && amm")
-  :defer t
-  :when (modulep! :lang scala)
-  :config
-  (require 'ammonite-term-repl)
-  ;; (defun ag91/substitute-sbt-deps-with-ammonite ()
-  ;;   "Substitute sbt-style dependencies with ammonite ones."
-  ;;   (interactive)
-  ;;   (apply 'narrow-to-region (if (region-active-p) (my/cons-cell-to-list (region-bounds)) `(,(point-min) ,(point-max))))
-  ;;   (goto-char (point-min))
-  ;;   (let ((regex "\"\\(.+?\\)\"[ ]+%\\{1,2\\}[ ]+\"\\(.+?\\)\"[ ]+%\\{1,2\\}[ ]+\"\\(.+?\\)\"")
-  ;;         (res))
-  ;;     (while (re-search-forward regex nil t)
-  ;;       (let* ((e (point))
-  ;;              (b (search-backward "\"" nil nil 6))
-  ;;              (s (buffer-substring-no-properties b e))
-  ;;              (s-without-percent (apply 'concat (split-string s "%")))
-  ;;              (s-without-quotes (remove-if (lambda (x) (eq x ?" ;"
-                                                                      ;;                                                      ))
-                                                                      ;;                                           s-without-percent))
-                                                                      ;;              (s-as-list (split-string s-without-quotes)))
-                                                                      ;;         (delete-region b e)
-                                                                      ;;         (goto-char b)
-                                                                      ;;         (insert (format "import $ivy.`%s::%s:%s`" (first s-as-list) (second s-as-list) (third s-as-list)))
-                                                                      ;;         )
-                                                                      ;;       )
-                                                                      ;;     res)
-                                                                      ;;   (widen))
-                  )
+(when (modulep! :lang scala)
+  (use-package ob-ammonite!
+    ;; :ensure-system-package (amm . "sudo sh -c '(echo \"#!/usr/bin/env sh\" && curl -L https://github.com/lihaoyi/Ammonite/releases/download/2.0.4/2.13-2.0.4) > /usr/local/bin/amm && chmod +x /usr/local/bin/amm' && amm")
+    :defer t
+    :when (modulep! :lang scala)
+    :config
+    (require 'ammonite-term-repl)
+    )
 
-(use-package ammonite-term-repl
-  :defer t
-  :config
-  (setq ammonite-term-repl-auto-detect-predef-file nil
-        ammonite-term-repl-program-args '("--no-default-predef" "--no-home-predef")))
+  (use-package ammonite-term-repl
+    :defer t
+    :when (modulep! :lang scala)
+    :config
+    (setq ammonite-term-repl-auto-detect-predef-file nil
+          ammonite-term-repl-program-args '("--no-default-predef" "--no-home-predef")))
 
-(use-package! ob-scala
-  :when (modulep! :lang scala)
-  ;; :after org
-  :after scala-mode)
-
-;;; org-mode jupyter
-(eval-after-load "jupyter-client"
-  ;; (map! :map org-src-mode-map
-  ;;       "C-c C-c" #'org-edit-src-exit)
-  (map! :map jupyter-repl-interaction-mode-map
-        "C-c C-c" nil)
+  (use-package! ob-scala
+    :when (modulep! :lang scala)
+    ;; :after org
+    :after scala-mode)
   )
-(setq jupyter-repl-echo-eval-p t)
-
 
 ;;; spell-fu
-(add-hook! 'org-mode-hook (lambda () (setq spell-fu-mode -1)))
-(remove-hook 'text-mode-hook #'spell-fu-mode)
-
-;;; ox-ipynb
-(after! org
-  (require 'ox-ipynb)
-  ;; conflict with +org-redisplay-inline-images-in-babel-result-h
-  (advice-remove 'org-display-inline-images 'font-lock-fontify-buffer)
+(when (modulep! :checkers spell)
+  ;; (require 'spell-fu nil 'noerror) ;; otherwise error b/c `+spell/previous-error' is not defined.
+  (add-hook! 'org-mode-hook (lambda () (setq spell-fu-mode -1)))
+  (remove-hook 'text-mode-hook #'spell-fu-mode)
   )
 
-;;; org-babel ansi color
-;; (defun ek/babel-ansi ()
-;;   (when-let ((beg (org-babel-where-is-src-block-result nil nil)))
-;;     (save-excursion
-;;       (goto-char beg)
-;;       (when (looking-at org-babel-result-regexp)
-;;         (let ((end (org-babel-result-end))
-;;               (ansi-color-context-region nil))
-;;           (ansi-color-apply-on-region beg end))))))
-;; (add-hook 'org-babel-after-execute-hook 'ek/babel-ansi)
+(when (modulep! :lang org +jupyter)
+  ;; (setq ob-async-no-async-languages-alist '("jupyter-python"))
+  (eval-after-load "jupyter-client"
+    ;; (map! :map org-src-mode-map
+    ;;       "C-c C-c" #'org-edit-src-exit)
+    (map! :map jupyter-repl-interaction-mode-map
+          "C-c C-c" nil)
+    )
+  (setq jupyter-repl-echo-eval-p t)
 
-(defun jupyter-org-font-lock-ansi-escapes (limit)
-  (let ((case-fold-search t))
-    (when (re-search-forward
-           "^[ \t]*\\(#\\+begin_example[ \t]*\\|: .*\\)$" limit t)
-      (let ((beg (match-beginning 1))
-            (beg1 (line-beginning-position 2))
-            end)
-        (cond
-         ;; example block
-         ((not (eq (char-after beg) ?:))
-          (when (re-search-forward
-                 "^[ \t]*#\\+end_example\\>.*"
-                 nil t) ;; on purpose, we look further than LIMIT
-            (setq end (min (point-max) (1- (match-beginning 0))))
-            (jupyter-org--ansi-color-apply-on-region beg1 end)))
-         ;; fixed width
-         (t
-          (setq end (or (and (re-search-forward "^[ \t]*[^ \t:]" nil t)
-                             (1- (match-beginning 0)))
-                        (point-max)))
-          (jupyter-org--ansi-color-apply-on-region beg end)))))))
+  ;;; ox-ipynb
+  ;; (after! org
+  ;;   (require 'ox-ipynb)
+  ;;   ;; conflict with +org-redisplay-inline-images-in-babel-result-h
+  ;;   (advice-remove 'org-display-inline-images 'font-lock-fontify-buffer)
+  ;;   )
 
-(defun org-babel-jupyter-handle-result-ansi-escapes ()
-  "Handle ANSI escapes in Jupyter src-block result."
-  (org-babel-map-src-blocks nil
+  (defun jupyter-org-font-lock-ansi-escapes (limit)
+    (let ((case-fold-search t))
+      (when (re-search-forward
+             "^[ \t]*\\(#\\+begin_example[ \t]*\\|: .*\\)$" limit t)
+        (let ((beg (match-beginning 1))
+              (beg1 (line-beginning-position 2))
+              end)
+          (cond
+           ;; example block
+           ((not (eq (char-after beg) ?:))
+            (when (re-search-forward
+                   "^[ \t]*#\\+end_example\\>.*"
+                   nil t) ;; on purpose, we look further than LIMIT
+              (setq end (min (point-max) (1- (match-beginning 0))))
+              (jupyter-org--ansi-color-apply-on-region beg1 end)))
+           ;; fixed width
+           (t
+            (setq end (or (and (re-search-forward "^[ \t]*[^ \t:]" nil t)
+                               (1- (match-beginning 0)))
+                          (point-max)))
+            (jupyter-org--ansi-color-apply-on-region beg end)))))))
+
+  (defun org-babel-jupyter-handle-result-ansi-escapes ()
+    "Handle ANSI escapes in Jupyter src-block result."
+    (org-babel-map-src-blocks nil
       (save-excursion
         (when-let ((beg (org-babel-where-is-src-block-result))
                    (end (progn (goto-char beg) (forward-line) (org-babel-result-end))))
           (ansi-color-apply-on-region beg end)))))
-(add-hook 'org-babel-after-execute-hook #'org-babel-jupyter-handle-result-ansi-escapes)
-
-;;; native-comp
-;; (add-to-list 'native-comp-deferred-compilation-deny-list "\\`/Users/yunj/doom-emacs/\\.local/.*/vertico-posframe\\.el\\'")
-
-(when IS-GUI
-;;; org-modern
-  ;; Add frame borders and window dividers
-  ;; (modify-all-frames-parameters
-  ;;  '((right-divider-width . 40)
-  ;;    (internal-border-width . 40)))
-  ;; (dolist (face '(window-divider
-  ;;                 window-divider-first-pixel
-  ;;                 window-divider-last-pixel))
-  ;;   (face-spec-reset-face face)
-  ;;   (set-face-foreground face (face-attribute 'default :background)))
-  ;; (set-face-background 'fringe (face-attribute 'default :background))
-
-(setq
- ;; Edit settings
- ;; org-auto-align-tags nil
- ;; org-tags-column 0
- org-catch-invisible-edits 'show-and-error
- ;; org-special-ctrl-a/e t
- ;; org-insert-heading-respect-content t
- org-modern-star ["♠""♡""♦""♧"]
- ;; org-modern-star ["◉""○""◈""◇""⁕"]
- ;; Org styling, hide markup etc.
- ;; org-hide-emphasis-markers nil
- ;; org-pretty-entities nil
- ;; org-ellipsis "…"
-
- ;; Agenda styling
- org-agenda-block-separator ?─
- org-agenda-time-grid
- '((daily today require-timed)
-   (800 1000 1200 1400 1600 1800 2000)
-   " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
- org-agenda-current-time-string
- "⭠ now ─────────────────────────────────────────────────")
-
-(add-hook 'org-mode-hook #'org-modern-mode)
-(add-hook 'org-agenda-finalize-hook #'org-modern-agenda))
-
-;;; appearance
-(use-package! lin
-  :config
-  (setq lin-face 'lin-blue) ; check doc string for alternative styles
-
-  ;; You can use this to live update the face:
-  ;;
-  ;; (customize-set-variable 'lin-face 'lin-green)
-
-  (setq lin-mode-hooks
-        '(bongo-mode-hook
-          dired-mode-hook
-          elfeed-search-mode-hook
-          git-rebase-mode-hook
-          grep-mode-hook
-          ibuffer-mode-hook
-          ilist-mode-hook
-          ledger-report-mode-hook
-          log-view-mode-hook
-          magit-log-mode-hook
-          mu4e-headers-mode
-          notmuch-search-mode-hook
-          notmuch-tree-mode-hook
-          occur-mode-hook
-          org-agenda-mode-hook
-          proced-mode-hook
-          tabulated-list-mode-hook))
-
-  (lin-global-mode 1)
+  (add-hook 'org-babel-after-execute-hook #'org-babel-jupyter-handle-result-ansi-escapes)
   )
 
-(use-package! pulsar
-  :config
-  (setq pulsar-pulse-functions
-        ;; NOTE 2022-04-09: The commented out functions are from before
-        ;; the introduction of `pulsar-pulse-on-window-change'.  Try that
-        ;; instead.
-        '(recenter-top-bottom
-          move-to-window-line-top-bottom
-          reposition-window
-          ;; bookmark-jump
-          ;; other-window
-          ;; delete-window
-          ;; delete-other-windows
-          forward-page
-          backward-page
-          scroll-up-command
-          scroll-down-command
-          ;; windmove-right
-          ;; windmove-left
-          ;; windmove-up
-          ;; windmove-down
-          ;; windmove-swap-states-right
-          ;; windmove-swap-states-left
-          ;; windmove-swap-states-up
-          ;; windmove-swap-states-down
-          ;; tab-new
-          ;; tab-close
-          ;; tab-next
-          org-next-visible-heading
-          org-previous-visible-heading
-          org-forward-heading-same-level
-          org-backward-heading-same-level
-          outline-backward-same-level
-          outline-forward-same-level
-          outline-next-visible-heading
-          outline-previous-visible-heading
-          outline-up-heading))
+;;; appearance: pulsar, lin
+;; (load! "local/protesilaos")
 
-  (setq pulsar-pulse-on-window-change t)
-  (setq pulsar-pulse t)
-  (setq pulsar-delay 0.055)
-  (setq pulsar-iterations 10)
-  (setq pulsar-face 'pulsar-magenta)
-  (setq pulsar-highlight-face 'pulsar-yellow)
-
-  (pulsar-global-mode 1)
-
-  ;; OR use the local mode for select mode hooks
-
-  (dolist (hook '(org-mode-hook emacs-lisp-mode-hook))
-    (add-hook hook #'pulsar-mode))
-
-  ;; pulsar does not define any key bindings.  This is just a sample that
-  ;; respects the key binding conventions.  Evaluate:
-  ;;
-  ;;     (info "(elisp) Key Binding Conventions")
-  ;;
-  ;; The author uses C-x l for `pulsar-pulse-line' and C-x L for
-  ;; `pulsar-highlight-line'.
-  ;;
-  ;; You can replace `pulsar-highlight-line' with the command
-  ;; `pulsar-highlight-dwim'.
-  (let ((map global-map))
-    (define-key map (kbd "C-c h p") #'pulsar-pulse-line)
-    (define-key map (kbd "C-c h h") #'pulsar-highlight-line))
-  ;; integration with the `consult' package:
-  (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
-  (add-hook 'consult-after-jump-hook #'pulsar-reveal-entry)
-
-  ;; integration with the built-in `imenu':
-  (add-hook 'imenu-after-jump-hook #'pulsar-recenter-top)
-  (add-hook 'imenu-after-jump-hook #'pulsar-reveal-entry)
-  )
-
-;;; window split
+ ;;; window split
 (defun jyun/resize-window-legal-pdf ()
   "resize a selected window to fit a legal size pdf file."
   (interactive)
