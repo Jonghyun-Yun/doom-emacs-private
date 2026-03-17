@@ -268,3 +268,44 @@
 ;; https://github.com/karthink/lazytab
 ;; (after! latex
 ;; (load! "~/.doom.d/local/lazytab/lazytab.el"))
+
+
+;;;; reftex
+(defface font-roboto-condensed
+  '((t (:family "Roboto Condensed")))
+  "TODO"
+  :group 'basic-faces)
+(after! reftex
+  (setq reftex-toc-split-windows-horizontally t
+        reftex-toc-split-windows-fraction 0.2
+        reftex-level-indent 2)
+  (add-hook 'reftex-toc-mode-hook (lambda () (variable-pitch-mode 1))))
+
+(setq reftex-ref-style-default-list '("Default"
+                                      "Cleveref"
+                                      "AMSmath"))
+(setq reftex-typekey-to-format-alist '((" " . "~\\ref{%s}")
+                                       ("n" . "~\\ref{%s}")
+                                       ("f" . "~\\ref{%s}")
+                                       ("e" . "~\\eqref{%s}")
+                                       ("i" . "~\\ref{%s}")
+                                       ("s" . "~\\ref{%s}")
+                                       ("t" . "~\\ref{%s}")
+                                       ("l" . "~\\ref{%s}")
+                                       ("N" . "~\\ref{%s}")))
+
+;;;; ;;; lsp-ltex
+;;;; (use-package! lsp-ltex
+;;;;   :after latex
+;;;;   ;; :hook (LaTeX-mode . (lambda () (require 'lsp-ltex) (lsp!)))
+;;;;   :config
+;;;;   (setq lsp-ltex-enabled nil)
+;;;;   (setq lsp-ltex-server-store-path "~/local/ltex-ls/"
+;;;;         lsp-ltex-version "15.2.0")
+;;;;   (setq lsp-ltex-dictionary "~/.hunspell_en_US")
+;;;;   ;; (setq lsp-ltex-disabled-rules ;; '(({"MORFOLOGIK_RULE_EN_US"}))
+;;;;   ;;       '(("{\"en-US\": [\"MORFOLOGIK_RULE_EN_US\"]}")))
+;;;;   ;; (setq lsp-ltex--filename "ltex-ls-15.2.0-mac-x64"
+;;;;   ;;      lsp-ltex--extension-name "ltex-ls-15.2.0-mac-x64.tar.gz")
+;;;;   ;; (setq lsp-ltex--executable-path "~/local/ltex-ls/ltex-ls-15.2.0/bin/")
+;;;;   )
