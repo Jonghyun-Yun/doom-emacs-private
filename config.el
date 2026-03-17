@@ -114,16 +114,26 @@
 ;;     (pixel-scroll-precision-mode))
 
 ;;; load lisp
- (setq load-prefer-newer t)
-(with-eval-after-load 'hydra
-  (load! "local/hydra-plus"))
-(when IS-MAC
-;(load! "local/splash")
-)
+(setq load-prefer-newer t)
+;; (with-eval-after-load 'hydra
+;;   (load! "local/hydra-plus")
+;;   )
 (load! "bindings")
 
 (when IS-MAC
   (setq system-screenshot-method "pngpaste %s"))
+
+(when (not (modulep! :lang org +roam2))
+  (setq! org-roam-directory "~/org/roam")
+  )
+
+;; TODO: nil causes emacs to freeze
+(setq org-element-use-cache t)
+
+;; no [[roam:]] links
+(after! org
+  (setq org-roam-completion-everywhere nil)
+)
 
 ;; https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e
 ;; don't add all org-roam files to agenda
@@ -133,21 +143,51 @@
   ;; https://zzamboni.org/post/how-to-insert-screenshots-in-org-documents-on-macos/
   (remove-hook 'org-load-hook #'+org-init-capture-defaults-h)
   (add-to-list 'org-tags-exclude-from-inheritance "roadmap")
-  (load! "local/vulpea-agenda/vulpea-agenda")
+  (when (modulep! :lang org +roam2)
+    (load! "local/vulpea-agenda/vulpea-agenda")
+  )
   (setq +org-capture-job-file "~/org/jobs.org")
   (setq +org-capture-bookmark-file "~/org/inbox.org")
   )
 (after! org-download
   (setq org-download-screenshot-method system-screenshot-method)
   )
+
 (load! "local/org-plus")
 
 ;; ;; (when (modulep! :ui ligatures +extra)
 ;; ;;   (load! "local/ligature"))
-(load! "local/ess-plus")
-(load! "local/latex-plus")
 
-(load! "local/visual-plus")
+(when (modulep! :lang latex)
+  (load! "local/latex-plus")
+  )
+(when (modulep! :lang ess)
+  (load! "local/ess-plus")
+  )
+
+;; theme setting causes emacs to freeze
+;; (load! "local/visual-plus")
+;; (load! "local/font-face-plus")
+
+;;; unicode
+(after! unicode-fonts
+  ;; fix Hangul fonts for Jamo
+  (dolist (unicode-block '("Hangul Compatibility Jamo"
+                           "Hangul Jamo"
+                           "Hangul Jamo Extended-A"
+                           "Hangul Jamo Extended-B"
+                           "Hangul Syllables"))
+    (push "Sarasa Mono K" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+  ;; (push "Noto Sans CJK KR" (cadr (assoc unicode-block unicode-fonts-block-font-mapping))))
+  )
+
+;; Dropbox sync changes hangul encoding to NFD, which results in 한글 자소분리 in dired and other modes
+;; https://tt.kollhong.com/79
+;; https://nullprogram.com/blog/2014/06/13/
+(when IS-MAC
+  (use-package! ucs-normalize
+    :config
+    (set-file-name-coding-system 'utf-8-hfs)))
 
 ;; org -> latex -> md -> docx
 ;; to properly generate cross references
