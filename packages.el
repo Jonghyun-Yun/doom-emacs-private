@@ -49,12 +49,6 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
-;; (package! org-mode
-;;   :recipe (:host github
-;;            :repo "emacs-straight/org-mode"
-;;            :files ("*.el" "lisp/*.el" "contrib/lisp/*.el"))
-;;   :pin "2c980de07341b015741dc2fdad27a3078c9618fb") ;https://github.com/emacs-straight/org-mode/releases/tag/release_9.3.7
-
 ;;; mu4e
 ;; (when (modulep! :email mu4e)
 ;;   (package! mu4e-maildirs-extension)
@@ -62,56 +56,43 @@
 ;;   )
 
 ;;; latex
-(package! latexdiff)
-;; (package! latexdiff
+(when (modulep! :lang latex)
+  (package! latexdiff)
+  ;; (package! latexdiff
   ;; :recipe (:host github :repo "galaunay/latexdiff.el"))
+  ;; https://github.com/emacs-straight/auctex
+  ;; auctex preview fix
+  ;; (package! auctex :pin "1472d1d231aeae463013d5e36307605157f84191")
 
-;; https://github.com/emacs-straight/auctex
-;; auctex preview fix
-;; (package! auctex :pin "1472d1d231aeae463013d5e36307605157f84191")
-
+  ;; (package! lsp-ltex)
+  )
 
 ;;; matlab
-(package! matlab-mode :disable t)
-;; (package! matlab-mode :recipe (:host github :repo "matlab-mode/mirror"))
-
-
-;;; search
-(package! find-file-in-project :pin "1d2f0b374460be798ba5c4854d3660e9b4d6d6f7")
+;; (package! matlab-mode)
 
 ;;; org
-(package! org-fancy-priorities :disable t) ; slowdown emacs
+;; (package! org-fancy-priorities) ; slowdown emacs
 
 ;; annotation in symlinked doc
 ;; (package! org-noter :recipe (:local-repo "local/org-noter"
 ;;                              :branch "patch"))
 
-(when (modulep! :lang org +noter)
-  (package! org-noter :recipe
-    (:host github
-     :repo "org-noter/org-noter")
-    )
-)
+;; (when (modulep! :lang org +noter)
+;;   (package! org-noter :recipe
+;;     (:host github
+;;      :repo "org-noter/org-noter")
+;;     )
+;; )
 
 ;; Github flavored markdown exporter
-(package! ox-gfm)
-(package! org-re-reveal-ref)
-(package! org-transclusion
-  :recipe (:host github :repo "nobiot/org-transclusion")
-  :disable t)
-;; (package! org-clock-budget
-;;   :recipe (:host github :repo "Fuco1/org-clock-budget"))
-(package! org-remark
-  :recipe (:host github :repo "nobiot/org-remark")
-  :disable t)
-
-;; ;; export doesn't work. problem in compiling; defmacro and marco eval in the same file
-;; ;; ;; Load it localy
-;; (package! ox-ravel
-;;   :recipe (:host github
-;;            :repo "jonghyun-yun/ox-ravel"
-;;            :files ("*.el")
-;;            )
+;; (package! ox-gfm)
+;; (package! org-transclusion
+;;   :recipe (:host github :repo "nobiot/org-transclusion")
+;;   )
+;; ;; (package! org-clock-budget
+;; ;;   :recipe (:host github :repo "Fuco1/org-clock-budget"))
+;; (package! org-remark
+;;   :recipe (:host github :repo "nobiot/org-remark")
 ;;   )
 
 ;; (package! ox-hugo
@@ -137,40 +118,48 @@
 ;; org-mode presentation
 ;; (package! org-present)
 ;; (package! epresent)
+;; ;; export doesn't work. problem in compiling; defmacro and marco eval in the same file
+;; ;; ;; Load it localy
+;; (package! ox-ravel
+;;   :recipe (:host github
+;;            :repo "jonghyun-yun/ox-ravel"
+;;            :files ("*.el")
+;;            )
+;;   )
+;; (package! org-re-reveal-ref)
 
-;;; elfeed
-(package! elfeed-goodies :disable t)
-(package! elfeed-score)
-(package! elfeed-summary)
-(package! elfeed-web :disable t)
+(package! centered-window
+  :disable t)
+;; (package! org-tree-slide
+;;   :disable t)
 
 ;;; jabber
-(package! jabber)
-(package! srv) ;; jabber dependency
-(package! fsm) ;; jabber dependency
+;; (package! jabber)
+;; (package! srv) ;; jabber dependency
+;; (package! fsm) ;; jabber dependency
 
 ;;; visual
 ;; mixed-pitch-face available
 ;; (package! mixed-pitch :pin "519e05f74825abf04b7d2e0e38ec040d013a125a")
 (package! modus-themes)
-(package! spacemacs-theme :disable t)
-;; (package! doom-themes :disable t)
-(package! ef-themes)
+;; (package! ef-themes)
 
 ;;; coding
-(package! ess-view-data :pin "283251e8ac19ac0c0f89a4b0f0eb38482167e52b")
-(package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")
+;; (package! ess-view-data :pin "283251e8ac19ac0c0f89a4b0f0eb38482167e52b")
+;; (package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")
 
 ;;; convenience
 (package! ctrlf)
 (package! deadgrep)
 (package! easy-kill)
+
 ;; (package! git-link :pin "2b510cf3f28bed842853294fc4ee23c7f8b6435a") ; use browse-at-remote SPC g y/Y
 (package! visual-regexp :pin "48457d42a5e0fe10fa3a9c15854f1f127ade09b5")
 (package! visual-regexp-steroids :pin "a6420b25ec0fbba43bf57875827092e1196d8a9e")
-(package! key-chord)
-(package! golden-ratio.el
-  :recipe (:host github :repo "roman/golden-ratio.el"))
+
+;; (package! key-chord)
+;; (package! golden-ratio.el
+;;   :recipe (:host github :repo "roman/golden-ratio.el"))
 
 ;;; org-roam
 ;; (package! org-roam
@@ -182,17 +171,18 @@
 
 ;;; scimax
 ;; keep it here (not in scimax module)
-(package! scimax
-  :recipe (:local-repo "local/scimax"
-           :files (
-                   "scimax-org.el"
-                   "scimax-stealing.el"
-                   "scimax-elfeed.el"            ;; email elfeed
-                   "scimax-autoformat-abbrev.el" ;; abbrev
-                   "emacs-keybinding-command-tooltip-mode.el"
-                   ;; "scimax-hydra.el"
-                   )
-           :branch "patch"))
+;; (package! scimax
+;;   :recipe (:local-repo "local/scimax"
+;;            :files (
+;;                    "scimax-org.el"
+;;                    "scimax-stealing.el"
+;;                    "scimax-elfeed.el"            ;; email elfeed
+;;                    "scimax-autoformat-abbrev.el" ;; abbrev
+;;                    "emacs-keybinding-command-tooltip-mode.el"
+;;                    ;; "scimax-hydra.el"
+;;                    )
+;;            :branch "patch")
+;;   )
 
 ;;; misc
 (package! lorem-ipsum)
@@ -204,40 +194,30 @@
 ;;            :files (:defaults "*"))
 ;;   :pin "f1f18df5898233d3b1a4a28fc4df48e257d21667")
 
-(package! doom-snippets
-  :recipe (:local-repo "local/doom-snippets"
-           :files (:defaults "*")))
-
-;;; tempo fixes
-;; missing org-mac-link.el
-;; (package! org-contrib
-;;   :recipe (:host nil
-;;            :repo "https://git.sr.ht/~bzg/org-contrib"
-;;            )
-;;   :pin "e14dfea59491f889f35868813122c5b8c0b4b3db")
-
-;; (package! org-mac-link
-;;   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
-;;            :files ("lisp/org-mac-link.el"))
-;;   :pin "e14dfea59491f889f35868813122c5b8c0b4b3db")
-
-;; (package! org-mac-link
-;;   :pin "0b18c1d070b9601cc65c40e902169e367e4348c9")
+;; (when (modulep! :editor snippets)
+;;   (package! doom-snippets
+;;     :recipe (:local-repo "local/doom-snippets"
+;;              :files (:defaults "*")))
+;;   )
 
 ;; somehow it looks for this package during the initialization of org-roam
 (when IS-LINUX
   (package! org-mac-link :pin "0b18c1d070b9601cc65c40e902169e367e4348c9"))
 
 ;;; posframe
-(package! company-posframe :disable t)
-(package! which-key-posframe)
-(package! transient-posframe :disable t)
+;; (package! company-posframe :disable t)
+;; (package! which-key-posframe)
+;; (package! transient-posframe :disable t)
 ;; (package! vertico-posframe)
-(package! hydra-posframe :recipe (:host github
-                                  :repo "Ladicle/hydra-posframe"))
-(package! emacs-overleaf :recipe (:local-repo "local/emacs-overleaf"))
+;; (package! hydra-posframe
+;;   :recipe (:host github
+;;            :repo "Ladicle/hydra-posframe")
+;;   )
+;; (package! emacs-overleaf :recipe (:local-repo "local/emacs-overleaf")
+;;   )
 (when (modulep! :private grammar)
-  (package! langtool-posframe :recipe (:local-repo "local/langtool-posframe")))
+  (package! langtool-posframe :recipe (:local-repo "local/langtool-posframe")
+    ))
 
 (when IS-LINUX
   (package! which-key-posframe :disable t)
@@ -245,26 +225,21 @@
   (package! hydra-posframe :disable t)
   ;; (package! emacs-everywhere :disable t)
   )
-;; (package! vertico-posframe)
 
-;;; tree-sitter
-;; (package! tree-sitter)
-;; (package! tree-sitter-langs)
+;; (package! posframe)
+;; (package! posframe)
 
 ;;; testing new packages
-(package! org-clock-convenience :disable t)
-(package! explain-pause-mode :recipe (:host github :repo "lastquestion/explain-pause-mode"))
-(package! corfu :disable t)
-(package! cape :disable t)
-(package! lsp-ltex :disable t)
-(package! anki-editor :disable t)
+;; (package! org-clock-convenience)
+;; (package! explain-pause-mode
+;;   :recipe (:host github :repo "lastquestion/explain-pause-mode"))
+;; (package! anki-editor)
 
 ;;; disabled doom packages
 ;; (package! github-review :disable t)
 ;; (package! magit-flow :disable t)        ; have no gitflow
 ;; (package! eshell-up :disable t)
-(package! org-superstar :disable t)
-
+;; (package! org-superstar :disable t)
 
 ;;; https://github.com/hlissner/doom-emacs/pull/5883
 ;; (package! auctex
@@ -276,26 +251,26 @@
 
 ;;; python
 ;; (package! conda :pin "7a34e06931515d46f9e22154762e06e66cfbc81c")
-(package! elpy :disable t)
 
 ;;; svg
-(package! svg-tag-mode :disable t)
+;; (package! svg-tag-mode :disable t)
 
 ;;; tab-bar
-(package! tab-bar-echo-area :disable t
-:recipe (:host github :repo "fritzgrabo/tab-bar-echo-area"))
-(package! tab-bar-groups :disable t
-:recipe (:host github :repo "fritzgrabo/tab-bar-groups"))
+;; (package! tab-bar-echo-area
+;; :recipe (:host github :repo "fritzgrabo/tab-bar-echo-area"))
+;; (package! tab-bar-groups
+;; :recipe (:host github :repo "fritzgrabo/tab-bar-groups"))
 
 ;;; very large file
-(package! vlf :disable t
-  :recipe (:host github :repo "m00natic/vlfi"
-           :files (:defaults "*"))
-  :pin "cc02f2533782d6b9b628cec7e2dcf25b2d05a27c")
+;; (package! vlf
+;;   :recipe (:host github :repo "m00natic/vlfi"
+;;            :files (:defaults "*"))
+;;   :pin "cc02f2533782d6b9b628cec7e2dcf25b2d05a27c"
+;;   )
 
 ;;; turbo-log
-(package! turbo-log :disable t
-  :recipe (:host github :repo "artawower/turbo-log"))
+;; (package! turbo-log
+;;   :recipe (:host github :repo "artawower/turbo-log"))
 
 ;;; scala
 (when (modulep! :lang scala)
@@ -305,11 +280,14 @@
 (package! toml-mode)
 
 ;;; org-cv
-(package! org-cv :recipe (:local-repo "local/org-cv"))
+;; (package! org-cv
+;;   :disable t
+;;   :recipe (:local-repo "local/org-cv"))
 
 ;;; org to ipynb
-(package! ox-ipynb :recipe (:host github
-                            :repo "jkitchin/ox-ipynb"))
+;; (package! ox-ipynb
+;;   :recipe (:host github
+;;            :repo "jkitchin/ox-ipynb"))
 
 ;;; Linux disabled package
 ;; (when IS-LINUX
@@ -319,39 +297,42 @@
 (package! org-modern)
 
 ;;; No GUI
-(unless (display-graphic-p)
-  (package! writeroom-mode :disable t)
-  (package! mixed-pitch :disable t)
-  )
+;; (unless (display-graphic-p)
+;;   (package! writeroom-mode :disable t)
+;;   (package! mixed-pitch :disable t)
+;;   )
 
 ;;; appearance
-(package! lin
-  :recipe (:host nil
-           :repo "https://git.sr.ht/~protesilaos/lin"))
-(package! pulsar
-  :recipe (:host nil
-           :repo "https://git.sr.ht/~protesilaos/pulsar"))
+;; (package! lin
+;;   :recipe (:host nil
+;;            :repo "https://git.sr.ht/~protesilaos/lin")
+;;   )
+;; (package! pulsar
+;;   :recipe (:host nil
+;;            :repo "https://git.sr.ht/~protesilaos/pulsar"))
 
-;; vundo
-;; (package! undo-fu-session :pin "3e810c7c9ab75d2b6f92c7c876290abbc164e750")
-;; (package! vundo
-;;           ;;:pin "9692bde8e2f1c2826871edb5588bbe3892527e63"
-;;           :disable (not EMACS28+))
-
+;;; elfeed
 ;;; elfeed tube
-(package! elfeed-tube
-  :recipe
-  (:host github
-   :repo "karthink/elfeed-tube"))
-(package! elfeed-tube-mpv
-  :recipe
-  (:host github
-   :repo "karthink/elfeed-tube")
+(when (modulep! :app rss)
+  ;; (package! elfeed-goodies :disable t)
+  (package! elfeed-score)
+  (package! elfeed-summary)
+  ;; (package! elfeed-web :disable t)
+  (package! elfeed-tube
+    :recipe
+    (:host github
+     :repo "karthink/elfeed-tube"))
+  (package! elfeed-tube-mpv
+    :recipe
+    (:host github
+     :repo "karthink/elfeed-tube")
+    )
+  (package! mpv)
   )
-(package! mpv)
 
 ;;; cypher
 (package! cypher-mode
+  :disable t
   :recipe (:host github
            :repo "jonghyun-yun/cypher-mode"
            :branch "master")
@@ -362,10 +343,35 @@
 ;; (package! osm)
 
 ;;; openwith
-(package! openwith)
+;; (package! openwith :disable t)
 
 ;;; Copilot-like AI autocomplete
 (package! codeium
   :recipe (:host github
            :repo "Exafunction/codeium.el")
   :disable t)
+
+(package! copilot
+  :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
+  )
+
+(package! ispell)
+
+
+(package! gptel-agent
+  :recipe (:host github :repo "karthink/gptel-agent"))
+(package! mcp
+  :recipe (:host github :repo "lizqwerscott/mcp.el"))
+(package! gptel-mcp
+  :recipe (:host github :repo "lizqwerscott/gptel-mcp.el"))
+
+
+(package! llm-tool-collection
+  :recipe (:host github :repo "skissue/llm-tool-collection"))
+
+(package! ragmacs
+  :recipe (:host github :repo "positron-solutions/ragmacs"))
+
+(package! gptel-got
+  :recipe (:host nil
+	   :repo "https://codeberg.org/bajsicki/gptel-got"))
