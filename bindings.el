@@ -248,9 +248,6 @@
  (:map pdf-view-mode-map
   :localleader
   :desc "PDF View Hydra" "." #'my-hydra-pdf-tools/body)
- (:map org-mode-map
-  :desc "Org Babel Hydra"
-  :g "C-c C-v ." #'scimax-src-block-hydra/body)
  (:map org-agenda-mode-map
   :localleader
   :desc "Org Agenda Hydra" "." #'my-hydra-org-agenda/body))
@@ -310,10 +307,9 @@
 ;;   ;; :nm "y" #'elfeed-show-yank
 ;;   ))
 
-;;; scimax
+;;; navigation
 (map!
  :g
- :desc "Errors Hydra" "C-c ! ." (cmd! (scimax-open-hydra scimax-errors/body))
  "s-<up>" #'beginning-of-buffer
  "s-<down>" #'end-of-buffer)
 

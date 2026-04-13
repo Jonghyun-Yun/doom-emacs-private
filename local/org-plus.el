@@ -782,19 +782,20 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
   (defvar my/org-latex-toggle-fragment-has-been-called nil
     "Tracks if org-toggle-latex-fragment has ever been called (updated locally).")
 
-  (defadvice org-toggle-latex-fragment (before my/latex-fragments-advice activate)
+  (defun my/latex-fragments-before-toggle (&rest _)
     "Keep Org LaTeX fragments in a directory with background color name."
-    (if (not my/org-latex-toggle-fragment-has-been-called) (jyun/org-latex-set-options))
+    (unless my/org-latex-toggle-fragment-has-been-called
+      (jyun/org-latex-set-options))
     (setq-local my/org-latex-toggle-fragment-has-been-called t)
     (jyun/org-latex-set-directory-color))
+  (advice-add 'org-toggle-latex-fragment :before #'my/latex-fragments-before-toggle)
 
-  (defadvice load-theme (after my/load-theme-advice-for-latex activate)
+  (defun my/load-theme-update-latex-fragments (&rest _)
     "Conditionally update Org LaTeX fragments for current background."
-    (if my/org-latex-toggle-fragment-has-been-called (jyun/org-latex-update-fragments-color)))
-
-  (defadvice disable-theme (after my/disable-theme-advice-for-latex activate)
-    "Conditionally update Org LaTeX fragments for current background."
-    (if my/org-latex-toggle-fragment-has-been-called (jyun/org-latex-update-fragments-color)))
+    (when my/org-latex-toggle-fragment-has-been-called
+      (jyun/org-latex-update-fragments-color)))
+  (advice-add 'load-theme :after #'my/load-theme-update-latex-fragments)
+  (advice-add 'disable-theme :after #'my/load-theme-update-latex-fragments)
   )
 
 

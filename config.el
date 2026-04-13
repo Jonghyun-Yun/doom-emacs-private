@@ -130,16 +130,14 @@
 ;; TODO: nil causes emacs to freeze
 (setq org-element-use-cache t)
 
-;; no [[roam:]] links
-(after! org
-  (setq org-roam-completion-everywhere nil)
-)
-
 ;; https://gist.github.com/d12frosted/a60e8ccb9aceba031af243dff0d19b2e
 ;; don't add all org-roam files to agenda
 ;; only those who with TODO keywords, schedule, or deadline
 ;; run before org-plus
 (after! org
+  ;; no [[roam:]] links
+  (setq org-roam-completion-everywhere nil)
+
   ;; https://zzamboni.org/post/how-to-insert-screenshots-in-org-documents-on-macos/
   (remove-hook 'org-load-hook #'+org-init-capture-defaults-h)
   (add-to-list 'org-tags-exclude-from-inheritance "roadmap")
@@ -1125,13 +1123,13 @@
 
 (when (modulep! :lang org +jupyter)
   ;; (setq ob-async-no-async-languages-alist '("jupyter-python"))
-  (eval-after-load "jupyter-client"
+  (with-eval-after-load 'jupyter-client
     ;; (map! :map org-src-mode-map
     ;;       "C-c C-c" #'org-edit-src-exit)
     (map! :map jupyter-repl-interaction-mode-map
           "C-c C-c" nil)
+    (setq jupyter-repl-echo-eval-p t)
     )
-  (setq jupyter-repl-echo-eval-p t)
 
   ;;; ox-ipynb
   ;; (after! org

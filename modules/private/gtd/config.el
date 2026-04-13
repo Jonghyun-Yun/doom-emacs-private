@@ -39,7 +39,7 @@
           ("ATTACH"      . ,(all-the-icons-faicon  "paperclip"       :face 'all-the-icons-yellow  :v-adjust 0.01))
           ("ARCHIVE"     . ,(all-the-icons-octicon  "file-zip"       :face 'all-the-icons-gray    :v-adjust 0.01))
           ))
-  (org-pretty-tags-global-mode)
+  (add-hook 'org-mode-hook #'org-pretty-tags-mode)
   )
 
 (use-package! org-super-agenda
