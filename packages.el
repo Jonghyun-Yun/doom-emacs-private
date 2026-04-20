@@ -358,6 +358,10 @@
 (package! ispell)
 
 
+(package! gptel
+  :recipe (:host github :repo "karthink/gptel")
+  :pin "3ad7a36250eaed8b68bb7fbd264877ef62bdf2b5")
+
 (package! gptel-agent
   :recipe (:host github :repo "karthink/gptel-agent"))
 (package! mcp
@@ -367,11 +371,13 @@
 
 
 (package! llm-tool-collection
-  :recipe (:host github :repo "skissue/llm-tool-collection"))
+  :recipe (:host github :repo "skissue/llm-tool-collection")
+  :disable t)
 
 (package! ragmacs
   :recipe (:host github :repo "positron-solutions/ragmacs"))
 
 (package! gptel-got
   :recipe (:host nil
-	   :repo "https://codeberg.org/bajsicki/gptel-got"))
+	   :repo "https://codeberg.org/bajsicki/gptel-got")
+  :disable t)
