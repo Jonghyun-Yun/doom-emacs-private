@@ -88,17 +88,22 @@ property.  128 means 128K tokens."
 
 ;; --- Summarization knobs ---
 
-(defcustom gptel-auto-compact-chunk-size 30000
+(defcustom gptel-auto-compact-chunk-size 'auto
   "Target character count per chunk when summarizing old exchanges.
 Old conversation text is split at exchange boundaries into chunks
 of roughly this size.  Each chunk contains one or more complete
 exchanges (user prompt + assistant response + tool calls).
 A single exchange that exceeds this limit becomes its own chunk.
 
-30000 chars ≈ 8.5K tokens, well within any model's processing
-ability.  Smaller values produce more granular summaries but cost
-more LLM calls."
-  :type 'natnum
+When set to `auto', the chunk size is computed dynamically as 40%
+of the model's context window (in characters), with a floor of
+30000 chars.  This reduces the number of sequential LLM calls for
+models with large context windows.
+
+A numeric value uses that fixed character count directly.
+30000 chars ≈ 8.5K tokens."
+  :type '(choice (const :tag "Auto (40% of context window)" auto)
+                 (natnum :tag "Fixed character count"))
   :group 'gptel-context-management)
 
 (defcustom gptel-auto-compact-summary-prompt
@@ -292,13 +297,26 @@ exchange larger than MAX-CHUNK-SIZE becomes its own chunk."
       (push (cons chunk-start end) chunks)
       (nreverse chunks))))
 
+(defun gptel-context-management--effective-chunk-size ()
+  "Return the effective chunk size in characters.
+When `gptel-auto-compact-chunk-size' is `auto', compute 40% of the
+model's context window (in chars), floored at 30000.  Otherwise
+return the numeric value directly."
+  (if (eq gptel-auto-compact-chunk-size 'auto)
+      (let* ((context-tokens (gptel-context-management--context-window-tokens))
+             (context-chars (* context-tokens gptel-auto-compact-chars-per-token))
+             (dynamic (ceiling (* 0.4 context-chars))))
+        (max 30000 dynamic))
+    gptel-auto-compact-chunk-size))
+
 (defun gptel-context-management--extract-chunks (beg end)
   "Extract exchange-aware text chunks from buffer region BEG to END.
 Returns a list of strings, each containing one or more complete
 exchanges grouped to roughly `gptel-auto-compact-chunk-size' chars."
-  (let* ((boundaries (gptel-context-management--find-exchange-boundaries beg end))
+  (let* ((chunk-size (gptel-context-management--effective-chunk-size))
+         (boundaries (gptel-context-management--find-exchange-boundaries beg end))
          (groups (gptel-context-management--group-exchanges-into-chunks
-                  boundaries end gptel-auto-compact-chunk-size)))
+                  boundaries end chunk-size)))
     (mapcar (lambda (group)
               (buffer-substring-no-properties (car group) (cdr group)))
             groups)))
