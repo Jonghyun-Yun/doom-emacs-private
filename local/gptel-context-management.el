@@ -437,6 +437,23 @@ Returns the combined string, or SUMMARY unchanged if ANCHORS is nil."
     (put 'gptel-context-management--format-anchors 'counter 0)
     (concat summary (gptel-context-management--format-anchors anchors mode))))
 
+;;;; Model selection helper
+
+(defun gptel-context-management--read-backend-model (prompt)
+  "Prompt the user to select a backend+model and return a cons (BACKEND . MODEL).
+PROMPT is the completing-read prompt string."
+  (let* ((models-alist
+          (cl-loop for (name . backend) in gptel--known-backends
+                   nconc (cl-loop for model in (gptel-backend-models backend)
+                                  collect (list (concat name ":"
+                                                        (gptel--model-name model))
+                                                backend model)))))
+    (let* ((default (concat (gptel-backend-name gptel-backend) ":"
+                            (gptel--model-name gptel-model)))
+           (choice (completing-read prompt models-alist nil t nil nil default))
+           (entry (assoc choice models-alist)))
+      (cons (nth 1 entry) (nth 2 entry)))))
+
 ;;;; Sequential summarization
 
 (defun gptel-context-management--summarize-sequentially
@@ -527,9 +544,11 @@ and re-appended to the LLM's summary verbatim."
 
 ;;;; Compaction engine
 
-(defun gptel-context-management--do-compact ()
+(defun gptel-context-management--do-compact (&optional backend model)
   "Summarize older text based on token-budget, keeping recent text verbatim.
-Chunks are exchange-aware and processed sequentially."
+Chunks are exchange-aware and processed sequentially.
+Optional BACKEND and MODEL override the buffer's current backend/model for
+the summarization requests."
   (let* ((context-tokens (gptel-context-management--context-window-tokens))
          (estimated-tokens (gptel-context-management--estimate-tokens))
          (total-exchanges (gptel-context-management--count-exchanges))
@@ -551,8 +570,8 @@ Chunks are exchange-aware and processed sequentially."
         (let* ((chunks (gptel-context-management--extract-chunks old-beg old-end))
                (buf (current-buffer))
                (marker split-marker)
-               (be gptel-backend)
-               (mo gptel-model))
+               (be (or backend gptel-backend))
+               (mo (or model gptel-model)))
           (message "gptel: compacting ~%dK tokens (%.0f%% of %dK window) in %d chunks — backup: %s"
                    (/ estimated-tokens 1000)
                    (* 100.0 (/ (float estimated-tokens) context-tokens))
@@ -669,12 +688,16 @@ Sets `gptel--num-messages-to-send' and ensures the hook is active."
     (message "gptel context strategy: %s" strategy)))
 
 ;;;###autoload
-(defun gptel-compact ()
+(defun gptel-compact (&optional choose-model)
   "Manually trigger compaction of the current gptel buffer.
 For file-backed buffers, asks for confirmation first.
 For non-file buffers, runs immediately.
-This command works regardless of `gptel-context-management-strategy'."
-  (interactive)
+This command works regardless of `gptel-context-management-strategy'.
+
+With a prefix argument CHOOSE-MODEL (\\[universal-argument]), prompt for a
+backend and model to use for the summarization requests instead of the
+buffer's current model."
+  (interactive "P")
   (unless gptel-mode
     (user-error "Not a gptel buffer"))
   (when gptel-context-management--compact-in-progress
@@ -684,7 +707,16 @@ This command works regardless of `gptel-context-management-strategy'."
          (usage-pct (if (> context-tokens 0)
                         (* 100.0 (/ (float estimated-tokens) context-tokens))
                       0))
-         (file-p (buffer-file-name)))
+         (file-p (buffer-file-name))
+         ;; Optionally pick a different backend+model for summarization
+         (compact-backend gptel-backend)
+         (compact-model gptel-model))
+    (when choose-model
+      (cl-destructuring-bind (b . m)
+          (gptel-context-management--read-backend-model
+           "Compact using model: ")
+        (setq compact-backend b
+              compact-model m)))
     (when (or (not file-p)
               (yes-or-no-p
                (format "Compact file buffer %s? (~%dK/%dK tokens, %.0f%%) This will modify the buffer. "
@@ -692,7 +724,7 @@ This command works regardless of `gptel-context-management-strategy'."
                        (/ estimated-tokens 1000)
                        (/ context-tokens 1000)
                        usage-pct)))
-      (gptel-context-management--do-compact))))
+      (gptel-context-management--do-compact compact-backend compact-model))))
 
 ;;;###autoload
 (defun gptel-context-usage ()
