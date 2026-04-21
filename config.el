@@ -1423,5 +1423,4 @@ is available. Useful if you tend to hammer your keys like I do."
 
 ;; gptel
 (load! "local/gptel-plus")
-;; (load! "local/ado-org")
-
+(load! "local/ado-org")
