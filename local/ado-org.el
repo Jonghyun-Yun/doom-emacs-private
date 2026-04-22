@@ -1,5 +1,7 @@
 ;;; ado-org.el --- Org-mode ↔ Azure DevOps via gptel MCP -*- lexical-binding: t; -*-
 
+(load! "../local-secrets.el")
+
 ;;; Commentary:
 ;;
 ;; Bridge between Org-mode headings and Azure DevOps work items.
@@ -372,9 +374,9 @@ Activated automatically when #+ADO_PROJECT is present."
 (after! gptel
   (gptel-make-preset 'with-ado
     :description "Azure DevOps Project Manager: create, update, pull, polish work items via MCP."
-    :parents 'base-policies
+    ;; :parents 'base-policies
     :system
-    `(:append ,(concat "You are an Azure DevOps Project Manager assistant operating through Org-mode.
+    '(:append ,(concat "You are an Azure DevOps Project Manager assistant operating through Org-mode.
 
 <ado_user_context>
 Azure DevOps organization: " jyun/ado-org "
@@ -499,7 +501,7 @@ When asked to create a work item from an org heading:
 4. Set System.AssignedTo:
    - If :ASSIGNED: property exists on the heading, use that value
    - Otherwise default to '" jyun/user-display-name "' (current user)
-   - Only omit assignment if explicitly told "unassigned"
+   - Only omit assignment if explicitly told unassigned
 5. Use wit_create_work_item with appropriate fields
 6. Report back the created ADO ID so the user can set :ADO_ID:
 7. If a :PARENT_ID: is specified, use wit_work_items_link to set parent
@@ -566,6 +568,7 @@ Be terse. Report facts. Don't hedge. Format output as valid org-mode.
       "core_get_identity_ids"
       ;; Reading linked resources
       "convert_to_markdown"))))
+)
 
 (provide 'ado-org)
 ;;; ado-org.el ends here
