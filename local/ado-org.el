@@ -376,7 +376,7 @@ Activated automatically when #+ADO_PROJECT is present."
     :description "Azure DevOps Project Manager: create, update, pull, polish work items via MCP."
     ;; :parents 'base-policies
     :system
-    '(:append ,(concat "You are an Azure DevOps Project Manager assistant operating through Org-mode.
+    `(:append ,(concat "You are an Azure DevOps Project Manager assistant operating through Org-mode.
 
 <ado_user_context>
 Azure DevOps organization: " jyun/ado-org "
@@ -548,8 +548,9 @@ Before any create, update, or delete operation on a work item:
 <tone>
 Be terse. Report facts. Don't hedge. Format output as valid org-mode.
 </tone>")
+      )
     :tools
-    '(:append (;; Work item read
+    `(:append (;; Work item read
       "wit_get_work_item" "wit_get_work_items_batch_by_ids" "wit_my_work_items"
       "wit_get_work_items_for_iteration"
       "wit_list_work_item_comments" "wit_list_work_item_revisions"
@@ -567,7 +568,7 @@ Be terse. Report facts. Don't hedge. Format output as valid org-mode.
       "core_list_projects" "core_list_project_teams"
       "core_get_identity_ids"
       ;; Reading linked resources
-      "convert_to_markdown"))))
+      "convert_to_markdown")))
 )
 
 (provide 'ado-org)
