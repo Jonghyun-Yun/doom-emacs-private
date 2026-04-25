@@ -1,5 +1,7 @@
 ;;; ../Dropbox/emacs/.doom.d/local/gptel-plus.el -*- lexical-binding: t; -*-
 
+(load! "../local-secrets.el")
+
 ;; llm
 (after! gptel
   (require 'gptel-integrations)
@@ -8,8 +10,9 @@
          ;; gptel-preset "agent-mode"
          gptel-use-tools t
          gptel-default-mode 'org-mode
-         ;; gptel-model 'gpt-5.2
-         gptel-model 'claude-haiku-4.5
+         gptel-model 'gpt-5-mini
+         ;; gptel-model 'gpt-5.3-codex
+         ;; gptel-model 'claude-haiku-4.5
          ;; gptel-model 'claude-sonnet-4.6
          ;; gptel-model 'claude-opus-4.6
          ;; gptel-model 'claude-opus-4.7
@@ -22,13 +25,13 @@
          :desc "New commit with a generated message"
          :leader "olg" #'gptel-magit-commit-generate))
   (after! magit
-    ;; free model
+    ;; use free model
     (setq gptel-magit-model 'gpt-5-mini)
   )
-
   (after! gptel-quick
-    (setq gptel-quick-backend nil
-          gptel-quick-model 'gpt-5-mini)
+    (setq gptel-quick-backend (gptel-get-backend "Copilot")
+          ;; use free non-reasoning model
+          gptel-quick-model 'gpt-4o)
     )
 )
 
@@ -175,19 +178,13 @@ Use query-docs only for known library APIs not answerable locally. Max 2 calls/q
 </docs_policy>
 
 <thinking_tool_policy>
-Use `sequentialthinking` ONLY when:
-  - Multi-step reasoning across multiple components/files
-  - Must reconcile conflicting evidence
-  - Evaluating tradeoffs/risks with design consequences
-  - Initial search strategy did not yield enough evidence to answer
-  
-NEVER use `sequentialthinking` for:
-  - Simple lookups, symbol resolution, or API docs
-  - Single-file reads or straightforward Q&A
-  - Quoting existing code or documentation
-  - Questions that a clarifying chat message would resolve faster
-  
-**Call limit: 1 per user question unless the problem is genuinely multi-faceted.**
+Use `sequentialthinking` ONLY when ALL of these are true:
+  - Multi-step reasoning across multiple components/files AND
+  - Must reconcile conflicting evidence or design tradeoffs AND
+  - A direct written answer would require unsafe assumptions
+
+**Hard cap: MAX 1 call per user question. No exceptions.**
+Prefer writing the answer directly over calling this tool.
 </thinking_tool_policy>
 
 <tool_efficiency>
@@ -203,6 +200,7 @@ NEVER use `sequentialthinking` for:
 <formatting>
 - Refer to code symbols in markdown quotes, e.g. `foo-bar`.
 </formatting>"))
+  )
 
 ;;; --------------------------------------------------------------------------
 ;;; Shared policy strings (spliced into presets that need them)
@@ -410,7 +408,7 @@ Prefix filenames with `PLAN-`.
 <output_style>
 Precise and decision-oriented. Every statement should map to a concrete step, file, or decision. Avoid hand-waving.
 </output_style>"
-                        jyun/gptel--github-policy))
+jyun/gptel--github-policy))
     :tools
     `("Agent" "Skill"
       "Glob" "Grep" "Read"
@@ -420,8 +418,8 @@ Precise and decision-oriented. Every statement should map to a concrete step, fi
       "sequentialthinking"
       "convert_to_markdown"
       "mcp-context7"
-      ,jyun/gptel--browser-tools
-      ,jyun/gptel--github-read-tools
+      ,@jyun/gptel--browser-tools
+      ,@jyun/gptel--github-read-tools
       ;; Plan document authoring (create + refine plan files only)
       "Edit" "Insert" "Write"
       "introspection"))
@@ -487,7 +485,7 @@ Prefer 1–3 searches and 1–2 reads first; only then consider `sequentialthink
       "Diagnostics"
       "WebSearch" "WebFetch"
       "Eval" "Bash"
-      ,jyun/gptel--github-read-tools
+      ,@jyun/gptel--github-read-tools
       "introspection"))
 
 ;;; --------------------------------------------------------------------------
@@ -578,9 +576,9 @@ Label policy:
 
   (gptel-make-preset 'with-mail
     :description "Addon: Apple Mail tools (read emails, search mailboxes)."
-    :tools '(:append ("mcp-apple-mail"))
+    :tools `(:append ("mcp-apple-mail"))
     :system
-    '(:append "
+    `(:append "
 <apple_mail_policy>
 When the user asks about emails, messages, or mail:
 - Use Apple Mail MCP tools to search and read emails.
@@ -820,3 +818,5 @@ properties untouched.  Reports the number of characters fixed."
         (message "gptel-fix-props: cleared 'response' from %d characters (%d–%d)"
                  fixed beg end)
       (message "gptel-fix-props: no corrupted response properties found"))))
+
+(load! "ado-org")
