@@ -3,3 +3,5 @@
 /.local/
 misc/config-publishing/
 misc/org-css/
+
+/local-secrets.el
