@@ -177,24 +177,17 @@ Source priority: local code (Glob/Grep/Read) → Emacs introspection → WebFetc
 Use query-docs only for known library APIs not answerable locally. Max 2 calls/question.
 </docs_policy>
 
-<thinking_tool_policy>
-Use `sequentialthinking` ONLY when ALL of these are true:
-  - Multi-step reasoning across multiple components/files AND
-  - Must reconcile conflicting evidence or design tradeoffs AND
-  - A direct written answer would require unsafe assumptions
-
-**Hard cap: MAX 1 call per user question. No exceptions.**
-Prefer writing the answer directly over calling this tool.
-</thinking_tool_policy>
-
 <tool_efficiency>
 - Call independent tools simultaneously in a single response. Do not sequence them.
 - Batch inputs: If a tool accepts multiple inputs (e.g., files), use a single call.
 - Never re-fetch information already present in the conversation history.
 - Use Grep with `context_lines` instead of sequential Grep → Read calls.
 - Gather all context before writing or editing to prevent read-write loops.
+- Do not narrate findings between tool calls. Collect all context first, then write one response.
 - Never repeat an identical failed tool call.
 - After 2 failed search attempts, stop and reassess your strategy.
+- Do NOT cycle between diagnosing and proposing fixes. Once root cause is identified, implement immediately.
+- Do NOT restate or paraphrase tool output in your response. Reference it and act on it.
 </tool_efficiency>
 
 <formatting>
@@ -334,6 +327,7 @@ When retrieving information from a URL:
 
 <output_style>
 Thorough but structured. Use tables and headers for complex answers. Avoid repetition.
+Do NOT restate tool output. Synthesize findings into a direct answer.
 </output_style>
 
 <workflow>
@@ -469,10 +463,10 @@ The user may specify (quick|medium|thorough). Default: quick.
 
 <output_style>
 Concise. File paths + symbols + direct answer. No preamble, no summaries.
+Do NOT restate tool output. Reference it and answer directly.
 </output_style>
 
 <thinking_tool_policy>
-Avoid `sequentialthinking` by default.
 Use `sequentialthinking` only if initial targeted searches/reads do not yield enough evidence to answer, or if you must reconcile conflicting evidence across files.
 Prefer 1–3 searches and 1–2 reads first; only then consider `sequentialthinking`.
 </thinking_tool_policy>"
@@ -512,14 +506,17 @@ Glob for PLAN-* in cwd. If found, ask user to confirm before following it. Updat
 </rules>
 
 <workflow>
-1. Clarify goal and constraints.
-2. Discovery (delegate as needed) and present findings.
-3. Design: propose an execution-ready plan (steps, exact files, tools to be used, and verification).
-4. Implement all planned edits in one batch, then verify.
+1. Clarify goal and constraints (only if ambiguous).
+2. Discovery: gather context via tools (delegate as needed). Do NOT narrate intermediate findings.
+3. Implement: once you have sufficient context, make all edits in one batch. Do NOT propose a plan unless the change spans 5+ files or is destructive.
+4. Verify: run tests or read back changed files.
 </workflow>
 
 <output_style>
 Action-oriented. State intent, then execute. Minimize narration between tool calls.
+Do NOT repeat or rephrase information already gathered from tool output.
+Do NOT cycle between analysis and planning — once you have enough context, implement immediately.
+After reading source code, do NOT restate what you read. Go straight to the edit.
 </output_style>
 
 <tool_addons>
@@ -529,7 +526,6 @@ If a needed tool is unavailable, tell the user which @preset to enable.
                         jyun/gptel--github-policy))
     :tools
     `("Agent" "Skill"
-      "sequentialthinking"
       "convert_to_markdown"
       "mcp-context7"
       "Glob" "Grep" "Read"
@@ -696,6 +692,7 @@ Shows stacked addon presets alongside the base preset."
 
 ;; Context management (sliding window / auto-compaction)
 (load! "gptel-context-management")
+(setq gptel-auto-compact-chunk-size 12000)
 
 ;; Project-local skills & chatmodes from .github/
 (load! "gptel-project-skills")
