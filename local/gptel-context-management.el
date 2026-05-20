@@ -107,26 +107,34 @@ A numeric value uses that fixed character count directly.
   :group 'gptel-context-management)
 
 (defcustom gptel-auto-compact-summary-prompt
-  "You are summarizing a segment of a long conversation for context preservation.
+  "You are summarizing a segment of a long conversation for context continuity.
+Domain: American Airlines loyalty data science (ML models, Databricks, Python, Org/Emacs workflows).
 
-CRITICAL: Preserve ALL of the following with full fidelity:
-- Code snippets (complete, not truncated)
-- File paths and line numbers
-- Function/variable/class names
-- Specific decisions and their rationale
-- Error messages and stack traces
-- Action items and TODO items
-- Configuration values and settings
-- Key constraints and requirements discussed
+CRITICAL: Preserve high-value information needed for next exchanges:
+- Workflow and execution sequence
+- File paths, directories, and artifact locations (exact)
+- Function/variable/class names and semantic intent
+- Business context, domain assumptions, and rationale
+- Decisions made (and why), constraints, and requirements
+- Key metrics, run IDs, experiment IDs, and validation outcomes
+- Error messages with actionable root-cause context
+- Action items, TODOs, and unresolved risks/dependencies
 
-NOTE: Some content has been replaced with [PRESERVED_N] markers.
-These represent code blocks or links that are preserved separately.
-You may reference these markers in your summary (e.g., \"the function
-defined in [PRESERVED_3]\") but do NOT attempt to reproduce their content.
+Compression rules:
+- Do NOT include raw tool output, long logs, or repetitive command traces unless critical to a decision or error diagnosis.
+- Deduplicate aggressively; do not repeat the same fact in multiple sections.
+- Keep exact identifiers (paths, symbols, IDs, config values) when they matter.
+- [PRESERVED_N] markers: cite them inline only where directly relevant (e.g., \"see [PRESERVED_3]\"). Do NOT list or enumerate all markers. Do NOT say \"Preserved content markers: [PRESERVED_1]…[PRESERVED_N]\".
 
-Structure the summary chronologically.  Use bullet points for clarity.
-Be thorough — this summary replaces the original text permanently.
-Aim for roughly 30-40%% compression (keep 60-70%% of the information density).
+Output format (strict):
+1) Objective & Scope (max 5 bullets)
+2) Workflow & Decisions (max 8 bullets)
+3) Files/Directories/Artifacts (max 10 bullets)
+4) Key Findings & Metrics (max 8 bullets)
+5) Open Items / Next Actions (max 8 bullets)
+
+This summary will replace original text. Prefer compact, information-dense bullets.
+Target ~60-75%% information retention at much lower verbosity.
 
 Conversation segment to summarize:\n\n%s"
   "Prompt template for auto-compaction summaries.
@@ -187,8 +195,48 @@ If CHAR-COUNT is nil, use the current buffer's size."
 
 ;;;; Helpers
 
+(defun gptel-context-management--count-exchanges-fallback ()
+  "Heuristically estimate exchange count from plain text in saved logs.
+Used when gptel text properties are unavailable (e.g., reopened Org files).
+
+Strategy (in order):
+1. If the buffer has a :GPTEL_BOUNDS: org property with response entries, count those.
+2. Count role-labeled headings (User/Human/Assistant/AI/Model/System/Tool).
+3. Returns nil when no role headings are found."
+  (cl-block gptel-context-management--count-exchanges-fallback
+    (save-excursion
+      (save-restriction
+        (widen)
+        ;; Strategy 1: count response entries from GPTEL_BOUNDS property
+        (goto-char (point-min))
+        (when (derived-mode-p 'org-mode)
+          (when-let* ((bounds-str (org-entry-get (point-min) "GPTEL_BOUNDS")))
+            (condition-case nil
+                (let* ((bounds (read bounds-str))
+                       (response-entries (cdr (assq 'response bounds))))
+                  (when (> (length response-entries) 0)
+                    (cl-return-from gptel-context-management--count-exchanges-fallback
+                      (length response-entries))))
+              (error nil))))
+        ;; Strategy 2: role-labeled headings
+        (goto-char (point-min))
+        (let ((assistant-count 0)
+              (user-count 0))
+          (while (re-search-forward
+                  "^\\*+\\s-+\\(User\\|Human\\|Assistant\\|AI\\|Model\\|System\\|Tool\\)\\b"
+                  nil t)
+            (pcase (downcase (match-string 1))
+              ((or "assistant" "ai" "model") (cl-incf assistant-count))
+              ((or "user" "human") (cl-incf user-count))))
+          (cond
+           ((> assistant-count 0) assistant-count)
+           ((> user-count 0) user-count)
+           (t nil)))))))
+
 (defun gptel-context-management--count-exchanges ()
-  "Count the number of LLM responses (exchanges) in the current buffer."
+  "Count exchanges in the current buffer.
+Returns a plist: (:count N|nil :source SYMBOL), where SOURCE is one of
+`props' (gptel text properties), `fallback' (heading heuristic), or `none'."
   (save-excursion
     (save-restriction
       (widen)
@@ -196,7 +244,12 @@ If CHAR-COUNT is nil, use the current buffer's size."
       (let ((count 0))
         (while (text-property-search-forward 'gptel 'response t)
           (cl-incf count))
-        count))))
+        (if (> count 0)
+            (list :count count :source 'props)
+          (let ((fallback (gptel-context-management--count-exchanges-fallback)))
+            (if fallback
+                (list :count fallback :source 'fallback)
+              (list :count nil :source 'none))))))))
 
 (defun gptel-context-management--find-split-point (keep-chars)
   "Return a marker at the split point, keeping KEEP-CHARS of recent text.
@@ -239,6 +292,30 @@ Returns nil if the buffer is too small to split meaningfully."
 
 ;;;; Exchange-aware chunking
 
+(defun gptel-context-management--find-boundaries-by-size (beg end)
+  "Return chunk boundary positions between BEG and END sized by chunk-size.
+Used as a fallback when no `gptel' text properties are present (e.g., a
+saved and reopened file-backed buffer).  Splits at paragraph/line ends
+nearest each chunk-size offset.  Always starts with BEG."
+  (let* ((chunk-size (gptel-context-management--effective-chunk-size))
+         (boundaries (list beg))
+         (pos beg))
+    (while (< (+ pos chunk-size) end)
+      (let* ((target (+ pos chunk-size))
+             (split
+              (save-excursion
+                (goto-char (min target end))
+                (forward-line 0)
+                ;; Prefer a blank-line (paragraph) boundary before target
+                (or (save-excursion
+                      (when (re-search-backward "^[ \t]*$" pos t)
+                        (forward-line 1)
+                        (when (> (point) pos) (point))))
+                    (point)))))
+        (push split boundaries)
+        (setq pos split)))
+    (nreverse boundaries)))
+
 (defun gptel-context-management--find-exchange-boundaries (beg end)
   "Return a list of exchange boundary positions between BEG and END.
 Each boundary is the start of a new \"turn\" — a position where the
@@ -248,6 +325,10 @@ to nil (user text), or from nil to non-nil.
 An exchange is: user-text (gptel=nil) → response (gptel=response)
 → optional tool calls (gptel=(tool . id)).  The next user-text
 starts a new exchange.
+
+When no `gptel' text properties are found (e.g., a saved and reopened
+file-backed buffer), falls back to splitting at paragraph/heading
+boundaries aligned to `gptel-auto-compact-chunk-size'.
 
 Returns a sorted list of positions, always starting with BEG."
   (save-excursion
@@ -262,12 +343,14 @@ Returns a sorted list of positions, always starting with BEG."
                 (goto-char end)         ;done
               (goto-char next)
               (let ((now-user (null (get-char-property next 'gptel))))
-                ;; Mark a boundary when transitioning to a new user turn
-                ;; (the start of a new exchange).
                 (when (and now-user (not prev-was-user))
                   (push next boundaries))
                 (setq prev-was-user now-user)))))
-        (nreverse boundaries)))))
+        ;; Fallback: if no property-based boundaries found, split by
+        ;; chunk-size at paragraph/line boundaries so chunk-size is honored.
+        (if (= (length boundaries) 1)
+            (gptel-context-management--find-boundaries-by-size beg end)
+          (nreverse boundaries))))))
 
 (defun gptel-context-management--group-exchanges-into-chunks (boundaries end max-chunk-size)
   "Group exchange BOUNDARIES into chunks, each ≤ MAX-CHUNK-SIZE chars.
@@ -363,7 +446,10 @@ link) that should be preserved verbatim."
   (cond
    ((derived-mode-p 'org-mode)
     ;; [[target]] or [[target][description]]
-    '("\\[\\[[^]\n]+\\]\\(?:\\[[^]\n]*\\]\\)?\\]"))
+    ;; Real org link targets never contain '[', '"', or "'".
+    ;; Excluding '"' and "'" prevents matching Python/Lisp list literals
+    ;; like [["col","val"]] or [['col','val']] that appear in LLM output.
+    '("\\[\\[[^][\"'\n]+\\]\\(?:\\[[^]\n]*\\]\\)?\\]"))
    ((derived-mode-p 'markdown-mode 'gfm-mode)
     ;; [text](url) and ![alt](url)
     '("!?\\[[^]\n]*\\]([^)\n]*)"))
@@ -419,23 +505,41 @@ If no anchors are found or MODE has no patterns, returns
     (let ((header (if (derived-mode-p 'org-mode)
                       "** Preserved Content\n\n"
                     "### Preserved Content\n\n")))
-      (concat "\n\n" header
-              (mapconcat
-               (lambda (a)
-                 (format "[PRESERVED_%d]\n%s"
-                         (cl-incf (get 'gptel-context-management--format-anchors 'counter))
-                         a))
-               anchors
-               "\n\n")))))
+      (concat
+       "\n\n" header
+       (cl-loop for a in anchors
+                for n from 1
+                ;; Keep plain markers to avoid introducing broken internal links.
+                collect (format "[PRESERVED_%d]\n%s" n a)
+                into blocks
+                finally return (mapconcat #'identity blocks "\n\n"))))))
+
+(defun gptel-context-management--normalize-preserved-refs (text)
+  "Normalize preserved-reference links in TEXT to plain markers.
+Converts link-like forms such as [[PRESERVED_3]], [[#PRESERVED_3]],
+and [[PRESERVED_3][...]] into plain [PRESERVED_3] markers.
+Also unwraps file/link wrappers around preserved markers, e.g.
+[[file:...][PRESERVED_3]] -> [PRESERVED_3]."
+  (let ((s text))
+    (setq s
+          (replace-regexp-in-string
+           "\\[\\[\\(?:#\\)?PRESERVED_\\([0-9]+\\)\\]\\(?:\\[[^]\\n]*\\]\\)?\\]"
+           "[PRESERVED_\\1]"
+           s t nil))
+    (setq s
+          (replace-regexp-in-string
+           "\\[\\[[^]\\n]+\\]\\[PRESERVED_\\([0-9]+\\)\\]\\]"
+           "[PRESERVED_\\1]"
+           s t nil))
+    s))
 
 (defun gptel-context-management--append-anchors (summary anchors mode)
   "Append preserved ANCHORS to SUMMARY text for major MODE.
 Returns the combined string, or SUMMARY unchanged if ANCHORS is nil."
   (if (null anchors)
-      summary
-    ;; Reset counter for formatting
-    (put 'gptel-context-management--format-anchors 'counter 0)
-    (concat summary (gptel-context-management--format-anchors anchors mode))))
+      (gptel-context-management--normalize-preserved-refs summary)
+    (concat (gptel-context-management--normalize-preserved-refs summary)
+            (gptel-context-management--format-anchors anchors mode))))
 
 ;;;; Model selection helper
 
@@ -499,7 +603,7 @@ and re-appended to the LLM's summary verbatim."
           (setq-local gptel-use-tools nil))
         (gptel-request prompt
          :buffer temp-buf
-         :system "You are a helpful assistant that summarizes conversations accurately and concisely."
+         :system "You are a senior ML/data-science assistant helping an American Airlines loyalty DS. Summarize for long-term continuity. Preserve workflow, decisions, file paths, exact identifiers (paths, IDs, config values), business context, and actionable errors. Aggressively compress logs and tool output. When the text contains [PRESERVED_N] markers, cite them by marker only — do NOT describe or re-list their content inline."
          :callback
          (lambda (response info)
            ;; Clean up temp buffer
@@ -551,7 +655,9 @@ Optional BACKEND and MODEL override the buffer's current backend/model for
 the summarization requests."
   (let* ((context-tokens (gptel-context-management--context-window-tokens))
          (estimated-tokens (gptel-context-management--estimate-tokens))
-         (total-exchanges (gptel-context-management--count-exchanges))
+         (exchange-info (gptel-context-management--count-exchanges))
+         (total-exchanges (plist-get exchange-info :count))
+         (exchange-source (plist-get exchange-info :source))
          (keep-chars (ceiling (* context-tokens
                                 gptel-auto-compact-keep-ratio
                                 gptel-auto-compact-chars-per-token)))
@@ -605,12 +711,17 @@ the summarization requests."
                           (propertize
                            (format
                             "*** Conversation Summary ***\n\
-Compacted ~%dK → ~%dK tokens (%d exchanges summarized, %d chunks)\n\
+Compacted ~%dK → ~%dK tokens (%s, %d chunks)\n\
 Backup: %s\n\n\
 %s\n\n---\n\n"
                             (/ old-tokens 1000)
                             (/ summary-tokens 1000)
-                            total-exchanges
+                            (pcase exchange-source
+                              ('props (format "%d exchanges summarized"
+                                              (or total-exchanges 0)))
+                              ('fallback (format "~%d exchanges estimated"
+                                                 (or total-exchanges 0)))
+                              (_ "exchange count unavailable"))
                             (length chunks)
                             backup-file
                             combined-summary)
@@ -717,6 +828,12 @@ buffer's current model."
            "Compact using model: ")
         (setq compact-backend b
               compact-model m)))
+    (let ((free-models '(gpt-4o gpt-5-mini)))
+      (unless (memq compact-model free-models)
+        (unless (yes-or-no-p
+                 (format "Model %s may incur cost. Continue compaction? "
+                         compact-model))
+          (user-error "Compaction canceled"))))
     (when (or (not file-p)
               (yes-or-no-p
                (format "Compact file buffer %s? (~%dK/%dK tokens, %.0f%%) This will modify the buffer. "
