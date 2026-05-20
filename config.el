@@ -1421,5 +1421,17 @@ is available. Useful if you tend to hammer your keys like I do."
     "pass show github/magit | head -n 1")))
 (setenv "GITHUB_PERSONAL_ACCESS_TOKEN" (jyun/get-github-token))
 
+;; Prevent org-link-preview from choking on Python f-string data URIs
+;; e.g. `data:image/png;base64,{b64}` in source blocks
+(defun +org-link-preview-skip-base64-template-a (fn ov data elem)
+  "Skip data URIs containing template placeholders."
+  (unless (and (stringp data) (string-match-p "{" data))
+    (funcall fn ov data elem)))
+(advice-add '+org-link-preview-image-data-fn :around #'+org-link-preview-skip-base64-template-a)
+
+(after! corfu
+  (setq corfu-auto-prefix 2    ; require 3 chars before triggering (was 2)
+        corfu-auto-delay 1)) ; slightly longer delay (was 0.4)
+
 ;; gptel
 (load! "local/gptel-plus")
