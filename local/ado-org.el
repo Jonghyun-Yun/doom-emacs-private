@@ -410,13 +410,15 @@ Org tags map to ADO work item types:
 
 Field defaults (when not specified):
   Story Points: 1
-  Work Type (Activity): 4. Software / UX
+  Work Type: 4. Software / UX
 
 Key ADO fields for User Story (reference names):
   System.AssignedTo                        → :ASSIGNED: property (identity display name)
   System.Description                       → Description (Html)
   Microsoft.VSTS.Common.AcceptanceCriteria → Acceptance Criteria (Html)
   AAIT.Notes                               → Notes (Html)
+  AAIT.WorkType                            → :WORK_TYPE: property (required; default '4. Software / UX')
+  Microsoft.VSTS.Scheduling.StoryPoints    → :STORY_POINTS: property (required; default 1)
 </ado_org_mapping>
 
 <org_heading_format>
