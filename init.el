@@ -66,7 +66,7 @@
        ;;parinfer          ; turn lisp into python, sort of
        ;;rotate-text       ; cycle region at point between text candidates
        snippets          ; my elves. They type so I don't have to
-       ;;(whitespace +guess +trim)  ; a butler for your whitespace
+       (whitespace +guess +trim)  ; a butler for your whitespace
        word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
@@ -161,6 +161,7 @@
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
+       ;;odin              ; C, minus its footguns
        (org                ; organize your plain life in plain text
         ;;+gnuplot         ; rendering images from gnuplot src blocks or plotting tables
         ;;+pretty            ; FIXME: slow down Emacs. use only if very necessary
@@ -172,7 +173,7 @@
         +pandoc            ; export-with-pandoc support
         ;;+pomodoro          ; be fruitful with the tomato technique
         +present           ; using org-mode for presentations
-        +roam2            ; Enables org-roam integration
+        +roam              ; Enables org-roam integration
         )
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
