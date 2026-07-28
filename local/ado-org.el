@@ -1,11 +1,12 @@
-;;; ado-org.el --- Org-mode ↔ Azure DevOps via gptel MCP -*- lexical-binding: t; -*-
+;;; ado-org.el --- Org-mode ↔ Azure DevOps via ado-py + gptel MCP -*- lexical-binding: t; -*-
 
 (load! "../local-secrets.el")
 
 ;;; Commentary:
 ;;
 ;; Bridge between Org-mode headings and Azure DevOps work items.
-;; Uses gptel with Azure DevOps MCP tools for bidirectional sync.
+;; Primary backend: ado-py Python module (deterministic, fast).
+;; MCP tools: available as fallback for operations ado-py doesn't cover.
 ;;
 ;; Per-file configuration via keywords:
 ;;   #+ADO_PROJECT: <your-project>
@@ -23,7 +24,7 @@
 (require 'org)
 
 ;;;; --------------------------------------------------------------------------
-;;;; Org link types (stolen from org-azuredevops, adapted for our org)
+;;;; Org link types
 ;;;; --------------------------------------------------------------------------
 
 (defvar ado/org-name (bound-and-true-p jyun/ado-org)
@@ -44,20 +45,17 @@ PATH can be: ID, REPO/ID, or ORG/PROJECT/REPO/ID."
   (let* ((parts (split-string path "/"))
          (nparts (length parts)))
     (cond
-     ;; Full: org/project/repo/id
      ((>= nparts 4)
       (let ((org (mapconcat #'identity (butlast parts 2) "/"))
             (repo (nth (- nparts 2) parts))
             (id (car (last parts))))
         (format "https://dev.azure.com/%s/_git/%s/pullrequest/%s" org repo id)))
-     ;; repo/id
      ((= nparts 2)
       (let ((repo (car parts))
             (id (cadr parts))
             (project (or (ado/project-from-file) ado/default-project)))
         (format "https://dev.azure.com/%s/%s/_git/%s/pullrequest/%s"
                 ado/org-name project repo id)))
-     ;; bare id — need a repo context, just link to project
      (t
       (let ((project (or (ado/project-from-file) ado/default-project)))
         (format "https://dev.azure.com/%s/%s/_git/pullrequest/%s"
@@ -85,7 +83,6 @@ PATH can be: ID, REPO/ID, or ORG/PROJECT/REPO/ID."
       (`ascii (format "%s (%s)" desc url))
       (_ url))))
 
-;; workitem:12345  or  workitem:org/project:12345
 (org-link-set-parameters
  "workitem"
  :follow (lambda (path) (browse-url (ado/--workitem-url (car (last (split-string path ":"))))))
@@ -93,21 +90,18 @@ PATH can be: ID, REPO/ID, or ORG/PROJECT/REPO/ID."
            (ado/--export-link "Work Item" (ado/--workitem-url (car (last (split-string path ":"))))
                               description format)))
 
-;; pr:42  or  pr:myrepo/42
 (org-link-set-parameters
  "pr"
  :follow (lambda (path) (browse-url (ado/--pr-url path)))
  :export (lambda (path description format _plist)
            (ado/--export-link "PR" (ado/--pr-url path) description format)))
 
-;; build:12345
 (org-link-set-parameters
  "build"
  :follow (lambda (path) (browse-url (ado/--build-url path)))
  :export (lambda (path description format _plist)
            (ado/--export-link "Build" (ado/--build-url path) description format)))
 
-;; pipeline:42
 (org-link-set-parameters
  "pipeline"
  :follow (lambda (path) (browse-url (ado/--pipeline-url path)))
@@ -119,15 +113,10 @@ PATH can be: ID, REPO/ID, or ORG/PROJECT/REPO/ID."
 ;;;; --------------------------------------------------------------------------
 
 (after! org
-  ;; Add ADO state sequence alongside existing keywords.
-  ;; Existing: (sequence "TODO" "NEXT" "|" "DONE")
-  ;;           (sequence "WAIT" "IDEA" "|" "HOLD" "KILL")
-  ;; New:
   (add-to-list 'org-todo-keywords
                '(sequence "BKLG(b)" "DEFN(f)" "PROG(p!)" "|" "CMPL(o!)" "ACPT(a!)")
-               t) ; append
+               t)
 
-  ;; Faces for ADO states (cl-union prevents duplicates on re-eval)
   (setq org-todo-keyword-faces
         (cl-union '(("BKLG" . (:foreground "#8b8b8b" :weight bold))
                     ("DEFN" . (:foreground "#51afef" :weight bold))
@@ -196,9 +185,7 @@ PATH can be: ID, REPO/ID, or ORG/PROJECT/REPO/ID."
       (string-trim (match-string 1)))))
 
 (defun ado/github-repo-from-file ()
-  "Read #+GITHUB_REPO from current buffer.
-Expected format: owner/repo (e.g. AAInternal/topml).
-Returns nil if the keyword is absent."
+  "Read #+GITHUB_REPO from current buffer."
   (save-excursion
     (goto-char (point-min))
     (when (re-search-forward "^#\\+GITHUB_REPO:[ \t]+\\(.+\\)" nil t)
@@ -231,14 +218,12 @@ Returns a plist with heading info."
            (work-type (org-entry-get nil "WORK_TYPE"))
            (parent-feature (org-entry-get nil "PARENT_FEATURE"))
            (parent-id (org-entry-get nil "PARENT_ID"))
+           (ado-tags (org-entry-get nil "ADO_TAGS"))
            (iteration (org-entry-get nil "ITERATION"))
            (deadline (org-entry-get nil "DEADLINE"))
-           ;; Get body text (between property drawer and next heading)
            (body (org-agenda-get-some-entry-text
                   (point-marker) most-positive-fixnum))
-           ;; Extract links from the body
            (links '()))
-      ;; Collect org links from the subtree
       (save-restriction
         (org-narrow-to-subtree)
         (goto-char (point-min))
@@ -254,6 +239,7 @@ Returns a plist with heading info."
             :work-type (or work-type "4. Software / UX")
             :parent-feature parent-feature
             :parent-id parent-id
+            :ado-tags ado-tags
             :iteration iteration
             :deadline deadline
             :body body
@@ -263,7 +249,7 @@ Returns a plist with heading info."
             :github-repo (ado/github-repo-from-file)))))
 
 ;;;; --------------------------------------------------------------------------
-;;;; Browse ADO at point (uses link infrastructure above)
+;;;; Browse / Copy utilities
 ;;;; --------------------------------------------------------------------------
 
 (defun ado/browse-at-point ()
@@ -275,10 +261,6 @@ Returns a plist with heading info."
      (url (browse-url url))
      (ado-id (browse-url (ado/--workitem-url ado-id)))
      (t (message "No ADO_ID or ADO_URL at point")))))
-
-;;;; --------------------------------------------------------------------------
-;;;; Utility commands (stolen from org-jira patterns)
-;;;; --------------------------------------------------------------------------
 
 (defun ado/copy-id ()
   "Copy the ADO_ID at point to the kill ring."
@@ -299,8 +281,7 @@ Returns a plist with heading info."
      (t (message "No ADO_ID or ADO_URL at point")))))
 
 (defun ado/copy-link ()
-  "Copy an org-style workitem link for the heading at point.
-Result: [[workitem:12345][Title]]"
+  "Copy an org-style workitem link for the heading at point."
   (interactive)
   (let ((id (org-entry-get nil "ADO_ID"))
         (title (org-get-heading t t t t)))
@@ -314,9 +295,7 @@ Result: [[workitem:12345][Title]]"
   "ADO state progression order.")
 
 (defun ado/next-state ()
-  "Advance the heading at point to the next ADO state.
-Pure elisp — only changes the org TODO keyword, does NOT push to ADO.
-Use `ado/update-at-point' to sync to ADO afterwards."
+  "Advance the heading at point to the next ADO state (local only)."
   (interactive)
   (let* ((current (org-get-todo-state))
          (pos (cl-position current ado/state-sequence :test #'equal)))
@@ -340,7 +319,310 @@ Use `ado/update-at-point' to sync to ADO afterwards."
                     (if (string-empty-p title) (concat "#" id) title)))))
 
 ;;;; --------------------------------------------------------------------------
-;;;; Minor mode: ado-org-mode
+;;;; ado-py Python bridge
+;;;; --------------------------------------------------------------------------
+
+(defvar ado/python-command
+  (expand-file-name "~/.conda/envs/gptel/bin/python")
+  "Python interpreter from mamba gptel env.")
+
+(defvar ado/python-module-dir
+  (expand-file-name "~/.doom.d/local/ado-py")
+  "Directory containing the ado_py Python module.")
+
+(defun ado/--check-install ()
+  "Verify ado-py is importable. Warn once if not."
+  (let ((exit (call-process ado/python-command nil nil nil
+                            "-c" "import ado_py")))
+    (unless (= exit 0)
+      (display-warning 'ado-org
+                       (format "ado-py not installed in %s. Run: cd %s && %s -m pip install -e ."
+                               ado/python-command ado/python-module-dir ado/python-command)
+                       :warning))))
+
+(run-with-idle-timer 3 nil #'ado/--check-install)
+
+(defun ado/--run-python (subcommand &optional json-input extra-args)
+  "Run ado_py CLI with SUBCOMMAND.
+If JSON-INPUT is non-nil, pipe it to stdin.
+EXTRA-ARGS is a list of additional CLI arguments.
+Returns parsed JSON as plist/alist, or signals error."
+  (let* ((default-directory ado/python-module-dir)
+         (args (append (list "-m" "ado_py" subcommand) extra-args))
+         (buf (generate-new-buffer " *ado-py*"))
+         exit-code result)
+    (unwind-protect
+        (progn
+          (if json-input
+              (with-temp-buffer
+                (insert json-input)
+                (setq exit-code
+                      (apply #'call-process-region
+                             (point-min) (point-max)
+                             ado/python-command
+                             nil buf nil args)))
+            (setq exit-code
+                  (apply #'call-process
+                         ado/python-command nil buf nil args)))
+          (with-current-buffer buf
+            (goto-char (point-min))
+            (setq result (buffer-string)))
+          (if (= exit-code 0)
+              (json-parse-string result :object-type 'alist :array-type 'list)
+            ;; Non-zero exit: try to parse a structured error payload
+            ;; ({"error_kind":..., "error":..., "suggestions":[...]}) and
+            ;; present a friendly message.
+            (let ((parsed (ignore-errors
+                            (json-parse-string result
+                                               :object-type 'alist
+                                               :array-type 'list))))
+              (if (and parsed (alist-get 'error parsed))
+                  (let* ((kind (alist-get 'error_kind parsed))
+                         (msg (alist-get 'error parsed))
+                         (suggestions (alist-get 'suggestions parsed)))
+                    (error "ado-py %s [%s]: %s%s"
+                           subcommand
+                           (or kind "error")
+                           msg
+                           (if suggestions
+                               (concat "  Suggestions: "
+                                       (mapconcat #'identity suggestions ", "))
+                             "")))
+                (error "ado-py %s failed (exit %d): %s"
+                       subcommand exit-code result)))))
+      (kill-buffer buf))))
+
+(defun ado/heading-to-json ()
+  "Convert heading at point to JSON string for ado_py."
+  (save-excursion
+    (org-back-to-heading t)
+    (let* ((ctx (ado/heading-context))
+           (heading (plist-get ctx :heading))
+           (parent-id (plist-get ctx :parent-id))
+           (story-points (plist-get ctx :story-points))
+           (work-type (plist-get ctx :work-type))
+           (assigned (plist-get ctx :assigned))
+           (ado-tags (plist-get ctx :ado-tags))
+           (todo-state (plist-get ctx :todo))
+           (team (plist-get ctx :team))
+           (project (plist-get ctx :project))
+           (description "")
+           (acceptance-criteria "")
+           (notes ""))
+      (save-restriction
+        (org-narrow-to-subtree)
+        (goto-char (point-min))
+        (when (re-search-forward "^\\*+[*/]* +Description *$" nil t)
+          (let ((beg (1+ (line-end-position)))
+                (end (or (save-excursion
+                           (when (re-search-forward "^\\*+[*/]* " nil t)
+                             (line-beginning-position)))
+                         (point-max))))
+            (setq description (string-trim (buffer-substring-no-properties beg end)))))
+        (goto-char (point-min))
+        (when (re-search-forward "^\\*+[*/]* +Acceptance Criteria *$" nil t)
+          (let ((beg (1+ (line-end-position)))
+                (end (or (save-excursion
+                           (when (re-search-forward "^\\*+[*/]* " nil t)
+                             (line-beginning-position)))
+                         (point-max))))
+            (setq acceptance-criteria (string-trim (buffer-substring-no-properties beg end)))))
+        (goto-char (point-min))
+        (when (re-search-forward "^\\*+[*/]* +Notes *$" nil t)
+          (let ((beg (1+ (line-end-position)))
+                (end (or (save-excursion
+                           (when (re-search-forward "^\\*+[*/]* " nil t)
+                             (line-beginning-position)))
+                         (point-max))))
+            (setq notes (string-trim (buffer-substring-no-properties beg end))))))
+      (let ((obj (list (cons "title" heading)
+                       (cons "description" (if (string-empty-p description) heading description))
+                       (cons "acceptance_criteria" acceptance-criteria)
+                       (cons "parent_id" (when parent-id (string-to-number parent-id)))
+                       (cons "story_points" (string-to-number (or story-points "1")))
+                       (cons "work_type" (or work-type "4. Software / UX"))
+                       (cons "assigned_to" (or assigned "Yun, Jonghyun")))))
+        (when todo-state
+          (push (cons "state" todo-state) obj))
+        (when (and notes (not (string-empty-p notes)))
+          (push (cons "notes" notes) obj))
+        (when (and ado-tags (not (string-empty-p ado-tags)))
+          (push (cons "tags" ado-tags) obj))
+        (when team
+          (let ((area (format "%s\\%s" (or project ado/default-project) team)))
+            (push (cons "area_path" area) obj)))
+        (json-encode obj)))))
+
+;;;; --------------------------------------------------------------------------
+;;;; Interactive commands — Python-backed
+;;;; --------------------------------------------------------------------------
+
+(defun ado/validate-at-point ()
+  "Validate the org heading at point against ado_py guardrails."
+  (interactive)
+  (let* ((json-str (ado/heading-to-json))
+         (result (ado/--run-python "validate" json-str)))
+    (if (alist-get 'ok result)
+        (message "✓ Valid. Ready to push.")
+      (message "✗ Validation errors: %s"
+               (mapconcat #'identity (alist-get 'errors result) "; ")))))
+
+(defun ado/create-at-point ()
+  "Create an ADO work item from the org heading at point.
+Validates, pushes, sets :ADO_ID:, :ADO_URL:, :ITERATION:, and DEADLINE."
+  (interactive)
+  (let* ((json-str (ado/heading-to-json))
+         (validation (condition-case err
+                         (ado/--run-python "validate" json-str)
+                       (error (user-error "Validation failed: %s" (error-message-string err))))))
+    (unless (alist-get 'ok validation)
+      (user-error "Cannot push — missing fields: %s"
+                  (mapconcat #'identity (alist-get 'errors validation) "; ")))
+    (let ((result (ado/--run-python "create" json-str)))
+      (when (alist-get 'ok result)
+        (let* ((item (alist-get 'item result))
+               (ado-id (alist-get 'id item))
+               (iter-path (alist-get 'iteration_path item)))
+          ;; Set core properties
+          (org-entry-put nil "ADO_ID" (number-to-string ado-id))
+          (org-entry-put nil "ADO_URL" (ado/--workitem-url (number-to-string ado-id)))
+          ;; Set iteration info if available
+          (when iter-path
+            (org-entry-put nil "ITERATION" iter-path))
+          ;; Fetch iteration dates and set DEADLINE
+          (let ((iter-info (ignore-errors
+                             (ado/--run-python "current-iteration" nil nil))))
+            (when iter-info
+              (let ((finish (alist-get 'finish_date iter-info))
+                    (start (alist-get 'start_date iter-info)))
+                (when finish
+                  (org-deadline nil finish))
+                (when start
+                  (org-entry-put nil "ITERATION_START" start))
+                (when finish
+                  (org-entry-put nil "ITERATION_END" finish)))))
+          (message "✓ Created ADO #%d" ado-id))))))
+
+(defun ado/fetch-item (item-id)
+  "Fetch ADO work item ITEM-ID via ado-py and display as JSON.
+With prefix arg, prompt for ID. Otherwise use :ADO_ID: at point."
+  (interactive
+   (list (or (and (not current-prefix-arg)
+                  (org-entry-get nil "ADO_ID"))
+             (read-string "ADO work item ID: "))))
+  (let ((result (ado/--run-python "fetch" nil
+                                  (list "--id" (if (stringp item-id) item-id
+                                              (number-to-string item-id))))))
+    (with-current-buffer (get-buffer-create "*ado-py-result*")
+      (erase-buffer)
+      (insert (json-encode result))
+      (json-pretty-print-buffer)
+      (goto-char (point-min))
+      (display-buffer (current-buffer)))
+    (message "Fetched #%s: %s" item-id (alist-get 'title result))))
+
+(defun ado/fetch-children (parent-id)
+  "Fetch all children of PARENT-ID via ado-py."
+  (interactive
+   (list (or (org-entry-get nil "ADO_ID")
+             (read-string "Parent work item ID: "))))
+  (let ((result (ado/--run-python "children" nil
+                                  (list "--id" (if (stringp parent-id) parent-id
+                                              (number-to-string parent-id))))))
+    (with-current-buffer (get-buffer-create "*ado-py-result*")
+      (erase-buffer)
+      (insert (json-encode result))
+      (json-pretty-print-buffer)
+      (goto-char (point-min))
+      (display-buffer (current-buffer)))
+    (message "Fetched %d children of #%s" (length result) parent-id)))
+
+(defun ado/my-items (&optional tag)
+  "Fetch my current-iteration items via ado-py.
+With prefix arg, prompt for an existing ADO tag to filter by."
+  (interactive
+   (list (when current-prefix-arg
+           (read-string "Filter by ADO tag: "))))
+  (let* ((project (or (ado/project-from-file) ado/default-project))
+         (team (or (ado/team-from-file) "Muscle Shoals"))
+         (args (append (list "--project" project "--team" team)
+                       (when (and tag (not (string-empty-p tag)))
+                         (list "--tag" tag))))
+         (result (ado/--run-python "my-items" nil args)))
+    (with-current-buffer (get-buffer-create "*ado-py-result*")
+      (erase-buffer)
+      (insert (json-encode result))
+      (json-pretty-print-buffer)
+      (goto-char (point-min))
+      (display-buffer (current-buffer)))
+    (message "Fetched %d items" (length result))))
+
+(defun ado/current-iteration ()
+  "Show the current iteration for the team in the echo area."
+  (interactive)
+  (let* ((info (condition-case err
+                   (ado/--run-python "current-iteration" nil nil)
+                 (error (user-error "No current iteration: %s"
+                                    (error-message-string err))))))
+    (message "Current: %s  [%s → %s]"
+             (alist-get 'name info)
+             (alist-get 'start_date info)
+             (alist-get 'finish_date info))))
+
+(defun ado/next-iteration ()
+  "Show the next iteration (after the current one) for the team.
+Warns if no current iteration or no iteration is scheduled after it."
+  (interactive)
+  (let* ((info (condition-case err
+                   (ado/--run-python "next-iteration" nil nil)
+                 (error (user-error "%s" (error-message-string err))))))
+    (message "Next: %s  [%s → %s]"
+             (alist-get 'name info)
+             (alist-get 'start_date info)
+             (alist-get 'finish_date info))))
+
+(defun ado/update-at-point ()
+  "Push current heading state to ADO via ado-py update."
+  (interactive)
+  (let* ((ado-id (org-entry-get nil "ADO_ID"))
+         (state (org-get-todo-state))
+         (ado-tags (org-entry-get nil "ADO_TAGS")))
+    (unless ado-id (user-error "No ADO_ID at point"))
+    (let* ((updates (list (cons "state" state)))
+           (updates (if (and ado-tags (not (string-empty-p ado-tags)))
+                        (append updates (list (cons "tags" ado-tags)))
+                      updates))
+           (json-str (json-encode updates))
+           (result (condition-case err
+                       (ado/--run-python "update" json-str
+                                         (list "--id" ado-id))
+                     (error (user-error "%s" (error-message-string err))))))
+      (if (alist-get 'ok result)
+          (message "✓ Updated ADO #%s → %s" ado-id state)
+        (message "✗ Update failed")))))
+
+(defun ado/list-tags (&optional filter)
+  "List existing ADO project tags, optionally filtered by substring FILTER.
+Useful to check spelling before attaching a tag."
+  (interactive
+   (list (when current-prefix-arg
+           (read-string "Tag substring filter: "))))
+  (let* ((project (or (ado/project-from-file) ado/default-project))
+         (args (append (list "--project" project)
+                       (when (and filter (not (string-empty-p filter)))
+                         (list "--filter" filter))))
+         (tags (ado/--run-python "tags" nil args)))
+    (with-current-buffer (get-buffer-create "*ado-py-result*")
+      (erase-buffer)
+      (insert (json-encode tags))
+      (json-pretty-print-buffer)
+      (goto-char (point-min))
+      (display-buffer (current-buffer)))
+    (message "%d tag(s)%s" (length tags)
+             (if filter (format " matching %S" filter) ""))))
+
+;;;; --------------------------------------------------------------------------
+;;;; Minor mode
 ;;;; --------------------------------------------------------------------------
 
 (defvar ado-org-mode-map
@@ -349,12 +631,10 @@ Use `ado/update-at-point' to sync to ADO afterwards."
   "Keymap for `ado-org-mode'.")
 
 (define-minor-mode ado-org-mode
-  "Minor mode for org files linked to Azure DevOps.
-Activated automatically when #+ADO_PROJECT is present."
+  "Minor mode for org files linked to Azure DevOps."
   :lighter " ADO"
   :keymap ado-org-mode-map
   (when ado-org-mode
-    ;; Cache project for link functions
     (setq-local ado/default-project (ado/project-from-file))))
 
 (defun ado/--maybe-enable-mode ()
@@ -368,13 +648,12 @@ Activated automatically when #+ADO_PROJECT is present."
 (add-hook 'org-mode-hook #'ado/--maybe-enable-mode)
 
 ;;;; --------------------------------------------------------------------------
-;;;; gptel ADO preset
+;;;; gptel ADO preset — Python-first, MCP fallback
 ;;;; --------------------------------------------------------------------------
 
 (after! gptel
   (gptel-make-preset 'with-ado
-    :description "Azure DevOps Project Manager: create, update, pull, polish work items via MCP."
-    ;; :parents 'base-policies
+    :description "Azure DevOps Project Manager: ado-py primary, MCP fallback."
     :system
     `(:append ,(concat "You are an Azure DevOps Project Manager assistant operating through Org-mode.
 
@@ -397,6 +676,60 @@ Default behavior:
 - For collaborating teams: show their items when they share a parent Feature I'm working on or have recently worked on
 </ado_user_context>
 
+<tool_preference>
+PREFER ado-py Python module over MCP tools. ado-py is faster and deterministic.
+The user's Emacs has these elisp commands that call ado-py:
+
+  (ado/--run-python SUBCOMMAND &optional JSON-INPUT EXTRA-ARGS)
+
+Available subcommands and their usage:
+  validate    — stdin JSON, validates User Story fields
+  create      — stdin JSON, creates User Story in ADO (includes parent link)
+  fetch       — --id ID, returns work item with relations (children, parent, related IDs)
+  fetch-batch — --ids 1,2,3, returns multiple work items
+  children    — --id ID, returns all children of a parent work item
+  my-items    — --project P --team T [--tag TAG], returns my current-iteration items (optionally filtered by an existing System.Tags value)
+  update      — --id ID + stdin JSON, updates work item fields
+  link        — --source S --target T --type parent|child|related
+  current-iteration — returns current iteration path/name/start/finish dates
+  next-iteration    — returns the iteration after the current one; errors if none exists
+  tags              — --filter SUBSTR, lists existing project tags (to verify spelling before attaching)
+
+<tag_handling>
+ADO tags must already EXIST — the user cannot create new tags.
+When attaching a tag (via create or update with a \"tags\" field):
+- If it fails with error_kind \"tag_permission\", this is a PERMISSION issue (NOT auth/network).
+  Tell the user the tag does not exist and they lack permission to create it.
+- The error payload includes a \"suggestions\" list of similar existing tags (possible typo fixes).
+  Surface these suggestions and ask which existing tag they meant.
+- Use the `tags` subcommand to look up valid existing tags, e.g.
+  (ado/--run-python \"tags\" nil (list \"--project\" \"PROJECT\" \"--filter\" \"DR\"))
+- Distinguish error_kind values: auth (bad/expired PAT), network (connectivity),
+  permission/tag_permission (access), notfound (404), api (other).
+</tag_handling>
+
+When you need to call ADO, prefer using these Emacs Lisp tool calls:
+  (ado/--run-python \"fetch\" nil (list \"--id\" \"2655846\"))
+  (ado/--run-python \"children\" nil (list \"--id\" \"2655846\"))
+  (ado/--run-python \"my-items\" nil (list \"--project\" \"OperationsResearch_AdvancedAnalytics\" \"--team\" \"Muscle Shoals\"))
+  (ado/--run-python \"create\" \"{\\\"title\\\": \\\"...\\\", ...}\")
+  (ado/--run-python \"update\" \"{\\\"state\\\": \\\"PROG\\\"}\" (list \"--id\" \"12345\"))
+  (ado/--run-python \"link\" nil (list \"--source\" \"123\" \"--target\" \"456\" \"--type\" \"parent\"))
+
+Use MCP ADO tools ONLY for operations ado-py doesn't cover:
+- Iteration listing (work_list_team_iterations)
+- WIQL queries beyond my-items
+- Backlog/board views
+- Identity lookups (core_get_identity_ids)
+- Adding comments (wit_add_work_item_comment)
+- Unlinking (wit_work_item_unlink)
+
+ado-py advantages:
+- fetch returns relations (children/parent/related IDs) in one call — no need for separate expand=relations MCP call
+- create includes parent link automatically via parent_id field — no separate link call needed
+- Batch fetch via fetch-batch or children — fewer round trips
+</tool_preference>
+
 <ado_org_mapping>
 Org TODO states map to ADO states:
   BKLG → Backlog
@@ -407,6 +740,10 @@ Org TODO states map to ADO states:
 
 Org tags map to ADO work item types:
   :story: → User Story   :task: → Task   :bug: → Bug   :feature: → Feature   :epic: → Epic
+
+ADO System.Tags (labels like 'DR') are DISTINCT from work item type tags.
+They are stored in the :ADO_TAGS: property (semicolon-separated), NOT as org tags.
+You can attach EXISTING tags only — do not attempt to create new tags.
 
 Field defaults (when not specified):
   Story Points: 1
@@ -452,6 +789,7 @@ Example when user is on a level-1 heading (* Sprint):
     :WORK_TYPE:        {activity, default 4. Software / UX}
     :PARENT_FEATURE:   {parent feature title}
     :PARENT_ID:        {parent feature id}
+    :ADO_TAGS:         {System.Tags, semicolon-separated; omit if empty}
     :ITERATION:        {iteration path}
     :ITERATION_START:  {iteration start date YYYY-MM-DD}
     :ITERATION_END:    {iteration end date YYYY-MM-DD}
@@ -482,11 +820,11 @@ Rules:
 <pulling_work_items>
 When asked to pull work items:
 1. Always use project=" jyun/ado-project ", team=" jyun/ado-team "
-2. Use wit_my_work_items to get MY assigned items in the current iteration
-3. For each of my items, use wit_get_work_item with expand=relations to find parent feature IDs
+2. Call (ado/--run-python \"my-items\") to get my assigned items
+3. For each of my items, parent_id is already in the response — no extra fetch needed
 4. Collect the set of parent feature IDs from my items ONLY
-5. For each parent feature, fetch ALL child work items (teammates' items) under it
-6. Get iteration details from work_list_team_iterations for start/end dates
+5. For each parent feature, call (ado/--run-python \"children\" nil (list \"--id\" \"PARENT_ID\")) to get ALL siblings
+6. For iteration dates, use MCP work_list_team_iterations (ado-py doesn't cover this)
 7. Group items by parent feature
 8. Do NOT pull items from features I have no work in — scope is my-features only
 9. Output clean org text in the format above
@@ -495,25 +833,17 @@ When asked to pull work items:
 <creating_work_items>
 When asked to create a work item from an org heading:
 1. Read the heading context (title, body, tags, properties)
-2. Determine work item type from tag or ADO_TYPE property or #+ADO_WIT
-3. Set System.AreaPath to match the team:
-   - Read #+ADO_TEAM from the buffer (e.g. '" jyun/ado-team "')
-   - Set System.AreaPath = '{project}\\{team}' (e.g. '" jyun/ado-project "\\\\" jyun/ado-team "')
-   - If no #+ADO_TEAM is set, omit AreaPath and let ADO use the default
-4. Set System.AssignedTo:
-   - If :ASSIGNED: property exists on the heading, use that value
-   - Otherwise default to '" jyun/user-display-name "' (current user)
-   - Only omit assignment if explicitly told unassigned
-5. Use wit_create_work_item with appropriate fields
-6. Report back the created ADO ID so the user can set :ADO_ID:
-7. If a :PARENT_ID: is specified, use wit_work_items_link to set parent
+2. Build JSON with: title, description, acceptance_criteria, parent_id, story_points, work_type, assigned_to, area_path
+3. Call (ado/--run-python \"create\" JSON-STRING) — this handles parent linking automatically
+4. Report back the created ADO ID so the user can set :ADO_ID:
+5. No separate link call needed — ado-py create includes parent relation
 </creating_work_items>
 
 <updating_work_items>
 When asked to update a work item:
 1. Read :ADO_ID: from the heading
-2. Map org TODO state to ADO state
-3. Use wit_update_work_item to push changes
+2. Build JSON with changed fields (state accepts org keywords like PROG)
+3. Call (ado/--run-python \"update\" JSON-STRING (list \"--id\" \"ADO_ID\"))
 4. Confirm what was updated
 </updating_work_items>
 
@@ -529,22 +859,19 @@ When asked to polish/review a work item:
 
 <assigning_work_items>
 When asked to assign a work item:
-1. Use core_get_identity_ids to find the person
-2. Use wit_update_work_item to set System.AssignedTo
+1. Use MCP core_get_identity_ids to find the person (ado-py doesn't cover identity lookup)
+2. Call (ado/--run-python \"update\" \"{\\\"assigned_to\\\": \\\"Name\\\"}\" (list \"--id\" \"ADO_ID\"))
 3. Report the assignment
 </assigning_work_items>
 
 <safety_guard>
 Before any create, update, or delete operation on a work item:
-1. Check the :ASSIGNED: property (or System.AssignedTo from ADO) of the target item
+1. Check the :ASSIGNED: property (or assigned_to from ado-py fetch) of the target item
 2. If the assignee is NOT '" jyun/user-display-name "' (or unassigned/empty):
    - STOP and warn: '⚠ This item is assigned to {assignee}, not you. Proceed anyway? (yes/no)'
    - Wait for explicit 'yes' before executing the operation
    - If the user says no, abort and suggest alternatives
-3. This applies to: wit_create_work_item (when assigning to someone else),
-   wit_update_work_item, wit_update_work_items_batch, wit_work_items_link,
-   wit_work_item_unlink, wit_add_work_item_comment (warn but don't block comments)
-4. Exception: pulling/reading work items never triggers this guard
+3. Exception: pulling/reading work items never triggers this guard
 </safety_guard>
 
 <tone>
@@ -552,26 +879,44 @@ Be terse. Report facts. Don't hedge. Format output as valid org-mode.
 </tone>")
       )
     :tools
-    `(:append (;; Work item read
-      "wit_get_work_item" "wit_get_work_items_batch_by_ids" "wit_my_work_items"
-      "wit_get_work_items_for_iteration"
-      "wit_list_work_item_comments" "wit_list_work_item_revisions"
-      "wit_get_work_item_type"
-      ;; Work item write
-      "wit_create_work_item" "wit_update_work_item" "wit_add_child_work_items"
-      "wit_work_items_link" "wit_work_item_unlink"
-      "wit_add_work_item_comment" "wit_update_work_items_batch"
+    `(:append (;; MCP tools — only for operations ado-py doesn't cover
+      ;; Iteration & team settings
+      "work_list_team_iterations" "work_list_iterations"
+      "work_get_team_settings"
+      ;; Project/team discovery
+      "core_list_projects" "core_list_project_teams"
+      "core_get_identity_ids"
+      ;; Comments (ado-py doesn't cover yet)
+      "wit_add_work_item_comment"
       ;; Queries & backlogs
       "wit_get_query" "wit_get_query_results_by_id"
       "wit_list_backlogs" "wit_list_backlog_work_items"
-      ;; Iteration & team
-      "work_list_team_iterations" "work_list_iterations"
-      "work_get_team_settings"
-      "core_list_projects" "core_list_project_teams"
-      "core_get_identity_ids"
+      ;; Unlink (ado-py doesn't cover yet)
+      "wit_work_item_unlink"
       ;; Reading linked resources
       "convert_to_markdown")))
 )
+
+;;;; --------------------------------------------------------------------------
+;;;; Keybindings
+;;;; --------------------------------------------------------------------------
+
+(when (boundp 'ado-org-mode-map)
+  (define-key ado-org-mode-map (kbd "C-c a v") #'ado/validate-at-point)
+  (define-key ado-org-mode-map (kbd "C-c a c") #'ado/create-at-point)
+  (define-key ado-org-mode-map (kbd "C-c a f") #'ado/fetch-item)
+  (define-key ado-org-mode-map (kbd "C-c a C") #'ado/fetch-children)
+  (define-key ado-org-mode-map (kbd "C-c a m") #'ado/my-items)
+  (define-key ado-org-mode-map (kbd "C-c a I") #'ado/current-iteration)
+  (define-key ado-org-mode-map (kbd "C-c a N") #'ado/next-iteration)
+  (define-key ado-org-mode-map (kbd "C-c a t") #'ado/list-tags)
+  (define-key ado-org-mode-map (kbd "C-c a s") #'ado/update-at-point)
+  (define-key ado-org-mode-map (kbd "C-c a b") #'ado/browse-at-point)
+  (define-key ado-org-mode-map (kbd "C-c a y") #'ado/copy-id)
+  (define-key ado-org-mode-map (kbd "C-c a u") #'ado/copy-url)
+  (define-key ado-org-mode-map (kbd "C-c a l") #'ado/copy-link)
+  (define-key ado-org-mode-map (kbd "C-c a n") #'ado/next-state)
+  (define-key ado-org-mode-map (kbd "C-c a i") #'ado/insert-link))
 
 (provide 'ado-org)
 ;;; ado-org.el ends here
