@@ -124,7 +124,7 @@
   (setq system-screenshot-method "pngpaste %s"))
 
 (when (not (modulep! :lang org +roam2))
-  (setq! org-roam-directory "~/org/roam")
+  (setopt org-roam-directory "~/org/roam")
   )
 
 ;; TODO: nil causes emacs to freeze
@@ -237,7 +237,7 @@
   ;; https://superuser.com/a/1386206
   (setq LaTeX-reftex-cite-format-auto-activate t)
   ;; make AUCTeX save files without asking
-  (setq! TeX-save-query nil
+  (setopt TeX-save-query nil
          TeX-show-compilation nil
          ;; the below is buffer-local ???
          TeX-command-extra-options "-shell-escape"))
@@ -447,7 +447,7 @@
 ;; (require 'password-store)
 ;; org-gcal credintial after init
 ;;(add-hook! 'after-init-hook #'jyun/get-org-gcal-credential)
-(setq! org-gcal-cancelled-todo-keyword "KILL"
+(setopt org-gcal-cancelled-todo-keyword "KILL"
        org-gcal-auto-archive nil)
 
 ;; if something goes wrong, try delete the token and run `org-gcal-request-token'.
@@ -615,7 +615,7 @@
 
 ;;; reference
 ;;;; biblio
-(setq! +biblio-pdf-library-dir "~/Zotero/storage/"
+(setopt +biblio-pdf-library-dir "~/Zotero/storage/"
        +biblio-default-bibliography-files '("~/Zotero/myref.bib")
        ;; a single file for one long note / directory for many note files
        +biblio-notes-path "~/org/roam/refnotes.org"
@@ -633,7 +633,7 @@
 
 (after! citar
   ;; list of paths
-  (setq! citar-bibliography +biblio-default-bibliography-files
+  (setopt citar-bibliography +biblio-default-bibliography-files
          citar-notes-paths (list org-roam-directory)
          citar-library-paths (list +biblio-pdf-library-dir)
          )
@@ -882,9 +882,11 @@
 
 ;;;; no evil-snipe
 (after! evil-snipe
-  (pushnew! evil-snipe-disabled-modes 'ibuffer-mode 'dired-mode)
-  (pushnew! evil-snipe-disabled-modes 'wordnut-mode 'osx-dictionary-mode)
-  (pushnew! evil-snipe-disabled-modes 'deadgrep-mode)
+  (dolist (m '(ibuffer-mode dired-mode))
+    (cl-pushnew m evil-snipe-disabled-modes :test #'equal))
+  (dolist (m '(wordnut-mode osx-dictionary-mode))
+    (cl-pushnew m evil-snipe-disabled-modes :test #'equal))
+  (cl-pushnew 'deadgrep-mode evil-snipe-disabled-modes :test #'equal)
   ;; (pushnew! evil-snipe-disabled-modes 'reftex-select-label-mode 'reftex-select-bib-mode)
   )
 
@@ -899,10 +901,9 @@
   ;; (setq which-key-idle-secondary-delay 0.05)
   ;; (define-key which-key-mode-map (kbd "C-h") 'which-key-C-h-dispatch)
   ;; (setq which-key-allow-multiple-replacements t)
-  (pushnew!
-   which-key-replacement-alist
-   '(("" . "\\`+?evil[-:\\/]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
-   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1")))
+  (dolist (rep '((("" . "\\`+?evil[-:\\/]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
+                 (("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))))
+    (cl-pushnew rep which-key-replacement-alist :test #'equal))
   ;; why I want this??
   ;; (setq which-key-replacement-alist nil)
   )
@@ -1324,21 +1325,39 @@
 ;; TODO: remove repeated config in write module
 (use-package! ispell
   :config
-  (setq ispell-program-name "hunspell")
+  ;; Use an absolute path so a GUI Emacs (launched from macOS with a
+  ;; minimal PATH that omits Homebrew) can still locate hunspell.
+  (setq ispell-program-name (or (executable-find "hunspell")
+                                "/opt/homebrew/bin/hunspell"))
   ;; Configure German, Swiss German, and two variants of English.
   (setq ispell-dictionary "en_US")
   ;; For saving words to the personal dictionary, don't infer it from
   ;; the locale, otherwise it would save to ~/.hunspell_de_DE.
   ;; (setq ispell-personal-dictionary "~/.hunspell_personal")
   (setq ispell-personal-dictionary "~/.hunspell_en_US")
-  ;; Configure `LANG`, otherwise ispell.el cannot find a 'default
-  ;; dictionary' even though multiple dictionaries will be configured
-  ;; in next line.
+  ;; Configure `LANG'/`DICPATH', otherwise ispell.el cannot find a
+  ;; 'default dictionary' when Emacs is launched from the macOS GUI,
+  ;; where these env vars are usually unset.
   (setenv "LANG" "en_US.UTF-8")
-  ;; ispell-set-spellchecker-params has to be called
-  ;; before ispell-hunspell-add-multi-dic will work
-  (ispell-set-spellchecker-params)
-  (ispell-hunspell-add-multi-dic ispell-dictionary)
+  (let ((dicdir (expand-file-name "~/Library/Spelling")))
+    (when (file-directory-p dicdir)
+      (setenv "DICPATH" dicdir)))
+  ;; Tell ispell.el exactly where the affix files live so dictionary
+  ;; discovery does not depend on hunspell's search-path heuristics.
+  (setq ispell-hunspell-dict-paths-alist
+        (list (list "en_US"     (expand-file-name "~/Library/Spelling/en_US.aff"))
+              (list "en_US-med" (expand-file-name "~/Library/Spelling/en_US-med.aff"))
+              (list "ko"        (expand-file-name "~/Library/Spelling/ko.aff"))))
+  ;; ispell-set-spellchecker-params has to be called before
+  ;; ispell-hunspell-add-multi-dic will work. Guard the whole thing so a
+  ;; spell-checker hiccup never aborts the rest of this config file.
+  (condition-case err
+      (progn
+        (ispell-set-spellchecker-params)
+        (ispell-hunspell-add-multi-dic ispell-dictionary))
+    (error
+     (message "[config] ispell/hunspell setup skipped: %s"
+              (error-message-string err))))
   ;; The personal dictionary file has to exist, otherwise hunspell will
   ;; silently not use it.
   (unless (file-exists-p ispell-personal-dictionary)
@@ -1410,16 +1429,101 @@ is available. Useful if you tend to hammer your keys like I do."
   (evil-define-key 'insert 'global (kbd "M-C-<return>") 'rk/copilot-complete-or-accept)
   )
 
+;;; agent-shell — interact with ACP agents (GitHub Copilot CLI) in a native shell.
+;; Requires the Copilot CLI on PATH (`brew install copilot-cli`); agent-shell
+;; talks to it over ACP via `copilot --acp' (the default command).
+(use-package! agent-shell
+  :commands (agent-shell agent-shell-github-start-copilot)
+  :init
+  (map! :leader
+        (:prefix ("l" . "llm/agent")
+         :desc "Agent shell (pick agent)" "a" #'agent-shell
+         :desc "GitHub Copilot shell"     "c" #'agent-shell-github-start-copilot))
+  :config
+  ;; Default agent-shell to GitHub Copilot (no API key needed; uses Copilot CLI auth).
+  (setq agent-shell-github-acp-command '("copilot" "--acp")))
+
 ;; noter needs this
 (defun replace-home-to-tilde (filename)
   (replace-regexp-in-string (getenv "HOME") "~" filename)
   )
 
+(defvar jyun/github-token nil
+  "Cached GitHub token once fetched, to avoid repeated `pass'/gpg calls.")
+
+(defvar jyun/ado-token nil
+  "Cached Azure DevOps token once fetched, to avoid repeated `az' calls.")
+
 (defun jyun/get-github-token ()
-  (string-trim
-   (shell-command-to-string
-    "pass show github/magit | head -n 1")))
-(setenv "GITHUB_PERSONAL_ACCESS_TOKEN" (jyun/get-github-token))
+  "Return the cached GitHub token, or nil if not fetched yet.
+NON-BLOCKING: this never shells out. The token is fetched asynchronously at
+startup (see `jyun/--prefetch-tokens-then-load-gptel'); until it lands this
+returns nil so it can never freeze Emacs on pass/gpg/pinentry."
+  jyun/github-token)
+
+(defun jyun/get-ado-token ()
+  "Return the cached Azure DevOps token, or nil if not fetched yet.
+NON-BLOCKING: see `jyun/get-github-token'."
+  jyun/ado-token)
+
+(defun jyun/--fetch-token-async (cache-sym envvar cmd &optional then)
+  "Run shell CMD asynchronously; cache its trimmed output in CACHE-SYM.
+If ENVVAR is non-nil also `setenv' it. THEN (if given) is always called when
+the process finishes, on success or failure. Never blocks Emacs: if gpg needs
+a passphrase, pinentry resolves asynchronously while Emacs stays responsive."
+  (if (symbol-value cache-sym)
+      (when then (funcall then))
+    (let ((buf (generate-new-buffer " *jyun-token*")))
+      (make-process
+       :name "jyun-token" :buffer buf :noquery t
+       :command (list shell-file-name shell-command-switch cmd)
+       :sentinel
+       (lambda (proc _event)
+         (when (memq (process-status proc) '(exit signal))
+           (when (buffer-live-p (process-buffer proc))
+             (with-current-buffer (process-buffer proc)
+               (let ((token (string-trim (buffer-string))))
+                 (when (and token (not (string-empty-p token)))
+                   (set cache-sym token)
+                   (when envvar (setenv envvar token)))))
+             (kill-buffer (process-buffer proc)))
+           (when then (funcall then))))))))
+
+(defvar jyun/--gptel-loaded nil
+  "Non-nil once `local/gptel-plus' has been loaded (load-once guard).")
+
+(defun jyun/--load-gptel-plus-once ()
+  "Load gptel/MCP exactly once. Safe to call from several callbacks/timers."
+  (unless jyun/--gptel-loaded
+    (setq jyun/--gptel-loaded t)
+    (load! "local/gptel-plus")))
+
+(defun jyun/--prefetch-tokens-then-load-gptel ()
+  "Fetch the GitHub and Azure DevOps tokens in parallel, THEN load gptel/MCP.
+Because both tokens are cached before `local/gptel-plus' loads, the
+\(synchronous) token lookups inside `mcp-hub-servers' become instant cache
+hits instead of blocking the main thread on pass/gpg (up to 20s) or `az' —
+which previously froze input for 15s+ a moment after the window appeared.
+Both fetches run concurrently, so the wait is max(github, ado), not the sum."
+  (let ((pending 2))
+    (cl-flet ((done ()
+                (when (zerop (setq pending (1- pending)))
+                  (jyun/--load-gptel-plus-once))))
+      (jyun/--fetch-token-async
+       'jyun/github-token "GITHUB_PERSONAL_ACCESS_TOKEN"
+       "pass show github/magit | head -n 1" #'done)
+      (jyun/--fetch-token-async
+       'jyun/ado-token "ADO_MCP_AUTH_TOKEN"
+       "az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query accessToken -o tsv"
+       #'done))))
+
+;; Pre-fetch tokens off the startup critical path, then load gptel/MCP.
+(run-with-idle-timer 1.0 nil #'jyun/--prefetch-tokens-then-load-gptel)
+
+;; Safety net: if a token fetch stalls (e.g. pinentry left waiting, `az login'
+;; required), still load gptel/MCP after a while so the rest of gptel works;
+;; the tokens fill in later and the relevant MCP server can be restarted.
+(run-with-idle-timer 25 nil #'jyun/--load-gptel-plus-once)
 
 ;; Prevent org-link-preview from choking on Python f-string data URIs
 ;; e.g. `data:image/png;base64,{b64}` in source blocks
@@ -1433,5 +1537,24 @@ is available. Useful if you tend to hammer your keys like I do."
   (setq corfu-auto-prefix 2    ; require 3 chars before triggering (was 2)
         corfu-auto-delay 1)) ; slightly longer delay (was 0.4)
 
+
+;; vertico bug on SPC n r f
+;; Disable bidi reordering globally (only if you never use RTL text)
+;; (setq-default bidi-display-reordering nil)
+
+;; (setq vertico-posframe-fallback-mode #'vertico-buffer-mode) ;; or nil for default
+
+;; ;; Exclude org-roam commands from posframe
+;; (add-to-list 'vertico-multiform-commands
+;;               '(org-roam-node-find flat))  ;; uses regular minibuffer
+;; (add-to-list 'vertico-multiform-commands
+;;               '(org-roam-node-insert flat))
+
 ;; gptel
-(load! "local/gptel-plus")
+;; gptel — deferred off the GUI startup critical path AND gated on the API
+;; tokens being pre-fetched (see `jyun/--prefetch-tokens-then-load-gptel'
+;; above). Eager loading pulled in gptel + gptel-org + gptel-integrations + mcp
+;; + yaml synchronously, costing ~4s of startup; worse, the synchronous token
+;; lookups inside `mcp-hub-servers' could block input for 15s+ on a cold gpg
+;; cache. The load is now triggered from the token-prefetch callback, so when
+;; `mcp-hub-servers' is evaluated the tokens are instant cache hits.
