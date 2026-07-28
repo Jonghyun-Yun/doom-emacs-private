@@ -175,7 +175,8 @@
   ;;    :ei [C-return] #'LaTeX-insert-item)
   (setq TeX-electric-math '("\\(" . ""))
 ;;; tex-fold
-  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★") ;; make \star bigger
+  (when-let ((star-entry (assoc "⋆" LaTeX-fold-math-spec-list)))
+    (setcar star-entry "★")) ;; make \star bigger
   (setq TeX-fold-math-spec-list
         `(
           ;; mismatching delimiters

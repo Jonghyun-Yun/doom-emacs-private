@@ -108,12 +108,12 @@
 ;     :disable nil
 ;     )
 
-;; (package! org-cv
-;;   :recipe (:host github
-;;            :repo "jonghyun-yun/org-cv"
-;;            :files ("*.el"))
-;;   ;; :pin "47ee61ce4538fe4406a68b4cfcf606e68e1f7261")
-;;   :pin "219203e872b2bead5805544f65c9c7294e81e071")
+(package! org-cv
+  :recipe (:host github
+           :repo "jonghyun-yun/org-cv"
+           :files ("*.el"))
+  ;; :pin "47ee61ce4538fe4406a68b4cfcf606e68e1f7261")
+  :pin "219203e872b2bead5805544f65c9c7294e81e071")
 
 ;; org-mode presentation
 ;; (package! org-present)
@@ -358,9 +358,18 @@
 (package! ispell)
 
 
+;;; agent-shell — native Emacs shell for ACP-driven LLM agents (GitHub Copilot, etc.)
+(package! shell-maker
+  :recipe (:host github :repo "xenodium/shell-maker"))
+(package! acp
+  :recipe (:host github :repo "xenodium/acp.el"))
+(package! agent-shell
+  :recipe (:host github :repo "xenodium/agent-shell"))
+
+
 (package! gptel
   :recipe (:host github :repo "karthink/gptel")
-  :pin "3ad7a36250eaed8b68bb7fbd264877ef62bdf2b5")
+  :pin "5b2b95f")
 
 (package! gptel-agent
   :recipe (:host github :repo "karthink/gptel-agent"))
@@ -381,3 +390,6 @@
   :recipe (:host nil
 	   :repo "https://codeberg.org/bajsicki/gptel-got")
   :disable t)
+
+;; to replace markdown-live-preview-mode
+(package! vmd-mode :disable t)
