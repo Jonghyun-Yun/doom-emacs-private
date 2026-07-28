@@ -2,11 +2,41 @@
 
 (load! "../local-secrets.el")
 
+;;; --------------------------------------------------------------------------
+;;; Shared tool lists (avoid repetition across presets)
+;;; --------------------------------------------------------------------------
+(after! gptel
+  (defvar jyun/gptel--ado-read-tools
+    '("wit_get_work_item" "wit_get_work_items_batch_by_ids" "wit_my_work_items"
+      "wit_list_backlogs" "wit_list_backlog_work_items"
+      "wit_get_query" "wit_get_query_results_by_id"
+      "core_list_projects" "core_list_project_teams"
+      "work_list_team_iterations" "work_list_iterations")
+    "ADO MCP tools (read-only) shared across presets.")
+
+  (defvar jyun/gptel--github-read-tools
+    '("get_file_contents" "search_code"
+      "search_issues" "search_pull_requests"
+      "issue_read" "pull_request_read")
+    "GitHub MCP tools (read-only) shared across presets.")
+
+  (defvar jyun/gptel--github-write-tools
+    '("create_pull_request" "issue_write")
+    "GitHub MCP tools (write) for agent-mode only.")
+
+  (defvar jyun/gptel--browser-tools
+    '("browser_navigate" "browser_snapshot"
+      "browser_click" "browser_type" "browser_press_key"
+      "browser_wait_for" "browser_navigate_back" "browser_tabs"
+      "browser_evaluate" "browser_network_requests" "browser_console_messages")
+    "Playwright browser tools for presets that need JS-rendered content.")
+
+
 ;; llm
 (after! gptel
   (require 'gptel-integrations)
   (require 'gptel-org)
-  (setq! gptel-track-media t
+  (setopt gptel-track-media t
          ;; gptel-preset "agent-mode"
          gptel-use-tools t
          gptel-default-mode 'org-mode
@@ -53,12 +83,31 @@
 ;;   (mapcar (lambda (tool) (cl-pushnew tool gptel-tools)) gptel-got)
 ;;   )
 
+(defvar jyun/gptel--batch-tools-policy
+  "
+
+When answering a question that requires multiple file reads, searches, or
+command executions, batch them into a SINGLE call to the =run_python_batch= tool.
+
+INSTEAD OF:
+  Grep file1 → Read file1 → Grep file2 → Read file2 → ...
+
+DO THIS:
+  python3 -c \"
+  import pathlib
+  files = ['file1.py', 'file2.py']
+  for f in files:
+      print(f'=== {f} ===')
+      print(pathlib.Path(f).read_text())
+  \"
+
+This collapses N turns into 1, saving 60%+ tokens.
+</batch_tools_policy>")
 
 (defun jyun/get-ado-token ()
-  "Get Azure DevOps access token via az CLI."
-  (string-trim
-   (shell-command-to-string
-    "az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query accessToken -o tsv")))
+  "Deprecated shim — Azure DevOps token is now fetched async in config.el.
+Returns the cached `jyun/ado-token' (or nil). Kept for any external callers."
+  (bound-and-true-p jyun/ado-token))
 
 (use-package mcp
   :after gptel
@@ -94,19 +143,24 @@
      ;;             :env (:ADO_MCP_AUTH_TOKEN ,(jyun/get-ado-token))))
 
      ("github" . (:command "github-mcp-server"
-                  :args ("stdio" "--log-file" ,(expand-file-name "logs/github-mcp.log" (getenv "home")))
+                  :args ("stdio" "--log-file" ,(let ((log (expand-file-name "logs/github-mcp.log" "~")))
+                                                  (make-directory (file-name-directory log) t)
+                                                  log))
                   :env (:GITHUB_PERSONAL_ACCESS_TOKEN ,(jyun/get-github-token))
                   ))
      ;; ("filesystem" . (:command "npx"
      ;;                  :args ("-y" "@modelcontextprotocol/server-filesystem"
      ;;                         ,(getenv "home"))))
+
      ("sequential-thinking" . (:command "npx"
                                :args ("-y" "@modelcontextprotocol/server-sequential-thinking")))
+
      ;; ("context7" . (:command "npx"
      ;;                :args ("-y" "@upstash/context7-mcp")
      ;;                :env (:default_minimum_tokens "6000")))
      ;; ("nixos" . (:command "uvx" :args ("mcp-nixos")))
 
+     ;; homebrew version
      ("context7" . (:command "context7-mcp"
                     :env (:default_minimum_tokens "6000")))
 
@@ -130,29 +184,84 @@
      ))
   )
 
+(defvar my/gptel-mcp-priority-servers '("github")
+  "MCP servers to start first (high priority). Names must match keys in
+`mcp-hub-servers'. These are launched immediately on startup; every other
+server is started afterwards, one at a time, in the background.")
+
+(defvar my/gptel-mcp-stagger-interval 1.5
+  "Idle seconds to wait between starting each low-priority MCP server.
+Staggering avoids spawning every subprocess in one redisplay-blocking burst
+and only fires while Emacs is idle, so it never competes with your typing.")
+
+(defun my/gptel--register-mcp-tools ()
+  "Register all currently-connected MCP tools with gptel.
+Safe to call repeatedly as more servers come online."
+  (mapcar (lambda (tool) (apply #'gptel-make-tool tool))
+          (mcp-hub-get-all-tool :asyncp t :categoryp t)))
+
+(defun my/gptel-mcp--start-rest-1 (names)
+  "Start the remaining non-priority MCP servers in NAMES, one at a time.
+NAMES is the explicit list of server names still to start. Each server is
+started, its tools registered with gptel, then the next is scheduled after
+`my/gptel-mcp-stagger-interval' of idle time. The chain terminates when NAMES
+is nil, so it must NOT recompute the full server list on an empty argument
+\(doing so caused an infinite \"All MCP servers already running\" loop)."
+  (when names
+    (mcp-hub-start-all-server
+     (lambda ()
+       (my/gptel--register-mcp-tools)
+       (run-with-idle-timer
+        my/gptel-mcp-stagger-interval nil
+        #'my/gptel-mcp--start-rest-1 (cdr names)))
+     (list (car names)))))
+
+(defun my/gptel-mcp-start-rest-staggered ()
+  "Start all non-priority MCP servers one at a time, on idle ticks.
+The server list (`mcp-hub-servers' minus `my/gptel-mcp-priority-servers') is
+computed once here; the staggered recursion happens in
+`my/gptel-mcp--start-rest-1'."
+  (my/gptel-mcp--start-rest-1
+   (mapcar #'car
+           (cl-remove-if
+            (lambda (s) (member (car s) my/gptel-mcp-priority-servers))
+            mcp-hub-servers))))
+
 (defun my/gptel-mcp-after-init ()
+  "Start MCP servers in two tiers: priority servers now, the rest staggered.
+`my/gptel-mcp-priority-servers' (e.g. github) come up immediately so their
+tools are available fast; the remaining servers start one-by-one in the
+background afterwards."
   (require 'transient)
   (require 'gptel-mcp)
-  ;; Start all servers. CALLBACK runs once they're all started (or failed).
   (mcp-hub-start-all-server
    (lambda ()
-     (let* ((mcp-tools (mcp-hub-get-all-tool :asyncp t :categoryp t))
-            (gptel-tools
-             (mapcar (lambda (tool)
-                       (apply #'gptel-make-tool tool))
-                     mcp-tools)))
-       ;; do something with `gptel-tools` here
-       ))
-   nil
-   nil)
-  ;; (gptel--apply-preset 'agent-mode)
-  )
-(add-hook 'after-init-hook #'my/gptel-mcp-after-init)
+     (my/gptel--register-mcp-tools)
+     (my/gptel-mcp-start-rest-staggered))
+   my/gptel-mcp-priority-servers))
+;; gptel-plus is now loaded on an idle timer (see config.el), i.e. after
+;; `after-init-hook' has already run. In that case schedule the MCP server
+;; auto-start on its own idle tick so spawning servers doesn't pile onto the
+;; (already heavy) require in the same redisplay-blocking burst. If loaded
+;; eagerly during init (after-init-time still nil), use the hook as before.
+(if after-init-time
+    (run-with-idle-timer 0.5 nil #'my/gptel-mcp-after-init)
+  (add-hook 'after-init-hook #'my/gptel-mcp-after-init))
 
 ;;; --------------------------------------------------------------------------
 ;;; Base preset: shared policies inherited by all custom presets via :parents
 ;;; --------------------------------------------------------------------------
 (after! gptel
+  (gptel-make-tool
+  :name "run_python_batch"
+  :description "Run Python to batch multiple filesystem/shell operations in one call"
+  :args '((:name "code" :type "string" :description "Python 3 code to execute"))
+  :function (lambda (code)
+              (with-temp-buffer
+                (call-process "python3" nil t nil "-c" code)
+                (buffer-string)))
+  :confirm t)
+
   (gptel-make-preset 'base-policies
     :description "Shared policies (user-context, GitHub, docs, formatting) — not used directly."
     :system
@@ -261,36 +370,6 @@ Terse. Symbol names, source references, and direct answers. No preamble, no summ
     :tools '("Agent" "Skill" "sequentialthinking" "introspection")))
 
 ;;; --------------------------------------------------------------------------
-;;; Shared tool lists (avoid repetition across presets)
-;;; --------------------------------------------------------------------------
-(after! gptel
-  (defvar jyun/gptel--ado-read-tools
-    '("wit_get_work_item" "wit_get_work_items_batch_by_ids" "wit_my_work_items"
-      "wit_list_backlogs" "wit_list_backlog_work_items"
-      "wit_get_query" "wit_get_query_results_by_id"
-      "core_list_projects" "core_list_project_teams"
-      "work_list_team_iterations" "work_list_iterations")
-    "ADO MCP tools (read-only) shared across presets.")
-
-  (defvar jyun/gptel--github-read-tools
-    '("get_file_contents" "search_code"
-      "search_issues" "search_pull_requests"
-      "issue_read" "pull_request_read")
-    "GitHub MCP tools (read-only) shared across presets.")
-
-  (defvar jyun/gptel--github-write-tools
-    '("create_pull_request" "issue_write")
-    "GitHub MCP tools (write) for agent-mode only.")
-
-  (defvar jyun/gptel--browser-tools
-    '("browser_navigate" "browser_snapshot"
-      "browser_click" "browser_type" "browser_press_key"
-      "browser_wait_for" "browser_navigate_back" "browser_tabs"
-      "browser_evaluate" "browser_network_requests" "browser_console_messages")
-    "Playwright browser tools for presets that need JS-rendered content.")
-
-
-;;; --------------------------------------------------------------------------
 ;;; ask-agent — comprehensive Q&A + external research (browser, YouTube, etc.)
 ;;; --------------------------------------------------------------------------
   (gptel-make-preset
@@ -338,11 +417,12 @@ Do NOT restate tool output. Synthesize findings into a direct answer.
 </workflow>"
                         jyun/gptel--github-policy))
     :tools
-    `("Agent" "Skill" "sequentialthinking"
+    `("Agent" "Skill"
       "Eval" "Bash"
       "Glob" "Grep" "Read" "WebSearch" "WebFetch" "YouTube"
+      "sequentialthinking"
       "mcp-context7"
-      ,jyun/gptel--github-read-tools
+      ,@jyun/gptel--github-read-tools
       "introspection"))
 
 ;;; --------------------------------------------------------------------------
@@ -359,12 +439,28 @@ You research the codebase → clarify with the user → capture findings and dec
 
 Your SOLE responsibility is planning. NEVER implement the plan itself (no code edits, no creating source files, no running build/deploy commands).
 
+When discussing an executable specification, record decisions in a log in the spec for posterity; it should be unambiguously clear why any change to the specification was made.
+
+When researching a design with challenging requirements or significant unknowns, use milestones to implement proof of concepts, toy implementations, etc., that allow validating whether the user's proposal is feasible. Read the source code of libraries by finding or acquiring them, research deeply, and include prototypes to guide a fuller implementation.
+
 <rules>
 - Use tools for investigation (codebase + docs) and to ground the plan in facts.
 - You MAY use file write tools (`Write`, `Edit`, `Insert`) ONLY to create or update plan documents. Never use them for code, config, or any other file.
 - Ask clarifying questions in chat when requirements are ambiguous — don't make large assumptions.
 - Present a well-researched plan with loose ends tied BEFORE suggesting any implementation.
 </rules>
+
+## NON-NEGOTIABLE REQUIREMENTS:
+
+- Every plan must be fully self-contained. Self-contained means that in its current form it contains all knowledge and instructions needed for a novice to succeed.
+- Every plan is a living document. Contributors are required to revise it as progress is made, as discoveries occur, and as design decisions are finalized. Each revision must remain fully self-contained.
+- Every plan must enable a complete novice to implement the feature end-to-end without prior knowledge of this repo.
+- Every plan must produce a demonstrably working behavior, not merely code changes to meet a definition.
+- Every plan must define every term of art in plain language or do not use it.
+
+Purpose and intent come first. Begin by explaining, in a few sentences, why the work matters from a user's perspective: what someone can do after this change that they could not do before, and how to see it working. Then guide the reader through the exact steps to achieve that outcome, including what to edit, what to run, and what they should observe.
+
+The agent executing your plan can list files, read files, search, run the project, and run tests when they exist. It does not know any prior context and cannot infer what you meant from earlier milestones. Repeat any assumption you rely on. Do not point to external blogs or docs; if knowledge is required, embed it in the plan itself in your own words. If an ExecPlan builds upon a prior ExecPlan and that file is checked in, incorporate it by reference. If it is not, you must include all relevant context from that plan.
 
 <workflow>
 Cycle through these phases based on user input. This is iterative, not linear.
@@ -386,7 +482,6 @@ Draft a comprehensive implementation plan:
 Once the plan is solid (after at least one round of user feedback or explicit approval), write it to a **plan document** file:
 - Location: current working directory, or a directory the user specifies.
 - Format: `.md` or `.org` — match the user's preference or default to `.md`.
-- Naming: descriptive and freeform, e.g. `PLAN-add-caching.md`, `PLAN-refactor-topml-utils.org`. Prefix with `PLAN-` by default so implementation agents can discover it.
 - The plan document is the **primary deliverable** — the contract that implementation agents (e.g. `agent-mode`) will discover and follow.
 
 ## 5. Refinement
@@ -396,7 +491,7 @@ On user feedback, **edit the plan document in-place** (use `Edit`). Keep the doc
 <plan_document_format>
 Required sections: Plan title + TL;DR, Steps (numbered, with dependencies), Relevant files (path + what to do), Verification, Acceptance criteria, Decisions.
 Optional: Further considerations (1-3 open items with recommendations).
-Prefix filenames with `PLAN-`.
+Use clear file names such as `plan-YYYY-MM-DD-short-task-name.md`. Prefix with `plan-` by default so implementation agents can discover it.
 </plan_document_format>
 
 <output_style>
@@ -412,11 +507,12 @@ jyun/gptel--github-policy))
       "sequentialthinking"
       "convert_to_markdown"
       "mcp-context7"
-      ,@jyun/gptel--browser-tools
+      ;; ,@jyun/gptel--browser-tools
       ,@jyun/gptel--github-read-tools
       ;; Plan document authoring (create + refine plan files only)
       "Edit" "Insert" "Write"
-      "introspection"))
+      ;; "introspection"
+      ))
 
 ;;; --------------------------------------------------------------------------
 ;;; explore-agent — fast local codebase scout (no browser, no YouTube)
@@ -492,9 +588,21 @@ Prefer 1–3 searches and 1–2 reads first; only then consider `sequentialthink
     :system
     `(:prepend ,(concat "You are in VSCode-like AGENT MODE (implementation-capable). You can investigate, plan, and implement changes, but you MUST be safe and explicit.
 
-<plan_document_discovery>
-Glob for PLAN-* in cwd. If found, ask user to confirm before following it. Update plan doc as steps complete.
-</plan_document_discovery>
+<codeact_batching_policy>
+When a task requires multiple file reads, searches, or command executions, batch them
+into a SINGLE call to the =run_python_batch= tool instead of making N sequential
+Grep/Read/Bash calls. This collapses N tool turns into 1, reducing token overhead by 60%+.
+
+Example — instead of 3 Read calls:
+  python3 -c \"
+  import pathlib
+  for f in ['src/a.py', 'src/b.py', 'src/c.py']:
+      print(f'=== {f} ===')
+      print(pathlib.Path(f).read_text()[:500])
+  \"
+
+This batching pattern is called CodeAct. Use it whenever possible.
+</codeact_batching_policy>
 
 <rules>
 - Approval: state intent and describe implementation plan briefly, then implement immediately. Do NOT ask 'Proceed?.
@@ -535,7 +643,9 @@ If a needed tool is unavailable, tell the user which @preset to enable.
       ;; File-level modification tools
       "Edit" "Write" "Mkdir"
       ;; Execution / evaluation
-      "Eval" "Bash"))
+      "Eval" "Bash"
+      "run_python_batch"
+      ))
 
 ;;; --------------------------------------------------------------------------
 ;;; Tool addon presets — use @with-browser, @with-ado, @with-github, @with-apple-mail, @with-emacs
@@ -816,4 +926,137 @@ properties untouched.  Reports the number of characters fixed."
                  fixed beg end)
       (message "gptel-fix-props: no corrupted response properties found"))))
 
+
+;; ────────────────────────────────────────────────────────────────────
+;; RTK: token-optimized shell output filtering (toggleable)
+;; ────────────────────────────────────────────────────────────────────
+
+(defgroup jyun/gptel-rtk nil
+  "RTK integration for gptel (toggleable)."
+  :group 'tools)
+
+(defcustom jyun/gptel-rtk-enabled t
+  "When non-nil, gptel uses RTK wrappers for shell-backed tools.
+
+Set to nil to disable RTK integration and use original command behavior.
+This only affects shell-backed tools (Bash/Read/Grep/Find), not MCP servers."
+  :type 'boolean
+  :group 'jyun/gptel-rtk)
+
+(defun jyun/gptel--rtk-available-p ()
+  "Return non-nil if RTK should be used and binary exists on PATH."
+  (and jyun/gptel-rtk-enabled (executable-find "rtk")))
+
+(defun jyun/gptel--maybe-run-rtk (rtk-cmd fallback-cmd)
+  "Run RTK-CMD (list of args) if available; otherwise run FALLBACK-CMD string."
+  (if (jyun/gptel--rtk-available-p)
+      (shell-command-to-string
+       (mapconcat #'shell-quote-argument rtk-cmd " "))
+    (shell-command-to-string fallback-cmd)))
+
+(defun jyun/gptel--bash-with-rtk (command)
+  "Execute COMMAND with RTK filtering when available and enabled.
+If RTK is disabled/unavailable, run COMMAND unchanged." 
+  (if (not (jyun/gptel--rtk-available-p))
+      (shell-command-to-string command)
+    (let* ((cmd-parts (split-string-and-unquote command))
+           (base-cmd (car cmd-parts))
+           (args (cdr cmd-parts))
+           (rtk-subcommand
+            (cond
+             ((member base-cmd '("ls" "tree")) "ls")
+             ((member base-cmd '("cat" "sed" "head" "tail")) "read")
+             ((member base-cmd '("rg" "rg.exe" "ripgrep" "grep")) "grep")
+             ((string= base-cmd "find") "find")
+             ((string= base-cmd "git") "git")
+             ((string= base-cmd "du") "du")
+             (t nil)))
+           (effective-cmd
+            (if rtk-subcommand
+                (concat "rtk " rtk-subcommand
+                        (if args
+                            (concat " " (mapconcat #'shell-quote-argument args " "))
+                          ""))
+              command)))
+      (shell-command-to-string effective-cmd))))
+
+(defun jyun/gptel--read-with-rtk (filepath)
+  "Read FILEPATH via `rtk read` when available, else read raw file contents." 
+  (if (jyun/gptel--rtk-available-p)
+      (jyun/gptel--maybe-run-rtk
+       (list "rtk" "read" filepath)
+       (format "cat %s" (shell-quote-argument filepath)))
+    (with-temp-buffer
+      (insert-file-contents filepath)
+      (buffer-string))))
+
+(defun jyun/gptel--grep-with-rtk (pattern path)
+  "Search PATTERN in PATH via `rtk grep` when available." 
+  (let ((fallback (format "rg -n --no-ignore -S %s %s"
+                          (shell-quote-argument pattern)
+                          (shell-quote-argument path))))
+    (jyun/gptel--maybe-run-rtk (list "rtk" "grep" pattern path) fallback)))
+
+(defun jyun/gptel--find-with-rtk (pattern path)
+  "Find files matching PATTERN under PATH via `rtk find` when available." 
+  (let ((fallback (format "find %s -name %s -maxdepth 5 2>/dev/null"
+                          (shell-quote-argument path)
+                          (shell-quote-argument pattern))))
+    (jyun/gptel--maybe-run-rtk (list "rtk" "find" pattern path) fallback)))
+
+(defun jyun/gptel-toggle-rtk ()
+  "Toggle `jyun/gptel-rtk-enabled` and report the new state." 
+  (interactive)
+  (customize-set-variable 'jyun/gptel-rtk-enabled (not jyun/gptel-rtk-enabled))
+  (message "jyun/gptel-rtk-enabled => %s" jyun/gptel-rtk-enabled))
+
+(defun jyun/gptel--tool-name= (tool name)
+  "Return non-nil if TOOL is a gptel tool whose name matches NAME." 
+  (and (gptel-tool-p tool)
+       (string= (gptel-tool-name tool) name)))
+
+(defun jyun/gptel--replace-tool (tool)
+  "Replace any existing gptel tool of same name with TOOL." 
+  (let ((name (gptel-tool-name tool)))
+    (setq gptel-tools
+          (cons tool
+                (cl-remove-if (lambda (t) (jyun/gptel--tool-name= t name))
+                              gptel-tools)))))
+
+(after! gptel
+  (jyun/gptel--replace-tool
+   (gptel-make-tool
+    :name "Bash"
+    :description "Run shell command with token-optimized output via rtk when enabled"
+    :args '((:name "command" :type "string" :description "Shell command to run"))
+    :function #'jyun/gptel--bash-with-rtk
+    :confirm t))
+
+  (jyun/gptel--replace-tool
+   (gptel-make-tool
+    :name "Read"
+    :description "Read a file; uses rtk read when enabled"
+    :args '((:name "filepath" :type "string" :description "Path to file"))
+    :function #'jyun/gptel--read-with-rtk
+    :confirm nil))
+
+  (jyun/gptel--replace-tool
+   (gptel-make-tool
+    :name "Grep"
+    :description "Search text in a path; uses rtk grep when enabled"
+    :args '((:name "pattern" :type "string" :description "Regex or string to search")
+            (:name "path" :type "string" :description "Directory or '.'"))
+    :function #'jyun/gptel--grep-with-rtk
+    :confirm nil))
+
+  (jyun/gptel--replace-tool
+   (gptel-make-tool
+    :name "Find"
+    :description "Find files by glob/pattern; uses rtk find when enabled"
+    :args '((:name "pattern" :type "string" :description "Filename glob (e.g., *.py)")
+            (:name "path" :type "string" :description "Directory or '.'"))
+    :function #'jyun/gptel--find-with-rtk
+    :confirm nil)))
+
+;; ADO PM
 (load! "ado-org")
