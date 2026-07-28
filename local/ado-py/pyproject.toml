@@ -1,0 +1,20 @@
+[project]
+name = "ado-py"
+version = "0.1.0"
+description = "Deterministic ADO User Story module for Emacs gptel"
+requires-python = ">=3.10"
+dependencies = [
+    "azure-devops>=7.1.0b1",
+    "azure-identity>=1.14",
+    "pydantic>=2.0",
+]
+
+[project.scripts]
+ado-py = "ado_py.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ado_py*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
