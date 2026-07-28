@@ -14,6 +14,19 @@
 ;;   Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
 ;;   directory (for easy access to its source code).
 
+;; Ensure Homebrew binaries (hunspell, etc.) are discoverable when Emacs is
+;; launched from the macOS GUI, which provides only a minimal $PATH. This must
+;; run before module config loads (e.g. :checkers spell looks for hunspell).
+(when (eq system-type 'darwin)
+  (dolist (dir (list "/opt/homebrew/bin" "/usr/local/bin"
+                     "/Library/TeX/texbin"
+                     (expand-file-name "~/bin")))
+    (when (file-directory-p dir)
+      (add-to-list 'exec-path dir)
+      (let ((path (getenv "PATH")))
+        (unless (and path (string-match-p (regexp-quote dir) path))
+          (setenv "PATH" (concat dir path-separator (or path ""))))))))
+
 (doom! :input
        ;;bidi              ; (tfel ot) thgir etirw uoy gnipleh
        ;;chinese
@@ -26,7 +39,8 @@
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;;ivy               ; a search engine for love and life
-       (vertico +childframe) ; the search engine of the future
+       (vertico ;;+childframe
+        ) ; the search engine of the future
 
        :ui
        ;;deft              ; notational velocity for Emacs
