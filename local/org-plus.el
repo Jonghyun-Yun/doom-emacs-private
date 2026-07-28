@@ -525,34 +525,31 @@ If it is an absolute path return `+org-capture-tickler-file' verbatim."
 
   (after! ispell
     ;; some org elements
-    (pushnew! ispell-skip-region-alist
-              '("~" . "~")
-              '("=" . "=")
-              ;; '(org-property-drawer-re)
-              '(org-ref-cite-re)
-              ;; '(org-ref-ref-re)
-              ;; '(org-ref-label-re)
-              ;; '(org-latex-math-environments-re)
-              )
+    (dolist (region '(("~" . "~")
+                      ("=" . "=")
+                      ;; '(org-property-drawer-re)
+                      (org-ref-cite-re)
+                      ;; '(org-ref-ref-re)
+                      ;; '(org-ref-label-re)
+                      ))
+      (cl-pushnew region ispell-skip-region-alist :test #'equal))
     ;; latex math
-    (pushnew! ispell-skip-region-alist
-              '("\\$" . "\\$")
-              '("\\\\(" . "\\\\)")
-              '("\\\[" . "\\\]")
-              '("\\\\begin{\\(?:align\\(?:at\\)?\\|d\\(?:array\\|group\\|isplaymath\\|math\\|series\\)\\|e\\(?:mpheq\\|q\\(?:narray\\|uation\\)\\)\\|flalign\\|gather\\|m\\(?:ath\\|ultline\\)\\|subequations\\|x\\(?:x?alignat\\)\\)\\*?}"
-                . "\\\\end{\\(?:align\\(?:at\\)?\\|d\\(?:array\\|group\\|isplaymath\\|math\\|series\\)\\|e\\(?:mpheq\\|q\\(?:narray\\|uation\\)\\)\\|flalign\\|gather\\|m\\(?:ath\\|ultline\\)\\|subequations\\|x\\(?:x?alignat\\)\\)\\*?}")
-              '("\\\\begin\{align\*\}" . "\\\\end\{align\*\}")
-              '("\\\\begin\{equation\*\}" . "\\\\end\{equation\*\}")
-              '("\\\\begin\{eqnarray\*\}" . "\\\\end\{eqnarray\*\}")
-              )
+    (dolist (region '(("\\$" . "\\$")
+                      ("\\\\(" . "\\\\)")
+                      ("\\\[" . "\\\]")
+                      ("\\\\begin{\\(?:align\\(?:at\\)?\\|d\\(?:array\\|group\\|isplaymath\\|math\\|series\\)\\|e\\(?:mpheq\\|q\\(?:narray\\|uation\\)\\)\\|flalign\\|gather\\|m\\(?:ath\\|ultline\\)\\|subequations\\|x\\(?:x?alignat\\)\\)\\*?}"
+                       . "\\\\end{\\(?:align\\(?:at\\)?\\|d\\(?:array\\|group\\|isplaymath\\|math\\|series\\)\\|e\\(?:mpheq\\|q\\(?:narray\\|uation\\)\\)\\|flalign\\|gather\\|m\\(?:ath\\|ultline\\)\\|subequations\\|x\\(?:x?alignat\\)\\)\\*?}")
+                      ("\\\\begin\{align\*\}" . "\\\\end\{align\*\}")
+                      ("\\\\begin\{equation\*\}" . "\\\\end\{equation\*\}")
+                      ("\\\\begin\{eqnarray\*\}" . "\\\\end\{eqnarray\*\}")))
+      (cl-pushnew region ispell-skip-region-alist :test #'equal))
     ;; latex ref
-    (pushnew! ispell-skip-region-alist
-              '("\\\\ref\{" . "\}")
-              '("\\\\cref\{" . "\}")
-              '("\\\\eqref\{" . "\}")
-              '("\\\\label\{" . "\}")
-              '("\\\\printbibliography\\[" . "\\]")
-              ))
+    (dolist (region '(("\\\\ref\{" . "\}")
+                      ("\\\\cref\{" . "\}")
+                      ("\\\\eqref\{" . "\}")
+                      ("\\\\label\{" . "\}")
+                      ("\\\\printbibliography\\[" . "\\]")))
+      (cl-pushnew region ispell-skip-region-alist :test #'equal)))
 
   ;; org-mode and knitr
   ;; (require 'ox-md) ;; required to markdown export
