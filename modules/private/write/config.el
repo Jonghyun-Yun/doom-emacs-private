@@ -236,6 +236,14 @@ Turning on wordnut mode runs the normal hook `mw-syno-mode-hook'.
 ;; (setq ispell-personal-dictionary "/Users/yunj/.aspell.en.pws")
 
 ;; (require 'spell-fu) ;; otherwise error b/c `+spell/previous-error' is not defined.
+
+;; Doom's :checkers spell module only defines this variable when its
+;; spell-checker (spell-fu/aspell) actually loads. We rely on it below for
+;; both spell-fu and langtool, so make sure it always exists to avoid a
+;; (void-variable +spell-excluded-faces-alist) error at startup.
+(defvar +spell-excluded-faces-alist nil
+  "Faces in certain major modes that spell-fu will not spellcheck.")
+
 (after! spell-fu
   (setq spell-fu-idle-delay 0.5)
   ;; (global-spell-fu-mode -1)

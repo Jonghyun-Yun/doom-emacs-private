@@ -61,7 +61,7 @@
         dired-sidebar-recenter-cursor-on-tui-update t
         dired-sidebar-no-delete-other-windows t
         dired-sidebar-use-custom-modeline t)
-  (pushnew! dired-sidebar-toggle-hidden-commands
-            'evil-window-rotate-upwards 'evil-window-rotate-downwards)
+  (dolist (cmd '(evil-window-rotate-upwards evil-window-rotate-downwards))
+    (cl-pushnew cmd dired-sidebar-toggle-hidden-commands :test #'equal))
   (map! :map dired-sidebar-mode-map
         :n "q" #'dired-sidebar-toggle-sidebar))
